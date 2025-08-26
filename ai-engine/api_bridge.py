@@ -104,7 +104,7 @@ class DeltaNeutralResponse(BaseModel):
 
 # API Endpoints
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 async def root():
     """Root endpoint with welcome message"""
     return {
