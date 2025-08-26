@@ -104,6 +104,16 @@ class DeltaNeutralResponse(BaseModel):
 
 # API Endpoints
 
+@app.get("/")
+async def root():
+    """Root endpoint with welcome message"""
+    return {
+        "message": "Welcome to the SEI DLP AI Engine Bridge",
+        "status": "active",
+        "version": "1.0.0",
+        "documentation": "/docs"  # FastAPI auto-generates docs
+    }
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
