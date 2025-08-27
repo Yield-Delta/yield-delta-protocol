@@ -33,6 +33,7 @@
     "@elizaos/plugin-anthropic": "^1.0.4",
     "@elizaos/plugin-bootstrap": "latest",
     "@elizaos/plugin-google-genai": "^1.0.1",
+    "@elizaos/plugin-openai": "1.0.11",
     "@elizaos/plugin-sei-yield-delta": "github:lggg123/yield-delta",
     "@tanstack/react-query": "^5.29.0",
     "clsx": "^2.1.1",
@@ -53,8 +54,8 @@
     "vite": "^6.0.1"
   },
   "scripts": {
-    "start": "elizaos start",
-    "dev": "elizaos dev",
+    "start": "elizaos start --port ${PORT:-3000}",
+    "dev": "elizaos dev --port ${PORT:-3000}",
     "build": "tsc --noEmit && vite build && tsup",
     "lint": "prettier --write ./src",
     "type-check": "tsc --noEmit",
