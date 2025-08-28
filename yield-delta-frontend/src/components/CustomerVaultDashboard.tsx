@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 import { Address, Abi } from 'viem';
+import type { Vault } from '../types/api';
 import {
   Loader2,
   CheckCircle2,
@@ -33,7 +34,7 @@ const CustomerVaultDashboard: React.FC<CustomerVaultDashboardProps> = ({ vaultAd
   const [withdrawalStatus, setWithdrawalStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
   const [withdrawalHash, setWithdrawalHash] = useState<string | null>(null);
   // State for vault metadata
-  const [vaultMetadata, setVaultMetadata] = useState<any>(null);
+  const [vaultMetadata, setVaultMetadata] = useState<Vault | null>(null);
 
   // Fetch vault metadata from API
   useEffect(() => {
@@ -44,7 +45,7 @@ const CustomerVaultDashboard: React.FC<CustomerVaultDashboardProps> = ({ vaultAd
 
         if (result.success) {
           // Find the specific vault by address
-          const vault = result.data.find((v: any) =>
+          const vault = result.data.find((v: Vault) =>
             v.address.toLowerCase() === vaultAddress.toLowerCase()
           );
 
@@ -63,7 +64,7 @@ const CustomerVaultDashboard: React.FC<CustomerVaultDashboardProps> = ({ vaultAd
   }, [vaultAddress]);
 
   // Read customer statistics
-  const { data: customerStats, error: customerStatsError } = useReadContract({
+  const { data: customerStats } = useReadContract({
     address: vaultAddress,
     abi: vaultABI,
     functionName: 'getCustomerStats',
@@ -71,7 +72,7 @@ const CustomerVaultDashboard: React.FC<CustomerVaultDashboardProps> = ({ vaultAd
     query: {
       enabled: !!address,
     },
-  }) as { data: readonly [bigint, bigint, bigint, bigint, bigint, bigint] | undefined, error: any };
+  }) as { data: readonly [bigint, bigint, bigint, bigint, bigint, bigint] | undefined, error: Error | null };
 
   // Demo fallback data when getCustomerStats is not available - vault-specific data
   const getVaultSpecificDemoData = (): readonly [bigint, bigint, bigint, bigint, bigint, bigint] | undefined => {

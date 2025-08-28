@@ -4,9 +4,8 @@
  */
 
 import { useAccount, useBalance, useReadContract } from 'wagmi';
-import { useQuery } from '@tanstack/react-query';
 import { formatUnits } from 'viem';
-import { TokenInfo, getTokenInfo } from '@/utils/tokenUtils';
+import { getTokenInfo } from '@/utils/tokenUtils';
 
 // ERC20 ABI for balance checking
 const ERC20_ABI = [

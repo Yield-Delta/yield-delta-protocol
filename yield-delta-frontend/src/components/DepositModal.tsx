@@ -178,7 +178,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         handleClose();
       }, 3000);
     }
-  }, [depositMutation.isSuccess, depositMutation.hash, transactionStatus, vault, router, onSuccess, handleClose, depositMutation.userBalance]);
+  }, [depositMutation, transactionStatus, vault, router, onSuccess, handleClose]);
 
   // Watch for transaction errors
   useEffect(() => {

@@ -26,10 +26,11 @@ cp .env.example .env
 bun run build
 
 # Start Liqui agent
-elizaos start --port 3000
+# The server will use the PORT environment variable if set, otherwise default to 3000
+elizaos start --port ${PORT:-3000}
 
 # Or start in development mode
-elizaos dev
+elizaos dev --port ${PORT:-3000}
 ```
 
 ### Environment Configuration
