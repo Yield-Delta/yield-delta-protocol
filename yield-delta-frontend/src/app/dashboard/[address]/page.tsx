@@ -1,7 +1,5 @@
 "use client"
 
-export const runtime = 'edge';
-
 import CustomerVaultDashboard from '@/components/CustomerVaultDashboard';
 import Navigation from '@/components/Navigation';
 import { useParams } from 'next/navigation';
