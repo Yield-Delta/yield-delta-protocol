@@ -17,12 +17,15 @@ export function DemoBanner({ className }: DemoBannerProps) {
   return (
     <div 
       className={cn(
-        "demo-banner-container fixed top-14 left-0 right-0 z-40 border-b",
+        "demo-banner-container fixed left-0 right-0 z-30 border-b",
         "bg-gradient-to-r from-yellow-500/10 via-orange-500/10 to-yellow-500/10",
         "border-yellow-500/30 backdrop-blur-sm",
         className
       )}
-      style={{ isolation: 'isolate' }}
+      style={{ 
+        isolation: 'isolate',
+        top: '3.5rem'
+      }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Alert className="demo-banner-alert border-0 bg-transparent p-3">
