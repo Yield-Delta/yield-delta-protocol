@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Navigation from '@/components/Navigation';
+import DemoBanner from '@/components/DemoBanner';
 import { TrendingUp, PieChart, DollarSign, Activity, Plus, ArrowRight, Wallet, BarChart3, Settings, Bell } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
@@ -111,6 +112,9 @@ const DashboardPage = () => {
     <div className={styles.dashboardContainer}>
       {/* Navigation */}
       <Navigation variant="dark" showWallet={true} showLaunchApp={false} />
+      
+      {/* Demo Banner */}
+      <DemoBanner />
       
       {/* Header */}
       <div className={styles.headerSection}>

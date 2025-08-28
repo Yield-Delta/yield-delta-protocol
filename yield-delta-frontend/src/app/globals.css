@@ -5,6 +5,34 @@
 
 /* Dashboard responsive grid fix - Tailwind v4 compatible */
 @layer components {
+  /* Demo Banner Styles */
+  .demo-banner-container {
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  .demo-banner-alert {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 5px rgba(234, 179, 8, 0.3);
+    }
+    to {
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.6);
+    }
+  }
   /* Ensure portfolio stats grid works correctly */
   .dashboard-stats-grid {
     display: grid !important;
