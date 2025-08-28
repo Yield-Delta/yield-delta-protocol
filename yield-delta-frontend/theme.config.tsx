@@ -1,7 +1,6 @@
 import React from 'react'
-import { DocsThemeConfig } from 'nextra-theme-docs'
 
-const config: DocsThemeConfig = {
+const config = {
   logo: (
     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
       <div 
@@ -49,71 +48,46 @@ const config: DocsThemeConfig = {
     labels: 'feedback'
   },
   sidebar: {
-    titleComponent({ title, type }) {
-      if (type === 'separator') {
-        return <span className="cursor-default">{title}</span>
-      }
-      return <>{title}</>
-    },
     defaultMenuCollapseLevel: 1,
     toggleButton: true
   },
   toc: {
     backToTop: true
   },
-  gitTimestamp: ({ timestamp }) => (
+  lastUpdated: (
     <div style={{ fontSize: '12px', color: '#666' }}>
-      Last updated: {timestamp.toLocaleDateString()}
+      Last updated: {new Date().toLocaleDateString()}
     </div>
   ),
-  head: (
-    <>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta property="og:title" content="Yield Delta Documentation" />
-      <meta property="og:description" content="Complete guide to Yield Delta - AI-powered yield optimization on SEI Network" />
-      <meta property="og:image" content="/api/og?title=Yield%20Delta&subtitle=Documentation" />
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content="Yield Delta Documentation" />
-      <meta name="twitter:description" content="Complete guide to AI-powered yield optimization on SEI Network" />
-      <link rel="icon" href="/favicon.ico" />
-    </>
+  banner: (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      🎭 Demo Mode Active - 
+      <a 
+        href="/docs/demo-mode" 
+        style={{ textDecoration: 'underline' }}
+      >
+        Learn about demo features →
+      </a>
+    </div>
   ),
-  primaryHue: 180, // Cyan color for SEI branding
-  primarySaturation: 100,
-  banner: {
-    key: 'demo-mode',
-    text: (
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        🎭 Demo Mode Active - 
-        <a 
-          href="/docs/demo-mode" 
-          style={{ textDecoration: 'underline' }}
-        >
-          Learn about demo features →
-        </a>
-      </div>
-    )
-  },
-  navbar: {
-    extraContent: (
-      <div style={{ display: 'flex', gap: '8px' }}>
-        <a 
-          href="/vaults" 
-          style={{
-            padding: '6px 12px',
-            background: 'linear-gradient(135deg, #00f5d4, #9b5de5)',
-            color: '#000',
-            borderRadius: '6px',
-            fontWeight: 'bold',
-            fontSize: '14px',
-            textDecoration: 'none'
-          }}
-        >
-          Launch App
-        </a>
-      </div>
-    )
-  }
+  navbar: (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <a 
+        href="/vaults" 
+        style={{
+          padding: '6px 12px',
+          background: 'linear-gradient(135deg, #00f5d4, #9b5de5)',
+          color: '#000',
+          borderRadius: '6px',
+          fontWeight: 'bold',
+          fontSize: '14px',
+          textDecoration: 'none'
+        }}
+      >
+        Launch App
+      </a>
+    </div>
+  )
 }
 
 export default config
