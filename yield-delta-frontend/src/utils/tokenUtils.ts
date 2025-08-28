@@ -79,7 +79,7 @@ export const SEI_TESTNET_TOKENS: Record<string, TokenInfo> = {
 /**
  * Validate vault data structure and token symbols
  */
-export function validateVaultData(vaultData: any): { isValid: boolean; errors: string[] } {
+export function validateVaultData(vaultData: VaultData | null | undefined): { isValid: boolean; errors: string[] } {
   console.log('🔍 [validateVaultData] Starting validation for vaultData:', vaultData);
   const errors: string[] = [];
   

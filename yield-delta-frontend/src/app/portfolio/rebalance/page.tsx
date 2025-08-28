@@ -694,7 +694,7 @@ const RebalancePage = () => {
                     WebkitTextFillColor: 'transparent'
                   }}
                 >
-                  Click "Analyze" to scan for rebalancing opportunities
+                  Click &quot;Analyze&quot; to scan for rebalancing opportunities
                 </div>
               </div>
             )}
@@ -813,7 +813,7 @@ const RebalancePage = () => {
                 <ul className="space-y-3 text-gray-200 font-medium">
                   <li className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-green-400" style={{ boxShadow: '0 0 8px rgba(34, 197, 94, 0.6)' }}></div>
-                    Trades will execute in optimal order using SEI's 400ms finality (12,500 TPS)
+                    Trades will execute in optimal order using SEI&apos;s 400ms finality (12,500 TPS)
                   </li>
                   <li className="flex items-center gap-2">
                     <div className="w-2 h-2 rounded-full bg-blue-400" style={{ boxShadow: '0 0 8px rgba(59, 130, 246, 0.6)' }}></div>

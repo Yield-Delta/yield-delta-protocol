@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import DepositModal from '../DepositModal';
@@ -43,11 +43,13 @@ const createWrapper = () => {
     },
   });
   
-  return ({ children }: { children: React.ReactNode }) => (
+  const TestWrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
       {children}
     </QueryClientProvider>
   );
+  TestWrapper.displayName = 'TestWrapper';
+  return TestWrapper;
 };
 
 describe('DepositModal', () => {

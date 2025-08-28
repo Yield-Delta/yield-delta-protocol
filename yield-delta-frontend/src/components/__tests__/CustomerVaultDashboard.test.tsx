@@ -49,8 +49,9 @@ jest.mock('wagmi', () => ({
 }));
 
 describe('CustomerVaultDashboard', () => {
-  beforeEach(() => {
-    (require('wagmi').useReadContract as jest.Mock).mockImplementation(({ functionName }) => {
+  beforeEach(async () => {
+    const { useReadContract } = await import('wagmi');
+    (useReadContract as jest.Mock).mockImplementation(({ functionName }) => {
       if (functionName === 'getCustomerStats') {
         return { data: [1000, 1100, 1000, 0, 1672531200, 0] };
       }

@@ -4,7 +4,7 @@
 
 import { useWriteContract, useAccount, useWaitForTransactionReceipt, useChainId } from 'wagmi';
 import { useEffect } from 'react';
-import { parseUnits, formatUnits } from 'viem';
+import { parseUnits } from 'viem';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAppStore } from '@/stores/appStore';
 import { VAULT_QUERY_KEYS } from './useVaults';
@@ -13,8 +13,7 @@ import {
   vaultAcceptsNativeSEI, 
   isNativeSEIVault,
   getPrimaryDepositToken,
-  hasInsufficientBalance,
-  TokenInfo
+  hasInsufficientBalance
 } from '@/utils/tokenUtils';
 import { useTokenBalance } from './useTokenBalance';
 import SEIVault from '@/lib/abis/SEIVault';
@@ -446,7 +445,7 @@ export function useEnhancedVaultDeposit(vaultData: {
         
         writeContract({
           address: params.vaultAddress as `0x${string}`,
-          abi: SEIVault.abi,
+          abi: SEIVault,
           functionName: 'seiOptimizedDeposit',
           args: [amountInWei, recipient as `0x${string}`],
           value: amountInWei // Send SEI as value for native deposits
@@ -465,7 +464,7 @@ export function useEnhancedVaultDeposit(vaultData: {
         
         writeContract({
           address: params.vaultAddress as `0x${string}`,
-          abi: SEIVault.abi,
+          abi: SEIVault,
           functionName: 'seiOptimizedDeposit',
           args: [amountInWei, recipient as `0x${string}`]
           // No value for ERC20 deposits

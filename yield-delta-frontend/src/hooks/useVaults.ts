@@ -322,7 +322,7 @@ export const useDepositToVault = (vaultAddress: string) => {
       // Note: This contract expects ERC20 token approval, not native SEI
       writeContract({
         address: vaultAddress.startsWith('0x') ? vaultAddress as `0x${string}` : `0x${vaultAddress}` as `0x${string}`,
-        abi: SEIVault.abi,
+        abi: SEIVault,
         functionName: 'seiOptimizedDeposit',
         args: [amountInWei, address],
         // No value parameter - this contract uses transferFrom for ERC20 tokens

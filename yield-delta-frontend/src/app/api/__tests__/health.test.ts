@@ -1,5 +1,4 @@
 import { GET } from '../health/route'
-import { NextResponse } from 'next/server'
 
 // Mock NextResponse.json to work in test environment
 jest.mock('next/server', () => {

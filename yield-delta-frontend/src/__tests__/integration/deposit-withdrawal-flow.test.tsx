@@ -5,14 +5,16 @@
  */
 
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { act } from 'react-dom/test-utils';
 
 // Import components to test
 import DepositModal from '@/components/DepositModal';
 import { mockWalletUtils } from '../../../scripts/test-deposit-withdrawal';
+
+// Import mocked hooks
+import { useDepositToVault } from '@/hooks/useVaults';
 
 // Mock the actual hooks
 jest.mock('@/hooks/useVaults', () => ({
@@ -20,6 +22,8 @@ jest.mock('@/hooks/useVaults', () => ({
   useWithdrawFromVault: jest.fn(),
   useVaults: jest.fn(),
 }));
+
+const mockUseDepositToVault = useDepositToVault as jest.MockedFunction<typeof useDepositToVault>;
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
@@ -64,11 +68,13 @@ const createTestWrapper = () => {
     },
   });
   
-  return ({ children }: { children: React.ReactNode }) => (
+  const TestWrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>
       {children}
     </QueryClientProvider>
   );
+  TestWrapper.displayName = 'TestWrapper';
+  return TestWrapper;
 };
 
 describe('Deposit/Withdrawal Integration Tests', () => {
@@ -90,8 +96,7 @@ describe('Deposit/Withdrawal Integration Tests', () => {
         return { txHash };
       });
 
-      const useDepositToVault = require('@/hooks/useVaults').useDepositToVault;
-      useDepositToVault.mockReturnValue({
+      mockUseDepositToVault.mockReturnValue({
         mutate: mockMutate,
         isPending: false,
         isError: false,
@@ -139,8 +144,7 @@ describe('Deposit/Withdrawal Integration Tests', () => {
         throw new Error('Insufficient balance');
       });
 
-      const useDepositToVault = require('@/hooks/useVaults').useDepositToVault;
-      useDepositToVault.mockReturnValue({
+      mockUseDepositToVault.mockReturnValue({
         mutate: mockMutate,
         isPending: false,
         isError: true,
@@ -170,11 +174,8 @@ describe('Deposit/Withdrawal Integration Tests', () => {
     });
 
     it('should show loading state during deposit', async () => {
-      const user = userEvent.setup();
-      
       // Mock pending deposit mutation
-      const useDepositToVault = require('@/hooks/useVaults').useDepositToVault;
-      useDepositToVault.mockReturnValue({
+      mockUseDepositToVault.mockReturnValue({
         mutate: jest.fn(),
         isPending: true,
         isError: false,
@@ -311,7 +312,7 @@ describe('Deposit/Withdrawal Integration Tests', () => {
         isModalOpen = false;
       });
       
-      const mockOnSuccess = jest.fn((txHash: string) => {
+      const mockOnSuccess = jest.fn(() => {
         depositSuccess = true;
         isModalOpen = false;
       });
@@ -319,11 +320,10 @@ describe('Deposit/Withdrawal Integration Tests', () => {
       const mockMutate = jest.fn().mockImplementation(async () => {
         // Simulate successful deposit
         await new Promise(resolve => setTimeout(resolve, 100));
-        mockOnSuccess('0x123');
+        mockOnSuccess();
       });
 
-      const useDepositToVault = require('@/hooks/useVaults').useDepositToVault;
-      useDepositToVault.mockReturnValue({
+      mockUseDepositToVault.mockReturnValue({
         mutate: mockMutate,
         isPending: false,
         isError: false,
