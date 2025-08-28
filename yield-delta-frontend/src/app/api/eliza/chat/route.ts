@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
+export const runtime = 'edge';
+
 // Chat request schema
 const ChatRequestSchema = z.object({
   message: z.string().min(1, 'Message cannot be empty'),

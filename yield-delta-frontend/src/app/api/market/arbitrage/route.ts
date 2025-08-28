@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import type { ArbitrageOpportunity } from '../../../../types/api'
 import { z } from 'zod'
 
+export const runtime = 'edge';
+
 // Arbitrage scan request schema
 const ArbitrageScanSchema = z.object({
   tokens: z.array(z.string()).min(1, 'At least one token required'),
