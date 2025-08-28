@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
+export const runtime = 'edge';
+
 // Prediction request schema
 const PredictionRequestSchema = z.object({
   vaultAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid SEI address'),

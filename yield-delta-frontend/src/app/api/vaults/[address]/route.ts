@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
+export const runtime = 'edge';
+
 // Vault update schema
 const UpdateVaultSchema = z.object({
   name: z.string().min(1).optional(),

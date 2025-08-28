@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+export const runtime = 'edge';
+
 /**
  * API Documentation endpoint
  * GET /api/docs - Get comprehensive API documentation

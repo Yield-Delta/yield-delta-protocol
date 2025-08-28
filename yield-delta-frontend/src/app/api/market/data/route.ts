@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
+export const runtime = 'edge';
+
 // Market data request schema
 const MarketDataRequestSchema = z.object({
   symbols: z.array(z.string()).min(1, 'At least one symbol required'),

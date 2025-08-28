@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import type { VaultState } from '../../../../types/api'
 
+export const runtime = 'edge';
+
 // Rebalance request schema
 const RebalanceRequestSchema = z.object({
   vaultAddress: z.string().regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid SEI address'),

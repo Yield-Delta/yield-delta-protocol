@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 
+export const runtime = 'edge';
+
 /**
  * Health check endpoint for SEI DLP API
  * GET /api/health

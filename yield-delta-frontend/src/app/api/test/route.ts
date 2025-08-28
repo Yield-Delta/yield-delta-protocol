@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createSuccessResponse, createErrorResponse } from '@/lib/api-utils'
 
+export const runtime = 'edge';
+
 /**
  * API Test endpoint for development and debugging
  * GET /api/test - Simple test endpoint
