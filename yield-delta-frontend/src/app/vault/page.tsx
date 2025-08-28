@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState, useRef } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
@@ -12,6 +12,7 @@ import gsap from 'gsap';
 import { useVaultStore } from '@/stores/vaultStore';
 import { useVaults } from '@/hooks/useVaults';
 import DepositModal from '@/components/DepositModal';
+import VaultClientWrapper from '@/components/VaultClientWrapper';
 
 // Utility functions
 const formatCurrency = (amount: number) => {
@@ -61,15 +62,16 @@ const getVaultColor = (strategy: string) => {
   return colors[strategy as keyof typeof colors] || '#00f5d4'
 }
 
-export default function VaultDetailPage() {
+interface VaultDetailPageProps {
+  vaultAddress: string | null;
+  activeTab: string;
+  action: string | null;
+  searchParams: URLSearchParams;
+}
+
+function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams }: VaultDetailPageProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const cardRef = useRef<HTMLDivElement>(null);
-  
-  // Get vault address and tab from URL
-  const vaultAddress = searchParams.get('address');
-  const activeTab = searchParams.get('tab') || 'overview';
-  const action = searchParams.get('action');
   
   // State
   const [showDepositModal, setShowDepositModal] = useState(action === 'deposit');
@@ -966,5 +968,20 @@ export default function VaultDetailPage() {
       />
 
     </div>
+  );
+}
+
+export default function VaultDetailPage() {
+  return (
+    <VaultClientWrapper>
+      {({ vaultAddress, activeTab, action, searchParams }) => (
+        <VaultDetailPageContent
+          vaultAddress={vaultAddress}
+          activeTab={activeTab}
+          action={action}
+          searchParams={searchParams}
+        />
+      )}
+    </VaultClientWrapper>
   );
 }
