@@ -64,14 +64,14 @@ export default function HeroSection() {
                         ref={statsRef}
                         className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-full"
                     >
-                        <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 max-w-lg mx-auto">
                             {[
                                 { value: '$8.3M', label: 'Total TVL' },
                                 { value: '400ms', label: 'Block Time' },
                                 { value: '18.5%', label: 'Avg APY' },
                             ].map((stat, i) => (
-                                <Card key={i} className={`${glassCardStyles.glassCard} p-4 text-center`}>
-                                    <div className="text-lg font-bold text-primary-glow">
+                                <Card key={i} className={`${glassCardStyles.glassCard} p-3 sm:p-4 text-center`}>
+                                    <div className="text-sm sm:text-lg font-bold text-primary-glow">
                                         {stat.value}
                                     </div>
                                     <div className="text-xs text-primary-glow">
@@ -84,7 +84,7 @@ export default function HeroSection() {
                 </div>
 
                 <div ref={heroTextRef} className={heroStyles.textContainer}>
-                    <h1 className="text-6xl lg:text-8xl font-bold mb-12 leading-tight">
+                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold mb-6 sm:mb-8 lg:mb-12 leading-tight mobile-responsive-heading">
                         <span className={heroStyles.heroTitleAnimated}>
                             Your Liquidity,
                         </span>
@@ -94,7 +94,7 @@ export default function HeroSection() {
                         </span>
                     </h1>
 
-                    <p className="text-2xl lg:text-3xl text-primary-glow mb-24 max-w-3xl">
+                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-primary-glow mb-8 sm:mb-12 lg:mb-16 xl:mb-24 max-w-full lg:max-w-3xl mobile-responsive-subheading">
                         Harness the power of AI-driven liquidity optimization on SEI.
                         Maximize yields, minimize risk, and let ElizaOS handle the
                         complexity.
@@ -102,26 +102,26 @@ export default function HeroSection() {
 
                     <div
                         ref={ctaRef}
-                        className="flex flex-row mb-20 justify-start"
-                        style={{ marginTop: '3rem', gap: '3rem' }}
+                        className="flex flex-col sm:flex-row mb-8 sm:mb-12 lg:mb-20 justify-center sm:justify-start gap-3 sm:gap-4 lg:gap-6"
                     >
                         <Button
-                            className="text-2xl px-16 py-8 font-bold"
+                            className="mobile-responsive-button font-bold w-full sm:w-auto px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6"
                             onClick={() => window.location.href = '/vaults'}
                             style={{
                                 background: 'linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%))',
                                 color: 'hsl(216 100% 4%)',
                                 boxShadow: '0 0 20px hsl(180 100% 48% / 0.3), 0 0 40px hsl(180 100% 48% / 0.1)',
                                 border: 'none',
-                                borderRadius: '16px',
+                                borderRadius: '12px',
                                 transition: 'all 300ms ease-in-out',
-                                minWidth: '240px',
-                                minHeight: '60px',
-                                fontSize: '1.25rem'
+                                minWidth: '160px',
+                                minHeight: '48px',
+                                maxWidth: '280px',
+                                fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)'
                             }}
                             onMouseEnter={(e) => {
-                                e.currentTarget.style.transform = 'scale(1.05)';
-                                e.currentTarget.style.boxShadow = '0 0 30px hsl(180 100% 48% / 0.4), 0 0 60px hsl(180 100% 48% / 0.2)';
+                                e.currentTarget.style.transform = 'scale(1.02)';
+                                e.currentTarget.style.boxShadow = '0 0 25px hsl(180 100% 48% / 0.4), 0 0 50px hsl(180 100% 48% / 0.2)';
                             }}
                             onMouseLeave={(e) => {
                                 e.currentTarget.style.transform = 'scale(1)';
@@ -132,33 +132,36 @@ export default function HeroSection() {
                         </Button>
                         <Button
                             variant="outline"
-                            className="text-2xl px-16 py-8 font-bold"
+                            className="mobile-responsive-button font-bold w-full sm:w-auto px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6"
                             onClick={() => window.location.href = '/docs'}
                             style={{
                                 borderColor: 'hsl(180 100% 48%)',
                                 color: 'hsl(180 100% 48%)',
                                 background: 'transparent',
-                                borderRadius: '16px',
+                                borderRadius: '12px',
                                 transition: 'all 300ms ease-in-out',
-                                minWidth: '240px',
-                                minHeight: '60px',
-                                fontSize: '1.25rem',
-                                borderWidth: '3px'
+                                minWidth: '160px',
+                                minHeight: '48px',
+                                maxWidth: '280px',
+                                fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
+                                borderWidth: '2px'
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.background = 'hsl(180 100% 48% / 0.1)';
                                 e.currentTarget.style.borderColor = 'hsl(180 100% 48%)';
+                                e.currentTarget.style.transform = 'scale(1.02)';
                             }}
                             onMouseLeave={(e) => {
                                 e.currentTarget.style.background = 'transparent';
                                 e.currentTarget.style.borderColor = 'hsl(180 100% 48%)';
+                                e.currentTarget.style.transform = 'scale(1)';
                             }}
                         >
                             View Documentation
                         </Button>
                     </div>
 
-                    <div className="space-y-6" style={{ marginTop: '6rem' }}>
+                    <div className="space-y-3 sm:space-y-4 lg:space-y-6 mt-6 sm:mt-8 lg:mt-12">
                         {[
                             { icon: '⚡', text: 'Real-time AI optimization' },
                             { icon: '🛡️', text: '62% reduced impermanent loss' },
@@ -166,10 +169,10 @@ export default function HeroSection() {
                         ].map((feature, i) => (
                             <div
                                 key={i}
-                                className="flex items-center space-x-4 text-primary-glow"
+                                className="flex items-center space-x-3 sm:space-x-4 text-primary-glow"
                             >
-                                <span className="text-2xl">{feature.icon}</span>
-                                <span className="text-lg">{feature.text}</span>
+                                <span className="text-lg sm:text-xl lg:text-2xl flex-shrink-0">{feature.icon}</span>
+                                <span className="mobile-responsive-text text-sm sm:text-base lg:text-lg">{feature.text}</span>
                             </div>
                         ))}
                     </div>
