@@ -5,6 +5,83 @@
 
 /* Dashboard responsive grid fix - Tailwind v4 compatible */
 @layer components {
+  /* Mobile Responsive Utilities */
+  .mobile-responsive-text {
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+    line-height: 1.6;
+  }
+  
+  .mobile-responsive-heading {
+    font-size: clamp(1.75rem, 6vw, 4rem);
+    line-height: 1.1;
+    word-break: break-word;
+    hyphens: auto;
+    letter-spacing: -0.02em;
+  }
+  
+  .mobile-responsive-subheading {
+    font-size: clamp(1rem, 3.5vw, 1.75rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+  
+  .mobile-responsive-button {
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+    padding: clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem);
+    min-height: clamp(44px, 6vw, 56px);
+    line-height: 1.2;
+  }
+  
+  /* Enhanced Mobile Layout Utilities */
+  .mobile-container {
+    max-width: 100%;
+    padding-left: clamp(1rem, 4vw, 2rem);
+    padding-right: clamp(1rem, 4vw, 2rem);
+  }
+  
+  .mobile-section-spacing {
+    padding-top: clamp(2rem, 8vw, 4rem);
+    padding-bottom: clamp(2rem, 8vw, 4rem);
+  }
+  
+  .mobile-grid-gap {
+    gap: clamp(1rem, 4vw, 2rem);
+  }
+  
+  /* Improved mobile spacing */
+  .mobile-safe-padding {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  
+  /* Demo Banner Styles */
+  .demo-banner-container {
+    animation: slideDown 0.3s ease-out;
+  }
+  
+  .demo-banner-alert {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes glow {
+    from {
+      box-shadow: 0 0 5px rgba(234, 179, 8, 0.3);
+    }
+    to {
+      box-shadow: 0 0 20px rgba(234, 179, 8, 0.6);
+    }
+  }
   /* Ensure portfolio stats grid works correctly */
   .dashboard-stats-grid {
     display: grid !important;

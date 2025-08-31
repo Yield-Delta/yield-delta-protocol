@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import StatsCardGraphic from '@/components/StatsCardGraphic';
 import Navigation from '@/components/Navigation';
+import DemoBanner from '@/components/DemoBanner';
 import AIChat from '@/components/AIChat';
 import DepositModal from '@/components/DepositModal';
 import { MessageCircle, X, Loader2 } from 'lucide-react';
@@ -425,6 +426,9 @@ export default function VaultsPage() {
 
       {/* Navigation */}
       <Navigation variant="dark" showWallet={true} showLaunchApp={false} />
+      
+      {/* Demo Banner */}
+      <DemoBanner />
 
       {/* Live Stats Ticker - Positioned right after navigation */}
       <div className="relative z-10" style={{ paddingTop: '3.5rem' }}>
