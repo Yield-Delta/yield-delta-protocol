@@ -350,7 +350,7 @@ export class UIMessageHandler {
 
     // Price queries
     if (messageText.includes('price') && messageText.includes('sei')) {
-      return `💰 Current SEI prices are available in the dashboard! SEI's unique architecture with 400ms finality and ~$0.15 transaction costs makes it ideal for active liquidity strategies. Would you like me to help analyze your vault performance?`;
+      return `💰 Current SEI price is approximately $0.30! SEI's unique architecture with 400ms finality and ~$0.15 transaction costs makes it ideal for active liquidity strategies. The lower price point creates great opportunities for accumulation and yield farming. Would you like me to help analyze your vault performance?`;
     }
 
     // Rebalancing queries

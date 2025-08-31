@@ -11,26 +11,26 @@ import CTASection from '@/components/sections/CTASection';
 export default function DLPLanding() {
 
     return (
-        <div className="min-h-screen bg-background relative overflow-x-hidden">
+        <div className="min-h-screen bg-background relative overflow-x-hidden mobile-safe-padding">
             <Navigation variant="transparent" showWallet={false} showLaunchApp={true} />
             <DemoBanner />
             <VerticalRays className="top-0 left-0 right-0" style={{ pointerEvents: 'none' }} />
-            <div id="hero">
+            <div id="hero" className="mobile-section-spacing">
                 <HeroSection />
             </div>
-            <div id="vaults">
+            <div id="vaults" className="mobile-section-spacing">
                 <VaultShowcase />
             </div>
-            <div id="features">
+            <div id="features" className="mobile-section-spacing">
                 <FeatureHighlight />
             </div>
-            <div id="ai-workflow">
+            <div id="ai-workflow" className="mobile-section-spacing">
                 <AIWorkflow />
             </div>
-            <div id="performance">
+            <div id="performance" className="mobile-section-spacing">
                 <PerformanceMetrics />
             </div>
-            <div id="get-started">
+            <div id="get-started" className="mobile-section-spacing">
                 <CTASection />
             </div>
         </div>
