@@ -134,6 +134,12 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               Market
             </Link>
             <Link
+              href="/market-sentiment"
+              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
+            >
+              Sentiment
+            </Link>
+            <Link
               href="/dashboard"
               className="text-foreground hover:text-primary transition-colors no-underline font-medium"
             >

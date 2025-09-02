@@ -23,17 +23,17 @@ export interface FrontendConfig {
 
 export const frontendConfig: FrontendConfig = {
   mainApp: {
-    url: process.env.MAIN_PROJECT_API || 'http://localhost:3001',
+    url: process.env.MAIN_PROJECT_API || 'https://www.yielddelta.xyz',
     name: 'SEI DLP Core Dashboard',
     description: 'Main SEI DLP analytics and vault management interface'
   },
   elizaAgent: {
-    url: process.env.ELIZA_AGENT_URL || 'http://localhost:3000',
+    url: process.env.ELIZA_AGENT_URL || 'https://yield-delta-protocol-1.onrender.com',
     name: 'Liqui AI Agent',
     description: 'Chat interface for AI-powered SEI DLP optimization'
   },
   pythonAI: {
-    url: process.env.AI_ENGINE_URL || 'http://localhost:8000',
+    url: process.env.AI_ENGINE_URL || 'https://yield-delta-protocol.onrender.com/',
     name: 'AI Engine API',
     description: 'Python-based machine learning prediction engine'
   }
@@ -216,7 +216,7 @@ export const frontendAwareCharacterUpdates = {
       {
         name: 'Liqui',
         content: {
-          text: '🚀 You can view detailed analytics on our dashboard: http://localhost:3001/vault?address=0x6F4cF61bBf63dCe0094CA1fba25545f8c03cd8E6&tab=analytics',
+          text: '🚀 You can view detailed analytics on our dashboard: https://www.yielddelta.xyz/market',
           actions: ['OPEN_DASHBOARD']
         },
       },
@@ -231,7 +231,7 @@ export const frontendAwareCharacterUpdates = {
       {
         name: 'Liqui',
         content: {
-          text: '💡 You have two powerful interfaces: Chat with me here for AI guidance, or use the visual dashboard: http://localhost:3001/vault?address=0x6F4cF61bBf63dCe0094CA1fba25545f8c03cd8E6&tab=analytics for detailed analytics. Both sync automatically via our SEI DLP API!',
+          text: '💡 You have two powerful interfaces: Chat with me here for AI guidance, or use the visual dashboard: https://www.yielddelta.xyz/market for detailed analytics. Both sync automatically via our SEI DLP API!',
         },
       },
     ]

@@ -46,10 +46,11 @@ API Integration:
 - Prediction endpoint: /api/ai/predict for ML-based range optimization
 - Vault data: /api/vaults for TVL, APY, and position analytics
 - Market data: /api/market/data for real-time SEI price feeds
-- Python AI Engine: https://yield-delta-protocol.onrender.com/ for advanced ML predictions
+- Python AI Engine: https://yield-delta-protocol.onrender.com/ 
+for advanced ML predictions
 
 Frontend Integration:
-- SEI DLP Dashboard: https://www.yielddelta.xyz (visual analytics, vault management)
+- SEI DLP Dashboard: https://www.yielddelta.xyz/market (visual analytics, vault management)
 - Liqui Chat Interface: https://yield-delta-protocol-1.onrender.com/ (AI guidance, natural language)
 - Both interfaces sync via unified SEI DLP API backend
 

@@ -47,6 +47,22 @@
   .mobile-grid-gap {
     gap: clamp(1rem, 4vw, 2rem);
   }
+
+  /* iPad-specific responsive utilities */
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    .mobile-responsive-button {
+      min-width: 140px;
+      padding: 0.875rem 1.25rem;
+    }
+    
+    .mobile-responsive-heading {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+    }
+    
+    .mobile-responsive-subheading {
+      font-size: clamp(1.25rem, 3vw, 1.5rem);
+    }
+  }
   
   /* Improved mobile spacing */
   .mobile-safe-padding {

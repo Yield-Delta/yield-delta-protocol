@@ -113,18 +113,27 @@ export async function POST(request: NextRequest) {
 async function getCurrentMarketData(symbols: string[]) {
   // Bull market data - synchronized with deployed smart contracts at $0.50 SEI
   const baseData = {
-    'SEI-USDC': {
-      symbol: 'SEI-USDC',
-      price: 0.50, // FIXED: Match smart contract price exactly
-      change24h: 0.10, // Bull market: +$0.10 gain today
-      changePercent24h: 25.0, // Bull market: +25% gain (was +20% base + 5% additional)
-      volume24h: 1000000, // Match contract: 1M SEI volume
-      volumeUSD24h: 500000, // $500K USD volume at $0.50
-      high24h: 0.52, // Bull market high
-      low24h: 0.40, // Previous low before bull run  
-      marketCap: 500000000, // $500M at $0.50 per token
+    'SEI': {
+      symbol: 'SEI',
+      price: 0.187, // Current SEI price from user specification
+      change24h: 2.3, // Bull market: +2.3% gain today
+      changePercent24h: 2.3,
+      volume24h: '14.2M', // Volume as formatted string
+      volumeUSD24h: 14200000, // Numeric volume for calculations
+      high24h: 0.195,
+      low24h: 0.178,
+      marketCap: 187000000, // Market cap at current price
       circulatingSupply: 1000000000, // 1B SEI circulating
       totalSupply: 10000000000, // 10B SEI total supply
+      // Enhanced fields for vault sentiment
+      volatility: 25.4,
+      vaultImpact: 'POSITIVE',
+      deltaNeutralSuitability: 85,
+      liquidityScore: 92,
+      trendStrength: 76,
+      supportLevel: 0.175,
+      resistanceLevel: 0.205,
+      fundingRate: 0.024,
       liquidity: {
         totalLocked: 125000000,
         sei: 257732474,
@@ -137,6 +146,101 @@ async function getCurrentMarketData(symbols: string[]) {
         validators: 100,
         stakingRatio: 0.67
       }
+    },
+    'SEI-USDC': {
+      symbol: 'SEI-USDC',
+      price: 0.187, // Match current SEI price
+      change24h: 2.3,
+      changePercent24h: 2.3,
+      volume24h: '14.2M',
+      volumeUSD24h: 14200000,
+      high24h: 0.195,
+      low24h: 0.178,
+      marketCap: 187000000,
+      circulatingSupply: 1000000000,
+      totalSupply: 10000000000,
+      volatility: 25.4,
+      vaultImpact: 'POSITIVE',
+      deltaNeutralSuitability: 85,
+      liquidityScore: 92,
+      trendStrength: 76,
+      supportLevel: 0.175,
+      resistanceLevel: 0.205,
+      fundingRate: 0.024,
+      liquidity: {
+        totalLocked: 125000000,
+        sei: 257732474,
+        usdc: 125000000
+      },
+      seiMetrics: {
+        blockTime: 0.4, // 400ms
+        tps: 5000,
+        gasPrice: 0.000001,
+        validators: 100,
+        stakingRatio: 0.67
+      }
+    },
+    'ETH': {
+      symbol: 'ETH',
+      price: 2340.50,
+      change24h: -1.2,
+      changePercent24h: -1.2,
+      volume24h: '8.1B',
+      volumeUSD24h: 8100000000,
+      high24h: 2380.00,
+      low24h: 2320.00,
+      marketCap: 280000000000,
+      volatility: 18.7,
+      vaultImpact: 'NEUTRAL',
+      deltaNeutralSuitability: 78,
+      liquidityScore: 95,
+      trendStrength: 42,
+      supportLevel: 2280.0,
+      resistanceLevel: 2400.0,
+      fundingRate: -0.012,
+      liquidity: {
+        totalLocked: 2100000,
+        weth: 840,
+        sei: 4200000
+      }
+    },
+    'BTC': {
+      symbol: 'BTC',
+      price: 43250.00,
+      change24h: 3.1,
+      changePercent24h: 3.1,
+      volume24h: '12.4B',
+      volumeUSD24h: 12400000000,
+      high24h: 43800.00,
+      low24h: 42100.00,
+      marketCap: 850000000000,
+      volatility: 22.1,
+      vaultImpact: 'POSITIVE',
+      deltaNeutralSuitability: 88,
+      liquidityScore: 98,
+      trendStrength: 67,
+      supportLevel: 41800.0,
+      resistanceLevel: 44500.0,
+      fundingRate: 0.018
+    },
+    'SOL': {
+      symbol: 'SOL',
+      price: 95.30,
+      change24h: 4.2,
+      changePercent24h: 4.6,
+      volume24h: '2.8B',
+      volumeUSD24h: 2800000000,
+      high24h: 98.50,
+      low24h: 91.20,
+      marketCap: 45000000000,
+      volatility: 28.3,
+      vaultImpact: 'POSITIVE',
+      deltaNeutralSuitability: 72,
+      liquidityScore: 87,
+      trendStrength: 81,
+      supportLevel: 88.00,
+      resistanceLevel: 102.00,
+      fundingRate: 0.031
     },
     'ATOM-SEI': {
       symbol: 'ATOM-SEI',
@@ -237,20 +341,36 @@ async function getHistoricalMarketData(symbols: string[], timeframe: string, lim
 }
 
 /**
- * Generate mock data for unknown symbols
+ * Generate mock data for unknown symbols with enhanced vault analysis fields
  */
 function generateMockData(symbol: string) {
+  const basePrice = Math.random() * 100 + 1;
+  const change24h = (Math.random() - 0.5) * 20;
+  const volatility = Math.random() * 40 + 10; // 10-50% volatility
+  
   return {
     symbol,
-    price: Math.random() * 100 + 1,
-    change24h: (Math.random() - 0.5) * 10,
-    changePercent24h: (Math.random() - 0.5) * 20,
-    volume24h: Math.random() * 50000000,
-    volumeUSD24h: Math.random() * 25000000,
-    high24h: Math.random() * 110 + 1,
-    low24h: Math.random() * 90 + 1,
+    price: basePrice,
+    change24h,
+    changePercent24h: change24h,
+    volume24h: `${(Math.random() * 50 + 1).toFixed(1)}M`, // Formatted volume
+    volumeUSD24h: Math.random() * 50000000 + 1000000,
+    high24h: basePrice * (1 + Math.random() * 0.1),
+    low24h: basePrice * (1 - Math.random() * 0.1),
+    marketCap: basePrice * 1000000000 * (Math.random() * 0.5 + 0.5),
+    
+    // Enhanced vault analysis fields
+    volatility,
+    vaultImpact: change24h > 5 ? 'POSITIVE' : change24h < -5 ? 'NEGATIVE' : 'NEUTRAL',
+    deltaNeutralSuitability: Math.min(100, Math.max(0, 60 + volatility * 1.5)), // Higher volatility = better for DN
+    liquidityScore: Math.min(100, Math.max(0, 70 + Math.random() * 30)),
+    trendStrength: Math.min(100, Math.max(0, Math.abs(change24h) * 5)),
+    supportLevel: basePrice * (0.9 + Math.random() * 0.05), // 90-95% of current price
+    resistanceLevel: basePrice * (1.05 + Math.random() * 0.05), // 105-110% of current price
+    fundingRate: (Math.random() - 0.5) * 0.08, // -4% to 4% funding rate
+    
     liquidity: {
-      totalLocked: Math.random() * 100000000,
+      totalLocked: Math.random() * 100000000 + 10000000,
     }
   }
 }
