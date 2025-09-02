@@ -36,13 +36,7 @@ export default function PerformanceMetrics() {
                 </div>
                 
                 <div 
-                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 lg:gap-10 max-w-7xl mx-auto px-4 sm:px-6"
-                    style={{
-                        display: 'grid',
-                        justifyItems: 'center',
-                        alignItems: 'stretch',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))'
-                    }}
+                    className="flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-10 max-w-7xl mx-auto px-4 sm:px-6"
                 >
                     <PerformanceCard
                         metric="24.5%"

@@ -175,7 +175,7 @@ export default function AIWorkflow() {
           100% { background-position: 0% 50%; }
         }
         .ai-title-override {
-          font-size: 4rem !important;
+          font-size: clamp(2rem, 5vw, 4rem) !important;
           font-weight: 700 !important;
           color: hsl(var(--foreground)) !important;
           margin-bottom: 2rem !important;
@@ -183,7 +183,7 @@ export default function AIWorkflow() {
           line-height: 1.2 !important;
         }
         .ai-description-override {
-          font-size: 1.75rem !important;
+          font-size: clamp(1rem, 3vw, 1.75rem) !important;
           color: hsl(var(--muted-foreground)) !important;
           line-height: 1.5 !important;
           text-align: center !important;
@@ -724,7 +724,7 @@ export default function AIWorkflow() {
             marginBottom: '4rem !important'
           }}
         >
-          <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-12">
+          <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4 sm:gap-12">
           {[
             { metric: '62%', label: 'Less Impermanent Loss', color: '#00f5d4' },
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },

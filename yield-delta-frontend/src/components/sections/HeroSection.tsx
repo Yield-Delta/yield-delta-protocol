@@ -62,19 +62,19 @@ export default function HeroSection() {
                     <Hero3D />
                     <div
                         ref={statsRef}
-                        className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-full"
+                        className={`${heroStyles.statsContainer} px-4`}
                     >
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 lg:gap-6 max-w-2xl mx-auto">
+                        <div className={heroStyles.statsGrid}>
                             {[
                                 { value: '$8.3M', label: 'Total TVL' },
                                 { value: '400ms', label: 'Block Time' },
                                 { value: '18.5%', label: 'Avg APY' },
                             ].map((stat, i) => (
-                                <Card key={i} className={`${glassCardStyles.glassCard} p-3 sm:p-4 text-center`}>
-                                    <div className="text-sm sm:text-lg font-bold text-primary-glow">
+                                <Card key={i} className={`${glassCardStyles.glassCard} p-2 sm:p-3 md:p-4 text-center min-w-0`}>
+                                    <div className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-primary-glow whitespace-nowrap">
                                         {stat.value}
                                     </div>
-                                    <div className="text-xs text-primary-glow">
+                                    <div className="text-xs sm:text-xs md:text-sm text-primary-glow whitespace-nowrap">
                                         {stat.label}
                                     </div>
                                 </Card>
@@ -102,10 +102,10 @@ export default function HeroSection() {
 
                     <div
                         ref={ctaRef}
-                        className="flex flex-col md:flex-row mb-8 sm:mb-12 lg:mb-20 justify-center md:justify-start gap-4 md:gap-6 lg:gap-8"
+                        className="flex flex-row mb-8 sm:mb-12 lg:mb-20 justify-center sm:justify-start gap-4 md:gap-6 lg:gap-8"
                     >
                         <Button
-                            className="mobile-responsive-button font-bold w-full md:w-auto px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
+                            className="mobile-responsive-button font-bold flex-1 sm:w-auto px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
                             onClick={() => window.location.href = '/vaults'}
                             style={{
                                 background: 'linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%))',
@@ -132,7 +132,7 @@ export default function HeroSection() {
                         </Button>
                         <Button
                             variant="outline"
-                            className="mobile-responsive-button font-bold w-full md:w-auto px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
+                            className="mobile-responsive-button font-bold flex-1 sm:w-auto px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
                             onClick={() => window.location.href = '/docs'}
                             style={{
                                 borderColor: 'hsl(180 100% 48%)',

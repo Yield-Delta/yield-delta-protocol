@@ -378,6 +378,139 @@ html {
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
   }
+
+  /* Enhanced CTA Section Styles */
+  .enhanced-cta-heading {
+    position: relative;
+    font-weight: 900;
+    color: transparent;
+    background: linear-gradient(135deg, #00f5d4 0%, #9b5de5 25%, #ff206e 50%, #fbae3c 75%, #00f5d4 100%);
+    background-size: 300% 300%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: enhancedGradientShift 4s ease-in-out infinite;
+    text-shadow: 0 0 30px rgba(0, 245, 212, 0.3);
+    letter-spacing: -0.02em;
+  }
+
+  @keyframes enhancedGradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+  }
+
+  @keyframes glow {
+    0% { 
+      opacity: 0.3;
+      transform: scale(0.95);
+    }
+    100% { 
+      opacity: 0.6;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+  }
+
+  @keyframes gridFlow {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(60px, 60px); }
+  }
+
+  /* Enhanced Button Styles */
+  .enhanced-primary-button {
+    background: linear-gradient(135deg, hsl(180 100% 48%) 0%, hsl(262 80% 60%) 100%);
+    color: hsl(216 100% 4%);
+    border: none;
+    border-radius: 16px;
+    box-shadow: 
+      0 0 30px hsl(180 100% 48% / 0.4),
+      0 10px 25px hsl(180 100% 48% / 0.2),
+      inset 0 1px 0 hsl(180 100% 48% / 0.5);
+    transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enhanced-primary-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.3), transparent);
+    transition: left 500ms;
+  }
+
+  .enhanced-primary-button:hover::before {
+    left: 100%;
+  }
+
+  .enhanced-primary-button:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      0 0 40px hsl(180 100% 48% / 0.6),
+      0 15px 35px hsl(180 100% 48% / 0.3),
+      inset 0 1px 0 hsl(180 100% 48% / 0.6);
+  }
+
+  .enhanced-primary-button:active {
+    transform: translateY(0px) scale(0.98);
+    box-shadow: 
+      0 0 25px hsl(180 100% 48% / 0.5),
+      0 5px 15px hsl(180 100% 48% / 0.2),
+      inset 0 1px 0 hsl(180 100% 48% / 0.4);
+  }
+
+  .enhanced-secondary-button {
+    background: linear-gradient(135deg, transparent 0%, hsl(180 100% 48% / 0.05) 100%);
+    border: 2px solid;
+    border-image: linear-gradient(135deg, hsl(180 100% 48%) 0%, hsl(262 80% 60%) 100%) 1;
+    color: hsl(180 100% 48%);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+      0 0 20px hsl(180 100% 48% / 0.2),
+      inset 0 1px 0 hsl(180 100% 48% / 0.1);
+    transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enhanced-secondary-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, hsl(180 100% 48% / 0.1), transparent);
+    transition: left 500ms;
+  }
+
+  .enhanced-secondary-button:hover::before {
+    left: 100%;
+  }
+
+  .enhanced-secondary-button:hover {
+    transform: translateY(-2px) scale(1.02);
+    background: linear-gradient(135deg, hsl(180 100% 48% / 0.08) 0%, hsl(262 80% 60% / 0.08) 100%);
+    box-shadow: 
+      0 0 30px hsl(180 100% 48% / 0.3),
+      inset 0 1px 0 hsl(180 100% 48% / 0.2);
+    color: hsl(180 100% 55%);
+  }
+
+  .enhanced-secondary-button:active {
+    transform: translateY(0px) scale(0.98);
+    background: hsl(180 100% 48% / 0.1);
+  }
   
   @keyframes streamFlow {
     0% { 
