@@ -209,42 +209,42 @@ export default function AIWorkflow() {
           text-shadow: none !important;
         }
         .performance-card-label-cyan {
-          font-size: 1.25rem !important;
+          font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
           font-weight: 700 !important;
           color: white !important;
           text-decoration: underline !important;
           text-decoration-color: #00f5d4 !important;
-          text-decoration-thickness: 3px !important;
-          text-underline-offset: 6px !important;
+          text-decoration-thickness: clamp(2px, 0.5vw, 3px) !important;
+          text-underline-offset: clamp(4px, 1vw, 6px) !important;
           text-shadow: 0 0 12px #00f5d4, 0 0 24px #00f5d4, 0 0 36px #00f5d4 !important;
           filter: drop-shadow(0 0 8px #00f5d4) !important;
         }
         .performance-card-label-purple {
-          font-size: 1.25rem !important;
+          font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
           font-weight: 700 !important;
           color: white !important;
           text-decoration: underline !important;
           text-decoration-color: #9b5de5 !important;
-          text-decoration-thickness: 3px !important;
-          text-underline-offset: 6px !important;
+          text-decoration-thickness: clamp(2px, 0.5vw, 3px) !important;
+          text-underline-offset: clamp(4px, 1vw, 6px) !important;
           text-shadow: 0 0 12px #9b5de5, 0 0 24px #9b5de5, 0 0 36px #9b5de5 !important;
           filter: drop-shadow(0 0 8px #9b5de5) !important;
         }
         .performance-card-label-pink {
-          font-size: 1.25rem !important;
+          font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
           font-weight: 700 !important;
           color: white !important;
           text-decoration: underline !important;
           text-decoration-color: #ff206e !important;
-          text-decoration-thickness: 3px !important;
-          text-underline-offset: 6px !important;
+          text-decoration-thickness: clamp(2px, 0.5vw, 3px) !important;
+          text-underline-offset: clamp(4px, 1vw, 6px) !important;
           text-shadow: 0 0 12px #ff206e, 0 0 24px #ff206e, 0 0 36px #ff206e !important;
           filter: drop-shadow(0 0 8px #ff206e) !important;
         }
         .performance-card-metric {
-          font-size: 3rem !important;
+          font-size: clamp(2rem, 6vw, 3rem) !important;
           font-weight: 800 !important;
-          margin-bottom: 1rem !important;
+          margin-bottom: 0.75rem !important;
         }
         .performance-metrics-divider-container {
           margin-top: 8rem !important;
@@ -309,17 +309,17 @@ export default function AIWorkflow() {
         </div>
 
         {/* Workflow Steps */}
-        <div className="relative py-12" style={{ paddingTop: '6rem', paddingBottom: '4rem' }}>
-          <div className="flex flex-row items-center justify-center overflow-x-auto pb-8 max-w-full px-8" style={{ gap: '4rem', paddingTop: '2rem' }}>
+        <div className="relative py-8 md:py-12" style={{ paddingTop: '3rem', paddingBottom: '2rem' }}>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 px-4 md:px-8 max-w-full overflow-visible">
             {workflowSteps.map((step, index) => (
-              <div key={step.id} className="flex flex-col items-center relative">
+              <div key={step.id} className="flex flex-col items-center relative w-full md:w-auto">
                 {/* Circular Step Card */}
                 <div
                   ref={el => { stepsRef.current[index] = el; }}
                   className="cursor-pointer group relative overflow-visible transition-all duration-500 hover:scale-110"
                   style={{
-                    width: '160px',
-                    height: '160px',
+                    width: 'clamp(120px, 15vw, 160px)',
+                    height: 'clamp(120px, 15vw, 160px)',
                     flexShrink: 0,
                     position: 'relative',
                     display: 'flex',
@@ -460,13 +460,13 @@ export default function AIWorkflow() {
                 </div>
 
                 {/* Step Labels Below Circle */}
-                <div className="text-center mt-6 max-w-[140px]">
+                <div className="text-center mt-4 md:mt-6 max-w-[180px] md:max-w-[140px] px-2">
                   <h3 
                     style={{
-                      fontSize: '1.5rem !important',
+                      fontSize: 'clamp(1.125rem, 3vw, 1.5rem) !important',
                       fontWeight: '700 !important',
                       color: 'hsl(var(--foreground)) !important',
-                      marginBottom: '0.75rem !important',
+                      marginBottom: '0.5rem !important',
                       textAlign: 'center',
                       lineHeight: '1.2 !important'
                     }}
@@ -475,7 +475,7 @@ export default function AIWorkflow() {
                   </h3>
                   <p 
                     style={{
-                      fontSize: '1.125rem !important',
+                      fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem) !important',
                       color: 'hsl(var(--muted-foreground)) !important',
                       lineHeight: '1.4 !important',
                       textAlign: 'center',
@@ -486,71 +486,125 @@ export default function AIWorkflow() {
                   </p>
                 </div>
 
-                {/* Enhanced Connector Arrow (hidden on last item) */}
+                {/* Enhanced Connector Arrow - Desktop only */}
                 {index < workflowSteps.length - 1 && (
-                  <div 
-                    className="absolute top-20 left-full transform -translate-y-1/2 z-10" 
-                    style={{ width: '4rem' }}
-                  >
-                    {/* Main Arrow Line */}
-                    <div
-                      ref={el => { connectorsRef.current[index] = el; }}
-                      className="relative origin-left transition-all duration-500"
-                      style={{
-                        height: '4px !important',
-                        width: '100% !important',
-                        background: `linear-gradient(to right, ${workflowSteps[index].color}, ${workflowSteps[index + 1].color}) !important`,
-                        boxShadow: `0 0 12px ${workflowSteps[index].color}60, 0 0 24px ${workflowSteps[index + 1].color}40 !important`,
-                        borderRadius: '2px !important',
-                        display: 'block !important',
-                        opacity: '1 !important'
-                      }}
-                    >
-                      {/* Animated Flow Dots */}
-                      <div 
-                        className="absolute top-1/2 left-0 w-2 h-2 rounded-full transform -translate-y-1/2 animate-bounce"
-                        style={{
-                          backgroundColor: workflowSteps[index].color,
-                          animation: 'flowMove 2s linear infinite',
-                          boxShadow: `0 0 8px ${workflowSteps[index].color}`
-                        }}
-                      ></div>
-                    </div>
-                    
-                    {/* Arrow Head */}
+                  <>
+                    {/* Horizontal Arrow for Desktop */}
                     <div 
-                      className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1"
-                      style={{ zIndex: 10 }}
+                      className="absolute top-20 left-full transform -translate-y-1/2 z-10 hidden md:block" 
+                      style={{ width: '4rem' }}
                     >
-                      <div 
-                        className="transition-all duration-300"
+                      {/* Main Arrow Line */}
+                      <div
+                        ref={el => { connectorsRef.current[index] = el; }}
+                        className="relative origin-left transition-all duration-500"
                         style={{
-                          width: '0 !important',
-                          height: '0 !important',
-                          borderLeft: `8px solid ${workflowSteps[index + 1].color} !important`,
-                          borderTop: '4px solid transparent !important',
-                          borderBottom: '4px solid transparent !important',
-                          borderRight: '0 !important',
-                          filter: `drop-shadow(0 0 8px ${workflowSteps[index + 1].color}80) !important`,
+                          height: '4px !important',
+                          width: '100% !important',
+                          background: `linear-gradient(to right, ${workflowSteps[index].color}, ${workflowSteps[index + 1].color}) !important`,
+                          boxShadow: `0 0 12px ${workflowSteps[index].color}60, 0 0 24px ${workflowSteps[index + 1].color}40 !important`,
+                          borderRadius: '2px !important',
                           display: 'block !important',
                           opacity: '1 !important'
                         }}
-                      />
+                      >
+                        {/* Animated Flow Dots */}
+                        <div 
+                          className="absolute top-1/2 left-0 w-2 h-2 rounded-full transform -translate-y-1/2 animate-bounce"
+                          style={{
+                            backgroundColor: workflowSteps[index].color,
+                            animation: 'flowMove 2s linear infinite',
+                            boxShadow: `0 0 8px ${workflowSteps[index].color}`
+                          }}
+                        ></div>
+                      </div>
+                      
+                      {/* Arrow Head */}
+                      <div 
+                        className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1"
+                        style={{ zIndex: 10 }}
+                      >
+                        <div 
+                          className="transition-all duration-300"
+                          style={{
+                            width: '0 !important',
+                            height: '0 !important',
+                            borderLeft: `8px solid ${workflowSteps[index + 1].color} !important`,
+                            borderTop: '4px solid transparent !important',
+                            borderBottom: '4px solid transparent !important',
+                            borderRight: '0 !important',
+                            filter: `drop-shadow(0 0 8px ${workflowSteps[index + 1].color}80) !important`,
+                            display: 'block !important',
+                            opacity: '1 !important'
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
+
+                    {/* Vertical Arrow for Mobile */}
+                    <div 
+                      className="flex items-center justify-center mt-4 mb-2 md:hidden z-10" 
+                      style={{ height: '3rem' }}
+                    >
+                      {/* Main Arrow Line */}
+                      <div
+                        className="relative transition-all duration-500"
+                        style={{
+                          width: '4px !important',
+                          height: '100% !important',
+                          background: `linear-gradient(to bottom, ${workflowSteps[index].color}, ${workflowSteps[index + 1].color}) !important`,
+                          boxShadow: `0 0 12px ${workflowSteps[index].color}60, 0 0 24px ${workflowSteps[index + 1].color}40 !important`,
+                          borderRadius: '2px !important',
+                          display: 'block !important',
+                          opacity: '1 !important'
+                        }}
+                      >
+                        {/* Animated Flow Dots */}
+                        <div 
+                          className="absolute left-1/2 top-0 w-2 h-2 rounded-full transform -translate-x-1/2 animate-bounce"
+                          style={{
+                            backgroundColor: workflowSteps[index].color,
+                            animation: 'streamFlow 2s linear infinite',
+                            boxShadow: `0 0 8px ${workflowSteps[index].color}`
+                          }}
+                        ></div>
+                      </div>
+                      
+                      {/* Arrow Head */}
+                      <div 
+                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1"
+                        style={{ zIndex: 10 }}
+                      >
+                        <div 
+                          className="transition-all duration-300"
+                          style={{
+                            width: '0 !important',
+                            height: '0 !important',
+                            borderTop: `8px solid ${workflowSteps[index + 1].color} !important`,
+                            borderLeft: '4px solid transparent !important',
+                            borderRight: '4px solid transparent !important',
+                            borderBottom: '0 !important',
+                            filter: `drop-shadow(0 0 8px ${workflowSteps[index + 1].color}80) !important`,
+                            display: 'block !important',
+                            opacity: '1 !important'
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
             ))}
           </div>
 
           {/* Central AI Character - Enhanced 3D Look */}
-          <div className="mt-24 flex flex-col items-center" style={{ marginTop: '6rem' }}>
+          <div className="mt-12 md:mt-24 flex flex-col items-center" style={{ marginTop: 'clamp(3rem, 8vw, 6rem)' }}>
             <div className="relative">
               <div 
                 className="rounded-full backdrop-blur-xl border-2 flex items-center justify-center animate-float shadow-2xl"
                 style={{
-                  width: '240px !important',
-                  height: '240px !important',
+                  width: 'clamp(180px, 20vw, 240px) !important',
+                  height: 'clamp(180px, 20vw, 240px) !important',
                   background: 'radial-gradient(circle at center, hsl(var(--primary) / 0.3), hsl(var(--secondary) / 0.2), hsl(var(--accent) / 0.3)) !important',
                   border: '2px solid hsl(var(--primary) / 0.4) !important',
                   backdropFilter: 'blur(20px)',
@@ -663,14 +717,14 @@ export default function AIWorkflow() {
 
         {/* Performance Metrics */}
         <div 
-          className="max-w-5xl mx-auto px-6"
+          className="max-w-5xl mx-auto px-4 md:px-6"
           style={{
-            marginTop: '8rem !important',
-            paddingTop: '6rem !important',
+            marginTop: 'clamp(4rem, 10vw, 8rem) !important',
+            paddingTop: 'clamp(3rem, 8vw, 6rem) !important',
             marginBottom: '4rem !important'
           }}
         >
-          <div className="flex justify-center items-stretch" style={{ gap: '3rem' }}>
+          <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-12">
           {[
             { metric: '62%', label: 'Less Impermanent Loss', color: '#00f5d4' },
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },
@@ -680,17 +734,19 @@ export default function AIWorkflow() {
               key={index} 
               className="cursor-pointer group relative overflow-hidden hover:scale-105 transition-all duration-300"
               style={{
-                width: '220px',
-                flex: '0 0 220px',
+                width: '100%',
+                maxWidth: '280px',
+                minWidth: '200px',
+                flex: '1',
                 backdropFilter: 'blur(24px)',
                 WebkitBackdropFilter: 'blur(24px)',
                 border: '4px solid hsl(var(--primary) / 0.4)',
                 background: 'hsl(var(--card) / 0.8)',
                 borderRadius: '12px',
-                padding: '1.5rem',
+                padding: 'clamp(1rem, 3vw, 1.5rem)',
                 boxShadow: '0 12px 48px hsl(var(--primary) / 0.25), inset 0 1px 0 hsl(var(--border) / 0.5)',
                 textAlign: 'center',
-                minHeight: '120px',
+                minHeight: 'clamp(100px, 15vw, 120px)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
