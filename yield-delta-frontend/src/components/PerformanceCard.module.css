@@ -19,13 +19,13 @@
 /* Ensure proper grid behavior on all screen sizes */
 @media (min-width: 640px) {
   .performanceCard {
-    max-width: 320px;
+    min-height: 280px;
   }
 }
 
 @media (min-width: 1024px) {
   .performanceCard {
-    max-width: 280px;
+    min-height: 300px;
   }
 }
 

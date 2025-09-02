@@ -13,7 +13,7 @@ export default function CTASection() {
                 }}
             />
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-12 items-center max-w-6xl mx-auto">
+                <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-16 items-center max-w-7xl mx-auto">
                     <div className="text-center lg:text-left order-2 lg:order-1">
                         <h2 
                         className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-8 lg:mb-12 holo-text mobile-responsive-heading"
@@ -26,10 +26,10 @@ export default function CTASection() {
                         Join the future of liquidity provision with AI-powered optimization on
                         SEI
                     </p>
-                    <div className="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-3 sm:gap-4 lg:gap-6">
-                        <Link href="/vaults" className="w-full sm:w-auto">
+                    <div className="flex flex-col md:flex-row justify-center lg:justify-start items-center gap-4 md:gap-6 lg:gap-8">
+                        <Link href="/vaults" className="w-full md:w-auto">
                             <Button 
-                                className="mobile-responsive-button font-bold w-full sm:w-auto px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6"
+                                className="mobile-responsive-button font-bold w-full md:w-auto px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
                                 style={{
                                     background: 'linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%))',
                                     color: 'hsl(216 100% 4%)',
@@ -54,10 +54,10 @@ export default function CTASection() {
                                 Launch App
                             </Button>
                         </Link>
-                        <Link href="/docs" className="w-full sm:w-auto">
+                        <Link href="/docs" className="w-full md:w-auto">
                             <Button
                                 variant="outline"
-                                className="mobile-responsive-button font-bold w-full sm:w-auto px-6 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-6"
+                                className="mobile-responsive-button font-bold w-full md:w-auto px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
                                 style={{
                                     borderColor: 'hsl(180 100% 48%)',
                                     color: 'hsl(180 100% 48%)',
