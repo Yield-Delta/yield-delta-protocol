@@ -3,8 +3,10 @@
   /* Card dimensions and layout */
   min-height: 200px;
   width: 100%;
+  max-width: 350px;
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
   
   /* Visual styling */
   backdrop-filter: blur(24px);
@@ -17,15 +19,25 @@
 }
 
 /* Ensure proper grid behavior on all screen sizes */
+@media (max-width: 639px) {
+  .performanceCard {
+    min-height: 240px;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+}
+
 @media (min-width: 640px) {
   .performanceCard {
     min-height: 280px;
+    max-width: 320px;
   }
 }
 
 @media (min-width: 1024px) {
   .performanceCard {
     min-height: 300px;
+    max-width: 350px;
   }
 }
 

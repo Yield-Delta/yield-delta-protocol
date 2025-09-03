@@ -1,4 +1,4 @@
-b# Enhanced Vault Market Sentiment Component
+# Enhanced Vault Market Sentiment Component
 
 ## Overview
 
