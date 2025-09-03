@@ -71,13 +71,13 @@ export default function CTASection() {
                             </p>
                         </div>
                         
-                        <div className="flex flex-row justify-center lg:justify-start items-center gap-6 sm:gap-8 lg:gap-10">
-                            <Link href="/vaults" className="flex-1 sm:w-auto">
+                        <div className="flex flex-row justify-center lg:justify-start items-center gap-3">
+                            <Link href="/vaults" className="flex-shrink-0">
                                 <Button 
-                                    className="enhanced-primary-button mobile-responsive-button font-bold w-full sm:w-auto px-8 md:px-10 lg:px-14 py-4 md:py-5 lg:py-7 relative overflow-hidden group"
+                                    className="enhanced-primary-button mobile-responsive-button font-bold w-auto px-6 md:px-8 lg:px-10 py-4 md:py-5 lg:py-7 relative overflow-hidden group"
                                     style={{
                                         minHeight: '56px',
-                                        minWidth: '180px',
+                                        minWidth: '120px',
                                         maxWidth: '300px',
                                         fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)'
                                     }}
@@ -85,16 +85,15 @@ export default function CTASection() {
                                     <span className="relative z-10">Launch App</span>
                                 </Button>
                             </Link>
-                            <Link href="/docs" className="flex-1 sm:w-auto">
+                            <Link href="/docs" className="flex-shrink-0">
                                 <Button
                                     variant="outline"
-                                    className="enhanced-secondary-button mobile-responsive-button font-bold w-full sm:w-auto px-8 md:px-10 lg:px-14 py-4 md:py-5 lg:py-7 relative overflow-hidden group"
+                                    className="enhanced-secondary-button mobile-responsive-button font-bold w-auto px-6 md:px-8 lg:px-10 py-4 md:py-5 lg:py-7 relative overflow-hidden group"
                                     style={{
                                         minHeight: '56px',
-                                        minWidth: '180px',
+                                        minWidth: '120px',
                                         maxWidth: '300px',
-                                        fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
-                                        borderRadius: '24px'
+                                        fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)'
                                     }}
                                 >
                                     <span className="relative z-10">Learn More</span>

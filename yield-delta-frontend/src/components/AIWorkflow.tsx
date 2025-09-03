@@ -289,6 +289,26 @@ export default function AIWorkflow() {
           margin: 0 auto !important;
           text-align: center !important;
         }
+        /* Force horizontal layout on tablets and up */
+        @media (min-width: 768px) {
+          .performance-metrics-container {
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+          }
+          .performance-metrics-card {
+            flex: 1 1 300px !important;
+            max-width: 350px !important;
+          }
+        }
+        @media (min-width: 1024px) {
+          .performance-metrics-container {
+            gap: 3rem !important;
+          }
+          .performance-metrics-card {
+            flex: 1 1 320px !important;
+            max-width: 380px !important;
+          }
+        }
       `}</style>
       <div className="container mx-auto px-4 relative z-10" style={{ position: 'relative', zIndex: 10 }}>
         <div className="text-center mb-20">
@@ -717,14 +737,14 @@ export default function AIWorkflow() {
 
         {/* Performance Metrics */}
         <div 
-          className="max-w-5xl mx-auto px-4 md:px-6"
+          className="max-w-6xl mx-auto px-4 md:px-8 lg:px-12"
           style={{
             marginTop: 'clamp(4rem, 10vw, 8rem) !important',
             paddingTop: 'clamp(3rem, 8vw, 6rem) !important',
             marginBottom: '4rem !important'
           }}
         >
-          <div className="flex flex-col sm:flex-row justify-center items-stretch gap-4 sm:gap-12">
+          <div className="performance-metrics-container flex flex-col md:flex-row flex-wrap justify-center items-center md:items-stretch gap-4 md:gap-8 lg:gap-12 w-full">
           {[
             { metric: '62%', label: 'Less Impermanent Loss', color: '#00f5d4' },
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },
@@ -732,12 +752,12 @@ export default function AIWorkflow() {
           ].map((item, index) => (
             <Card 
               key={index} 
-              className="cursor-pointer group relative overflow-hidden hover:scale-105 transition-all duration-300"
+              className="performance-metrics-card cursor-pointer group relative overflow-hidden hover:scale-105 transition-all duration-300"
               style={{
                 width: '100%',
-                maxWidth: '280px',
-                minWidth: '200px',
-                flex: '1',
+                maxWidth: '320px',
+                minWidth: '280px',
+                flex: '1 1 300px',
                 backdropFilter: 'blur(24px)',
                 WebkitBackdropFilter: 'blur(24px)',
                 border: '4px solid hsl(var(--primary) / 0.4)',

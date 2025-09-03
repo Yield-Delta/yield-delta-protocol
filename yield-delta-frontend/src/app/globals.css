@@ -470,10 +470,9 @@ html {
 
   .enhanced-secondary-button {
     background: linear-gradient(135deg, transparent 0%, hsl(180 100% 48% / 0.05) 100%);
-    border: 2px solid;
-    border-image: linear-gradient(135deg, hsl(180 100% 48%) 0%, hsl(262 80% 60%) 100%) 1;
+    border: 2px solid transparent;
     color: hsl(180 100% 48%);
-    border-radius: 16px;
+    border-radius: 24px;
     backdrop-filter: blur(10px);
     box-shadow: 
       0 0 20px hsl(180 100% 48% / 0.2),
@@ -481,6 +480,20 @@ html {
     transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+  }
+  
+  .enhanced-secondary-button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    background: linear-gradient(135deg, hsl(180 100% 48%) 0%, hsl(262 80% 60%) 100%);
+    border-radius: 24px;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: subtract;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
   }
 
   .enhanced-secondary-button::before {
