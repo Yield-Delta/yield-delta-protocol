@@ -105,7 +105,7 @@ export default function HeroSection() {
                         className="flex flex-col md:flex-row mb-8 sm:mb-12 lg:mb-20 justify-center md:justify-start gap-4 md:gap-6 lg:gap-8"
                     >
                         <Button
-                            className="mobile-responsive-button font-bold w-full md:w-auto px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
+                            className="mobile-responsive-button font-bold w-full md:w-[200px] px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
                             onClick={() => window.location.href = '/vaults'}
                             style={{
                                 background: 'linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%))',
@@ -114,9 +114,9 @@ export default function HeroSection() {
                                 border: 'none',
                                 borderRadius: '12px',
                                 transition: 'all 300ms ease-in-out',
-                                minWidth: '160px',
+                                minWidth: '200px',
                                 minHeight: '48px',
-                                maxWidth: '280px',
+                                maxWidth: '200px',
                                 fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)'
                             }}
                             onMouseEnter={(e) => {
@@ -132,7 +132,7 @@ export default function HeroSection() {
                         </Button>
                         <Button
                             variant="outline"
-                            className="mobile-responsive-button font-bold w-full md:w-auto px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
+                            className="mobile-responsive-button font-bold w-full md:w-[200px] px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
                             onClick={() => window.location.href = '/docs'}
                             style={{
                                 borderColor: 'hsl(180 100% 48%)',
@@ -140,9 +140,9 @@ export default function HeroSection() {
                                 background: 'transparent',
                                 borderRadius: '12px',
                                 transition: 'all 300ms ease-in-out',
-                                minWidth: '160px',
+                                minWidth: '200px',
                                 minHeight: '48px',
-                                maxWidth: '280px',
+                                maxWidth: '200px',
                                 fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
                                 borderWidth: '2px'
                             }}
