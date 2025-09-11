@@ -4,6 +4,7 @@ export const runtime = 'edge'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Web3Provider } from '@/components/providers/Web3Provider'
+import { ThemeProvider } from 'next-themes'
 
 const inter = Inter({ subsets: ['latin'] })
 // Metadata for SEO and social sharing
@@ -30,12 +31,19 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        {/* Client-side web3 and query providers */}
-        <Web3Provider>
-          {children}
-        </Web3Provider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          {/* Client-side web3 and query providers */}
+          <Web3Provider>
+            {children}
+          </Web3Provider>
+        </ThemeProvider>
       </body>
     </html>
   )
