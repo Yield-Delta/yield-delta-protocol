@@ -145,14 +145,14 @@ export default function HeroSection() {
                     
                     {/* 3D container - Removed size restrictions for proper scaling */}
                     <div className="flex justify-center w-full">
-                        <div className="relative w-full h-80 md:h-96 lg:h-[500px] xl:h-[600px]">
+                        <div className="relative w-full h-96 md:h-[500px] lg:h-[600px] xl:h-[700px] 2xl:h-[800px]">
                             <Hero3D />
                         </div>
                     </div>
 
                     {/* Stats section - Reduced for better spacing */}
                     <div ref={statsRef} className="w-full mt-8 lg:mt-12">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                             {[
                                 { value: '$8.3M', label: 'Total TVL' },
                                 { value: '18.5%', label: 'Avg APY' },
