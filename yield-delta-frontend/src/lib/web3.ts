@@ -1,6 +1,7 @@
 import { http } from 'wagmi'
 import { defineChain } from 'viem'
-import { getDefaultConfig } from '@rainbow-me/rainbowkit'
+import { createConfig as createWagmiConfig } from 'wagmi'
+import { metaMask, walletConnect, injected } from 'wagmi/connectors'
 
 // SEI Mainnet (Pacific-1)
 export const seiMainnet = defineChain({
@@ -45,7 +46,7 @@ export const seiTestnet = defineChain({
 })
 
 // Singleton pattern to prevent multiple config instantiation
-let configInstance: ReturnType<typeof getDefaultConfig> | null = null
+let configInstance: ReturnType<typeof createWagmiConfig> | null = null
 let isCreatingConfig = false
 
 function createConfig() {
@@ -71,10 +72,29 @@ function createConfig() {
     console.warn('Get your Project ID from: https://walletconnect.com/cloud')
   }
 
-  configInstance = getDefaultConfig({
-    appName: 'SEI DLP',
-    projectId: projectId || 'fallback-project-id',
+  // Create custom config without Coinbase wallet to prevent SDK errors
+  configInstance = createWagmiConfig({
     chains: [seiDevnet, seiMainnet, seiTestnet],
+    connectors: [
+      metaMask({
+        dappMetadata: {
+          name: 'SEI DLP',
+          url: typeof window !== 'undefined' ? window.location.origin : 'https://yielddelta.xyz'
+        }
+      }),
+      walletConnect({
+        projectId: projectId || 'fallback-project-id',
+        metadata: {
+          name: 'SEI DLP',
+          description: 'AI-driven dynamic liquidity vaults on SEI EVM',
+          url: typeof window !== 'undefined' ? window.location.origin : 'https://yielddelta.xyz',
+          icons: ['https://yielddelta.xyz/favicon.svg']
+        }
+      }),
+      injected({
+        shimDisconnect: true
+      })
+    ],
     transports: {
       [seiDevnet.id]: http(),
       [seiMainnet.id]: http(),
