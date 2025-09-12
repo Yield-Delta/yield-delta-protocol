@@ -145,20 +145,20 @@ export default function HeroSection() {
                     
                     {/* 3D container - Removed size restrictions for proper scaling */}
                     <div className="flex justify-center w-full">
-                        <div className="relative w-full h-96 md:h-[500px] lg:h-[600px] xl:h-[700px] 2xl:h-[800px]">
+                        <div className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px] 2xl:h-[900px]">
                             <Hero3D />
                         </div>
                     </div>
 
                     {/* Stats section - Reduced for better spacing */}
                     <div ref={statsRef} className="w-full mt-8 lg:mt-12">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
                             {[
                                 { value: '$8.3M', label: 'Total TVL' },
                                 { value: '18.5%', label: 'Avg APY' },
                                 { value: '400ms', label: 'Block Time' },
                             ].map((stat, i) => (
-                                <Card key={i} className={`${glassCardStyles.glassCard} p-3 lg:p-4 text-center`}>
+                                <Card key={i} className={`${glassCardStyles.heroStatsCard} p-3 lg:p-4 text-center`}>
                                     <div className="text-base lg:text-lg font-bold text-primary-glow">
                                         {stat.value}
                                     </div>
