@@ -102,7 +102,7 @@ export default function HeroSection() {
 
                     <div
                         ref={ctaRef}
-                        className="flex flex-row mb-8 sm:mb-12 lg:mb-20 justify-start gap-6 md:gap-8 lg:gap-10"
+                        className="flex flex-row mb-8 sm:mb-12 lg:mb-20 justify-start gap-8 md:gap-12 lg:gap-16"
                     >
                         <Button
                             className="mobile-responsive-button font-bold min-w-[200px] px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
