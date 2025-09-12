@@ -208,7 +208,7 @@
 /* Hero Grid and Layout Styles - Enhanced for proper side-by-side layout */
 .heroGrid {
   display: grid !important;
-  grid-template-columns: 1fr 1.2fr !important; /* Give more space to 3D side */
+  grid-template-columns: 1fr 1fr !important; /* Equal columns for better balance */
   gap: 4rem !important;
   align-items: center !important;
   width: 100% !important;
@@ -216,6 +216,7 @@
   margin: 0 auto !important;
   padding: 0 1rem !important;
   min-height: 600px !important; /* Ensure consistent height */
+  transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
 @media (max-width: 1200px) {
@@ -223,6 +224,7 @@
     grid-template-columns: 1fr 1fr !important;
     gap: 3rem !important;
     max-width: 1200px !important;
+    transition: all 0.3s ease-in-out !important;
   }
 }
 
@@ -231,6 +233,7 @@
     grid-template-columns: 1fr !important;
     gap: 3rem !important;
     min-height: auto !important;
+    transition: all 0.3s ease-in-out !important;
   }
 }
 
@@ -238,6 +241,7 @@
   .heroGrid {
     gap: 2rem !important;
     padding: 0 0.5rem !important;
+    transition: all 0.3s ease-in-out !important;
   }
 }
 
@@ -250,7 +254,8 @@
   align-items: center !important;
   width: 100% !important;
   height: 100% !important;
-  min-height: 500px !important; /* Ensure good height for 3D */
+  min-height: 600px !important; /* Increased height for better 3D display */
+  transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
 .heroTextContainer {
@@ -260,13 +265,14 @@
   flex-direction: column !important;
   justify-content: center !important;
   padding: 0 !important;
-  min-height: 500px !important; /* Match 3D container height */
+  min-height: 600px !important; /* Increased to match 3D container */
+  transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
 @media (max-width: 1024px) {
   .hero3dContainer {
     order: 1 !important; /* 3D first on mobile */
-    min-height: 400px !important;
+    min-height: 500px !important; /* Increased from 400px */
     margin-bottom: 1rem !important;
   }
   
@@ -284,7 +290,7 @@
   }
   
   .hero3dContainer {
-    min-height: 300px !important;
+    min-height: 400px !important; /* Increased from 300px */
   }
 }
 

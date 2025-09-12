@@ -256,7 +256,7 @@ export default function Hero3D() {
   return (
     <div ref={canvasRef} className="w-full h-full relative">
       <Canvas
-        camera={{ position: [0, 2, 10], fov: 60 }}
+        camera={{ position: [0, 1, 8], fov: 70 }}
         style={{ background: 'transparent' }}
         gl={{ antialias: true, alpha: true }}
       >
