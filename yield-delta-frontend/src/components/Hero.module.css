@@ -1,6 +1,6 @@
 /* Hero Layout Styles - Component Module */
 .section {
-  min-height: 80vh !important;
+  min-height: max(600px, 80vh) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -9,23 +9,24 @@
   padding-top: 4rem !important;
   padding-left: 1rem !important;
   padding-right: 1rem !important;
-  padding-bottom: 2rem !important;
+  padding-bottom: 4rem !important;
 }
 
 @media (max-width: 1024px) {
   .section {
-    min-height: 90vh !important;
+    min-height: max(700px, 85vh) !important;
     padding-top: 3rem !important;
+    padding-bottom: 3rem !important;
   }
 }
 
 @media (max-width: 768px) {
   .section {
-    min-height: 100vh !important;
-    padding-top: 2rem !important;
+    min-height: auto !important;
+    padding-top: 6rem !important;
     padding-left: 0.75rem !important;
     padding-right: 0.75rem !important;
-    padding-bottom: 1rem !important;
+    padding-bottom: 4rem !important;
   }
 }
 
@@ -33,7 +34,8 @@
   .section {
     padding-left: 0.5rem !important;
     padding-right: 0.5rem !important;
-    padding-top: 1.5rem !important;
+    padding-top: 5rem !important;
+    padding-bottom: 3rem !important;
   }
 }
 
@@ -203,51 +205,76 @@
   100% { color: #00f5d4; }
 }
 
-/* Hero Grid and Layout Styles */
+/* Hero Grid and Layout Styles - Enhanced for proper side-by-side layout */
 .heroGrid {
   display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
+  grid-template-columns: 1fr 1.2fr !important; /* Give more space to 3D side */
   gap: 4rem !important;
   align-items: center !important;
   width: 100% !important;
-  max-width: 1200px !important;
+  max-width: 1400px !important; /* Increased max width for better spacing */
   margin: 0 auto !important;
   padding: 0 1rem !important;
+  min-height: 600px !important; /* Ensure consistent height */
+}
+
+@media (max-width: 1200px) {
+  .heroGrid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 3rem !important;
+    max-width: 1200px !important;
+  }
 }
 
 @media (max-width: 1024px) {
   .heroGrid {
     grid-template-columns: 1fr !important;
-    gap: 2rem !important;
+    gap: 3rem !important;
+    min-height: auto !important;
   }
 }
 
 @media (max-width: 768px) {
   .heroGrid {
-    gap: 1rem !important;
+    gap: 2rem !important;
     padding: 0 0.5rem !important;
   }
 }
 
 .hero3dContainer {
-  order: 2 !important;
+  order: 2 !important; /* Right side on desktop */
   position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 500px !important; /* Ensure good height for 3D */
 }
 
 .heroTextContainer {
-  order: 1 !important;
+  order: 1 !important; /* Left side on desktop */
   text-align: left !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  min-height: 500px !important; /* Match 3D container height */
 }
 
 @media (max-width: 1024px) {
   .hero3dContainer {
-    order: 2 !important;
+    order: 1 !important; /* 3D first on mobile */
+    min-height: 400px !important;
+    margin-bottom: 1rem !important;
   }
   
   .heroTextContainer {
-    order: 1 !important;
+    order: 2 !important; /* Text second on mobile */
     text-align: center !important;
     padding: 0 1rem !important;
+    min-height: auto !important;
   }
 }
 
@@ -257,7 +284,7 @@
   }
   
   .hero3dContainer {
-    height: 300px !important;
+    min-height: 300px !important;
   }
 }
 

@@ -57,11 +57,11 @@ export default function HeroSection() {
                 ))}
             </div>
 
-            {/* Responsive 2-column grid layout */}
-            <div className="relative z-10 w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Responsive 2-column grid layout using CSS Module grid */}
+            <div className={`relative z-10 ${heroStyles.heroGrid}`}>
                 
                 {/* Left Column: Text Content */}
-                <div className="order-2 lg:order-1 text-center lg:text-left px-4 lg:px-0">
+                <div className={`${heroStyles.heroTextContainer} flex flex-col justify-center space-y-6`}>
                     <div ref={heroTextRef}>
                         <h1 className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-8 lg:mb-8 leading-tight mobile-responsive-heading">
                             <span className={heroStyles.heroTitleAnimated}>
@@ -73,7 +73,7 @@ export default function HeroSection() {
                             </span>
                         </h1>
 
-                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl text-primary-glow mb-8 sm:mb-10 lg:mb-10 mobile-responsive-subheading">
+                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl text-primary-glow mb-6 sm:mb-8 lg:mb-8 mobile-responsive-subheading leading-relaxed">
                             Harness the power of AI-driven liquidity optimization on SEI.
                             Maximize yields, minimize risk, and let ElizaOS handle the
                             complexity.
@@ -141,28 +141,28 @@ export default function HeroSection() {
                 </div>
 
                 {/* Right Column: 3D Scene + Stats + Features */}
-                <div className="order-1 lg:order-2 flex flex-col space-y-8 lg:space-y-12">
+                <div className={`${heroStyles.hero3dContainer} flex flex-col space-y-6 lg:space-y-8`}>
                     
-                    {/* 3D container */}
-                    <div className="flex justify-center">
-                        <div className="relative w-full max-w-lg lg:max-w-full" style={{ height: '400px' }}>
+                    {/* 3D container - Removed size restrictions for proper scaling */}
+                    <div className="flex justify-center w-full">
+                        <div className="relative w-full h-80 md:h-96 lg:h-[500px] xl:h-[600px]">
                             <Hero3D />
                         </div>
                     </div>
 
-                    {/* Stats section */}
-                    <div ref={statsRef} className="w-full">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+                    {/* Stats section - Reduced for better spacing */}
+                    <div ref={statsRef} className="w-full mt-8 lg:mt-12">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 lg:gap-4">
                             {[
                                 { value: '$8.3M', label: 'Total TVL' },
-                                { value: '400ms', label: 'Block Time' },
                                 { value: '18.5%', label: 'Avg APY' },
+                                { value: '400ms', label: 'Block Time' },
                             ].map((stat, i) => (
-                                <Card key={i} className={`${glassCardStyles.glassCard} p-4 md:p-6 text-center`}>
-                                    <div className="text-lg sm:text-xl md:text-2xl font-bold text-primary-glow">
+                                <Card key={i} className={`${glassCardStyles.glassCard} p-3 lg:p-4 text-center`}>
+                                    <div className="text-base lg:text-lg font-bold text-primary-glow">
                                         {stat.value}
                                     </div>
-                                    <div className="text-sm sm:text-base text-primary-glow">
+                                    <div className="text-xs lg:text-sm text-primary-glow opacity-80">
                                         {stat.label}
                                     </div>
                                 </Card>
@@ -170,20 +170,20 @@ export default function HeroSection() {
                         </div>
                     </div>
 
-                    {/* Features section */}
-                    <div className="text-center lg:text-left">
-                        <div className="grid grid-cols-1 gap-4 lg:gap-6">
+                    {/* Features section - Simplified for desktop layout */}
+                    <div className="text-center lg:text-left lg:hidden">
+                        <div className="grid grid-cols-1 gap-3">
                             {[
-                                { icon: '⚡', text: 'Real-time AI optimization' },
-                                { icon: '🛡️', text: '62% reduced impermanent loss' },
-                                { icon: '🚀', text: 'SEI native integration' },
+                                { icon: '⚡', text: 'AI optimization' },
+                                { icon: '🛡️', text: 'Reduced impermanent loss' },
+                                { icon: '🚀', text: 'SEI integration' },
                             ].map((feature, i) => (
                                 <div
                                     key={i}
-                                    className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-2 sm:space-y-0 sm:space-x-3 text-primary-glow p-3"
+                                    className="flex items-center justify-center space-x-2 text-primary-glow p-2"
                                 >
-                                    <span className="text-2xl sm:text-xl lg:text-2xl flex-shrink-0">{feature.icon}</span>
-                                    <span className="mobile-responsive-text text-sm sm:text-base lg:text-lg">{feature.text}</span>
+                                    <span className="text-lg flex-shrink-0">{feature.icon}</span>
+                                    <span className="text-sm">{feature.text}</span>
                                 </div>
                             ))}
                         </div>
