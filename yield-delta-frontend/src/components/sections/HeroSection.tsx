@@ -57,34 +57,11 @@ export default function HeroSection() {
                 ))}
             </div>
 
-            <div className={`${heroStyles.grid} relative z-10`}>
-                <div className={heroStyles.container3d}>
-                    <Hero3D />
-                    <div
-                        ref={statsRef}
-                        className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-full"
-                    >
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 lg:gap-6 max-w-2xl mx-auto">
-                            {[
-                                { value: '$8.3M', label: 'Total TVL' },
-                                { value: '400ms', label: 'Block Time' },
-                                { value: '18.5%', label: 'Avg APY' },
-                            ].map((stat, i) => (
-                                <Card key={i} className={`${glassCardStyles.glassCard} p-3 sm:p-4 text-center`}>
-                                    <div className="text-sm sm:text-lg font-bold text-primary-glow">
-                                        {stat.value}
-                                    </div>
-                                    <div className="text-xs text-primary-glow">
-                                        {stat.label}
-                                    </div>
-                                </Card>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                <div ref={heroTextRef} className={heroStyles.textContainer}>
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold mb-6 sm:mb-8 lg:mb-12 leading-tight mobile-responsive-heading">
+            {/* New layout: single column with content stacked vertically */}
+            <div className="relative z-10 w-full max-w-6xl mx-auto">
+                {/* Text content at the top */}
+                <div ref={heroTextRef} className="text-center mb-12 lg:mb-20">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 lg:mb-12 leading-tight mobile-responsive-heading">
                         <span className={heroStyles.heroTitleAnimated}>
                             Your Liquidity,
                         </span>
@@ -94,7 +71,7 @@ export default function HeroSection() {
                         </span>
                     </h1>
 
-                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-primary-glow mb-8 sm:mb-12 lg:mb-16 xl:mb-24 max-w-full lg:max-w-3xl mobile-responsive-subheading">
+                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl text-primary-glow mb-8 sm:mb-12 lg:mb-16 xl:mb-24 max-w-full lg:max-w-4xl mx-auto mobile-responsive-subheading">
                         Harness the power of AI-driven liquidity optimization on SEI.
                         Maximize yields, minimize risk, and let ElizaOS handle the
                         complexity.
@@ -102,7 +79,7 @@ export default function HeroSection() {
 
                     <div
                         ref={ctaRef}
-                        className="flex flex-row mb-8 sm:mb-12 lg:mb-20 justify-start gap-8 md:gap-12 lg:gap-16"
+                        className="flex flex-col sm:flex-row mb-8 sm:mb-12 lg:mb-20 justify-center gap-4 md:gap-8 lg:gap-12"
                     >
                         <Button
                             className="mobile-responsive-button font-bold min-w-[200px] px-6 md:px-8 lg:px-12 py-3 md:py-4 lg:py-6"
@@ -158,8 +135,41 @@ export default function HeroSection() {
                             View Documentation
                         </Button>
                     </div>
+                </div>
 
-                    <div className="space-y-3 sm:space-y-4 lg:space-y-6 mt-6 sm:mt-8 lg:mt-12">
+                {/* 3D container - larger and centered */}
+                <div className="flex justify-center mb-12 lg:mb-20">
+                    <div className="relative w-full max-w-4xl" style={{ height: '500px' }}>
+                        <Hero3D />
+                    </div>
+                </div>
+
+                {/* Stats section positioned below the 3D image */}
+                <div
+                    ref={statsRef}
+                    className="w-full mb-12 lg:mb-20"
+                >
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 lg:gap-8 max-w-4xl mx-auto">
+                        {[
+                            { value: '$8.3M', label: 'Total TVL' },
+                            { value: '400ms', label: 'Block Time' },
+                            { value: '18.5%', label: 'Avg APY' },
+                        ].map((stat, i) => (
+                            <Card key={i} className={`${glassCardStyles.glassCard} p-4 md:p-6 text-center`}>
+                                <div className="text-lg sm:text-xl md:text-2xl font-bold text-primary-glow">
+                                    {stat.value}
+                                </div>
+                                <div className="text-sm sm:text-base text-primary-glow">
+                                    {stat.label}
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Features section at the bottom */}
+                <div className="text-center">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-6 lg:gap-8 max-w-4xl mx-auto">
                         {[
                             { icon: '⚡', text: 'Real-time AI optimization' },
                             { icon: '🛡️', text: '62% reduced impermanent loss' },
@@ -167,9 +177,9 @@ export default function HeroSection() {
                         ].map((feature, i) => (
                             <div
                                 key={i}
-                                className="flex items-center space-x-3 sm:space-x-4 text-primary-glow"
+                                className="flex flex-col sm:flex-row items-center justify-center sm:justify-start space-y-3 sm:space-y-0 sm:space-x-3 text-primary-glow text-center sm:text-left p-4"
                             >
-                                <span className="text-lg sm:text-xl lg:text-2xl flex-shrink-0">{feature.icon}</span>
+                                <span className="text-2xl sm:text-xl lg:text-2xl flex-shrink-0">{feature.icon}</span>
                                 <span className="mobile-responsive-text text-sm sm:text-base lg:text-lg">{feature.text}</span>
                             </div>
                         ))}
