@@ -8,8 +8,6 @@ import AIWorkflow from '@/components/AIWorkflow';
 import PerformanceMetrics from '@/components/sections/PerformanceMetrics';
 import CTASection from '@/components/sections/CTASection';
 
-// fixing stuff
-
 export default function DLPLanding() {
 
     return (
