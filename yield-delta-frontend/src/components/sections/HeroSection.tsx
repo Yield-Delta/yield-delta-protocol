@@ -152,7 +152,7 @@ export default function HeroSection() {
 
                     {/* Stats section - Reduced for better spacing */}
                     <div ref={statsRef} className="w-full mt-8 lg:mt-12">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                             {[
                                 { value: '$8.3M', label: 'Total TVL' },
                                 { value: '18.5%', label: 'Avg APY' },
