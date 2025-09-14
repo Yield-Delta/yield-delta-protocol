@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import Hero3D from '@/components/Hero3D';
+import Hero3DWrapper from '@/components/Hero3DWrapper';
 import glassCardStyles from '@/components/GlassCard.module.css';
 import heroStyles from '@/components/Hero.module.css';
 import gsap from 'gsap';
@@ -146,7 +146,7 @@ export default function HeroSection() {
                     {/* 3D container - Removed size restrictions for proper scaling */}
                     <div className="flex justify-center w-full">
                         <div className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px] 2xl:h-[900px]">
-                            <Hero3D />
+                            <Hero3DWrapper />
                         </div>
                     </div>
 

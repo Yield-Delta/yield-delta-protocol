@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
     domains: ['ipfs.io', 'seiprotocol.infura-ipfs.io'],
   },
 
-  // Webpack configuration for crypto polyfills
+  // Webpack configuration for crypto polyfills and 3D library optimization
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -58,16 +58,46 @@ const nextConfig: NextConfig = {
         path: require.resolve('path-browserify'),
       };
     }
+
+    // Optimize 3D library bundling to prevent build timeouts
+    config.optimization = {
+      ...config.optimization,
+      splitChunks: {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks?.cacheGroups,
+          // Separate 3D libraries into their own chunks
+          three: {
+            test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
+            name: 'three',
+            chunks: 'all',
+            priority: 20,
+          },
+          gsap: {
+            test: /[\\/]node_modules[\\/]gsap[\\/]/,
+            name: 'gsap',
+            chunks: 'all',
+            priority: 15,
+          },
+        },
+      },
+    };
+
+    // Increase build timeout and memory limits for large 3D libraries
+    config.infrastructureLogging = { level: 'error' };
+    
     return config;
   },
 
   // Enable MDX for documentation
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
 
-  // Experimental features for MDX support
+  // Experimental features for MDX support and performance
   experimental: {
     mdxRs: false, // Disable Rust-based MDX for better compatibility with Nextra
+    optimizeCss: true, // Enable CSS optimization
   },
+  
   
   // Route configuration
   async redirects() {
