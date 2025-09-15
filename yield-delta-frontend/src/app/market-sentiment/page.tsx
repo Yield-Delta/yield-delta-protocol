@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Navigation from '@/components/Navigation';
-import { TrendingUp, TrendingDown, Brain, Target, Activity, Eye, Clock, Zap } from 'lucide-react';
+import { TrendingUp, TrendingDown, Brain, Target, Activity, Eye, Clock } from 'lucide-react';
 import * as THREE from 'three';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
