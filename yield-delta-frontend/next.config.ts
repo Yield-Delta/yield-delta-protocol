@@ -42,7 +42,7 @@ const nextConfig: NextConfig = {
     domains: ['ipfs.io', 'seiprotocol.infura-ipfs.io'],
   },
 
-  // Webpack configuration for crypto polyfills and 3D library optimization
+  // Webpack configuration optimized for Cloudflare Pages
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -59,32 +59,48 @@ const nextConfig: NextConfig = {
       };
     }
 
-    // Optimize 3D library bundling to prevent build timeouts
+    // Aggressive 3D library optimization for build performance
     config.optimization = {
       ...config.optimization,
       splitChunks: {
         ...config.optimization.splitChunks,
+        maxAsyncRequests: 30,
+        maxInitialRequests: 30,
         cacheGroups: {
           ...config.optimization.splitChunks?.cacheGroups,
-          // Separate 3D libraries into their own chunks
+          // Make 3D libraries completely separate and async
           three: {
             test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
             name: 'three',
-            chunks: 'all',
-            priority: 20,
+            chunks: 'async', // Only load when needed
+            priority: 30,
+            enforce: true,
           },
           gsap: {
             test: /[\\/]node_modules[\\/]gsap[\\/]/,
             name: 'gsap',
-            chunks: 'all',
-            priority: 15,
+            chunks: 'async', // Only load when needed
+            priority: 25,
+            enforce: true,
           },
         },
       },
     };
 
-    // Increase build timeout and memory limits for large 3D libraries
+    // Reduce bundle analysis and logging for faster builds
     config.infrastructureLogging = { level: 'error' };
+    config.stats = 'errors-only';
+    
+    // Cloudflare Pages build optimization
+    if (process.env.CF_PAGES) {
+      config.optimization.minimize = true;
+      // Skip heavy 3D processing during build to prevent timeouts
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        // Use the standard three.js entry point
+        'three': require.resolve('three'),
+      };
+    }
     
     return config;
   },
