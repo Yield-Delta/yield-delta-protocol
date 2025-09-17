@@ -11,21 +11,24 @@ const Hero3D = dynamic(() => import('./Hero3DLoader'), {
 });
 
 export default function Hero3DProgressive() {
-  // Initialize shouldLoad3D based on environment variable for immediate loading
-  const [shouldLoad3D, setShouldLoad3D] = useState(process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true');
+  // Check environment variable at runtime to ensure it works in production
+  const [shouldLoad3D, setShouldLoad3D] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
-    // Only enable 3D if explicitly requested AND page has fully loaded
-    const enable3D = process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true';
+    // Multiple checks to ensure environment variable is properly detected
+    const enable3D = typeof window !== 'undefined' && (
+      process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
+      // Additional check for production environments where env vars might be handled differently
+      (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
+      // Temporary force-enable for production to match localhost (can be removed after debugging)
+      window.location.hostname === 'yielddelta.xyz' ||
+      window.location.hostname === 'www.yielddelta.xyz'
+    );
     
     if (enable3D) {
-      // Load 3D immediately for production to match localhost experience
-      const timer = setTimeout(() => {
-        setShouldLoad3D(true);
-      }, 100); // Much shorter delay for immediate loading
-
-      return () => clearTimeout(timer);
+      // Set immediately for production to match localhost experience
+      setShouldLoad3D(true);
     }
   }, []);
 
@@ -34,7 +37,12 @@ export default function Hero3DProgressive() {
     const handleInteraction = () => {
       if (!hasInteracted) {
         setHasInteracted(true);
-        if (process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true') {
+        // Check at runtime for better production compatibility
+        if (typeof window !== 'undefined' && (
+            process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
+            window.location.hostname === 'yielddelta.xyz' ||
+            window.location.hostname === 'www.yielddelta.xyz'
+        )) {
           setShouldLoad3D(true);
         }
       }
