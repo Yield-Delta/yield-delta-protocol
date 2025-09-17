@@ -11,8 +11,8 @@ const Hero3D = dynamic(() => import('./Hero3DLoader'), {
 });
 
 export default function Hero3DProgressive() {
-  // Check environment variable at runtime to ensure it works in production
-  const [shouldLoad3D, setShouldLoad3D] = useState(false);
+  // Always start with 3D enabled for production experience matching localhost
+  const [shouldLoad3D, setShouldLoad3D] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
@@ -21,10 +21,21 @@ export default function Hero3DProgressive() {
       process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
       // Additional check for production environments where env vars might be handled differently
       (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
-      // Temporary force-enable for production to match localhost (can be removed after debugging)
+      // Force-enable for production to match localhost experience
       window.location.hostname === 'yielddelta.xyz' ||
-      window.location.hostname === 'www.yielddelta.xyz'
+      window.location.hostname === 'www.yielddelta.xyz' ||
+      // Enable for localhost development
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1' ||
+      // Default to true if we can't determine - ensures good UX
+      true
     );
+    
+    console.log('Hero3DProgressive - Enable 3D check:', {
+      hostname: window.location.hostname,
+      env_var: process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION,
+      enable3D
+    });
     
     if (enable3D) {
       // Set immediately for production to match localhost experience
@@ -41,7 +52,10 @@ export default function Hero3DProgressive() {
         if (typeof window !== 'undefined' && (
             process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
             window.location.hostname === 'yielddelta.xyz' ||
-            window.location.hostname === 'www.yielddelta.xyz'
+            window.location.hostname === 'www.yielddelta.xyz' ||
+            window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1' ||
+            true // Default to enable for best UX
         )) {
           setShouldLoad3D(true);
         }
