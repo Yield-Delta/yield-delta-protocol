@@ -11,7 +11,8 @@ const Hero3D = dynamic(() => import('./Hero3DLoader'), {
 });
 
 export default function Hero3DProgressive() {
-  const [shouldLoad3D, setShouldLoad3D] = useState(false);
+  // Initialize shouldLoad3D based on environment variable for immediate loading
+  const [shouldLoad3D, setShouldLoad3D] = useState(process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true');
   const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
@@ -19,10 +20,10 @@ export default function Hero3DProgressive() {
     const enable3D = process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true';
     
     if (enable3D) {
-      // Load 3D after page is fully loaded
+      // Load 3D immediately for production to match localhost experience
       const timer = setTimeout(() => {
         setShouldLoad3D(true);
-      }, 2000); // 2 second delay to ensure page is stable
+      }, 100); // Much shorter delay for immediate loading
 
       return () => clearTimeout(timer);
     }
