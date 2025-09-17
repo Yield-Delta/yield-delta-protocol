@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import Hero3DProgressive from '@/components/Hero3DProgressive';
+import DebugEnv from '@/components/DebugEnv';
 import glassCardStyles from '@/components/GlassCard.module.css';
 import heroStyles from '@/components/Hero.module.css';
 import gsap from 'gsap';
@@ -191,6 +192,9 @@ export default function HeroSection() {
 
                 </div>
             </div>
+            
+            {/* Debug component to verify environment variables (development only) */}
+            {process.env.NODE_ENV === 'development' && <DebugEnv />}
         </section>
     );
 }

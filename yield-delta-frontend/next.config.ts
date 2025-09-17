@@ -94,10 +94,9 @@ const nextConfig: NextConfig = {
     // Cloudflare Pages build optimization
     if (process.env.CF_PAGES) {
       config.optimization.minimize = true;
-      // Skip heavy 3D processing during build to prevent timeouts
+      // Ensure proper three.js resolution for production builds
       config.resolve.alias = {
         ...config.resolve.alias,
-        // Use the standard three.js entry point
         'three': require.resolve('three'),
       };
     }
