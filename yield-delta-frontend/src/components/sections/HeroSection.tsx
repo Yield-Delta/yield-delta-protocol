@@ -65,11 +65,35 @@ export default function HeroSection() {
                 <div className={`${heroStyles.heroTextContainer} flex flex-col justify-center space-y-6`}>
                     <div ref={heroTextRef}>
                         <h1 className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-8 lg:mb-8 leading-tight mobile-responsive-heading">
-                            <span className={heroStyles.heroTitleAnimated}>
+                            <span 
+                                className={`${heroStyles.heroTitleAnimated} gradient-text-fallback`}
+                                style={{
+                                    background: 'linear-gradient(45deg, #00f5d4, #9b5de5, #ff206e, #fbae3c, #00f5d4, #9b5de5)',
+                                    backgroundSize: '400% 400%',
+                                    WebkitBackgroundClip: 'text',
+                                    backgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    animation: 'gradient-shift 3s ease-in-out infinite',
+                                    fontWeight: '800',
+                                    display: 'inline-block'
+                                }}
+                            >
                                 Your Liquidity,
                             </span>
                             <br />
-                            <span className={heroStyles.heroTitleAnimated}>
+                            <span 
+                                className={`${heroStyles.heroTitleAnimated} gradient-text-fallback`}
+                                style={{
+                                    background: 'linear-gradient(45deg, #00f5d4, #9b5de5, #ff206e, #fbae3c, #00f5d4, #9b5de5)',
+                                    backgroundSize: '400% 400%',
+                                    WebkitBackgroundClip: 'text',
+                                    backgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    animation: 'gradient-shift 3s ease-in-out infinite',
+                                    fontWeight: '800',
+                                    display: 'inline-block'
+                                }}
+                            >
                                 Evolved
                             </span>
                         </h1>

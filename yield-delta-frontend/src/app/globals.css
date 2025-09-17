@@ -1173,6 +1173,19 @@ nav .btn-cyber:active {
   }
 }
 
+/* Gradient text fallback for hero title - Production Fix */
+.gradient-text-fallback {
+  background: linear-gradient(45deg, #00f5d4, #9b5de5, #ff206e, #fbae3c, #00f5d4, #9b5de5) !important;
+  background-size: 400% 400% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: gradient-shift 3s ease-in-out infinite !important;
+  font-weight: 800 !important;
+  display: inline-block !important;
+  color: transparent !important;
+}
+
 /* Mobile menu button (if needed) */
 nav .mobile-menu-btn {
   display: flex;
