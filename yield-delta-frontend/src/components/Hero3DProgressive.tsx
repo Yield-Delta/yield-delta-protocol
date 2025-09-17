@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import Hero3DSimple from './Hero3DSimple';
-import '../types/window';
 
 // Progressive 3D loader that only loads on user interaction or after page load
 const Hero3D = dynamic(() => import('./Hero3DLoader'), {
@@ -17,18 +16,16 @@ export default function Hero3DProgressive() {
   const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
-    // Multiple checks to ensure environment variable is properly detected
+    // Simplified 3D enabling logic for reliable deployment
     const enable3D = typeof window !== 'undefined' && (
       process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
-      // Additional check for production environments where env vars might be handled differently
-      window.__NEXT_DATA__?.env?.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
       // Force-enable for production to match localhost experience
       window.location.hostname === 'yielddelta.xyz' ||
       window.location.hostname === 'www.yielddelta.xyz' ||
       // Enable for localhost development
       window.location.hostname === 'localhost' ||
       window.location.hostname === '127.0.0.1' ||
-      // Default to true if we can't determine - ensures good UX
+      // Default to true for best user experience
       true
     );
     
