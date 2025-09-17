@@ -18,6 +18,7 @@ export default function Hero3DWrapper() {
     const enable3D = typeof window !== 'undefined' && (
       process.env.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
       // Additional check for production environments where env vars might be handled differently
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).__NEXT_DATA__?.env?.NEXT_PUBLIC_ENABLE_3D_VISUALIZATION === 'true' ||
       // Temporary force-enable for production to match localhost (can be removed after debugging)
       window.location.hostname === 'yielddelta.xyz' ||
