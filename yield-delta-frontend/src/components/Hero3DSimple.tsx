@@ -24,7 +24,7 @@ export default function Hero3DSimple() {
       {/* Enhanced SVG-based 3D-like visualization */}
       <svg 
         viewBox="0 0 600 600" 
-        className="w-full h-full max-w-[800px] max-h-[800px]"
+        className="w-full h-full max-w-[1000px] max-h-[1000px]"
         style={{ filter: 'drop-shadow(0 0 30px rgba(0, 245, 212, 0.2))' }}
       >
         {/* Background grid with perspective */}

@@ -12,9 +12,18 @@ export default defineConfig({
   build: {
     outDir: '../../dist/frontend',
     emptyOutDir: true,
+    sourcemap: process.env.NODE_ENV === 'development',
+    minify: process.env.NODE_ENV === 'production' ? 'terser' : false,
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'src/frontend/index.html'),
+      },
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          query: ['@tanstack/react-query'],
+        },
       },
     },
   },

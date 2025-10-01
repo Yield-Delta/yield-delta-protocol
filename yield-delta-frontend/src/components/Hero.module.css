@@ -265,7 +265,7 @@
   align-items: center !important;
   width: 100% !important;
   height: 100% !important;
-  min-height: 600px !important; /* Increased height for better 3D display */
+  min-height: 700px !important; /* Increased height for better 3D display */
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
@@ -276,7 +276,7 @@
   flex-direction: column !important;
   justify-content: center !important;
   padding: 0 !important;
-  min-height: 600px !important; /* Increased to match 3D container */
+  min-height: 700px !important; /* Increased to match 3D container */
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
@@ -346,12 +346,19 @@
   100% { background-position: 0% 50%; }
 }
 
-/* Button Layout Fixes for Tablet */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .heroTextContainer .flex.flex-col {
-    flex-direction: row !important; /* Force horizontal buttons on tablet */
-    justify-content: flex-start !important;
-    align-items: center !important;
-    gap: 1rem !important;
+/* Button Layout Fixes for All Screen Sizes */
+.heroTextContainer .flex[class*="flex-row"] {
+  flex-direction: row !important; /* Ensure horizontal buttons */
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 1rem !important;
+  flex-wrap: wrap !important;
+}
+
+/* Mobile-first approach - buttons remain horizontal but can wrap */
+@media (max-width: 480px) {
+  .heroTextContainer .flex[class*="flex-row"] {
+    justify-content: center !important;
+    gap: 0.75rem !important;
   }
 }

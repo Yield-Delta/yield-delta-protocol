@@ -16,7 +16,7 @@ const initCharacter = async (runtime: IAgentRuntime) => {
   // Architectural alignment status
   logger.info('🔧 Architectural Alignment Status:');
   logger.info(`📊 API Integration: ${shouldUseAPIIntegration() ? 'ENABLED' : 'DISABLED'}`);
-  logger.info(`🗄️  Database: ${process.env.POSTGRES_URL ? 'PostgreSQL ENABLED' : 'SQLite DEFAULT'}`);
+  logger.info(`🗄️  Database: ${process.env.DATABASE_URL ? (process.env.DATABASE_URL.startsWith('postgres') ? 'PostgreSQL ENABLED' : 'SQLite ENABLED') : 'NO DATABASE'}`);
   logger.info(`🤖 Python AI Engine: ${process.env.PYTHON_AI_ENGINE_ACTIVE === 'true' ? 'ENABLED' : 'DISABLED'}`);
   logger.info(`🌐 Main Project API: ${process.env.MAIN_PROJECT_API || 'http://localhost:3001'}`);
   logger.info(`🎯 Eliza Agent URL: ${process.env.ELIZA_AGENT_URL || 'http://localhost:3000'}`);
