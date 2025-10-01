@@ -67,7 +67,7 @@ const nextConfig: NextConfig = {
       config.optimization.concatenateModules = false;
       
       // Disable problematic plugins
-      config.plugins = config.plugins.filter(plugin => {
+      config.plugins = config.plugins.filter((plugin: any) => {
         return plugin.constructor.name !== 'ModuleConcatenationPlugin';
       });
     }
