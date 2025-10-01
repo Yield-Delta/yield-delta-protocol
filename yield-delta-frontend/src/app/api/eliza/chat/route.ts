@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: elizaResponse,
       timestamp: new Date().toISOString(),
-      chainId: 13289
+      chainId: 1328
     })
 
   } catch (error) {
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       { 
         success: false, 
         error: 'Failed to communicate with AI agent',
-        chainId: 13289
+        chainId: 1328
       },
       { status: 500 }
     )
