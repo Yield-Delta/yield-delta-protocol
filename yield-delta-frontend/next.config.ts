@@ -40,10 +40,10 @@ const nextConfig: NextConfig = {
       // };
     }
     
-    // Reduce memory usage and improve compatibility
+    // Disable problematic optimizations for Cloudflare compatibility
     config.optimization = {
       ...config.optimization,
-      minimize: false, // Disable minification for faster builds
+      minimize: false, // Disable minification to prevent concatenation issues
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
@@ -71,18 +71,19 @@ const nextConfig: NextConfig = {
         fullySpecified: false,
       },
     });
+
     
     return config;
   },
 
-  // Disable experimental features for stability
+  // Disable experimental features for Cloudflare compatibility
   experimental: {
     optimizeCss: false,
   },
   
-  // Basic images config
+  // Disable image optimization for Cloudflare compatibility
   images: {
-    unoptimized: true, // Disable image optimization for faster builds
+    unoptimized: true,
   },
 }
 
