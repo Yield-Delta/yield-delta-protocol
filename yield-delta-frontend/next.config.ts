@@ -91,10 +91,14 @@ const nextConfig: NextConfig = {
       },
     });
 
-    // Add custom plugin to fix concatenation issues
-    const FixConcatenationPlugin = require('./webpack-plugins/fix-concatenation-plugin');
-    config.plugins = config.plugins || [];
-    config.plugins.push(new FixConcatenationPlugin());
+    // Add custom plugin to fix concatenation issues (only if available)
+    try {
+      const FixConcatenationPlugin = require('./webpack-plugins/fix-concatenation-plugin');
+      config.plugins = config.plugins || [];
+      config.plugins.push(new FixConcatenationPlugin());
+    } catch (error) {
+      console.warn('⚠️  FixConcatenationPlugin not available, will rely on postbuild script');
+    }
     
     return config;
   },
@@ -108,6 +112,10 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  
+  // Output configuration for Cloudflare Pages
+  output: 'export',
+  trailingSlash: true,
 }
 
 export default nextConfig
