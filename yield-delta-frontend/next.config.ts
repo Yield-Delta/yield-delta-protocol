@@ -24,6 +24,11 @@ const nextConfig: NextConfig = {
         fs: false,
         net: false,
         tls: false,
+        stream: require.resolve('stream-browserify'),
+        crypto: require.resolve('crypto-browserify'),
+        path: require.resolve('path-browserify'),
+        os: require.resolve('os-browserify/browser'),
+        https: require.resolve('https-browserify'),
       };
       
       // Externalize heavy libraries for faster builds
@@ -35,7 +40,7 @@ const nextConfig: NextConfig = {
       };
     }
     
-    // Reduce memory usage
+    // Reduce memory usage and improve compatibility
     config.optimization = {
       ...config.optimization,
       minimize: false, // Disable minification for faster builds
@@ -47,6 +52,25 @@ const nextConfig: NextConfig = {
         },
       },
     };
+
+    // Fix for esbuild bundling issues in Cloudflare
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'stream': 'stream-browserify',
+      'crypto': 'crypto-browserify',
+      'path': 'path-browserify',
+      'os': 'os-browserify/browser',
+      'https': 'https-browserify'
+    };
+
+    // Add specific rules to handle problematic modules
+    config.module.rules.push({
+      test: /\.m?js$/,
+      type: 'javascript/auto',
+      resolve: {
+        fullySpecified: false,
+      },
+    });
     
     return config;
   },
