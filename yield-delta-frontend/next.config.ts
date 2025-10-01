@@ -3,7 +3,7 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   // Minimal config for stable production builds
   reactStrictMode: false, // Disable for faster builds
-  transpilePackages: ['@sei-js/core'],
+  transpilePackages: ['@sei-js/core', 'gsap'],
   
   // Basic environment variables
   env: {
@@ -31,13 +31,13 @@ const nextConfig: NextConfig = {
         https: require.resolve('https-browserify'),
       };
       
-      // Externalize heavy libraries for faster builds
-      config.externals = config.externals || {};
-      config.externals = {
-        ...config.externals,
-        'three': 'three',
-        'gsap': 'gsap',
-      };
+      // Remove GSAP externalization since it's needed at runtime
+      // config.externals = config.externals || {};
+      // config.externals = {
+      //   ...config.externals,
+      //   'three': 'three',
+      //   'gsap': 'gsap',
+      // };
     }
     
     // Reduce memory usage and improve compatibility
@@ -60,7 +60,7 @@ const nextConfig: NextConfig = {
       'crypto': 'crypto-browserify',
       'path': 'path-browserify',
       'os': 'os-browserify/browser',
-      'https': 'https-browserify'
+      'https': 'https-browserify',
     };
 
     // Add specific rules to handle problematic modules
