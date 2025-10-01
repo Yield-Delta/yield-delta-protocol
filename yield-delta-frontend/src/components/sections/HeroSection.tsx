@@ -106,7 +106,7 @@ export default function HeroSection() {
 
                         <div
                             ref={ctaRef}
-                            className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 md:gap-6"
+                            className="flex flex-col sm:flex-row md:flex-row lg:flex-row justify-center lg:justify-start gap-4 md:gap-6 tablet:flex-row tablet:gap-4"
                         >
                             <Button
                                 className="mobile-responsive-button font-bold min-w-[200px] px-6 md:px-8 py-3 md:py-4"
@@ -168,9 +168,9 @@ export default function HeroSection() {
                 {/* Right Column: 3D Scene + Stats + Features */}
                 <div className={`${heroStyles.hero3dContainer} flex flex-col space-y-6 lg:space-y-8`}>
                     
-                    {/* 3D container - Removed size restrictions for proper scaling */}
+                    {/* 3D container - Improved tablet responsiveness */}
                     <div className="flex justify-center w-full">
-                        <div className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] xl:h-[800px] 2xl:h-[900px]">
+                        <div className="relative w-full h-[400px] sm:h-[500px] md:h-[550px] lg:h-[700px] xl:h-[800px] 2xl:h-[900px]">
                             <Hero3DProgressive />
                         </div>
                     </div>

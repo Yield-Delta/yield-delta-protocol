@@ -12,18 +12,41 @@ const nextConfig: NextConfig = {
     API_VERSION: '1.0.0',
   },
   
-  // Minimal webpack configuration
+  // Aggressive webpack optimization for build speed
   webpack: (config, { isServer }) => {
     // Reduce bundle analysis overhead
     config.infrastructureLogging = { level: 'error' };
+    config.stats = 'errors-only';
     
+    // Exclude heavy 3D libraries from initial bundle
     if (!isServer) {
       config.resolve.fallback = {
         fs: false,
         net: false,
         tls: false,
       };
+      
+      // Externalize heavy libraries for faster builds
+      config.externals = config.externals || {};
+      config.externals = {
+        ...config.externals,
+        'three': 'three',
+        'gsap': 'gsap',
+      };
     }
+    
+    // Reduce memory usage
+    config.optimization = {
+      ...config.optimization,
+      minimize: false, // Disable minification for faster builds
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          default: false,
+          vendors: false,
+        },
+      },
+    };
     
     return config;
   },

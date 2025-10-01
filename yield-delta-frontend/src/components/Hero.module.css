@@ -228,7 +228,18 @@
   }
 }
 
-@media (max-width: 1024px) {
+/* Tablet landscape (769px - 1024px) - Keep 2 columns but adjust sizing */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .heroGrid {
+    grid-template-columns: 1fr 1.2fr !important; /* Give more space to 3D side */
+    gap: 2rem !important;
+    min-height: auto !important;
+    transition: all 0.3s ease-in-out !important;
+  }
+}
+
+/* Tablet portrait and smaller (768px and below) - Single column */
+@media (max-width: 768px) {
   .heroGrid {
     grid-template-columns: 1fr !important;
     gap: 3rem !important;
@@ -269,10 +280,27 @@
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
-@media (max-width: 1024px) {
+/* Tablet landscape (769px - 1024px) - Keep side-by-side but optimize */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .hero3dContainer {
+    order: 2 !important; /* Keep 3D on right for tablet */
+    min-height: 600px !important; /* Larger size for better visibility */
+    margin-bottom: 0 !important;
+  }
+  
+  .heroTextContainer {
+    order: 1 !important; /* Keep text on left for tablet */
+    text-align: left !important;
+    padding: 0 0.5rem !important;
+    min-height: auto !important;
+  }
+}
+
+/* Tablet portrait and smaller (768px and below) - Stack vertically */
+@media (max-width: 768px) {
   .hero3dContainer {
     order: 1 !important; /* 3D first on mobile */
-    min-height: 500px !important; /* Increased from 400px */
+    min-height: 500px !important;
     margin-bottom: 1rem !important;
   }
   
@@ -316,4 +344,14 @@
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+/* Button Layout Fixes for Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .heroTextContainer .flex.flex-col {
+    flex-direction: row !important; /* Force horizontal buttons on tablet */
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 1rem !important;
+  }
 }
