@@ -1,0 +1,55 @@
+services:
+  - type: web
+    name: yield-delta-liqui
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: NODE_OPTIONS='--max-old-space-size=4096' npm ci && NODE_OPTIONS='--max-old-space-size=4096' npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    autoDeploy: false
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_OPTIONS
+        value: --max-old-space-size=1024
+      - key: PORT
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: yield-delta-postgres
+          property: connectionString
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: GOOGLE_GENERATIVE_AI_API_KEY
+        sync: false
+      - key: SEI_PRIVATE_KEY
+        sync: false
+      - key: SEI_ADDRESS
+        sync: false
+      - key: SEI_RPC_URL
+        value: https://evm-rpc-testnet.sei-apis.com
+      - key: SEI_CHAIN_ID
+        value: 1328
+      - key: SEI_NETWORK
+        value: sei-testnet
+      - key: PYTHON_AI_ENGINE_ACTIVE
+        value: true
+      - key: ENABLE_API_INTEGRATION
+        value: true
+      - key: YIELD_DELTA_USE_EXISTING_APIS
+        value: true
+      - key: MAIN_PROJECT_API
+        value: https://www.yielddelta.xyz
+      - key: LOG_LEVEL
+        value: info
+      - key: SENTRY_LOGGING
+        value: false
+
+databases:
+  - name: yield-delta-postgres
+    databaseName: yield_delta_liqui
+    user: yield_delta_user
+    plan: starter
