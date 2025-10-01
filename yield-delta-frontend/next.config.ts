@@ -12,17 +12,9 @@ const nextConfig: NextConfig = {
     API_VERSION: '1.0.0',
   },
   
-  // Aggressive webpack optimization for build speed
+  // Simplified webpack config for Cloudflare Pages with Functions
   webpack: (config, { isServer }) => {
-    // Reduce bundle analysis overhead
-    config.infrastructureLogging = { level: 'error' };
-    config.stats = 'errors-only';
-    
-    // Cloudflare-specific optimizations
-    const isCloudflare = process.env.NEXT_PUBLIC_CLOUDFLARE_BUILD === 'true' || 
-                        process.env.CF_PAGES === '1';
-    
-    // Exclude heavy 3D libraries from initial bundle
+    // Basic polyfills for browser compatibility
     if (!isServer) {
       config.resolve.fallback = {
         fs: false,
@@ -34,45 +26,9 @@ const nextConfig: NextConfig = {
         os: require.resolve('os-browserify/browser'),
         https: require.resolve('https-browserify'),
       };
-      
-      // Remove GSAP externalization since it's needed at runtime
-      // config.externals = config.externals || {};
-      // config.externals = {
-      //   ...config.externals,
-      //   'three': 'three',
-      //   'gsap': 'gsap',
-      // };
-    }
-    
-    // Disable problematic optimizations for Cloudflare compatibility
-    config.optimization = {
-      ...config.optimization,
-      minimize: false, // Disable minification to prevent concatenation issues
-      splitChunks: {
-        chunks: 'all',
-        cacheGroups: {
-          default: false,
-          vendors: false,
-        },
-      },
-    };
-    
-    // Additional Cloudflare-specific optimizations
-    if (isCloudflare) {
-      console.log('🔧 Applying Cloudflare-specific webpack optimizations...');
-      
-      // More conservative optimization settings for Cloudflare
-      config.optimization.usedExports = false;
-      config.optimization.sideEffects = false;
-      config.optimization.concatenateModules = false;
-      
-      // Disable problematic plugins
-      config.plugins = config.plugins.filter((plugin: any) => {
-        return plugin.constructor.name !== 'ModuleConcatenationPlugin';
-      });
     }
 
-    // Fix for esbuild bundling issues in Cloudflare
+    // Fix for esbuild bundling issues
     config.resolve.alias = {
       ...config.resolve.alias,
       'stream': 'stream-browserify',
@@ -90,15 +46,6 @@ const nextConfig: NextConfig = {
         fullySpecified: false,
       },
     });
-
-    // Add custom plugin to fix concatenation issues (only if available)
-    try {
-      const FixConcatenationPlugin = require('./webpack-plugins/fix-concatenation-plugin');
-      config.plugins = config.plugins || [];
-      config.plugins.push(new FixConcatenationPlugin());
-    } catch (error) {
-      console.warn('⚠️  FixConcatenationPlugin not available, will rely on postbuild script');
-    }
     
     return config;
   },
@@ -113,8 +60,7 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   
-  // Output configuration for Cloudflare Pages
-  output: 'export',
+  // For Cloudflare Pages with Functions - use default SSR output
   trailingSlash: true,
 }
 
