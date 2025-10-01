@@ -3,7 +3,6 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   // Basic config for Cloudflare Pages with Functions
   reactStrictMode: false,
-  swcMinify: true,
   
   // Basic environment variables
   env: {

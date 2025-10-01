@@ -1,7 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
+/**
+ * Cloudflare Function for Eliza AI Chat
+ * Handles both GET and POST requests for the Eliza chat API
+ */
 
-export const runtime = 'edge';
+import { z } from 'zod'
 
 // Chat request schema
 const ChatRequestSchema = z.object({
@@ -16,61 +18,140 @@ const ChatRequestSchema = z.object({
 })
 
 /**
- * Chat with Eliza AI agent
- * POST /api/eliza/chat - Send message to Eliza agent and get AI response
+ * Cloudflare Function handler
  */
-export async function POST(request: NextRequest) {
+export async function onRequestPost(context: any) {
   try {
+    const request = context.request
     const body = await request.json()
     
     // Validate request
     const validatedData = ChatRequestSchema.parse(body)
     
     // Call Eliza agent
-    const elizaResponse = await callElizaAgent(validatedData)
+    const elizaResponse = await callElizaAgent(validatedData, context.env)
     
-    return NextResponse.json({
+    return new Response(JSON.stringify({
       success: true,
       data: elizaResponse,
       timestamp: new Date().toISOString(),
       chainId: 1328
+    }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      }
     })
 
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Invalid chat request',
-          details: error.errors
-        },
-        { status: 400 }
-      )
+      return new Response(JSON.stringify({ 
+        success: false, 
+        error: 'Invalid chat request',
+        details: error.errors
+      }), {
+        status: 400,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      })
     }
 
     console.error('Error in Eliza chat:', error)
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to communicate with AI agent',
-        chainId: 1328
-      },
-      { status: 500 }
-    )
+    return new Response(JSON.stringify({ 
+      success: false, 
+      error: 'Failed to communicate with AI agent',
+      chainId: 1328
+    }), {
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
   }
+}
+
+/**
+ * Handle GET requests for agent status
+ */
+export async function onRequestGet(context: any) {
+  const ELIZA_AGENT_URL = context.env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
+  
+  try {
+    const response = await fetch(`${ELIZA_AGENT_URL}/health`, {
+      method: 'GET',
+      signal: AbortSignal.timeout(3000)
+    })
+    
+    return new Response(JSON.stringify({
+      success: true,
+      agentStatus: response.ok ? 'online' : 'error',
+      agentUrl: ELIZA_AGENT_URL,
+      capabilities: [
+        'vault_analysis',
+        'rebalance_recommendations', 
+        'market_predictions',
+        'sei_optimizations'
+      ],
+      fallbackMode: !response.ok,
+      timestamp: new Date().toISOString()
+    }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
+  } catch (error) {
+    return new Response(JSON.stringify({
+      success: false,
+      agentStatus: 'offline',
+      agentUrl: ELIZA_AGENT_URL,
+      error: error instanceof Error ? error.message : 'Connection failed',
+      fallbackMode: true,
+      fallbackCapabilities: [
+        'basic_vault_questions',
+        'rebalancing_guidance',
+        'gas_cost_info',
+        'apy_calculations'
+      ],
+      timestamp: new Date().toISOString()
+    }), {
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
+  }
+}
+
+/**
+ * Handle OPTIONS requests for CORS
+ */
+export async function onRequestOptions() {
+  return new Response(null, {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    }
+  })
 }
 
 /**
  * Call Eliza agent with user message
  */
-async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>) {
-  const ELIZA_AGENT_URL = process.env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
+async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>, env: any) {
+  const ELIZA_AGENT_URL = env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
   
   try {
     // First check if the agent is reachable
     const healthCheck = await fetch(`${ELIZA_AGENT_URL}/health`, {
       method: 'GET',
-      signal: AbortSignal.timeout(3000) // 3 second timeout for health check
+      signal: AbortSignal.timeout(3000)
     })
     
     if (!healthCheck.ok) {
@@ -102,7 +183,7 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>) {
         'X-Source': 'sei-dlp-dashboard'
       },
       body: JSON.stringify(elizaMessage),
-      signal: AbortSignal.timeout(15000) // 15 second timeout for AI processing
+      signal: AbortSignal.timeout(15000)
     })
 
     if (!response.ok) {
@@ -170,48 +251,4 @@ function generateFallbackResponse(message: string, vaultAddress?: string): strin
   }
   
   return `🤖 I'm a SEI DLP AI assistant running in fallback mode. I can help with basic vault optimization questions. For advanced AI analysis, please ensure the Eliza agent is running at localhost:3000 or set the ELIZA_AGENT_URL environment variable.`
-}
-
-/**
- * Get agent status
- * GET /api/eliza/chat - Check if Eliza agent is available
- */
-export async function GET() {
-  const ELIZA_AGENT_URL = process.env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
-  
-  try {
-    const response = await fetch(`${ELIZA_AGENT_URL}/health`, {
-      method: 'GET',
-      signal: AbortSignal.timeout(3000) // Reduced timeout for faster fallback
-    })
-    
-    return NextResponse.json({
-      success: true,
-      agentStatus: response.ok ? 'online' : 'error',
-      agentUrl: ELIZA_AGENT_URL,
-      capabilities: [
-        'vault_analysis',
-        'rebalance_recommendations', 
-        'market_predictions',
-        'sei_optimizations'
-      ],
-      fallbackMode: !response.ok,
-      timestamp: new Date().toISOString()
-    })
-  } catch (error) {
-    return NextResponse.json({
-      success: false,
-      agentStatus: 'offline',
-      agentUrl: ELIZA_AGENT_URL,
-      error: error instanceof Error ? error.message : 'Connection failed',
-      fallbackMode: true,
-      fallbackCapabilities: [
-        'basic_vault_questions',
-        'rebalancing_guidance',
-        'gas_cost_info',
-        'apy_calculations'
-      ],
-      timestamp: new Date().toISOString()
-    })
-  }
 }

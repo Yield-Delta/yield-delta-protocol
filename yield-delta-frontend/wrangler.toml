@@ -1,18 +1,21 @@
 name = "yield-delta-frontend"
 compatibility_date = "2024-09-23"
-pages_build_output_dir = ".next"
 
-# Enable Node.js compatibility for API functions
+# For Cloudflare Pages deployment
+pages_build_output_dir = ".vercel/output/static"
+build_command = "npm run build"
+
+# Enable Node.js compatibility
 compatibility_flags = ["nodejs_compat"]
 
 [env.production]
 name = "yield-delta-frontend"
 [env.production.vars]
 NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
-ELIZA_AGENT_URL = "http://localhost:3000"
+ELIZA_AGENT_URL = "https://www.yielddelta.xyz"
 
 [env.preview] 
 name = "yield-delta-frontend-preview"
 [env.preview.vars]
 NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
-ELIZA_AGENT_URL = "http://localhost:3000"
+ELIZA_AGENT_URL = "https://www.yielddelta.xyz"
