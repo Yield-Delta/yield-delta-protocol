@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
     config.infrastructureLogging = { level: 'error' };
     config.stats = 'errors-only';
     
+    // Cloudflare-specific optimizations
+    const isCloudflare = process.env.NEXT_PUBLIC_CLOUDFLARE_BUILD === 'true' || 
+                        process.env.CF_PAGES === '1';
+    
     // Exclude heavy 3D libraries from initial bundle
     if (!isServer) {
       config.resolve.fallback = {
@@ -52,6 +56,21 @@ const nextConfig: NextConfig = {
         },
       },
     };
+    
+    // Additional Cloudflare-specific optimizations
+    if (isCloudflare) {
+      console.log('🔧 Applying Cloudflare-specific webpack optimizations...');
+      
+      // More conservative optimization settings for Cloudflare
+      config.optimization.usedExports = false;
+      config.optimization.sideEffects = false;
+      config.optimization.concatenateModules = false;
+      
+      // Disable problematic plugins
+      config.plugins = config.plugins.filter(plugin => {
+        return plugin.constructor.name !== 'ModuleConcatenationPlugin';
+      });
+    }
 
     // Fix for esbuild bundling issues in Cloudflare
     config.resolve.alias = {
@@ -72,6 +91,10 @@ const nextConfig: NextConfig = {
       },
     });
 
+    // Add custom plugin to fix concatenation issues
+    const FixConcatenationPlugin = require('./webpack-plugins/fix-concatenation-plugin');
+    config.plugins = config.plugins || [];
+    config.plugins.push(new FixConcatenationPlugin());
     
     return config;
   },
