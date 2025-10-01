@@ -1,6 +1,4 @@
 
-export const runtime = 'edge'
-
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { Web3Provider } from '@/components/providers/Web3Provider'
