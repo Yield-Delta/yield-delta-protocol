@@ -4,6 +4,8 @@ import CustomerVaultDashboard from '@/components/CustomerVaultDashboard';
 import Navigation from '@/components/Navigation';
 import { useParams } from 'next/navigation';
 
+export const runtime = 'edge';
+
 const VaultPage = () => {
   const { address } = useParams();
 
