@@ -4,20 +4,10 @@ pages_build_output_dir = "out"
 
 [env.production]
 name = "yield-delta-frontend"
+[env.production.vars]
+NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
 
 [env.preview] 
 name = "yield-delta-frontend-preview"
-
-# Build configuration
-[build]
-command = "npm run build"
-cwd = "."
-
-# Environment variables that should be available during build
-[vars]
+[env.preview.vars]
 NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
-
-# Pages-specific configuration
-[[pages_build_configs]]
-path_pattern = "*"
-compatibility_date = "2024-09-23"
