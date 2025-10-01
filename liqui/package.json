@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@types/node": "^22.0.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
@@ -56,7 +57,11 @@
   "scripts": {
     "start": "elizaos start --port ${PORT:-3000}",
     "dev": "elizaos dev --port ${PORT:-3000}",
-    "build": "tsc --noEmit && vite build && tsup",
+    "build": "NODE_OPTIONS='--max-old-space-size=4096' npm run build:optimized",
+    "build:optimized": "NODE_OPTIONS='--max-old-space-size=4096' npm run build:check && NODE_OPTIONS='--max-old-space-size=4096' npm run build:frontend && NODE_OPTIONS='--max-old-space-size=4096' npm run build:server",
+    "build:check": "NODE_OPTIONS='--max-old-space-size=4096' tsc --noEmit --incremental",
+    "build:frontend": "NODE_OPTIONS='--max-old-space-size=4096' vite build",
+    "build:server": "NODE_OPTIONS='--max-old-space-size=4096' tsup",
     "lint": "prettier --write ./src",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
