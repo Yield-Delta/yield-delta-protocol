@@ -5,7 +5,7 @@ services:
     plan: starter
     region: oregon
     buildCommand: bun install
-    startCommand: npm start
+    startCommand: ./start.sh
     healthCheckPath: /
     autoDeploy: false
     envVars:
@@ -19,8 +19,6 @@ services:
         fromDatabase:
           name: yield-delta-postgres
           property: connectionString
-      - key: PGSSLMODE
-        value: require
       - key: OPENAI_API_KEY
         sync: false
       - key: ANTHROPIC_API_KEY
