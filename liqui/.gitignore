@@ -9,6 +9,7 @@ node_modules/
 .env.staging
 .env.development
 .env.bak
+.env.railway
 *.env
 
 # OS files
