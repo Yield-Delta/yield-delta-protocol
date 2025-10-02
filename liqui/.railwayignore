@@ -1,0 +1,42 @@
+# Railway ignore file
+node_modules/
+.git/
+.env.local
+.env.*.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.log
+.vscode/
+.idea/
+dist/
+build/
+coverage/
+.nyc_output/
+.cache/
+.parcel-cache/
+.next/
+out/
+.nuxt/
+.vercel/
+.netlify/
+
+# Test files
+**/*.test.js
+**/*.test.ts
+**/*.spec.js
+**/*.spec.ts
+src/__tests__/
+cypress/
+jest.config.*
+
+# Render-specific files (no longer needed)
+render.yaml
+start.sh
+
+# Development files
+.env.example
+README.md
+*.md
+!CLAUDE.md

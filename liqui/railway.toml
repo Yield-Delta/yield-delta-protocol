@@ -1,0 +1,25 @@
+[build]
+builder = "nixpacks"
+buildCommand = "bun install && npm run build"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[environments.production]
+[environments.production.variables]
+NODE_ENV = "production"
+NODE_OPTIONS = "--max-old-space-size=1024"
+
+[environments.staging]
+[environments.staging.variables]
+NODE_ENV = "staging"
+NODE_OPTIONS = "--max-old-space-size=1024"
+
+# Railway automatically handles:
+# - PORT environment variable
+# - DATABASE_URL with proper SSL
+# - Auto-scaling and health checks
