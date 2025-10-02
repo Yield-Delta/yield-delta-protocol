@@ -6,7 +6,7 @@ services:
     region: oregon
     buildCommand: NODE_OPTIONS='--max-old-space-size=4096' npm ci && NODE_OPTIONS='--max-old-space-size=4096' npm run build
     startCommand: npm start
-    healthCheckPath: /health
+    healthCheckPath: /
     autoDeploy: false
     envVars:
       - key: NODE_ENV

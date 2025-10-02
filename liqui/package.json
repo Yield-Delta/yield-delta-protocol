@@ -55,7 +55,7 @@
     "vite": "^6.0.1"
   },
   "scripts": {
-    "start": "elizaos start --port ${PORT:-3000}",
+    "start": "elizaos start --port ${PORT:-10000} --host 0.0.0.0",
     "dev": "elizaos dev --port ${PORT:-3000}",
     "build": "NODE_OPTIONS='--max-old-space-size=4096' npm run build:optimized",
     "build:optimized": "NODE_OPTIONS='--max-old-space-size=4096' npm run build:check && NODE_OPTIONS='--max-old-space-size=4096' npm run build:frontend && NODE_OPTIONS='--max-old-space-size=4096' npm run build:server",
