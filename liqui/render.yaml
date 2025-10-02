@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: starter
     region: oregon
-    buildCommand: NODE_OPTIONS='--max-old-space-size=4096' npm ci && NODE_OPTIONS='--max-old-space-size=4096' npm run build
+    buildCommand: bun install
     startCommand: npm start
     healthCheckPath: /
     autoDeploy: false
@@ -19,6 +19,8 @@ services:
         fromDatabase:
           name: yield-delta-postgres
           property: connectionString
+      - key: PGSSLMODE
+        value: require
       - key: OPENAI_API_KEY
         sync: false
       - key: ANTHROPIC_API_KEY
