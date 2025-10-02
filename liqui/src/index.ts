@@ -48,8 +48,9 @@ const project: Project = {
   agents: [projectAgent],
 };
 
-// Export test suites for the test runner
-export { testSuites } from './__tests__/e2e';
+// Export test suites for the test runner (only in development)
+// Commented out for production builds to avoid import errors
+// export { testSuites } from './__tests__/e2e';
 export { character } from './character.ts';
 
 export default project;

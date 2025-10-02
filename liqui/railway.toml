@@ -2,6 +2,9 @@
 builder = "nixpacks"
 buildCommand = "bun install && npm run build"
 
+[build.nixpacks]
+node_version = "20"
+
 [deploy]
 startCommand = "npm start"
 healthcheckPath = "/"
