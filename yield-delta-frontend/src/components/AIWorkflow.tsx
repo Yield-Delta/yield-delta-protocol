@@ -724,7 +724,7 @@ export default function AIWorkflow() {
             marginBottom: '4rem !important'
           }}
         >
-          <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-12">
+          <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 lg:gap-10">
           {[
             { metric: '62%', label: 'Less Impermanent Loss', color: '#00f5d4' },
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },
@@ -734,10 +734,9 @@ export default function AIWorkflow() {
               key={index} 
               className="cursor-pointer group relative overflow-hidden hover:scale-105 transition-all duration-300"
               style={{
-                width: '100%',
                 maxWidth: '280px',
                 minWidth: '200px',
-                flex: '1',
+                flex: '1 1 280px',
                 backdropFilter: 'blur(24px)',
                 WebkitBackdropFilter: 'blur(24px)',
                 border: '4px solid hsl(var(--primary) / 0.4)',

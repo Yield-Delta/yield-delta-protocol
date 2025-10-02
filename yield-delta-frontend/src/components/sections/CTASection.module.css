@@ -1,0 +1,112 @@
+/* CTA Section Custom Animations */
+@keyframes float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(-10px, -15px) rotate(2deg); }
+    50% { transform: translate(10px, -10px) rotate(-2deg); }
+    75% { transform: translate(-5px, 5px) rotate(1deg); }
+}
+
+@keyframes rocketPulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    25% { transform: scale(1.1) rotate(2deg); }
+    50% { transform: scale(1.05) rotate(-1deg); }
+    75% { transform: scale(1.08) rotate(1deg); }
+}
+
+@keyframes trailFade {
+    0% { opacity: 0; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(10px); }
+    100% { opacity: 0; transform: translateY(20px); }
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes textGlow {
+    0% { text-shadow: 0 0 8px hsl(var(--primary-glow) / 0.6); }
+    100% { text-shadow: 0 0 16px hsl(var(--primary-glow) / 0.8), 0 0 24px hsl(var(--primary-glow) / 0.4); }
+}
+
+@keyframes particleFloat {
+    0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100px) rotate(180deg); opacity: 0; }
+}
+
+@keyframes shimmer {
+    0% { opacity: 0; transform: translateX(-100%); }
+    50% { opacity: 1; transform: translateX(0%); }
+    100% { opacity: 0; transform: translateX(100%); }
+}
+
+/* Animation Classes */
+.float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.rocketPulse {
+    animation: rocketPulse 2s ease-in-out infinite;
+}
+
+.trailFade {
+    animation: trailFade 1.5s ease-in-out infinite;
+}
+
+.gradientShift {
+    animation: gradientShift 3s ease-in-out infinite;
+}
+
+.textGlow {
+    animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+.particleFloat {
+    animation: particleFloat 4s linear infinite;
+}
+
+.shimmer {
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Responsive Optimizations */
+@media (max-width: 768px) {
+    .ctaVisualContainer {
+        max-width: 280px !important;
+    }
+    .rocketSize {
+        font-size: 4rem !important;
+    }
+    .titleSize {
+        font-size: 1.125rem !important;
+    }
+    .subtitleSize {
+        font-size: 0.875rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .ctaVisualContainer {
+        max-width: 250px !important;
+    }
+    .rocketSize {
+        font-size: 3.5rem !important;
+    }
+    .titleSize {
+        font-size: 1rem !important;
+    }
+    .subtitleSize {
+        font-size: 0.8rem !important;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .mainContainer {
+        transform: none !important;
+        transition: none !important;
+    }
+}

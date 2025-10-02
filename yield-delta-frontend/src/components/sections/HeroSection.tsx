@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useEffect, useRef } from 'react';
@@ -106,10 +107,10 @@ export default function HeroSection() {
 
                         <div
                             ref={ctaRef}
-                            className="flex flex-row justify-center lg:justify-start gap-4 md:gap-6 flex-wrap"
+                            className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 sm:gap-x-6 md:gap-x-8 sm:gap-y-4 md:gap-y-6"
                         >
                             <Button
-                                className="mobile-responsive-button font-bold min-w-[200px] px-6 md:px-8 py-3 md:py-4"
+                                className="mobile-responsive-button font-bold w-auto px-6 md:px-8 py-4 md:py-4"
                                 onClick={() => window.location.href = '/vaults'}
                                 style={{
                                     background: 'linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%))',
@@ -118,9 +119,10 @@ export default function HeroSection() {
                                     border: 'none',
                                     borderRadius: '12px',
                                     transition: 'all 300ms ease-in-out',
-                                    minWidth: '200px',
-                                    minHeight: '48px',
-                                    fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)'
+                                    minWidth: '140px',
+                                    minHeight: '52px',
+                                    fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
+                                    margin: '0.25rem 0'
                                 }}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.transform = 'scale(1.02)';
@@ -135,7 +137,7 @@ export default function HeroSection() {
                             </Button>
                             <Button
                                 variant="outline"
-                                className="mobile-responsive-button font-bold min-w-[200px] px-6 md:px-8 py-3 md:py-4"
+                                className="mobile-responsive-button font-bold w-auto px-6 md:px-8 py-4 md:py-4"
                                 onClick={() => window.location.href = '/docs'}
                                 style={{
                                     borderColor: 'hsl(180 100% 48%)',
@@ -143,10 +145,11 @@ export default function HeroSection() {
                                     background: 'transparent',
                                     borderRadius: '12px',
                                     transition: 'all 300ms ease-in-out',
-                                    minWidth: '200px',
-                                    minHeight: '48px',
+                                    minWidth: '140px',
+                                    minHeight: '52px',
                                     fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
-                                    borderWidth: '2px'
+                                    borderWidth: '2px',
+                                    margin: '0.25rem 0'
                                 }}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.background = 'hsl(180 100% 48% / 0.1)';
