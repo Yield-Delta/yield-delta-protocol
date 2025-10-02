@@ -208,16 +208,42 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 }}
               />
 
-              {/* Deposit Button - Enhanced Fixed Positioning */}
+              {/* Deposit Button - Enhanced Fixed Positioning with Mobile Optimization */}
               <div 
                 className="vault-deposit-button-wrapper"
                 style={{ 
                   position: 'absolute', 
-                  top: '1.5rem', 
-                  right: '1.5rem', 
+                  top: '1rem', 
+                  right: '1rem', 
                   zIndex: 100
                 }}
               >
+                <style jsx>{`
+                  @media (max-width: 768px) {
+                    .vault-deposit-button-wrapper {
+                      position: relative !important;
+                      top: auto !important;
+                      right: auto !important;
+                      margin: 1rem 0 !important;
+                      display: flex !important;
+                      justify-content: center !important;
+                      width: 100% !important;
+                    }
+                    .vault-deposit-enhanced-v2 {
+                      width: calc(100% - 2rem) !important;
+                      max-width: 280px !important;
+                      height: 48px !important;
+                      fontSize: 0.9rem !important;
+                    }
+                  }
+                  @media (max-width: 480px) {
+                    .vault-deposit-enhanced-v2 {
+                      width: calc(100% - 1rem) !important;
+                      height: 44px !important;
+                      fontSize: 0.85rem !important;
+                    }
+                  }
+                `}</style>
                 <button
                   className="vault-deposit-enhanced-v2"
                   onClick={() => {
@@ -292,11 +318,24 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
 
               {/* Header Content with Compact Spacing */}
               <div className="vault-header-content" style={{ 
-                marginRight: 'clamp(120px, 20vw, 160px)', 
+                marginRight: 'clamp(0px, 20vw, 160px)', 
                 marginBottom: 'clamp(0.75rem, 2vw, 1.25rem)',
                 position: 'relative',
                 zIndex: 2
               }}>
+                <style jsx>{`
+                  @media (min-width: 769px) {
+                    .vault-header-content {
+                      margin-right: clamp(120px, 20vw, 160px) !important;
+                    }
+                  }
+                  @media (max-width: 768px) {
+                    .vault-header-content {
+                      margin-right: 0 !important;
+                      text-align: center !important;
+                    }
+                  }
+                `}</style>
                 <div className="vault-title-section">
                   <h1 className="vault-main-title" style={{ 
                     fontSize: 'clamp(1.75rem, 5vw, 2.75rem)',
