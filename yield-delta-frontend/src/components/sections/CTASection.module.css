@@ -75,7 +75,7 @@
 /* Responsive Optimizations */
 @media (max-width: 768px) {
     .ctaVisualContainer {
-        max-width: 280px !important;
+        max-width: 320px !important;
     }
     .rocketSize {
         font-size: 4rem !important;
@@ -90,7 +90,7 @@
 
 @media (max-width: 480px) {
     .ctaVisualContainer {
-        max-width: 250px !important;
+        max-width: 280px !important;
     }
     .rocketSize {
         font-size: 3.5rem !important;

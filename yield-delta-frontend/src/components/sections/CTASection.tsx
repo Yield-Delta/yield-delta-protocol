@@ -27,22 +27,23 @@ export default function CTASection() {
                         Join the future of liquidity provision with AI-powered optimization on
                         SEI
                     </p>
-                    <div className="flex flex-col sm:flex-row justify-center lg:justify-start items-stretch sm:items-center gap-4 sm:gap-6 lg:gap-8">
+                    <div className="flex flex-row justify-center lg:justify-start items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 flex-wrap">
                         <Link href="/vaults" className="w-auto">
                             <Button 
-                                className="mobile-responsive-button font-bold w-auto px-6 md:px-8 lg:px-12 py-4 md:py-4 lg:py-6"
+                                className="mobile-responsive-button font-bold w-auto px-3 sm:px-6 md:px-8 lg:px-12 py-4 md:py-4 lg:py-6"
                                 style={{
                                     background: 'linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%))',
                                     color: 'hsl(216 100% 4%)',
                                     minHeight: '52px',
                                     minWidth: '140px',
-                                    maxWidth: '240px',
+                                    maxWidth: '200px',
                                     boxShadow: '0 0 20px hsl(180 100% 48% / 0.3), 0 0 40px hsl(180 100% 48% / 0.1)',
                                     border: 'none',
                                     borderRadius: '12px',
                                     transition: 'all 300ms ease-in-out',
                                     fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
-                                    margin: '0.25rem 0'
+                                    margin: '0.25rem 0',
+                                    flex: '0 0 auto'
                                 }}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.transform = 'scale(1.02)';
@@ -59,19 +60,20 @@ export default function CTASection() {
                         <Link href="/docs" className="w-auto">
                             <Button
                                 variant="outline"
-                                className="mobile-responsive-button font-bold w-auto px-6 md:px-8 lg:px-12 py-4 md:py-4 lg:py-6"
+                                className="mobile-responsive-button font-bold w-auto px-3 sm:px-6 md:px-8 lg:px-12 py-4 md:py-4 lg:py-6"
                                 style={{
                                     borderColor: 'hsl(180 100% 48%)',
                                     color: 'hsl(180 100% 48%)',
                                     minHeight: '52px',
                                     minWidth: '140px',
-                                    maxWidth: '240px',
+                                    maxWidth: '200px',
                                     background: 'transparent',
                                     borderRadius: '12px',
                                     transition: 'all 300ms ease-in-out',
                                     borderWidth: '2px',
                                     fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
-                                    margin: '0.25rem 0'
+                                    margin: '0.25rem 0',
+                                    flex: '0 0 auto'
                                 }}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.background = 'hsl(180 100% 48% / 0.1)';
@@ -91,11 +93,12 @@ export default function CTASection() {
                     </div>
                     
                     <div className="relative order-1 lg:order-2 flex justify-center items-center">
-                        <div className={`${styles.ctaVisualContainer} relative w-full max-w-sm lg:max-w-md xl:max-w-lg`}>
+                        <div className={`${styles.ctaVisualContainer} relative w-full max-w-md lg:max-w-lg xl:max-w-xl`}>
                             {/* Main Container with Enhanced Glass Morphism */}
                             <div 
-                                className="aspect-square w-full rounded-3xl shadow-2xl border backdrop-blur-sm flex items-center justify-center relative overflow-hidden cursor-pointer transition-all duration-500 ease-out"
+                                className="aspect-square w-full shadow-2xl border backdrop-blur-sm flex items-center justify-center relative overflow-hidden cursor-pointer transition-all duration-500 ease-out"
                                 style={{
+                                    borderRadius: '2.5rem',
                                     background: 'linear-gradient(135deg, hsl(var(--primary) / 0.15), hsl(var(--secondary) / 0.12), hsl(var(--accent) / 0.18))',
                                     borderColor: 'hsl(var(--primary) / 0.4)',
                                     boxShadow: '0 20px 40px hsl(var(--primary) / 0.15), 0 0 60px hsl(var(--primary) / 0.1), inset 0 1px 0 hsl(var(--border) / 0.3)'
@@ -211,16 +214,18 @@ export default function CTASection() {
 
                             {/* Enhanced Overlay Effects */}
                             <div 
-                                className={`absolute inset-0 rounded-3xl pointer-events-none ${styles.shimmer}`}
+                                className={`absolute inset-0 pointer-events-none ${styles.shimmer}`}
                                 style={{
+                                    borderRadius: '2.5rem',
                                     background: 'linear-gradient(135deg, transparent 0%, hsl(var(--primary) / 0.1) 50%, transparent 100%)'
                                 }}
                             />
                             
                             {/* Outer Glow Ring */}
                             <div 
-                                className={`absolute inset-[-4px] rounded-3xl pointer-events-none opacity-60 ${styles.gradientShift}`}
+                                className={`absolute inset-[-4px] pointer-events-none opacity-60 ${styles.gradientShift}`}
                                 style={{
+                                    borderRadius: '2.75rem',
                                     background: 'linear-gradient(45deg, hsl(var(--primary) / 0.3), hsl(var(--secondary) / 0.2), hsl(var(--accent) / 0.25), hsl(var(--primary) / 0.3))',
                                     backgroundSize: '300% 300%',
                                     filter: 'blur(8px)',

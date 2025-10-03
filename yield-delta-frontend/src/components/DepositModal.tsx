@@ -454,9 +454,10 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         }
         
         .deposit-modal-content {
-          width: 920px !important;
-          max-width: 920px !important;
+          width: 500px !important;
+          max-width: 500px !important;
           min-width: 320px !important;
+          max-height: 85vh !important;
           position: relative !important;
           margin: 0 !important;
           transform: none !important;
@@ -478,18 +479,19 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         
         html body .deposit-modal-content,
         html body div.deposit-modal-content {
-          max-width: 860px !important;
-          width: 860px !important;
+          max-width: 560px !important;
+          width: 560px !important;
         }
         
         /* NUCLEAR OPTION: Ultimate width enforcement */
         .deposit-modal-container > .deposit-modal-content,
         div.deposit-modal-container > div.deposit-modal-content {
-          width: 920px !important;
-          max-width: 920px !important;
+          width: 500px !important;
+          max-width: 500px !important;
           min-width: 320px !important;
+          max-height: 85vh !important;
           flex: none !important;
-          flex-basis: 920px !important;
+          flex-basis: 500px !important;
           flex-grow: 0 !important;
           flex-shrink: 0 !important;
         }
@@ -509,39 +511,43 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         
         /* Restore modal content width specifically */
         .deposit-modal-container .deposit-modal-content {
-          width: 920px !important;
-          max-width: 920px !important;
+          width: 500px !important;
+          max-width: 500px !important;
+          max-height: 85vh !important;
         }
         
         /* Responsive handling for smaller screens - Enhanced */
-        @media (max-width: 960px) {
+        @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 15px !important;
+            padding: 12px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 30px) !important;
-            max-width: calc(100vw - 30px) !important;
+            width: calc(100vw - 24px) !important;
+            max-width: calc(100vw - 24px) !important;
             min-width: 300px !important;
+            max-height: 90vh !important;
           }
         }
         
         @media (max-width: 360px) {
           .deposit-modal-container {
-            padding: 10px !important;
+            padding: 8px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 20px) !important;
-            max-width: calc(100vw - 20px) !important;
+            width: calc(100vw - 16px) !important;
+            max-width: calc(100vw - 16px) !important;
             min-width: 280px !important;
+            max-height: 95vh !important;
           }
         }
         
         /* Desktop size enforcement */
-        @media (min-width: 961px) {
+        @media (min-width: 601px) {
           .deposit-modal-content {
-            width: 920px !important;
-            max-width: 920px !important;
-            min-width: 920px !important;
+            width: 500px !important;
+            max-width: 500px !important;
+            min-width: 500px !important;
+            max-height: 85vh !important;
           }
         }
       `}</style>
@@ -582,10 +588,10 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           borderTop: `3px solid ${vaultColor}60`,
           borderLeft: `1px solid ${vaultColor}20`,
           borderRight: `1px solid ${vaultColor}20`,
-          maxHeight: 'calc(100vh - 40px)',
+          maxHeight: '85vh',
           height: 'auto',
-          width: '640px',
-          maxWidth: '640px',
+          width: '500px',
+          maxWidth: '500px',
           minWidth: '320px',
           zIndex: 10001,
           position: 'relative',
@@ -614,18 +620,19 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           style={{
             flex: '1',
             overflow: 'auto',
-            padding: '1rem 1.5rem 0 1.5rem', // Top and side padding only
-            minHeight: '0' // Allow flex shrinking
+            padding: '1rem 1.25rem 0 1.25rem', // Reduced side padding
+            minHeight: '0', // Allow flex shrinking
+            maxHeight: 'calc(85vh - 140px)' // Account for header and footer space
           }}
         >
             {/* Enhanced Modal Header */}
             <div style={{
               background: `linear-gradient(135deg, ${vaultColor}08 0%, transparent 60%)`,
-              borderRadius: '20px',
-              padding: '1.5rem',
+              borderRadius: '16px',
+              padding: '1.25rem',
               position: 'relative',
               overflow: 'hidden',
-              marginBottom: '1rem'
+              marginBottom: '0.75rem'
             }}>
               {/* Background Animation */}
               <div 
@@ -643,7 +650,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center', 
-                marginBottom: '1rem',
+                marginBottom: '0.75rem',
                 position: 'relative'
               }}>
                 <div 
@@ -683,9 +690,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
               {/* Enhanced Title */}
               <h2 
                 style={{ 
-                  fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
+                  fontSize: 'clamp(1.5rem, 4vw, 2rem)',
                   fontWeight: '900',
-                  marginBottom: '1rem',
+                  marginBottom: '0.75rem',
                   lineHeight: '1.2',
                   color: '#ffffff',
                   textShadow: `0 0 30px ${vaultColor}60, 0 4px 8px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.6)`,
@@ -732,9 +739,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
               <div style={{ textAlign: 'center' }}>
                 <p 
                   style={{
-                    fontSize: 'clamp(1rem, 2.5vw, 1.25rem)',
+                    fontSize: 'clamp(0.9rem, 2.5vw, 1.125rem)',
                     color: 'rgba(255, 255, 255, 0.9)',
-                    marginBottom: '1rem',
+                    marginBottom: '0.75rem',
                     fontWeight: '600',
                     letterSpacing: '0.5px',
                     textShadow: '0 2px 4px rgba(0,0,0,0.3)',
@@ -777,9 +784,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
             </div>
             
             <div className="space-y-4" style={{ color: '#ffffff' }}>
-              {/* Transaction Flow Section */}
+              {/* Transaction Flow Section - Simplified Layout */}
               <div className="transaction-flow-container mb-4">
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_60px_1fr] gap-6 items-center">
+                <div className="space-y-4">
                   
                   {/* You will deposit */}
                   <div className="transaction-side p-6 rounded-2xl" style={{
@@ -816,13 +823,13 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     <div className="text-sm opacity-60 mt-2">Balance: {currentUserBalance.amount.toFixed(4)} {selectedToken || 'SEI'}</div>
                   </div>
 
-                  {/* Arrow */}
-                  <div className="flex justify-center">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{
+                  {/* Arrow - Centered between sections */}
+                  <div className="flex justify-center py-2">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{
                       backgroundColor: `${vaultColor}20`,
                       border: `1px solid ${vaultColor}40`
                     }}>
-                      <ArrowRight className="w-6 h-6" style={{ color: vaultColor }} />
+                      <ArrowRight className="w-5 h-5" style={{ color: vaultColor }} />
                     </div>
                   </div>
 
@@ -860,22 +867,22 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                 </div>
               </div>
 
-              {/* Preset Amount Cards */}
+              {/* Preset Amount Cards - Compact Layout */}
               <div style={{ marginBottom: '16px' }}>
                 <div style={{
                   display: 'block',
                   fontSize: '1rem',
                   fontWeight: '600',
-                  marginBottom: '16px',
+                  marginBottom: '12px',
                   opacity: '0.9',
                   color: '#ffffff'
                 }}>Quick deposit amounts</div>
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(2, 1fr)',
-                  gap: '16px'
+                  gap: '12px'
                 }}
-                className="lg:grid-cols-4">
+                className="sm:grid-cols-4">
                   {[1, 5, 10, 14.83].map((amount) => (
                     <button
                       key={amount}
@@ -890,8 +897,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         backdropFilter: 'blur(8px)',
                         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
                         cursor: 'pointer',
-                        padding: '16px',
-                        borderRadius: '16px',
+                        padding: '12px',
+                        borderRadius: '12px',
                         textAlign: 'left',
                         transition: 'all 0.2s ease',
                         width: '100%',
@@ -907,16 +914,16 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     >
                       <div style={{
                         color: depositAmount === amount.toString() ? vaultColor : '#ffffff',
-                        fontSize: '1.25rem',
+                        fontSize: '1.125rem',
                         fontWeight: '700',
-                        marginBottom: '4px'
+                        marginBottom: '2px'
                       }}>
                         {amount} {selectedToken || primaryToken?.symbol || 'SEI'}
                       </div>
                       <div style={{
                         color: '#ffffff',
                         opacity: '0.6',
-                        fontSize: '0.875rem'
+                        fontSize: '0.8rem'
                       }}>
                         ~{(amount * 0.95).toLocaleString()} shares
                       </div>
@@ -980,7 +987,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                 backdropFilter: 'blur(12px)',
                 boxShadow: `inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 20px ${vaultColor}10`,
                 borderRadius: '16px',
-                padding: '16px',
+                padding: '12px',
                 position: 'relative',
                 overflow: 'hidden'
               }}>
@@ -1022,15 +1029,15 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   </div>
                   <div style={{ textAlign: 'right', paddingLeft: '24px' }}>
                     <div style={{ 
-                      fontSize: '0.875rem', 
+                      fontSize: '0.8rem', 
                       opacity: '0.7', 
-                      marginBottom: '4px',
+                      marginBottom: '2px',
                       color: '#ffffff',
                       fontWeight: '500'
                     }}>Expected daily</div>
                     <div style={{ 
                       color: vaultColor,
-                      fontSize: '1.5rem',
+                      fontSize: '1.25rem',
                       fontWeight: '700',
                       textShadow: `0 0 10px ${vaultColor}30`
                     }}>
@@ -1150,7 +1157,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           <div
             style={{
               flexShrink: 0, // Don't shrink
-              padding: '1rem 1.5rem 1.5rem 1.5rem', // Bottom and side padding
+              padding: '0.75rem 1.25rem 1.25rem 1.25rem', // Reduced padding
               background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 80%, transparent 100%)',
               backdropFilter: 'blur(8px)',
               borderTop: '1px solid rgba(255, 255, 255, 0.1)',
@@ -1160,7 +1167,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
             <div style={{
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
-              gap: '16px'
+              gap: '12px'
             }}>
               <button
                 onClick={handleClose}
@@ -1171,7 +1178,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   color: '#ffffff',
                   borderRadius: '16px',
                   backdropFilter: 'blur(8px)',
-                  height: '56px',
+                  height: '48px',
                   fontSize: '1rem',
                   fontWeight: '600',
                   cursor: 'pointer',
@@ -1196,7 +1203,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   color: '#000000',
                   borderRadius: '16px',
                   boxShadow: `0 12px 40px ${vaultColor}40, inset 0 1px 0 rgba(255,255,255,0.2)`,
-                  height: '56px',
+                  height: '48px',
                   fontSize: '1rem',
                   fontWeight: '700',
                   cursor: 'pointer',
