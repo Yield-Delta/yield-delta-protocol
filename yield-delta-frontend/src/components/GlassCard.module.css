@@ -33,12 +33,33 @@
   box-shadow: 0 12px 40px hsl(var(--primary) / 0.15), inset 0 1px 0 hsl(var(--border) / 0.4);
 }
 
-/* Hero stats specific styling */
+/* Hero stats specific styling - Mobile-optimized */
 .heroStatsCard {
   composes: base;
   width: 100%;
   max-width: none;
   margin: 0;
-  display: block !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
   min-height: auto;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Mobile responsive adjustments for hero stats */
+@media (max-width: 767px) {
+  .heroStatsCard {
+    background-color: hsl(var(--card) / 0.85) !important; /* Slightly more opaque on mobile for better readability */
+    border: 1px solid hsl(var(--border) / 0.6) !important;
+    box-shadow: 0 4px 16px hsl(var(--primary) / 0.08), inset 0 1px 0 hsl(var(--border) / 0.2) !important;
+  }
+}
+
+/* Hover effects - only on larger screens to avoid mobile touch issues */
+@media (min-width: 768px) {
+  .heroStatsCard:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 12px 32px hsl(var(--primary) / 0.15), inset 0 1px 0 hsl(var(--border) / 0.4) !important;
+  }
 }

@@ -455,4 +455,296 @@
   min-height: inherit !important;
 }
 
+/* Hero Stats Container - Mobile-optimized layout */
+.heroStatsContainer {
+  width: 100% !important;
+  display: grid !important;
+  align-items: stretch !important;
+  transition: all 0.3s ease-in-out !important;
+}
+
+/* Mobile-first responsive stats cards */
+.heroStatsCard {
+  min-width: 0 !important; /* Allow cards to shrink on mobile */
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  aspect-ratio: auto !important;
+  min-height: 70px !important; /* Compact height for mobile */
+  transition: all 0.3s ease-in-out !important;
+}
+
+.heroStatsValue {
+  line-height: 1.2 !important;
+  margin-bottom: 0.25rem !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  width: 100% !important;
+}
+
+.heroStatsLabel {
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  width: 100% !important;
+}
+
+/* Mobile optimizations (up to 767px) */
+@media (max-width: 767px) {
+  .heroStatsContainer {
+    gap: 0.5rem !important;
+    padding: 0 0.25rem !important;
+  }
+  
+  .heroStatsCard {
+    padding: 0.5rem 0.25rem !important;
+    min-height: 65px !important;
+    border-radius: 8px !important; /* Slightly smaller radius for mobile */
+  }
+  
+  .heroStatsValue {
+    font-size: 0.875rem !important; /* 14px */
+    font-weight: 700 !important;
+  }
+  
+  .heroStatsLabel {
+    font-size: 0.6875rem !important; /* 11px */
+    opacity: 0.8 !important;
+  }
+}
+
+/* Small mobile optimizations (up to 480px) */
+@media (max-width: 480px) {
+  .heroStatsContainer {
+    gap: 0.375rem !important;
+    padding: 0 0.125rem !important;
+  }
+  
+  .heroStatsCard {
+    padding: 0.375rem 0.125rem !important;
+    min-height: 60px !important;
+  }
+  
+  .heroStatsValue {
+    font-size: 0.75rem !important; /* 12px for very small screens */
+  }
+  
+  .heroStatsLabel {
+    font-size: 0.625rem !important; /* 10px for very small screens */
+  }
+}
+
+/* Tablet and larger - maintain current styling */
+@media (min-width: 768px) {
+  .heroStatsContainer {
+    gap: 1.5rem !important;
+    padding: 0 !important;
+  }
+  
+  .heroStatsCard {
+    min-height: 80px !important;
+    padding: 0.75rem !important;
+  }
+  
+  .heroStatsValue {
+    font-size: 1rem !important; /* 16px */
+    margin-bottom: 0.5rem !important;
+  }
+  
+  .heroStatsLabel {
+    font-size: 0.75rem !important; /* 12px */
+  }
+}
+
+/* Large screens */
+@media (min-width: 1024px) {
+  .heroStatsContainer {
+    gap: 2rem !important;
+  }
+  
+  .heroStatsCard {
+    min-height: 90px !important;
+    padding: 1rem !important;
+  }
+  
+  .heroStatsValue {
+    font-size: 1.125rem !important; /* 18px */
+  }
+  
+  .heroStatsLabel {
+    font-size: 0.875rem !important; /* 14px */
+  }
+}
+
+/* Mobile Hero Stats Layout Styles */
+.heroPrimaryStatsCard {
+  composes: heroStatsCard;
+  min-height: 80px !important;
+  background-color: hsl(var(--card) / 0.9) !important; /* Slightly more prominent */
+  border: 2px solid hsl(var(--primary) / 0.3) !important; /* Subtle primary border */
+  box-shadow: 0 8px 24px hsl(var(--primary) / 0.12), inset 0 1px 0 hsl(var(--border) / 0.3) !important;
+  /* Width constraints and centering for mobile */
+  max-width: 280px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+}
+
+/* Responsive width constraints for primary TVL card */
+@media (max-width: 480px) {
+  .heroPrimaryStatsCard {
+    max-width: 240px !important; /* Smaller on tiny screens */
+  }
+}
+
+.heroPrimaryStatsValue {
+  line-height: 1.1 !important;
+  margin-bottom: 0.375rem !important;
+  color: hsl(var(--primary)) !important; /* Primary color for hero metric */
+  font-weight: 800 !important;
+  /* Responsive typography scaling for TVL value */
+  font-size: 1.5rem !important; /* 24px base */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+/* Mobile responsive typography for primary stats value */
+@media (max-width: 767px) {
+  .heroPrimaryStatsValue {
+    font-size: 1.25rem !important; /* 20px for mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .heroPrimaryStatsValue {
+    font-size: 1.125rem !important; /* 18px for tiny screens */
+  }
+}
+
+.heroPrimaryStatsLabel {
+  line-height: 1.2 !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.025em !important;
+  font-size: 0.875rem !important; /* 14px base */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  width: 100% !important;
+  text-align: center !important;
+  opacity: 0.8 !important;
+}
+
+/* Mobile responsive typography for primary stats label */
+@media (max-width: 767px) {
+  .heroPrimaryStatsLabel {
+    font-size: 0.8125rem !important; /* 13px for mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .heroPrimaryStatsLabel {
+    font-size: 0.75rem !important; /* 12px for tiny screens */
+  }
+}
+
+.heroSecondaryStatsCard {
+  composes: heroStatsCard;
+  min-height: 70px !important;
+  padding: 0.75rem 0.5rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center !important;
+}
+
+/* Mobile responsive padding for secondary stats cards */
+@media (max-width: 767px) {
+  .heroSecondaryStatsCard {
+    padding: 0.5rem 0.375rem !important;
+    min-height: 65px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSecondaryStatsCard {
+    padding: 0.375rem 0.25rem !important;
+    min-height: 60px !important;
+  }
+}
+
+.heroSecondaryStatsValue {
+  line-height: 1.1 !important;
+  margin-bottom: 0.25rem !important;
+  font-weight: 700 !important;
+  /* Responsive typography scaling for secondary stats value */
+  font-size: 1.125rem !important; /* 18px base */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
+/* Mobile responsive typography for secondary stats value */
+@media (max-width: 767px) {
+  .heroSecondaryStatsValue {
+    font-size: 1rem !important; /* 16px for mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSecondaryStatsValue {
+    font-size: 0.875rem !important; /* 14px for tiny screens */
+  }
+}
+
+.heroSecondaryStatsLabel {
+  line-height: 1.1 !important;
+  font-weight: 500 !important;
+  /* Responsive typography scaling for secondary stats label */
+  font-size: 0.75rem !important; /* 12px base */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  width: 100% !important;
+  text-align: center !important;
+  opacity: 0.8 !important;
+}
+
+/* Mobile responsive typography for secondary stats label */
+@media (max-width: 767px) {
+  .heroSecondaryStatsLabel {
+    font-size: 0.6875rem !important; /* 11px for mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSecondaryStatsLabel {
+    font-size: 0.625rem !important; /* 10px for tiny screens */
+  }
+}
+
+/* Mobile hover effects for new cards */
+@media (min-width: 768px) {
+  .heroPrimaryStatsCard:hover {
+    transform: translateY(-3px) scale(1.01) !important;
+    box-shadow: 0 12px 32px hsl(var(--primary) / 0.18), inset 0 1px 0 hsl(var(--border) / 0.4) !important;
+  }
+  
+  .heroSecondaryStatsCard:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px hsl(var(--primary) / 0.12), inset 0 1px 0 hsl(var(--border) / 0.3) !important;
+  }
+}
+
 /* Legacy button layout styles - replaced by heroButtonContainer */

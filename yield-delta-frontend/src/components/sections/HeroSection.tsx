@@ -136,23 +136,59 @@ export default function HeroSection() {
                         </div>
                     </div>
 
-                    {/* Stats section - Reduced for better spacing */}
+                    {/* Stats section - Mobile-optimized with hero TVL layout */}
                     <div ref={statsRef} className="w-full mt-8 lg:mt-12">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-                            {[
-                                { value: '$8.3M', label: 'Total TVL' },
-                                { value: '18.5%', label: 'Avg APY' },
-                                { value: '400ms', label: 'Block Time' },
-                            ].map((stat, i) => (
-                                <Card key={i} className={`${glassCardStyles.heroStatsCard} p-3 lg:p-4 text-center`}>
-                                    <div className="text-base lg:text-lg font-bold text-primary-glow">
-                                        {stat.value}
+                        {/* Mobile Hero TVL Card + Secondary Stats Layout */}
+                        <div className="block md:hidden">
+                            {/* Primary TVL Hero Card */}
+                            <Card className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroPrimaryStatsCard} mb-3`}>
+                                <div className={`${heroStyles.heroPrimaryStatsValue} text-primary-glow`}>
+                                    $8.3M
+                                </div>
+                                <div className={`${heroStyles.heroPrimaryStatsLabel} text-primary-glow`}>
+                                    Total Value Locked
+                                </div>
+                            </Card>
+                            
+                            {/* Secondary Stats - 2 Column Grid */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <Card className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroSecondaryStatsCard}`}>
+                                    <div className={`${heroStyles.heroSecondaryStatsValue} text-primary-glow`}>
+                                        18.5%
                                     </div>
-                                    <div className="text-xs lg:text-sm text-primary-glow opacity-80">
-                                        {stat.label}
+                                    <div className={`${heroStyles.heroSecondaryStatsLabel} text-primary-glow`}>
+                                        Avg APY
                                     </div>
                                 </Card>
-                            ))}
+                                <Card className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroSecondaryStatsCard}`}>
+                                    <div className={`${heroStyles.heroSecondaryStatsValue} text-primary-glow`}>
+                                        400ms
+                                    </div>
+                                    <div className={`${heroStyles.heroSecondaryStatsLabel} text-primary-glow`}>
+                                        Block Time
+                                    </div>
+                                </Card>
+                            </div>
+                        </div>
+
+                        {/* Desktop/Tablet - Original 3-column layout */}
+                        <div className="hidden md:block">
+                            <div className={`${heroStyles.heroStatsContainer} grid grid-cols-3 gap-6`}>
+                                {[
+                                    { value: '$8.3M', label: 'Total TVL' },
+                                    { value: '18.5%', label: 'Avg APY' },
+                                    { value: '400ms', label: 'Block Time' },
+                                ].map((stat, i) => (
+                                    <Card key={i} className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroStatsCard}`}>
+                                        <div className={`${heroStyles.heroStatsValue} text-primary-glow`}>
+                                            {stat.value}
+                                        </div>
+                                        <div className={`${heroStyles.heroStatsLabel} text-primary-glow`}>
+                                            {stat.label}
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
                         </div>
                     </div>
 

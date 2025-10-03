@@ -112,10 +112,15 @@ export class RuntimeWrapper {
     const methodsToWrap = [
       'fetchAgentServers',
       'fetchChannels', 
+      'fetchParticipants',  // Add the method causing the error
       'connectToServer',
       'sendMessage',
       'connect',
-      'initialize'
+      'initialize',
+      'joinChannel',
+      'leaveChannel',
+      'getChannelInfo',
+      'sendToChannel'
     ];
     
     methodsToWrap.forEach(methodName => {
@@ -123,23 +128,34 @@ export class RuntimeWrapper {
         const originalMethod = service[methodName].bind(service);
         
         service[methodName] = async (...args: any[]) => {
-          logger.debug(`🚫 MessageBusService.${methodName} blocked (standalone mode)`);
+          logger.debug(`🚫 MessageBusService.${methodName} blocked (standalone mode)`, { 
+            args: args.length > 0 ? args[0] : 'no args',
+            timestamp: new Date().toISOString()
+          });
           
           // Return appropriate mock responses based on method
           switch (methodName) {
             case 'fetchAgentServers':
-              return { servers: [], error: null };
+              return { servers: [], error: null, success: true };
             case 'fetchChannels':
-              return { channels: [], error: null };
+              return { channels: [], error: null, success: true };
+            case 'fetchParticipants':
+              return { participants: [], error: null, success: true };
             case 'connectToServer':
               return { connected: false, error: 'Standalone mode - connections disabled' };
             case 'sendMessage':
+            case 'sendToChannel':
               return { sent: false, error: 'Standalone mode - messaging disabled' };
+            case 'joinChannel':
+            case 'leaveChannel':
+              return { success: false, error: 'Standalone mode - channel operations disabled' };
+            case 'getChannelInfo':
+              return { channelInfo: null, error: 'Standalone mode - channel info unavailable' };
             case 'connect':
             case 'initialize':
               return { success: true, message: 'Standalone mode - mock initialization' };
             default:
-              return null;
+              return { success: false, error: 'Standalone mode - operation disabled' };
           }
         };
         
@@ -155,12 +171,17 @@ export class RuntimeWrapper {
     const mockService = {
       fetchAgentServers: async () => {
         logger.debug('🚫 MockMessageBusService.fetchAgentServers - returning empty');
-        return { servers: [], error: null };
+        return { servers: [], error: null, success: true };
       },
       
       fetchChannels: async () => {
         logger.debug('🚫 MockMessageBusService.fetchChannels - returning empty');
-        return { channels: [], error: null };
+        return { channels: [], error: null, success: true };
+      },
+      
+      fetchParticipants: async (channelId: string) => {
+        logger.debug(`🚫 MockMessageBusService.fetchParticipants - blocked for channel ${channelId}`);
+        return { participants: [], error: null, success: true };
       },
       
       connectToServer: async () => {
@@ -171,6 +192,26 @@ export class RuntimeWrapper {
       sendMessage: async () => {
         logger.debug('🚫 MockMessageBusService.sendMessage - blocked');
         return { sent: false, error: 'Standalone mode' };
+      },
+      
+      sendToChannel: async () => {
+        logger.debug('🚫 MockMessageBusService.sendToChannel - blocked');
+        return { sent: false, error: 'Standalone mode' };
+      },
+      
+      joinChannel: async () => {
+        logger.debug('🚫 MockMessageBusService.joinChannel - blocked');
+        return { success: false, error: 'Standalone mode' };
+      },
+      
+      leaveChannel: async () => {
+        logger.debug('🚫 MockMessageBusService.leaveChannel - blocked');
+        return { success: false, error: 'Standalone mode' };
+      },
+      
+      getChannelInfo: async () => {
+        logger.debug('🚫 MockMessageBusService.getChannelInfo - blocked');
+        return { channelInfo: null, error: 'Standalone mode' };
       },
       
       connect: async () => {
