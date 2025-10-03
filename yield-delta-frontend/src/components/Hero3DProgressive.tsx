@@ -78,10 +78,6 @@ export default function Hero3DProgressive() {
       <Suspense fallback={<Hero3DSimple />}>
         <div className="relative">
           <Hero3D />
-          {/* Show loading indicator during 3D load */}
-          <div className="absolute bottom-4 right-4 text-xs text-primary-glow/50">
-            3D Mode
-          </div>
         </div>
       </Suspense>
     );
