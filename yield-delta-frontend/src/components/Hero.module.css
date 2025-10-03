@@ -305,10 +305,17 @@
   }
   
   .heroTextContainer {
-    order: 2 !important; /* Text second on mobile */
+    order: 3 !important; /* Text third on mobile (after features) */
     text-align: center !important;
     padding: 0 1rem !important;
     min-height: auto !important;
+  }
+  
+  .heroFeaturesContainer {
+    order: 2 !important; /* Features second on mobile (after 3D, before text) */
+    width: 100% !important;
+    padding: 0 1rem !important;
+    margin: 1rem 0 !important;
   }
 }
 

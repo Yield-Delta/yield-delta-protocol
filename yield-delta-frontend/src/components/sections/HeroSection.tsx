@@ -126,7 +126,7 @@ export default function HeroSection() {
                     </div>
                 </div>
 
-                {/* Right Column: 3D Scene + Stats + Features */}
+                {/* Right Column: 3D Scene + Stats */}
                 <div className={`${heroStyles.hero3dContainer} flex flex-col space-y-6 lg:space-y-8`}>
                     
                     {/* 3D container - Enhanced responsive sizing */}
@@ -156,25 +156,25 @@ export default function HeroSection() {
                         </div>
                     </div>
 
-                    {/* Features section - Simplified for desktop layout */}
-                    <div className="text-center lg:text-left lg:hidden">
-                        <div className="grid grid-cols-1 gap-3">
-                            {[
-                                { icon: '⚡', text: 'AI optimization' },
-                                { icon: '🛡️', text: 'Reduced impermanent loss' },
-                                { icon: '🚀', text: 'SEI integration' },
-                            ].map((feature, i) => (
-                                <div
-                                    key={i}
-                                    className="flex items-center justify-center space-x-2 text-primary-glow p-2"
-                                >
-                                    <span className="text-lg flex-shrink-0">{feature.icon}</span>
-                                    <span className="text-sm">{feature.text}</span>
-                                </div>
-                            ))}
-                        </div>
+                </div>
+                
+                {/* Features section - Mobile-only, positioned after stats on mobile */}
+                <div className={`${heroStyles.heroFeaturesContainer} text-center lg:hidden`}>
+                    <div className="grid grid-cols-1 gap-3">
+                        {[
+                            { icon: '⚡', text: 'AI optimization' },
+                            { icon: '🛡️', text: 'Reduced impermanent loss' },
+                            { icon: '🚀', text: 'SEI integration' },
+                        ].map((feature, i) => (
+                            <div
+                                key={i}
+                                className="flex items-center justify-center space-x-2 text-primary-glow p-2"
+                            >
+                                <span className="text-lg flex-shrink-0">{feature.icon}</span>
+                                <span className="text-sm">{feature.text}</span>
+                            </div>
+                        ))}
                     </div>
-
                 </div>
             </div>
             
