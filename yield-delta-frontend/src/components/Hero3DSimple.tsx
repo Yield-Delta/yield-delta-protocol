@@ -20,12 +20,12 @@ export default function Hero3DSimple() {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-full relative flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5">
+    <div ref={containerRef} className="w-full h-full relative flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 min-h-full" style={{ minHeight: 'inherit' }}>
       {/* Enhanced SVG-based 3D-like visualization */}
       <svg 
         viewBox="0 0 600 600" 
-        className="w-full h-full max-w-[1000px] max-h-[1000px]"
-        style={{ filter: 'drop-shadow(0 0 30px rgba(0, 245, 212, 0.2))' }}
+        className="w-full h-full max-w-none max-h-none"
+        style={{ filter: 'drop-shadow(0 0 30px rgba(0, 245, 212, 0.2))', minHeight: 'inherit' }}
       >
         {/* Background grid with perspective */}
         <defs>

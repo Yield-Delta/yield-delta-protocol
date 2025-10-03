@@ -265,7 +265,7 @@
   align-items: center !important;
   width: 100% !important;
   height: 100% !important;
-  min-height: max(700px, 60vh) !important; /* Responsive height for better 3D display */
+  min-height: max(800px, 70vh) !important; /* Increased for better 3D display */
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
@@ -284,7 +284,7 @@
 @media (max-width: 1024px) and (min-width: 769px) {
   .hero3dContainer {
     order: 2 !important; /* Keep 3D on right for tablet */
-    min-height: max(650px, 55vh) !important; /* Larger responsive size for better visibility */
+    min-height: max(750px, 65vh) !important; /* Increased for better 3D visibility */
     margin-bottom: 0 !important;
   }
   
@@ -300,7 +300,7 @@
 @media (max-width: 768px) {
   .hero3dContainer {
     order: 1 !important; /* 3D first on mobile */
-    min-height: max(550px, 50vh) !important; /* Improved responsive sizing */
+    min-height: max(650px, 60vh) !important; /* Significantly increased for mobile 3D visibility */
     margin-bottom: 1rem !important;
   }
   
@@ -325,7 +325,7 @@
   }
   
   .hero3dContainer {
-    min-height: max(450px, 45vh) !important; /* Enhanced responsive sizing for small screens */
+    min-height: max(600px, 55vh) !important; /* Increased minimum height for small screens */
   }
 }
 
@@ -418,6 +418,41 @@
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
+}
+
+/* 3D Canvas Container Enhancement - Ensures proper Canvas sizing */
+.enhanced3dContainer {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: inherit !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: visible !important;
+}
+
+.enhanced3dContainer > div {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: inherit !important;
+}
+
+/* Canvas specific fixes */
+.enhanced3dContainer canvas {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: inherit !important;
+  max-width: none !important;
+  max-height: none !important;
+  display: block !important;
+}
+
+/* React Three Fiber Canvas container fixes */
+.enhanced3dContainer div[style*="position: relative"] {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: inherit !important;
 }
 
 /* Legacy button layout styles - replaced by heroButtonContainer */

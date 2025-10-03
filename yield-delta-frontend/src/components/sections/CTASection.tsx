@@ -27,7 +27,7 @@ export default function CTASection() {
                         Join the future of liquidity provision with AI-powered optimization on
                         SEI
                     </p>
-                    <div className="flex flex-row justify-center lg:justify-start items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 flex-wrap">
+                    <div className={`${styles.buttonContainer}`}>
                         <Link href="/vaults" className="w-auto">
                             <Button 
                                 className="mobile-responsive-button font-bold w-auto px-3 sm:px-6 md:px-8 lg:px-12 py-4 md:py-4 lg:py-6"
@@ -42,7 +42,6 @@ export default function CTASection() {
                                     borderRadius: '12px',
                                     transition: 'all 300ms ease-in-out',
                                     fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
-                                    margin: '0.25rem 0',
                                     flex: '0 0 auto'
                                 }}
                                 onMouseEnter={(e) => {
@@ -72,7 +71,6 @@ export default function CTASection() {
                                     transition: 'all 300ms ease-in-out',
                                     borderWidth: '2px',
                                     fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
-                                    margin: '0.25rem 0',
                                     flex: '0 0 auto'
                                 }}
                                 onMouseEnter={(e) => {

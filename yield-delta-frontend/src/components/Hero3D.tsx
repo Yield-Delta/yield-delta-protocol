@@ -254,10 +254,10 @@ export default function Hero3D() {
   }, []);
 
   return (
-    <div ref={canvasRef} className="w-full h-full relative">
+    <div ref={canvasRef} className="w-full h-full relative min-h-full" style={{ minHeight: 'inherit' }}>
       <Canvas
         camera={{ position: [0, 1, 6], fov: 75 }}
-        style={{ background: 'transparent' }}
+        style={{ background: 'transparent', width: '100%', height: '100%', minHeight: 'inherit' }}
         gl={{ antialias: true, alpha: true }}
       >
         <ambientLight intensity={0.3} />

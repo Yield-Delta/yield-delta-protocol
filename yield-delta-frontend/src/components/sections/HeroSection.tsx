@@ -129,9 +129,9 @@ export default function HeroSection() {
                 {/* Right Column: 3D Scene + Stats */}
                 <div className={`${heroStyles.hero3dContainer} flex flex-col space-y-6 lg:space-y-8`}>
                     
-                    {/* 3D container - Enhanced responsive sizing */}
+                    {/* 3D container - Fixed responsive sizing for better visibility */}
                     <div className="flex justify-center w-full">
-                        <div className="relative w-full h-[600px] sm:h-[700px] md:h-[800px] lg:h-[900px] xl:h-[1000px] 2xl:h-[1100px] min-h-[600px]">
+                        <div className={`${heroStyles.enhanced3dContainer} relative w-full h-[700px] sm:h-[800px] md:h-[900px] lg:h-[1000px] xl:h-[1100px] 2xl:h-[1200px] min-h-[700px] max-h-none`}>
                             <Hero3DProgressive />
                         </div>
                     </div>

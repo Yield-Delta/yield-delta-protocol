@@ -110,3 +110,53 @@
         transition: none !important;
     }
 }
+
+/* Button Container Spacing Enhancements */
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+@media (min-width: 640px) {
+    .buttonContainer {
+        gap: 1.5rem;
+    }
+}
+
+@media (min-width: 768px) {
+    .buttonContainer {
+        gap: 2rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .buttonContainer {
+        justify-content: flex-start;
+        gap: 2.5rem;
+    }
+}
+
+/* Ensure proper spacing when buttons wrap */
+.buttonContainer > * {
+    margin: 0.25rem 0;
+}
+
+/* Mobile-specific button spacing */
+@media (max-width: 480px) {
+    .buttonContainer {
+        gap: 0.75rem;
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .buttonContainer > * {
+        margin: 0.25rem 0;
+        width: 100%;
+        max-width: 280px;
+    }
+}
