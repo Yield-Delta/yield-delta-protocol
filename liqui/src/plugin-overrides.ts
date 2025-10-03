@@ -227,3 +227,11 @@ export const shouldUseAPIIntegration = () => {
 export const shouldUsePythonAI = () => {
   return process.env.PYTHON_AI_ENGINE_ACTIVE === 'true';
 };
+
+/**
+ * Check if MessageBusService should be disabled for standalone operation
+ */
+export const shouldDisableMessageBus = () => {
+  return process.env.DISABLE_MESSAGE_BUS === 'true' ||
+         process.env.MESSAGE_BUS_ENABLED === 'false';
+};

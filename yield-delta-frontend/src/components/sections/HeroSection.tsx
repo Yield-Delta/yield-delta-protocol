@@ -107,60 +107,18 @@ export default function HeroSection() {
 
                         <div
                             ref={ctaRef}
-                            className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 sm:gap-x-6 md:gap-x-8 sm:gap-y-4 md:gap-y-6"
+                            className={`${heroStyles.heroButtonContainer}`}
                         >
                             <Button
-                                className="mobile-responsive-button font-bold w-auto px-6 md:px-8 py-4 md:py-4"
+                                className={`${heroStyles.heroButton} ${heroStyles.heroPrimaryButton}`}
                                 onClick={() => window.location.href = '/vaults'}
-                                style={{
-                                    background: 'linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%))',
-                                    color: 'hsl(216 100% 4%)',
-                                    boxShadow: '0 0 20px hsl(180 100% 48% / 0.3), 0 0 40px hsl(180 100% 48% / 0.1)',
-                                    border: 'none',
-                                    borderRadius: '12px',
-                                    transition: 'all 300ms ease-in-out',
-                                    minWidth: '140px',
-                                    minHeight: '52px',
-                                    fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
-                                    margin: '0.25rem 0'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'scale(1.02)';
-                                    e.currentTarget.style.boxShadow = '0 0 25px hsl(180 100% 48% / 0.4), 0 0 50px hsl(180 100% 48% / 0.2)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                    e.currentTarget.style.boxShadow = '0 0 20px hsl(180 100% 48% / 0.3), 0 0 40px hsl(180 100% 48% / 0.1)';
-                                }}
                             >
                                 Launch App
                             </Button>
                             <Button
                                 variant="outline"
-                                className="mobile-responsive-button font-bold w-auto px-6 md:px-8 py-4 md:py-4"
+                                className={`${heroStyles.heroButton} ${heroStyles.heroSecondaryButton}`}
                                 onClick={() => window.location.href = '/docs'}
-                                style={{
-                                    borderColor: 'hsl(180 100% 48%)',
-                                    color: 'hsl(180 100% 48%)',
-                                    background: 'transparent',
-                                    borderRadius: '12px',
-                                    transition: 'all 300ms ease-in-out',
-                                    minWidth: '140px',
-                                    minHeight: '52px',
-                                    fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
-                                    borderWidth: '2px',
-                                    margin: '0.25rem 0'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.background = 'hsl(180 100% 48% / 0.1)';
-                                    e.currentTarget.style.borderColor = 'hsl(180 100% 48%)';
-                                    e.currentTarget.style.transform = 'scale(1.02)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.background = 'transparent';
-                                    e.currentTarget.style.borderColor = 'hsl(180 100% 48%)';
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                }}
                             >
                                 View Documentation
                             </Button>
@@ -171,9 +129,9 @@ export default function HeroSection() {
                 {/* Right Column: 3D Scene + Stats + Features */}
                 <div className={`${heroStyles.hero3dContainer} flex flex-col space-y-6 lg:space-y-8`}>
                     
-                    {/* 3D container - Improved tablet responsiveness */}
+                    {/* 3D container - Enhanced responsive sizing */}
                     <div className="flex justify-center w-full">
-                        <div className="relative w-full h-[500px] sm:h-[600px] md:h-[700px] lg:h-[800px] xl:h-[900px] 2xl:h-[1000px]">
+                        <div className="relative w-full h-[600px] sm:h-[700px] md:h-[800px] lg:h-[900px] xl:h-[1000px] 2xl:h-[1100px] min-h-[600px]">
                             <Hero3DProgressive />
                         </div>
                     </div>
