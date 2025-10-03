@@ -12,10 +12,10 @@ compatibility_flags = ["nodejs_compat"]
 name = "yield-delta-frontend"
 [env.production.vars]
 NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
-ELIZA_AGENT_URL = "https://www.yielddelta.xyz"
+ELIZA_AGENT_URL = "https://vigilant-simplicity-production.up.railway.app"
 
 [env.preview] 
 name = "yield-delta-frontend-preview"
 [env.preview.vars]
 NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
-ELIZA_AGENT_URL = "https://www.yielddelta.xyz"
+ELIZA_AGENT_URL = "https://vigilant-simplicity-production.up.railway.app"
