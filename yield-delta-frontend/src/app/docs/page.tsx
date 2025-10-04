@@ -3,198 +3,262 @@ import Link from 'next/link'
 
 export default function DocsPage() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="prose prose-neutral dark:prose-invert max-w-none">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-purple-600 bg-clip-text text-transparent">
-              Yield Delta Documentation
-            </h1>
-            <p className="text-xl text-muted-foreground">
-              Welcome to the comprehensive documentation for <strong>Yield Delta</strong> - the next-generation AI-powered DeFi platform built on SEI Network.
+    <div className="docs-container docs-prose">
+      {/* Hero Section */}
+      <header className="docs-animate-in">
+        <h1 className="docs-title">
+          Yield Delta Documentation
+        </h1>
+        <p className="docs-subtitle">
+          Welcome to the comprehensive documentation for <strong>Yield Delta</strong> - the next-generation AI-powered DeFi platform built on SEI Network.
+        </p>
+      </header>
+
+      {/* What is Yield Delta Section */}
+      <section className="docs-animate-in docs-animate-delay-1">
+        <h2 className="docs-section-title">What is Yield Delta?</h2>
+        <p className="text-lg mb-8 text-docs-text-secondary leading-relaxed">
+          Yield Delta is an <strong className="text-docs-text-primary">AI-powered yield optimization platform</strong> that combines cutting-edge machine learning with the lightning-fast SEI blockchain to maximize your DeFi yields while minimizing risk.
+        </p>
+        
+        {/* Key Innovation Features */}
+        <div className="docs-feature-grid">
+          <div className="docs-feature-card">
+            <span className="docs-feature-icon">🧠</span>
+            <h3 className="docs-feature-title">AI-Powered Optimization</h3>
+            <p className="docs-feature-description">
+              Machine learning algorithms continuously optimize liquidity positions using advanced predictive analytics
             </p>
           </div>
-
-          {/* What is Yield Delta */}
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">What is Yield Delta?</h2>
-            <p className="mb-4">
-              Yield Delta is an <strong>AI-powered yield optimization platform</strong> that combines cutting-edge machine learning with the lightning-fast SEI blockchain to maximize your DeFi yields while minimizing risk.
+          
+          <div className="docs-feature-card">
+            <span className="docs-feature-icon">⚡</span>
+            <h3 className="docs-feature-title">SEI Network Speed</h3>
+            <p className="docs-feature-description">
+              Leverage 400ms block finality for rapid rebalancing and near-instant transaction execution
             </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
-              <div className="p-4 border rounded-lg bg-card">
-                <h3 className="font-semibold mb-2">🧠 AI-Powered Optimization</h3>
-                <p className="text-sm text-muted-foreground">Machine learning algorithms continuously optimize liquidity positions</p>
-              </div>
-              <div className="p-4 border rounded-lg bg-card">
-                <h3 className="font-semibold mb-2">⚡ SEI Network Speed</h3>
-                <p className="text-sm text-muted-foreground">Leverage 400ms block finality for rapid rebalancing</p>
-              </div>
-              <div className="p-4 border rounded-lg bg-card">
-                <h3 className="font-semibold mb-2">🛡️ Impermanent Loss Protection</h3>
-                <p className="text-sm text-muted-foreground">Advanced hedging strategies minimize IL risk</p>
-              </div>
-              <div className="p-4 border rounded-lg bg-card">
-                <h3 className="font-semibold mb-2">📊 Real-time Analytics</h3>
-                <p className="text-sm text-muted-foreground">Beautiful 3D visualizations powered by Three.js and GSAP</p>
-              </div>
-            </div>
-          </section>
-
-          {/* Quick Start */}
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Quick Start</h2>
-            <p className="mb-4">Choose your path to get started:</p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-card">
-                <h3 className="text-lg font-semibold mb-2">🏗️ For Developers</h3>
-                <p className="text-muted-foreground mb-4">Build on top of Yield Delta, integrate our APIs, or contribute to the protocol.</p>
-                <Link href="/docs/getting-started" className="text-primary hover:text-primary/80 font-medium">
-                  Development Guide →
-                </Link>
-              </div>
-              
-              <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow bg-card">
-                <h3 className="text-lg font-semibold mb-2">💰 For Liquidity Providers</h3>
-                <p className="text-muted-foreground mb-4">Learn how to provide liquidity and maximize your yields with AI optimization.</p>
-                <Link href="/docs/features" className="text-primary hover:text-primary/80 font-medium">
-                  Features Overview →
-                </Link>
-              </div>
-            </div>
-          </section>
-
-          {/* Core Features */}
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Core Features</h2>
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse border border-border">
-                <thead>
-                  <tr className="bg-muted">
-                    <th className="border border-border p-3 text-left">Feature</th>
-                    <th className="border border-border p-3 text-left">Description</th>
-                    <th className="border border-border p-3 text-left">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="border border-border p-3">
-                      <Link href="/docs/features/ai-rebalancing" className="text-primary hover:text-primary/80">
-                        AI-Powered Rebalancing
-                      </Link>
-                    </td>
-                    <td className="border border-border p-3">Automated position optimization using ML</td>
-                    <td className="border border-border p-3">
-                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">✅ Live</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border border-border p-3">
-                      <Link href="/docs/features/vaults" className="text-primary hover:text-primary/80">
-                        Vault Management
-                      </Link>
-                    </td>
-                    <td className="border border-border p-3">ERC-4626 compatible yield vaults</td>
-                    <td className="border border-border p-3">
-                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">✅ Live</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border border-border p-3">
-                      <Link href="/docs/features/ai-chat" className="text-primary hover:text-primary/80">
-                        Liqui Chat
-                      </Link>
-                    </td>
-                    <td className="border border-border p-3">AI assistant for DeFi strategy</td>
-                    <td className="border border-border p-3">
-                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">✅ Live</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border border-border p-3">
-                      <Link href="/docs/features/market-data" className="text-primary hover:text-primary/80">
-                        Market Analytics
-                      </Link>
-                    </td>
-                    <td className="border border-border p-3">Real-time market data and insights</td>
-                    <td className="border border-border p-3">
-                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">✅ Live</span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="border border-border p-3">
-                      <Link href="/docs/demo-mode" className="text-primary hover:text-primary/80">
-                        Demo Mode
-                      </Link>
-                    </td>
-                    <td className="border border-border p-3">Risk-free testing environment</td>
-                    <td className="border border-border p-3">
-                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-sm">✅ Live</span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          {/* Network Information */}
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Network Information</h2>
-            <div className="bg-card border rounded-lg p-6">
-              <ul className="space-y-2">
-                <li><strong>Chain ID:</strong> 713715 (SEI Devnet) / 1328 (SEI Mainnet)</li>
-                <li><strong>Native Token:</strong> SEI</li>
-                <li><strong>Block Time:</strong> ~400ms</li>
-                <li><strong>Explorer:</strong> <a href="https://seitrace.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary/80">SeiTrace</a></li>
-              </ul>
-            </div>
-          </section>
-
-          {/* Community & Support */}
-          <section className="mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Community &amp; Support</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <a 
-                href="https://discord.gg/sei" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="p-4 border rounded-lg hover:shadow-lg transition-shadow bg-card text-center"
-              >
-                <h3 className="font-semibold mb-2">Discord</h3>
-                <p className="text-sm text-muted-foreground">Join our community</p>
-              </a>
-              
-              <a 
-                href="https://github.com/your-org/sei-dlp-core" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="p-4 border rounded-lg hover:shadow-lg transition-shadow bg-card text-center"
-              >
-                <h3 className="font-semibold mb-2">GitHub</h3>
-                <p className="text-sm text-muted-foreground">Contribute to the project</p>
-              </a>
-              
-              <a 
-                href="https://twitter.com/sei_dlp" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="p-4 border rounded-lg hover:shadow-lg transition-shadow bg-card text-center"
-              >
-                <h3 className="font-semibold mb-2">Twitter</h3>
-                <p className="text-sm text-muted-foreground">@SEI_DLP</p>
-              </a>
-            </div>
-          </section>
-
-          {/* Footer */}
-          <footer className="mt-12 pt-8 border-t border-border text-center text-muted-foreground">
-            <p><em>Built with ❤️ by Yield Delta on SEI Network</em></p>
-          </footer>
+          </div>
+          
+          <div className="docs-feature-card">
+            <span className="docs-feature-icon">🛡️</span>
+            <h3 className="docs-feature-title">Impermanent Loss Protection</h3>
+            <p className="docs-feature-description">
+              Advanced hedging strategies and dynamic risk management minimize IL exposure
+            </p>
+          </div>
+          
+          <div className="docs-feature-card">
+            <span className="docs-feature-icon">📊</span>
+            <h3 className="docs-feature-title">Real-time Analytics</h3>
+            <p className="docs-feature-description">
+              Beautiful 3D visualizations powered by Three.js and GSAP provide deep insights
+            </p>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* Quick Start Section */}
+      <section className="docs-animate-in docs-animate-delay-2">
+        <h2 className="docs-section-title">Quick Start</h2>
+        <p className="text-lg mb-8 text-docs-text-secondary">
+          Choose your path to get started with Yield Delta:
+        </p>
+        
+        <div className="docs-quickstart-grid">
+          <Link href="/docs/getting-started" className="docs-quickstart-card">
+            <h3 className="docs-quickstart-title">🏗️ For Developers</h3>
+            <p className="docs-quickstart-description">
+              Build on top of Yield Delta, integrate our APIs, or contribute to the protocol. Access comprehensive guides and examples.
+            </p>
+            <span className="docs-quickstart-link">
+              Development Guide →
+            </span>
+          </Link>
+          
+          <Link href="/docs/features" className="docs-quickstart-card">
+            <h3 className="docs-quickstart-title">💰 For Liquidity Providers</h3>
+            <p className="docs-quickstart-description">
+              Learn how to provide liquidity and maximize your yields with AI optimization. Start earning today.
+            </p>
+            <span className="docs-quickstart-link">
+              Features Overview →
+            </span>
+          </Link>
+        </div>
+      </section>
+
+      {/* Core Features Table */}
+      <section className="docs-animate-in docs-animate-delay-3">
+        <h2 className="docs-section-title">Core Features</h2>
+        <div className="docs-table-container">
+          <table className="docs-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>Description</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <Link href="/docs/features/ai-rebalancing" className="docs-network-link font-medium">
+                    AI-Powered Rebalancing
+                  </Link>
+                </td>
+                <td>Automated position optimization using ML algorithms</td>
+                <td>
+                  <span className="docs-status-badge docs-status-live">✅ Live</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Link href="/docs/features/vaults" className="docs-network-link font-medium">
+                    Vault Management
+                  </Link>
+                </td>
+                <td>ERC-4626 compatible yield vaults with auto-compounding</td>
+                <td>
+                  <span className="docs-status-badge docs-status-live">✅ Live</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Link href="/docs/features/ai-chat" className="docs-network-link font-medium">
+                    Liqui Chat
+                  </Link>
+                </td>
+                <td>AI assistant for DeFi strategy and portfolio optimization</td>
+                <td>
+                  <span className="docs-status-badge docs-status-live">✅ Live</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Link href="/docs/features/market-data" className="docs-network-link font-medium">
+                    Market Analytics
+                  </Link>
+                </td>
+                <td>Real-time market data and advanced trading insights</td>
+                <td>
+                  <span className="docs-status-badge docs-status-live">✅ Live</span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <Link href="/docs/demo-mode" className="docs-network-link font-medium">
+                    Demo Mode
+                  </Link>
+                </td>
+                <td>Risk-free testing environment with simulated funds</td>
+                <td>
+                  <span className="docs-status-badge docs-status-live">✅ Live</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* Architecture Overview */}
+      <section>
+        <h2 className="docs-section-title">Architecture Overview</h2>
+        <div className="docs-network-card">
+          <div className="bg-docs-glass-bg border border-docs-glass-border rounded-lg p-6">
+            <pre className="text-sm text-docs-text-secondary overflow-x-auto">
+{`┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Frontend      │    │   API Layer     │    │   AI Engine     │
+│   Next.js       │◄──►│   Node.js       │◄──►│   Python/ONNX   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         │                       ▼                       ▼
+         │              ┌─────────────────┐    ┌─────────────────┐
+         │              │ Smart Contracts │    │ ML Models       │
+         │              │   Solidity      │    │ Optimization    │
+         │              └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  ElizaOS Agent  │    │   SEI Network   │    │ Risk Assessment │
+│  Liqui Chat     │    │   400ms blocks  │    │ & Rebalancing   │
+└─────────────────┘    └─────────────────┘    └─────────────────┘`}
+            </pre>
+          </div>
+        </div>
+      </section>
+
+      {/* Network Information */}
+      <section>
+        <h2 className="docs-section-title">Network Information</h2>
+        <div className="docs-network-card">
+          <ul className="docs-network-list">
+            <li>
+              <span className="docs-network-label">Chain ID</span>
+              <span className="docs-network-value">713715 (SEI Devnet) / 1328 (SEI Mainnet)</span>
+            </li>
+            <li>
+              <span className="docs-network-label">Native Token</span>
+              <span className="docs-network-value">SEI</span>
+            </li>
+            <li>
+              <span className="docs-network-label">Block Time</span>
+              <span className="docs-network-value">~400ms</span>
+            </li>
+            <li>
+              <span className="docs-network-label">Explorer</span>
+              <a 
+                href="https://seitrace.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="docs-network-link"
+              >
+                SeiTrace
+              </a>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      {/* Community & Support */}
+      <section>
+        <h2 className="docs-section-title">Community & Support</h2>
+        <div className="docs-community-grid">
+          <a 
+            href="https://discord.gg/sei" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="docs-community-card"
+          >
+            <h3 className="docs-community-title">💬 Discord</h3>
+            <p className="docs-community-description">Join our community for support and discussions</p>
+          </a>
+          
+          <a 
+            href="https://github.com/your-org/sei-dlp-core" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="docs-community-card"
+          >
+            <h3 className="docs-community-title">⭐ GitHub</h3>
+            <p className="docs-community-description">Contribute to the protocol and access source code</p>
+          </a>
+          
+          <a 
+            href="https://twitter.com/sei_dlp" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="docs-community-card"
+          >
+            <h3 className="docs-community-title">🐦 Twitter</h3>
+            <p className="docs-community-description">Follow @SEI_DLP for latest updates</p>
+          </a>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="docs-footer">
+        <p>Built with ❤️ by Yield Delta on SEI Network</p>
+      </footer>
     </div>
   )
 }

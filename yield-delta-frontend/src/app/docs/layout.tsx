@@ -7,10 +7,8 @@ export default function DocsLayout({
 }) {
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="prose prose-neutral dark:prose-invert max-w-none">
-          {children}
-        </div>
+      <div className="container mx-auto px-4 py-8">
+        {children}
       </div>
     </div>
   )

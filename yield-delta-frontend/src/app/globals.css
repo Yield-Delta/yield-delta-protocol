@@ -299,11 +299,10 @@ html {
 
 /* 2. Third‐party imports */
 @import "tw-animate-css";
+@import "../styles/docs-theme.css";
 
 /* 3. Your CSS variable definitions */
 :root {
-  --radius: 0.5rem;
-  
   /* Custom CSS variables for dashboard */
   --dashboard-card-bg: rgb(30 41 59 / 0.6);
   --dashboard-hover-bg: rgb(51 65 85 / 0.5);
