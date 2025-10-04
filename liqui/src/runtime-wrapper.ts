@@ -29,8 +29,55 @@ export function configureStandaloneMode(): void {
     process.env.SERVER_PORT = '3000';
   }
   
+  // Intercept fetch globally BEFORE any ElizaOS code runs
+  interceptGlobalFetch();
+  
   logger.info('🔧 Standalone mode configured - MessageBus disabled for local operation');
   logger.info('🚫 Central Message Server URL set to non-routable address: http://127.0.0.1:9999');
+  logger.info('🔒 Global fetch interception enabled - all external MessageBus calls will be blocked');
+}
+
+/**
+ * Intercept global fetch to block MessageBusService URLs immediately
+ */
+function interceptGlobalFetch(): void {
+  const originalFetch = global.fetch;
+  
+  // @ts-ignore - We're intentionally overriding fetch
+  global.fetch = async (url: string | URL | Request, options?: RequestInit): Promise<Response> => {
+    const urlString = typeof url === 'string' ? url : url instanceof URL ? url.toString() : url.url;
+    
+    // Block all MessageBusService-related endpoints
+    if (
+      urlString.includes('/api/channels') ||
+      urlString.includes('/api/participants') ||
+      urlString.includes('/api/servers') ||
+      urlString.includes('/api/messages') ||
+      urlString.includes('127.0.0.1:9999') ||
+      urlString.includes('localhost:9999') ||
+      urlString.includes('25c93c98-c9a6-416d-818d-124fb5e1e21b') // Known external channel ID
+    ) {
+      logger.debug(`🚫 Blocked fetch to MessageBus endpoint: ${urlString.substring(0, 100)}...`);
+      
+      // Return a mock success response immediately
+      return new Response(JSON.stringify({
+        success: true,
+        data: [],
+        participants: [],
+        channels: [],
+        servers: [],
+        message: 'Standalone mode - operation disabled'
+      }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+    
+    // Allow all other fetch calls to proceed normally
+    return originalFetch(url, options);
+  };
+  
+  logger.info('✅ Global fetch intercepted - MessageBus endpoints will return mock responses');
 }
 
 /**
@@ -142,10 +189,8 @@ export class RuntimeWrapper {
         const originalMethod = service[methodName].bind(service);
         
         service[methodName] = async (...args: any[]) => {
-          logger.debug(`🚫 MessageBusService.${methodName} blocked (standalone mode)`, { 
-            args: args.length > 0 ? args[0] : 'no args',
-            timestamp: new Date().toISOString()
-          });
+          const argInfo = args.length > 0 ? JSON.stringify(args[0]).substring(0, 50) : 'no args';
+          logger.debug(`🚫 MessageBusService.${methodName} blocked (standalone mode) - args: ${argInfo}`);
           
           // Return appropriate mock responses based on method
           switch (methodName) {
