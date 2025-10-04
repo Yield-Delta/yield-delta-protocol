@@ -1,10 +1,4 @@
 import type { NextConfig } from 'next'
-import withNextra from 'nextra'
-
-// Configure Nextra with basic options
-const withNextraConfig = withNextra({
-  // Basic Nextra configuration
-})
 
 const nextConfig: NextConfig = {
   // Basic config for Cloudflare Pages with Functions
@@ -69,4 +63,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default withNextraConfig(nextConfig)
+export default nextConfig
