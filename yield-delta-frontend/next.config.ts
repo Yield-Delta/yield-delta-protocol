@@ -1,4 +1,10 @@
 import type { NextConfig } from 'next'
+import withNextra from 'nextra'
+
+// Configure Nextra with basic options
+const withNextraConfig = withNextra({
+  // Basic Nextra configuration
+})
 
 const nextConfig: NextConfig = {
   // Basic config for Cloudflare Pages with Functions
@@ -11,7 +17,30 @@ const nextConfig: NextConfig = {
     API_VERSION: '1.0.0',
   },
   
-  // Simple webpack config
+  // Headers for API responses and SEO
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, s-maxage=30, stale-while-revalidate=60' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-XSS-Protection', value: '1; mode=block' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        ],
+      },
+      {
+        source: '/docs/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, s-maxage=300, stale-while-revalidate=600' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+        ],
+      },
+    ]
+  },
+  
+  // Simple webpack config with Nextra compatibility
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -33,6 +62,11 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  
+  // Enable experimental features for better performance
+  experimental: {
+    optimizePackageImports: ['nextra', 'nextra-theme-docs'],
+  },
 }
 
-export default nextConfig
+export default withNextraConfig(nextConfig)

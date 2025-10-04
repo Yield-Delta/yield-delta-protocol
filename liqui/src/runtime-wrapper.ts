@@ -18,11 +18,19 @@ export function configureStandaloneMode(): void {
   process.env.MESSAGE_BUS_ENABLED = 'false';
   
   // Override central message server URL to prevent external calls
-  if (!process.env.CENTRAL_MESSAGE_SERVER_URL) {
-    process.env.CENTRAL_MESSAGE_SERVER_URL = 'http://localhost:9999';
+  // Use a non-routable address to ensure connection failures are immediate
+  process.env.CENTRAL_MESSAGE_SERVER_URL = 'http://127.0.0.1:9999';
+  
+  // Disable ElizaOS server auth token to prevent authentication attempts
+  process.env.ELIZA_SERVER_AUTH_TOKEN = '';
+  
+  // Set server port to a safe local port
+  if (!process.env.SERVER_PORT) {
+    process.env.SERVER_PORT = '3000';
   }
   
   logger.info('🔧 Standalone mode configured - MessageBus disabled for local operation');
+  logger.info('🚫 Central Message Server URL set to non-routable address: http://127.0.0.1:9999');
 }
 
 /**
@@ -68,6 +76,9 @@ export class RuntimeWrapper {
         return;
       }
       
+      // Override global fetch for MessageBusService endpoints
+      this.interceptFetchCalls();
+      
       // Find and wrap MessageBusService methods
       const messageBusService = this.findMessageBusService(runtime);
       if (messageBusService) {
@@ -77,6 +88,9 @@ export class RuntimeWrapper {
         logger.debug('MessageBusService not found in runtime, creating mock service');
         this.createMockMessageBusService(runtime);
       }
+      
+      // Also intercept any services that might be created later
+      this.interceptServiceCreation(runtime);
       
     } catch (error) {
       logger.warn('⚠️  MessageBusService interception failed, continuing without it:', error);
@@ -236,10 +250,110 @@ export class RuntimeWrapper {
   }
   
   /**
+   * Intercept global fetch calls to MessageBusService endpoints
+   */
+  private static interceptFetchCalls(): void {
+    if (!globalThis.fetch || (globalThis.fetch as any).__elizaIntercepted) {
+      return;
+    }
+    
+    const originalFetch = globalThis.fetch;
+    
+    globalThis.fetch = async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
+      const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
+      
+      // Block MessageBusService-related endpoints
+      if (url.includes('/api/messaging/') || 
+          url.includes('central-channels') || 
+          url.includes('central-servers') ||
+          url.includes('participants') ||
+          url.includes('agents/') && url.includes('/servers')) {
+        
+        logger.debug(`🚫 Blocked fetch to MessageBusService endpoint: ${url}`);
+        
+        // Return a mock response
+        return new Response(JSON.stringify({
+          success: false,
+          error: 'Standalone mode - MessageBus endpoints disabled',
+          data: { participants: [], channels: [], servers: [] }
+        }), {
+          status: 503,
+          statusText: 'Service Unavailable - Standalone Mode',
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+      
+      // Allow other fetch calls to proceed normally
+      return originalFetch(input, init);
+    };
+    
+    // Mark as intercepted
+    (globalThis.fetch as any).__elizaIntercepted = true;
+    logger.info('🌐 Global fetch intercepted for MessageBusService endpoints');
+  }
+  
+  /**
+   * Intercept service creation to catch MessageBusService instances
+   */
+  private static interceptServiceCreation(runtime: any): void {
+    try {
+      // Intercept the runtime's service management
+      if (runtime.services && typeof runtime.services === 'object') {
+        const originalServices = { ...runtime.services };
+        
+        Object.defineProperty(runtime, 'services', {
+          get() {
+            return originalServices;
+          },
+          set(newServices) {
+            if (newServices && typeof newServices === 'object') {
+              // Check for MessageBusService in new services
+              for (const [key, service] of Object.entries(newServices)) {
+                if (key.toLowerCase().includes('messagebus') || 
+                    key.toLowerCase().includes('message') ||
+                    (service && typeof service === 'object' && 
+                     ('fetchParticipants' in service || 'getCentralMessageServerUrl' in service))) {
+                  
+                  logger.debug(`🚫 Intercepting service: ${key}`);
+                  RuntimeWrapper.wrapMessageBusServiceMethods(service);
+                }
+              }
+            }
+            Object.assign(originalServices, newServices);
+          },
+          configurable: true,
+          enumerable: true
+        });
+      }
+      
+      // Also intercept if services are added via methods
+      if (runtime.addService && typeof runtime.addService === 'function') {
+        const originalAddService = runtime.addService.bind(runtime);
+        runtime.addService = function(service: any) {
+          if (service && typeof service === 'object' && 
+              ('fetchParticipants' in service || 'getCentralMessageServerUrl' in service)) {
+            logger.debug('🚫 Intercepting added MessageBusService');
+            RuntimeWrapper.wrapMessageBusServiceMethods(service);
+          }
+          return originalAddService(service);
+        };
+      }
+      
+    } catch (error) {
+      logger.warn('⚠️  Service creation interception failed:', error);
+    }
+  }
+  
+  /**
    * Reset the wrapper state (for testing)
    */
   static reset(): void {
     this.wrapped = false;
+    
+    // Reset fetch if it was intercepted
+    if (globalThis.fetch && (globalThis.fetch as any).__elizaIntercepted) {
+      delete (globalThis.fetch as any).__elizaIntercepted;
+    }
   }
 }
 

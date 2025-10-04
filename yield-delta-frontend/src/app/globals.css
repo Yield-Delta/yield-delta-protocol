@@ -3,12 +3,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 2. Import Yield Delta Design System */
+@import '../styles/design-system.css';
+
 /* Dashboard responsive grid fix - Tailwind v4 compatible */
 @layer components {
-  /* Mobile Responsive Utilities */
+  /* Enhanced Mobile Responsive Typography Utilities */
   .mobile-responsive-text {
     font-size: clamp(0.875rem, 2.5vw, 1.125rem);
     line-height: 1.6;
+    word-break: break-word;
+    hyphens: auto;
   }
   
   .mobile-responsive-heading {
@@ -17,12 +22,18 @@
     word-break: break-word;
     hyphens: auto;
     letter-spacing: -0.02em;
+    text-align: center;
+    max-width: 100%;
   }
   
   .mobile-responsive-subheading {
     font-size: clamp(1rem, 3.5vw, 1.75rem);
     line-height: 1.4;
     letter-spacing: -0.01em;
+    word-break: break-word;
+    hyphens: auto;
+    text-align: center;
+    max-width: 100%;
   }
   
   .mobile-responsive-button {
@@ -30,6 +41,28 @@
     padding: clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem);
     min-height: clamp(44px, 6vw, 56px);
     line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  /* Additional responsive text utilities */
+  .mobile-responsive-cta-text {
+    font-size: clamp(1rem, 4vw, 1.5rem);
+    line-height: 1.3;
+    text-align: center;
+    max-width: 100%;
+    word-break: break-word;
+  }
+  
+  .mobile-responsive-small-text {
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    line-height: 1.5;
+    word-break: break-word;
   }
   
   /* Enhanced Mobile Layout Utilities */
@@ -47,8 +80,38 @@
   .mobile-grid-gap {
     gap: clamp(1rem, 4vw, 2rem);
   }
+  
+  /* Touch-optimized spacing utilities */
+  .mobile-touch-spacing {
+    margin: clamp(0.5rem, 2vw, 1rem) 0;
+  }
+  
+  .mobile-button-spacing {
+    margin: clamp(0.75rem, 3vw, 1.5rem) 0;
+    gap: clamp(0.75rem, 3vw, 1.5rem);
+  }
+  
+  .mobile-element-spacing {
+    margin-bottom: clamp(1rem, 4vw, 2rem);
+  }
+  
+  /* Improved touch target sizing */
+  .mobile-touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    padding: clamp(0.75rem, 3vw, 1rem);
+  }
+  
+  /* Enhanced mobile padding with safe areas */
+  .mobile-enhanced-padding {
+    padding: clamp(1rem, 4vw, 2rem);
+    padding-left: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-left));
+    padding-right: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-right));
+    padding-top: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-top));
+    padding-bottom: max(clamp(1rem, 4vw, 2rem), env(safe-area-inset-bottom));
+  }
 
-  /* iPad-specific responsive utilities */
+  /* Tablet-specific responsive utilities */
   @media screen and (min-width: 768px) and (max-width: 1023px) {
     .mobile-responsive-button {
       min-width: 140px;
@@ -57,10 +120,31 @@
     
     .mobile-responsive-heading {
       font-size: clamp(2.5rem, 5vw, 3.5rem);
+      text-align: center;
     }
     
     .mobile-responsive-subheading {
       font-size: clamp(1.25rem, 3vw, 1.5rem);
+      text-align: center;
+    }
+    
+    .mobile-responsive-cta-text {
+      font-size: clamp(1.125rem, 3.5vw, 1.375rem);
+    }
+  }
+  
+  /* Large desktop responsive overrides */
+  @media screen and (min-width: 1280px) {
+    .mobile-responsive-heading {
+      text-align: left;
+    }
+    
+    .mobile-responsive-subheading {
+      text-align: left;
+    }
+    
+    .mobile-responsive-cta-text {
+      text-align: left;
     }
   }
   
@@ -75,7 +159,10 @@
     animation: slideDown 0.3s ease-out;
   }
   
-  .demo-banner-alert {
+ayb e s
+
+
+.demo-banner-alert {
     animation: glow 2s ease-in-out infinite alternate;
   }
   

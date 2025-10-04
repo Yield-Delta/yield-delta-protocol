@@ -271,7 +271,7 @@
 
 .heroTextContainer {
   order: 1 !important; /* Left side on desktop */
-  text-align: left !important;
+  text-align: center !important; /* Center text for better mobile experience */
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
@@ -290,7 +290,7 @@
   
   .heroTextContainer {
     order: 1 !important; /* Keep text on left for tablet */
-    text-align: left !important;
+    text-align: center !important;
     padding: 0 0.5rem !important;
     min-height: auto !important;
   }
@@ -329,7 +329,7 @@
   }
 }
 
-/* Hero Button Styles - Fixes width and responsiveness issues */
+/* Hero Button Styles - Enhanced mobile responsiveness and consistent widths */
 .heroButton {
   font-weight: bold !important;
   border-radius: 12px !important;
@@ -337,15 +337,42 @@
   font-size: clamp(0.875rem, 2.5vw, 1.125rem) !important;
   padding: clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 4vw, 2rem) !important;
   min-height: clamp(44px, 6vw, 52px) !important;
-  min-width: 140px !important;
-  max-width: 200px !important; /* Prevents buttons from becoming too wide */
-  width: auto !important;
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   text-align: center !important;
   line-height: 1.2 !important;
   margin: 0.25rem 0 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  /* Consistent width constraints across all screen sizes */
+  min-width: 140px !important;
+  max-width: 200px !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+
+/* Mobile-specific button sizing for consistent widths */
+@media (max-width: 480px) {
+  .heroButton {
+    width: 100% !important;
+    max-width: 280px !important;
+    min-width: 200px !important;
+    margin: 0.25rem auto !important;
+    font-size: 1rem !important;
+    padding: 1rem 1.5rem !important;
+    min-height: 48px !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .heroButton {
+    min-width: 160px !important;
+    max-width: 200px !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+  }
 }
 
 .heroPrimaryButton {
@@ -381,16 +408,49 @@
   gap: 1rem !important;
   flex-wrap: wrap !important;
   margin-top: 1rem !important;
+  width: 100% !important;
 }
 
-@media (max-width: 768px) {
+/* Mobile-first button layout improvements */
+@media (max-width: 480px) {
+  .heroButtonContainer {
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    align-items: stretch !important;
+    max-width: 320px !important;
+    margin: 1rem auto 0 auto !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
   .heroButtonContainer {
     justify-content: center !important;
-    gap: 0.75rem !important;
+    gap: 1rem !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .heroButtonContainer {
+    justify-content: center !important;
+    gap: 1.25rem !important;
   }
 }
 
 @media (min-width: 1024px) {
+  .heroButtonContainer {
+    justify-content: center !important;
+    gap: 1.5rem !important;
+  }
+}
+
+/* Large desktop - left-align text for better readability */
+@media (min-width: 1280px) {
+  .heroTextContainer {
+    text-align: left !important;
+  }
+  
   .heroButtonContainer {
     justify-content: flex-start !important;
   }

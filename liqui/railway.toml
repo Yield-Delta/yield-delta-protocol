@@ -6,7 +6,7 @@ buildCommand = "bun install && npm run build"
 node_version = "20"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "node scripts/railway-start.js"
 healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"

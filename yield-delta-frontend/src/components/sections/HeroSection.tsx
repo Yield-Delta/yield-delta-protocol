@@ -65,7 +65,18 @@ export default function HeroSection() {
                 {/* Left Column: Text Content */}
                 <div className={`${heroStyles.heroTextContainer} flex flex-col justify-center space-y-6`}>
                     <div ref={heroTextRef}>
-                        <h1 className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-8 lg:mb-8 leading-tight mobile-responsive-heading">
+                        <h1 
+                            className="font-bold mb-6 sm:mb-8 lg:mb-8 leading-tight mobile-responsive-heading"
+                            style={{
+                                fontSize: 'clamp(2rem, 7vw, 4rem)',
+                                lineHeight: '1.1',
+                                letterSpacing: '-0.02em',
+                                textAlign: 'inherit',
+                                maxWidth: '100%',
+                                wordBreak: 'break-word',
+                                hyphens: 'auto'
+                            }}
+                        >
                             <span 
                                 className={`${heroStyles.heroTitleAnimated} gradient-text-fallback`}
                                 style={{
@@ -99,7 +110,18 @@ export default function HeroSection() {
                             </span>
                         </h1>
 
-                        <p className="text-base sm:text-lg md:text-xl lg:text-xl xl:text-2xl text-primary-glow mb-6 sm:mb-8 lg:mb-8 mobile-responsive-subheading leading-relaxed">
+                        <p 
+                            className="text-primary-glow mb-6 sm:mb-8 lg:mb-8 mobile-responsive-subheading leading-relaxed"
+                            style={{
+                                fontSize: 'clamp(1rem, 4vw, 1.5rem)',
+                                lineHeight: '1.6',
+                                textAlign: 'inherit',
+                                maxWidth: '100%',
+                                letterSpacing: '-0.01em',
+                                margin: '0 auto 2rem auto',
+                                wordBreak: 'break-word'
+                            }}
+                        >
                             Harness the power of AI-driven liquidity optimization on SEI.
                             Maximize yields, minimize risk, and let ElizaOS handle the
                             complexity.
