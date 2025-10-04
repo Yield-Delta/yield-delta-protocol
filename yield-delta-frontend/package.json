@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "NEXT_TELEMETRY_DISABLED=1 NODE_OPTIONS=\"--max-old-space-size=8192\" next build",
+    "build:local": "NEXT_TELEMETRY_DISABLED=1 next build",
+    "build:analyze": "ANALYZE=true npm run build",
     "postbuild": "echo 'Build completed for Cloudflare Pages'",
     "start": "next start",
     "lint": "next lint",

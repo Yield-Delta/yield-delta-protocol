@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -26,10 +30,25 @@
       "node"
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@contracts/*": ["../contracts/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@contracts/*": [
+        "../contracts/*"
+      ]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "__tests__/**/*.ts"],
-  "exclude": ["node_modules", "elizaos-plugin", "liqui"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "__tests__/**/*.ts",
+    "next-env.d.ts",
+    "out/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "elizaos-plugin",
+    "liqui"
+  ]
 }

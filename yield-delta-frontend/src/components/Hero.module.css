@@ -336,7 +336,7 @@
   transition: all 300ms ease-in-out !important;
   font-size: clamp(0.875rem, 2.5vw, 1.125rem) !important;
   padding: clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 4vw, 2rem) !important;
-  min-height: clamp(44px, 6vw, 52px) !important;
+  min-height: clamp(48px, 6vw, 52px) !important; /* Ensure 48px minimum for accessibility */
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -346,32 +346,38 @@
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
-  /* Consistent width constraints across all screen sizes */
-  min-width: 140px !important;
-  max-width: 200px !important;
+  /* Enhanced width constraints for better mobile experience */
+  min-width: 180px !important; /* Increased for better proportions */
+  max-width: 240px !important; /* Increased for better mobile touch targets */
   width: auto !important;
   flex: 0 0 auto !important;
 }
 
-/* Mobile-specific button sizing for consistent widths */
+/* Enhanced mobile-specific button sizing for optimal touch targets */
 @media (max-width: 480px) {
   .heroButton {
     width: 100% !important;
-    max-width: 280px !important;
-    min-width: 200px !important;
+    max-width: 300px !important; /* Increased from 280px for wider mobile buttons */
+    min-width: 240px !important; /* Increased from 220px for better mobile touch target */
     margin: 0.25rem auto !important;
     font-size: 1rem !important;
-    padding: 1rem 1.5rem !important;
-    min-height: 48px !important;
+    padding: 1.125rem 2rem !important; /* Enhanced padding for better touch experience */
+    min-height: 52px !important; /* Increased from 48px for better touch accessibility */
+    border-radius: 14px !important; /* Slightly larger border radius for mobile */
   }
 }
 
+/* Enhanced tablet and small mobile range button sizing */
 @media (min-width: 481px) and (max-width: 768px) {
   .heroButton {
-    min-width: 160px !important;
-    max-width: 200px !important;
+    min-width: 200px !important; /* Increased from 180px for wider touch target */
+    max-width: 260px !important; /* Increased from 240px for better proportions */
     width: auto !important;
     flex: 0 0 auto !important;
+    padding: 1rem 2rem !important; /* Enhanced padding for better mobile UX */
+    min-height: 50px !important; /* Increased from 48px for better touch target size */
+    font-size: 1rem !important; /* Consistent font size for this range */
+    border-radius: 13px !important; /* Slightly larger border radius */
   }
 }
 
@@ -399,7 +405,7 @@
   transform: scale(1.02) !important;
 }
 
-/* Button Container Fixes */
+/* Button Container Fixes - Enhanced for wider mobile buttons */
 .heroButtonContainer {
   display: flex !important;
   flex-direction: row !important;
@@ -411,14 +417,15 @@
   width: 100% !important;
 }
 
-/* Mobile-first button layout improvements */
+/* Enhanced mobile-first button layout for wider buttons */
 @media (max-width: 480px) {
   .heroButtonContainer {
     flex-direction: column !important;
-    gap: 0.75rem !important;
+    gap: 1rem !important; /* Increased from 0.75rem for better spacing */
     align-items: stretch !important;
-    max-width: 320px !important;
-    margin: 1rem auto 0 auto !important;
+    max-width: 360px !important; /* Increased from 340px to accommodate wider buttons */
+    margin: 1.25rem auto 0 auto !important; /* Increased top margin for better visual spacing */
+    padding: 0 0.5rem !important; /* Added padding to prevent edge cutoff */
   }
 }
 

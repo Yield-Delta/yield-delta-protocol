@@ -1,8 +1,8 @@
 name = "yield-delta-frontend"
 compatibility_date = "2024-09-23"
 
-# For Cloudflare Pages deployment
-pages_build_output_dir = ".vercel/output/static"
+# For Cloudflare Pages deployment with Next.js
+pages_build_output_dir = ".next"
 build_command = "npm run build"
 
 # Enable Node.js compatibility

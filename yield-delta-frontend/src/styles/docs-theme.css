@@ -1,203 +1,485 @@
-/* Documentation Theme - Built on top of existing design system */
+/* Enhanced Documentation Theme - Professional Design System */
+/* Built on top of Yield Delta's design tokens for cohesive experience */
 
-/* Documentation-specific CSS custom properties */
+/* ===========================
+   1. DESIGN TOKENS & VARIABLES
+   =========================== */
+
 :root {
-  /* Documentation color palette extending the main theme */
+  /* Enhanced color palette extending main theme */
   --docs-text-primary: hsl(var(--foreground));
   --docs-text-secondary: hsl(var(--muted-foreground));
   --docs-text-accent: hsl(var(--primary));
+  --docs-text-success: hsl(142, 76%, 36%);
+  --docs-text-warning: hsl(38, 92%, 50%);
+  --docs-text-error: hsl(0, 84%, 60%);
+  
   --docs-bg-primary: hsl(var(--background));
   --docs-bg-secondary: hsl(var(--card));
+  --docs-bg-muted: hsl(var(--muted));
   --docs-border: hsl(var(--border));
+  --docs-border-muted: hsl(var(--border) / 0.5);
   
-  /* Documentation-specific spacing scale */
-  --docs-space-xs: 0.5rem;   /* 8px */
-  --docs-space-sm: 0.75rem;  /* 12px */
-  --docs-space-md: 1rem;     /* 16px */
-  --docs-space-lg: 1.5rem;   /* 24px */
-  --docs-space-xl: 2rem;     /* 32px */
-  --docs-space-2xl: 3rem;    /* 48px */
-  --docs-space-3xl: 4rem;    /* 64px */
+  /* Enhanced spacing scale for better hierarchy */
+  --docs-space-xs: 0.375rem;  /* 6px */
+  --docs-space-sm: 0.5rem;    /* 8px */
+  --docs-space-md: 0.75rem;   /* 12px */
+  --docs-space-lg: 1rem;      /* 16px */
+  --docs-space-xl: 1.5rem;    /* 24px */
+  --docs-space-2xl: 2rem;     /* 32px */
+  --docs-space-3xl: 3rem;     /* 48px */
+  --docs-space-4xl: 4rem;     /* 64px */
+  --docs-space-5xl: 6rem;     /* 96px */
   
-  /* Glass morphism effects for docs cards */
-  --docs-glass-bg: rgba(255, 255, 255, 0.05);
-  --docs-glass-border: rgba(255, 255, 255, 0.1);
-  --docs-glass-hover: rgba(255, 255, 255, 0.08);
+  /* Professional glass morphism effects */
+  --docs-glass-bg: rgba(255, 255, 255, 0.03);
+  --docs-glass-bg-hover: rgba(255, 255, 255, 0.06);
+  --docs-glass-bg-active: rgba(255, 255, 255, 0.09);
+  --docs-glass-border: rgba(255, 255, 255, 0.08);
+  --docs-glass-border-hover: rgba(255, 255, 255, 0.15);
+  --docs-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --docs-glass-shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.18);
   
-  /* Documentation gradients */
+  /* Sophisticated gradients aligned with main site */
   --docs-gradient-primary: linear-gradient(135deg, hsl(180, 100%, 48%) 0%, hsl(262, 80%, 60%) 100%);
   --docs-gradient-accent: linear-gradient(135deg, hsl(180, 100%, 48%) 0%, hsl(298, 85%, 70%) 50%, hsl(38, 92%, 60%) 100%);
-  --docs-gradient-subtle: linear-gradient(135deg, rgba(0, 245, 212, 0.1) 0%, rgba(155, 93, 229, 0.1) 100%);
+  --docs-gradient-subtle: linear-gradient(135deg, rgba(0, 245, 212, 0.08) 0%, rgba(155, 93, 229, 0.08) 100%);
+  --docs-gradient-card: linear-gradient(135deg, rgba(0, 245, 212, 0.04) 0%, rgba(155, 93, 229, 0.04) 100%);
+  
+  /* Typography scale - improved hierarchy */
+  --docs-font-xs: 0.75rem;     /* 12px */
+  --docs-font-sm: 0.875rem;    /* 14px */
+  --docs-font-base: 1rem;      /* 16px */
+  --docs-font-lg: 1.125rem;    /* 18px */
+  --docs-font-xl: 1.25rem;     /* 20px */
+  --docs-font-2xl: 1.5rem;     /* 24px */
+  --docs-font-3xl: 1.875rem;   /* 30px */
+  --docs-font-4xl: 2.25rem;    /* 36px */
+  --docs-font-5xl: 3rem;       /* 48px */
+  
+  /* Line heights for better readability */
+  --docs-leading-tight: 1.25;
+  --docs-leading-normal: 1.5;
+  --docs-leading-relaxed: 1.625;
+  --docs-leading-loose: 2;
+  
+  /* Border radius system */
+  --docs-radius-sm: 0.375rem;  /* 6px */
+  --docs-radius-md: 0.5rem;    /* 8px */
+  --docs-radius-lg: 0.75rem;   /* 12px */
+  --docs-radius-xl: 1rem;      /* 16px */
+  --docs-radius-2xl: 1.5rem;   /* 24px */
+  
+  /* Animation durations */
+  --docs-duration-fast: 150ms;
+  --docs-duration-normal: 250ms;
+  --docs-duration-slow: 350ms;
+  
+  /* Transition timing functions */
+  --docs-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --docs-ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
 }
 
-/* Documentation base styles */
+/* ===========================
+   2. BASE LAYOUT & CONTAINER
+   =========================== */
+
 .docs-container {
   position: relative;
-  max-width: 85rem; /* 1360px */
+  max-width: 90rem; /* 1440px - wider for better content display */
   margin: 0 auto;
-  padding: 0 var(--docs-space-lg);
+  padding: 0 var(--docs-space-xl);
 }
 
-/* Documentation typography system */
+.docs-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--docs-space-4xl);
+  min-height: 100vh;
+  position: relative;
+}
+
+@media (max-width: 1023px) {
+  .docs-layout {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
+
+/* Enhanced content area with proper spacing */
+.docs-content {
+  min-width: 0; /* Prevent overflow */
+  padding: var(--docs-space-2xl) 0;
+  max-width: 65ch; /* Optimal reading width */
+  margin: 0 auto;
+}
+
+/* ===========================
+   3. ENHANCED TYPOGRAPHY SYSTEM
+   =========================== */
+
+/* Main title with sophisticated gradient */
 .docs-title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(var(--docs-font-4xl), 6vw, var(--docs-font-5xl));
   font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  line-height: var(--docs-leading-tight);
+  letter-spacing: -0.025em;
   background: var(--docs-gradient-primary);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: var(--docs-space-lg);
+  color: transparent;
+  margin-bottom: var(--docs-space-xl);
   text-align: center;
+  position: relative;
 }
 
+/* Subtitle with perfect reading typography */
 .docs-subtitle {
-  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
-  line-height: 1.6;
+  font-size: clamp(var(--docs-font-lg), 2.5vw, var(--docs-font-xl));
+  line-height: var(--docs-leading-relaxed);
   color: var(--docs-text-secondary);
   text-align: center;
   max-width: 42rem;
-  margin: 0 auto var(--docs-space-2xl);
+  margin: 0 auto var(--docs-space-4xl);
+  font-weight: 400;
 }
 
+/* Section titles with professional styling */
 .docs-section-title {
-  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-size: clamp(var(--docs-font-2xl), 4vw, var(--docs-font-3xl));
   font-weight: 700;
   color: var(--docs-text-primary);
-  margin-bottom: var(--docs-space-lg);
+  margin-bottom: var(--docs-space-2xl);
+  margin-top: var(--docs-space-5xl);
   position: relative;
+  line-height: var(--docs-leading-tight);
+}
+
+.docs-section-title:first-of-type {
+  margin-top: 0;
 }
 
 .docs-section-title::after {
   content: '';
   position: absolute;
-  bottom: -0.5rem;
+  bottom: -0.75rem;
   left: 0;
-  width: 3rem;
+  width: 4rem;
   height: 3px;
   background: var(--docs-gradient-primary);
-  border-radius: 2px;
+  border-radius: var(--docs-radius-sm);
 }
 
-/* Enhanced feature cards with glass morphism */
+/* Subsection titles */
+.docs-subsection-title {
+  font-size: var(--docs-font-xl);
+  font-weight: 600;
+  color: var(--docs-text-primary);
+  margin-bottom: var(--docs-space-lg);
+  margin-top: var(--docs-space-3xl);
+  line-height: var(--docs-leading-tight);
+}
+
+/* Body text with optimal readability */
+.docs-text {
+  font-size: var(--docs-font-base);
+  line-height: var(--docs-leading-relaxed);
+  color: var(--docs-text-secondary);
+  margin-bottom: var(--docs-space-lg);
+}
+
+.docs-text-large {
+  font-size: var(--docs-font-lg);
+  line-height: var(--docs-leading-relaxed);
+  color: var(--docs-text-secondary);
+  margin-bottom: var(--docs-space-xl);
+}
+
+/* ===========================
+   4. ENHANCED LIST SYSTEM WITH BULLET POINTS
+   =========================== */
+
+/* Beautiful unordered lists with custom bullets */
+.docs-list {
+  list-style: none;
+  padding: 0;
+  margin: var(--docs-space-lg) 0;
+  position: relative;
+}
+
+.docs-list li {
+  position: relative;
+  padding-left: var(--docs-space-2xl);
+  margin-bottom: var(--docs-space-md);
+  font-size: var(--docs-font-base);
+  line-height: var(--docs-leading-relaxed);
+  color: var(--docs-text-secondary);
+}
+
+.docs-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.75rem;
+  width: 6px;
+  height: 6px;
+  background: var(--docs-gradient-primary);
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+/* Enhanced bullet for primary lists */
+.docs-list--primary li::before {
+  width: 8px;
+  height: 8px;
+  background: var(--docs-gradient-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0, 245, 212, 0.3);
+}
+
+/* Nested lists */
+.docs-list .docs-list {
+  margin: var(--docs-space-sm) 0;
+}
+
+.docs-list .docs-list li::before {
+  width: 4px;
+  height: 4px;
+  background: var(--docs-text-accent);
+  opacity: 0.7;
+}
+
+/* Ordered lists with custom numbering */
+.docs-list--ordered {
+  counter-reset: docs-counter;
+}
+
+.docs-list--ordered li {
+  counter-increment: docs-counter;
+}
+
+.docs-list--ordered li::before {
+  content: counter(docs-counter);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--docs-gradient-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--docs-font-xs);
+  font-weight: 600;
+  transform: none;
+}
+
+/* Feature lists with icons */
+.docs-list--features li {
+  padding-left: var(--docs-space-3xl);
+  position: relative;
+}
+
+.docs-list--features li::before {
+  content: '✨';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--docs-font-base);
+  background: none;
+  transform: none;
+}
+
+/* ===========================
+   5. SOPHISTICATED CARD SYSTEM
+   =========================== */
+
+/* Base card with enhanced glass morphism */
+.docs-card {
+  position: relative;
+  background: var(--docs-glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--docs-glass-border);
+  border-radius: var(--docs-radius-xl);
+  padding: var(--docs-space-2xl);
+  transition: all var(--docs-duration-normal) var(--docs-ease-out);
+  overflow: hidden;
+  box-shadow: var(--docs-glass-shadow);
+}
+
+.docs-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  background: var(--docs-gradient-primary);
+  border-radius: inherit;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity var(--docs-duration-normal) ease;
+}
+
+.docs-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--docs-glass-border-hover);
+  box-shadow: var(--docs-glass-shadow-hover);
+  background: var(--docs-glass-bg-hover);
+}
+
+.docs-card:hover::before {
+  opacity: 0.5;
+}
+
+/* Feature cards grid */
 .docs-feature-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--docs-space-lg);
-  margin-bottom: var(--docs-space-3xl);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--docs-space-2xl);
+  margin: var(--docs-space-4xl) 0;
 }
 
 .docs-feature-card {
   position: relative;
-  padding: var(--docs-space-lg);
   background: var(--docs-glass-bg);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--docs-glass-border);
-  border-radius: 1rem;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: var(--docs-radius-xl);
+  padding: var(--docs-space-2xl);
+  transition: all var(--docs-duration-normal) var(--docs-ease-out);
   overflow: hidden;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
 }
 
-.docs-feature-card::before {
+.docs-feature-card::after {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
+  height: 2px;
   background: var(--docs-gradient-primary);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  transform: translateX(-100%);
+  transition: transform var(--docs-duration-slow) var(--docs-ease-out);
 }
 
 .docs-feature-card:hover {
-  transform: translateY(-4px);
-  background: var(--docs-glass-hover);
-  border-color: hsl(var(--primary) / 0.3);
+  transform: translateY(-6px);
+  border-color: var(--docs-glass-border-hover);
+  background: var(--docs-glass-bg-hover);
   box-shadow: 
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04),
-    0 0 0 1px hsl(var(--primary) / 0.1);
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 8px 16px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 245, 212, 0.1);
 }
 
-.docs-feature-card:hover::before {
-  opacity: 1;
+.docs-feature-card:hover::after {
+  transform: translateX(0);
 }
 
 .docs-feature-icon {
-  font-size: 2rem;
-  margin-bottom: var(--docs-space-md);
-  display: block;
+  font-size: var(--docs-font-3xl);
+  margin-bottom: var(--docs-space-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  background: var(--docs-gradient-subtle);
+  border-radius: var(--docs-radius-lg);
 }
 
 .docs-feature-title {
-  font-size: 1.125rem;
+  font-size: var(--docs-font-xl);
   font-weight: 600;
   color: var(--docs-text-primary);
-  margin-bottom: var(--docs-space-sm);
+  margin-bottom: var(--docs-space-md);
+  line-height: var(--docs-leading-tight);
 }
 
 .docs-feature-description {
-  font-size: 0.875rem;
+  font-size: var(--docs-font-sm);
   color: var(--docs-text-secondary);
-  line-height: 1.6;
+  line-height: var(--docs-leading-relaxed);
+  flex-grow: 1;
 }
 
 /* Quick start cards */
 .docs-quickstart-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--docs-space-xl);
-  margin-bottom: var(--docs-space-3xl);
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: var(--docs-space-3xl);
+  margin: var(--docs-space-4xl) 0;
 }
 
 .docs-quickstart-card {
-  padding: var(--docs-space-xl);
-  background: var(--docs-glass-bg);
-  border: 1px solid var(--docs-glass-border);
-  border-radius: 1rem;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  background: var(--docs-glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--docs-glass-border);
+  border-radius: var(--docs-radius-xl);
+  padding: var(--docs-space-3xl);
+  transition: all var(--docs-duration-normal) var(--docs-ease-out);
   overflow: hidden;
+  text-decoration: none;
+  display: block;
+  min-height: 220px;
 }
 
-.docs-quickstart-card::after {
+.docs-quickstart-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 100px;
-  height: 100px;
+  top: -50%;
+  right: -50%;
+  width: 200px;
+  height: 200px;
   background: var(--docs-gradient-subtle);
   border-radius: 50%;
-  transform: translate(50%, -50%);
-  opacity: 0.5;
+  opacity: 0.3;
+  transition: all var(--docs-duration-slow) var(--docs-ease-out);
 }
 
 .docs-quickstart-card:hover {
-  transform: translateY(-4px);
-  border-color: hsl(var(--primary) / 0.3);
-  box-shadow: 
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  transform: translateY(-6px);
+  border-color: var(--docs-glass-border-hover);
+  background: var(--docs-glass-bg-hover);
+  box-shadow: var(--docs-glass-shadow-hover);
+}
+
+.docs-quickstart-card:hover::before {
+  opacity: 0.5;
+  transform: scale(1.1);
 }
 
 .docs-quickstart-title {
-  font-size: 1.25rem;
+  font-size: var(--docs-font-xl);
   font-weight: 600;
   color: var(--docs-text-primary);
-  margin-bottom: var(--docs-space-md);
+  margin-bottom: var(--docs-space-lg);
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  line-height: var(--docs-leading-tight);
 }
 
 .docs-quickstart-description {
   color: var(--docs-text-secondary);
-  margin-bottom: var(--docs-space-lg);
-  line-height: 1.6;
+  margin-bottom: var(--docs-space-xl);
+  line-height: var(--docs-leading-relaxed);
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  font-size: var(--docs-font-base);
 }
 
 .docs-quickstart-link {
@@ -205,41 +487,66 @@
   font-weight: 500;
   text-decoration: none;
   position: relative;
-  z-index: 1;
-  transition: all 0.2s ease;
+  z-index: 2;
+  font-size: var(--docs-font-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--docs-space-sm);
+  transition: all var(--docs-duration-fast) ease;
 }
 
 .docs-quickstart-link:hover {
   color: hsl(var(--primary) / 0.8);
+  transform: translateX(4px);
 }
 
-/* Enhanced table styles */
+.docs-quickstart-link::after {
+  content: '→';
+  transition: transform var(--docs-duration-fast) ease;
+}
+
+.docs-quickstart-link:hover::after {
+  transform: translateX(2px);
+}
+
+/* ===========================
+   6. ENHANCED TABLE SYSTEM
+   =========================== */
+
 .docs-table-container {
   overflow-x: auto;
-  margin: var(--docs-space-xl) 0;
-  border-radius: 0.75rem;
+  margin: var(--docs-space-3xl) 0;
+  border-radius: var(--docs-radius-xl);
   border: 1px solid var(--docs-border);
+  box-shadow: var(--docs-glass-shadow);
+  background: var(--docs-glass-bg);
+  backdrop-filter: blur(12px);
 }
 
 .docs-table {
   width: 100%;
   border-collapse: collapse;
-  background: var(--docs-bg-secondary);
+  background: transparent;
 }
 
 .docs-table th {
-  background: var(--docs-glass-bg);
-  padding: var(--docs-space-md) var(--docs-space-lg);
+  background: var(--docs-glass-bg-hover);
+  padding: var(--docs-space-lg) var(--docs-space-xl);
   text-align: left;
   font-weight: 600;
   color: var(--docs-text-primary);
   border-bottom: 1px solid var(--docs-border);
+  font-size: var(--docs-font-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .docs-table td {
-  padding: var(--docs-space-md) var(--docs-space-lg);
-  border-bottom: 1px solid var(--docs-border);
+  padding: var(--docs-space-lg) var(--docs-space-xl);
+  border-bottom: 1px solid var(--docs-border-muted);
   color: var(--docs-text-secondary);
+  font-size: var(--docs-font-sm);
+  line-height: var(--docs-leading-relaxed);
 }
 
 .docs-table tr:last-child td {
@@ -247,103 +554,159 @@
 }
 
 .docs-table tr:hover {
-  background: var(--docs-glass-bg);
+  background: var(--docs-glass-bg-hover);
 }
 
-/* Status badges */
+/* ===========================
+   7. STATUS BADGES & INDICATORS
+   =========================== */
+
 .docs-status-badge {
   display: inline-flex;
   align-items: center;
-  padding: 0.25rem 0.75rem;
+  gap: var(--docs-space-xs);
+  padding: var(--docs-space-xs) var(--docs-space-md);
   border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 500;
+  font-size: var(--docs-font-xs);
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  border: 1px solid;
+  backdrop-filter: blur(8px);
 }
 
 .docs-status-live {
   background: rgba(34, 197, 94, 0.1);
-  color: rgb(34, 197, 94);
-  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: var(--docs-text-success);
+  border-color: rgba(34, 197, 94, 0.2);
 }
 
 .docs-status-beta {
   background: rgba(249, 115, 22, 0.1);
-  color: rgb(249, 115, 22);
-  border: 1px solid rgba(249, 115, 22, 0.2);
+  color: var(--docs-text-warning);
+  border-color: rgba(249, 115, 22, 0.2);
 }
 
 .docs-status-coming-soon {
   background: rgba(156, 163, 175, 0.1);
   color: rgb(156, 163, 175);
-  border: 1px solid rgba(156, 163, 175, 0.2);
+  border-color: rgba(156, 163, 175, 0.2);
 }
 
-/* Network info card */
-.docs-network-card {
+.docs-status-experimental {
+  background: rgba(139, 69, 19, 0.1);
+  color: rgb(139, 69, 19);
+  border-color: rgba(139, 69, 19, 0.2);
+}
+
+/* Status indicator with pulse animation */
+.docs-status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* ===========================
+   8. NETWORK & INFO CARDS
+   =========================== */
+
+.docs-info-card {
   background: var(--docs-glass-bg);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--docs-glass-border);
-  border-radius: 1rem;
-  padding: var(--docs-space-xl);
-  margin: var(--docs-space-xl) 0;
+  border-radius: var(--docs-radius-xl);
+  padding: var(--docs-space-2xl);
+  margin: var(--docs-space-3xl) 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.docs-info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--docs-gradient-primary);
 }
 
 .docs-network-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  gap: var(--docs-space-lg);
 }
 
 .docs-network-list li {
-  padding: var(--docs-space-sm) 0;
-  border-bottom: 1px solid var(--docs-border);
+  padding: var(--docs-space-lg);
+  background: var(--docs-glass-bg);
+  border: 1px solid var(--docs-glass-border);
+  border-radius: var(--docs-radius-lg);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  transition: all var(--docs-duration-fast) ease;
 }
 
-.docs-network-list li:last-child {
-  border-bottom: none;
+.docs-network-list li:hover {
+  background: var(--docs-glass-bg-hover);
+  border-color: var(--docs-glass-border-hover);
 }
 
 .docs-network-label {
   font-weight: 500;
   color: var(--docs-text-primary);
+  font-size: var(--docs-font-sm);
 }
 
 .docs-network-value {
   color: var(--docs-text-secondary);
+  font-size: var(--docs-font-sm);
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
 }
 
 .docs-network-link {
   color: var(--docs-text-accent);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: all var(--docs-duration-fast) ease;
+  font-weight: 500;
 }
 
 .docs-network-link:hover {
   color: hsl(var(--primary) / 0.8);
+  text-decoration: underline;
 }
 
-/* Community links grid */
+/* ===========================
+   9. COMMUNITY & SOCIAL CARDS
+   =========================== */
+
 .docs-community-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--docs-space-lg);
-  margin: var(--docs-space-xl) 0;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--docs-space-xl);
+  margin: var(--docs-space-3xl) 0;
 }
 
 .docs-community-card {
-  padding: var(--docs-space-lg);
+  position: relative;
   background: var(--docs-glass-bg);
+  backdrop-filter: blur(16px);
   border: 1px solid var(--docs-glass-border);
-  border-radius: 1rem;
+  border-radius: var(--docs-radius-xl);
+  padding: var(--docs-space-2xl);
   text-align: center;
   text-decoration: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
+  transition: all var(--docs-duration-normal) var(--docs-ease-out);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 160px;
 }
 
 .docs-community-card::before {
@@ -355,13 +718,14 @@
   height: 2px;
   background: var(--docs-gradient-primary);
   transform: translateX(-100%);
-  transition: transform 0.3s ease;
+  transition: transform var(--docs-duration-normal) var(--docs-ease-out);
 }
 
 .docs-community-card:hover {
-  transform: translateY(-2px);
-  border-color: hsl(var(--primary) / 0.3);
-  background: var(--docs-glass-hover);
+  transform: translateY(-4px);
+  border-color: var(--docs-glass-border-hover);
+  background: var(--docs-glass-bg-hover);
+  box-shadow: var(--docs-glass-shadow);
 }
 
 .docs-community-card:hover::before {
@@ -371,64 +735,180 @@
 .docs-community-title {
   font-weight: 600;
   color: var(--docs-text-primary);
-  margin-bottom: var(--docs-space-sm);
+  margin-bottom: var(--docs-space-md);
+  font-size: var(--docs-font-lg);
+  line-height: var(--docs-leading-tight);
 }
 
 .docs-community-description {
-  font-size: 0.875rem;
+  font-size: var(--docs-font-sm);
+  color: var(--docs-text-secondary);
+  line-height: var(--docs-leading-relaxed);
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* ===========================
+   10. BREADCRUMB NAVIGATION
+   =========================== */
+
+.docs-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--docs-space-sm);
+  margin-bottom: var(--docs-space-2xl);
+  padding: var(--docs-space-md) 0;
+  font-size: var(--docs-font-sm);
   color: var(--docs-text-secondary);
 }
 
-/* Footer */
+.docs-breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: var(--docs-space-sm);
+}
+
+.docs-breadcrumb-link {
+  color: var(--docs-text-secondary);
+  text-decoration: none;
+  transition: color var(--docs-duration-fast) ease;
+  padding: var(--docs-space-xs) var(--docs-space-sm);
+  border-radius: var(--docs-radius-sm);
+}
+
+.docs-breadcrumb-link:hover {
+  color: var(--docs-text-accent);
+  background: var(--docs-glass-bg);
+}
+
+.docs-breadcrumb-separator {
+  color: var(--docs-text-secondary);
+  opacity: 0.5;
+  font-size: var(--docs-font-xs);
+}
+
+.docs-breadcrumb-current {
+  color: var(--docs-text-primary);
+  font-weight: 500;
+}
+
+/* ===========================
+   11. FOOTER ENHANCEMENTS
+   =========================== */
+
 .docs-footer {
   text-align: center;
-  padding: var(--docs-space-2xl) 0;
+  padding: var(--docs-space-4xl) 0 var(--docs-space-2xl);
   border-top: 1px solid var(--docs-border);
-  margin-top: var(--docs-space-3xl);
+  margin-top: var(--docs-space-5xl);
   color: var(--docs-text-secondary);
-  font-style: italic;
+  background: var(--docs-gradient-subtle);
+  backdrop-filter: blur(8px);
+  border-radius: var(--docs-radius-xl) var(--docs-radius-xl) 0 0;
+  position: relative;
 }
 
-/* Responsive design */
+.docs-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4rem;
+  height: 2px;
+  background: var(--docs-gradient-primary);
+}
+
+/* ===========================
+   12. RESPONSIVE DESIGN
+   =========================== */
+
 @media (max-width: 768px) {
+  :root {
+    --docs-space-xs: 0.25rem;
+    --docs-space-sm: 0.375rem;
+    --docs-space-md: 0.5rem;
+    --docs-space-lg: 0.75rem;
+    --docs-space-xl: 1rem;
+    --docs-space-2xl: 1.5rem;
+    --docs-space-3xl: 2rem;
+    --docs-space-4xl: 2.5rem;
+    --docs-space-5xl: 3rem;
+  }
+
   .docs-container {
-    padding: 0 var(--docs-space-md);
+    padding: 0 var(--docs-space-lg);
   }
-  
-  .docs-title {
-    font-size: clamp(2rem, 8vw, 3rem);
+
+  .docs-content {
+    padding: var(--docs-space-xl) 0;
   }
-  
+
   .docs-feature-grid {
     grid-template-columns: 1fr;
-    gap: var(--docs-space-md);
+    gap: var(--docs-space-xl);
   }
-  
+
   .docs-quickstart-grid {
     grid-template-columns: 1fr;
+    gap: var(--docs-space-2xl);
+  }
+
+  .docs-community-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--docs-space-lg);
   }
-  
-  .docs-community-grid {
-    grid-template-columns: 1fr;
-    gap: var(--docs-space-md);
-  }
-  
+
   .docs-section-title {
     text-align: center;
+    margin-top: var(--docs-space-3xl);
   }
-  
+
   .docs-section-title::after {
     left: 50%;
     transform: translateX(-50%);
   }
+
+  .docs-card {
+    padding: var(--docs-space-xl);
+  }
+
+  .docs-feature-card {
+    padding: var(--docs-space-xl);
+    min-height: auto;
+  }
+
+  .docs-quickstart-card {
+    padding: var(--docs-space-2xl);
+    min-height: auto;
+  }
 }
 
-/* Animation utilities */
+@media (max-width: 480px) {
+  .docs-feature-grid,
+  .docs-quickstart-grid,
+  .docs-community-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .docs-breadcrumb {
+    flex-wrap: wrap;
+  }
+
+  .docs-table-container {
+    font-size: var(--docs-font-xs);
+  }
+}
+
+/* ===========================
+   13. ANIMATIONS & MICRO-INTERACTIONS
+   =========================== */
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -436,23 +916,100 @@
   }
 }
 
+@keyframes pulse-glow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes gradient-flow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .docs-animate-in {
-  animation: fadeInUp 0.6s ease-out;
+  animation: fadeInUp 0.8s var(--docs-ease-out);
 }
 
 .docs-animate-delay-1 {
   animation-delay: 0.1s;
+  opacity: 0;
+  animation-fill-mode: both;
 }
 
 .docs-animate-delay-2 {
   animation-delay: 0.2s;
+  opacity: 0;
+  animation-fill-mode: both;
 }
 
 .docs-animate-delay-3 {
   animation-delay: 0.3s;
+  opacity: 0;
+  animation-fill-mode: both;
 }
 
-/* Prose customization for Tailwind Typography */
+/* ===========================
+   14. ACCESSIBILITY ENHANCEMENTS
+   =========================== */
+
+/* Focus states for better accessibility */
+.docs-card:focus-visible,
+.docs-feature-card:focus-visible,
+.docs-quickstart-card:focus-visible,
+.docs-community-card:focus-visible,
+.docs-network-link:focus-visible,
+.docs-breadcrumb-link:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --docs-glass-bg: rgba(255, 255, 255, 0.1);
+    --docs-glass-border: rgba(255, 255, 255, 0.3);
+    --docs-text-secondary: hsl(var(--foreground) / 0.8);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .docs-animate-in,
+  .docs-animate-delay-1,
+  .docs-animate-delay-2,
+  .docs-animate-delay-3 {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ===========================
+   15. UTILITY CLASSES
+   =========================== */
+
+/* Prose styling for Tailwind Typography integration */
 .docs-prose {
   @apply prose prose-neutral dark:prose-invert max-w-none;
   --tw-prose-body: var(--docs-text-secondary);
@@ -470,4 +1027,40 @@
   --tw-prose-pre-bg: var(--docs-glass-bg);
   --tw-prose-th-borders: var(--docs-border);
   --tw-prose-td-borders: var(--docs-border);
+}
+
+/* Spacing utilities */
+.docs-space-y-sm > * + * { margin-top: var(--docs-space-sm); }
+.docs-space-y-md > * + * { margin-top: var(--docs-space-md); }
+.docs-space-y-lg > * + * { margin-top: var(--docs-space-lg); }
+.docs-space-y-xl > * + * { margin-top: var(--docs-space-xl); }
+
+/* Color utilities */
+.docs-text-gradient {
+  background: var(--docs-gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Layout utilities */
+.docs-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.docs-grid-center {
+  display: grid;
+  place-items: center;
+}
+
+/* Interactive states */
+.docs-hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.docs-hover-scale:hover {
+  transform: scale(1.02);
 }

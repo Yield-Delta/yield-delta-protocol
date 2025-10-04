@@ -116,6 +116,15 @@ export default function DocsSidebar({ className = '', onMobileToggle }: DocsSide
     onMobileToggle?.(isMobileOpen);
   }, [isMobileOpen, onMobileToggle]);
 
+  // Auto-expand active sections
+  useEffect(() => {
+    navigation.forEach(item => {
+      if (item.children && item.children.some(child => isActive(child.href))) {
+        setExpandedItems(prev => new Set([...prev, item.href]));
+      }
+    });
+  }, [pathname, isActive]);
+
   const toggleExpanded = useCallback((href: string) => {
     setExpandedItems(prev => {
       const newExpanded = new Set(prev);
