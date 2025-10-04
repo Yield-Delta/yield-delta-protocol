@@ -158,7 +158,7 @@ export default function AIWorkflowImproved() {
             AI-Powered Liquidity Engine
           </h2>
           <p className="analytics-subheading max-w-2xl mx-auto">
-            Watch how ElizaOS optimizes your capital in real-time across SEI's DeFi ecosystem
+            Watch how ElizaOS optimizes your capital in real-time across SEI&apos;s DeFi ecosystem
           </p>
         </div>
       </div>

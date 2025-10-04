@@ -126,6 +126,11 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>) {
   } catch (error) {
     console.error('Failed to call Eliza agent, using fallback response:', error)
     
+    // Log specific MessageBusService errors for debugging
+    if (error instanceof Error && error.message.includes('MessageBusService')) {
+      console.warn('MessageBusService connection issue detected - using fallback mode')
+    }
+    
     // Fallback response if Eliza is unavailable
     return {
       message: generateFallbackResponse(data.message, data.vaultAddress),

@@ -206,8 +206,8 @@ export default function DocsPage() {
             <li><strong>Blockchain Integration:</strong> Direct connection to SEI Network with 400ms block finality</li>
           </ul>
           
-          <div className="docs-info-card" style="margin-top: var(--docs-space-xl); background: var(--docs-glass-bg-hover);">
-            <pre className="docs-text" style="font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace; font-size: var(--docs-font-sm); line-height: 1.4; color: var(--docs-text-secondary); margin: 0;">
+          <div className="docs-info-card" style={{marginTop: 'var(--docs-space-xl)', background: 'var(--docs-glass-bg-hover)'}}>
+            <pre className="docs-text" style={{fontFamily: "'SF Mono', 'Monaco', 'Inconsolata', monospace", fontSize: 'var(--docs-font-sm)', lineHeight: 1.4, color: 'var(--docs-text-secondary)', margin: 0}}>
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   API Gateway   │    │   AI Engine     │
 │   Next.js       │◄──►│   Node.js       │◄──►│   Python/ONNX   │
@@ -334,7 +334,7 @@ export default function DocsPage() {
       {/* Footer */}
       <footer className="docs-footer">
         <p>Built with precision and passion by the Yield Delta team on SEI Network</p>
-        <p style="font-size: var(--docs-font-xs); margin-top: var(--docs-space-md); opacity: 0.7;">© 2024 Yield Delta Protocol. Open source and community-driven.</p>
+        <p style={{fontSize: 'var(--docs-font-xs)', marginTop: 'var(--docs-space-md)', opacity: 0.7}}>© 2024 Yield Delta Protocol. Open source and community-driven.</p>
       </footer>
     </div>
   )

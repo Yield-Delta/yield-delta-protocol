@@ -1,7 +1,10 @@
 import type { NextConfig } from 'next'
+import createMDX from '@next/mdx'
 
 const nextConfig: NextConfig = {
   // Production-optimized config for Cloudflare Pages
+  output: 'export',
+  trailingSlash: true,
   reactStrictMode: false,
   
   // Environment variables
@@ -11,28 +14,10 @@ const nextConfig: NextConfig = {
     API_VERSION: '1.0.0',
   },
   
-  // Headers for API responses and SEO
-  async headers() {
-    return [
-      {
-        source: '/api/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, s-maxage=30, stale-while-revalidate=60' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-Frame-Options', value: 'DENY' },
-          { key: 'X-XSS-Protection', value: '1; mode=block' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-        ],
-      },
-      {
-        source: '/docs/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, s-maxage=300, stale-while-revalidate=600' },
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-        ],
-      },
-    ]
-  },
+  // Headers disabled for static export
+  // async headers() {
+  //   return []
+  // },
   
   // Production-optimized webpack config for 3D libraries
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
@@ -85,6 +70,7 @@ const nextConfig: NextConfig = {
     // Client-side optimizations
     if (!isServer) {
       config.resolve.fallback = {
+        ...config.resolve.fallback,
         fs: false,
         net: false,
         tls: false,
@@ -94,13 +80,15 @@ const nextConfig: NextConfig = {
         https: false,
         os: false,
         path: false,
+        // MetaMask SDK fallbacks
+        '@react-native-async-storage/async-storage': false,
       };
       
-      // Optimize Three.js imports
+      // Fix Three.js imports for v0.178.0+
       config.resolve.alias = {
         ...config.resolve.alias,
         'three/examples/jsm': 'three/examples/jsm',
-        'three$': 'three/build/three.module.js',
+        'three$': 'three/src/Three.js',
       };
     }
 
@@ -136,7 +124,19 @@ const nextConfig: NextConfig = {
     ],
     webpackBuildWorker: true,
     optimizeCss: true,
+    mdxRs: true,
   },
+  
+  // MDX configuration
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'md', 'mdx'],
 }
 
-export default nextConfig
+const withMDX = createMDX({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+})
+
+export default withMDX(nextConfig)
