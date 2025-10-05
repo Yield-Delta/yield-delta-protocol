@@ -267,7 +267,9 @@ if (typeof globalThis !== 'undefined') {
   if (typeof TextEncoder === 'undefined') {
     try {
       const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = eval('require')('util');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       globalThis.TextEncoder = NodeTextEncoder as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       globalThis.TextDecoder = NodeTextDecoder as any;
     } catch {
       // Fallback implementations
