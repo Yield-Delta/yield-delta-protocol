@@ -49,53 +49,40 @@ export default function AIWorkflow() {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Create timeline for workflow animation
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 70%",
-        end: "bottom 30%",
-        scrub: 1,
-        onEnter: () => {
-          // Animate steps in sequence
-          stepsRef.current.forEach((step, index) => {
-            if (step) {
-              gsap.fromTo(step,
-                { opacity: 0, scale: 0.5, y: 50 },
-                { 
-                  opacity: 1, 
-                  scale: 1, 
-                  y: 0,
-                  duration: 0.6,
-                  delay: index * 0.2,
-                  ease: "back.out(1.7)"
-                }
-              );
-            }
-          });
+    // CSS-based scroll animation using Intersection Observer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Animate steps in sequence
+            stepsRef.current.forEach((step, index) => {
+              if (step) {
+                setTimeout(() => {
+                  step.style.animation = `step-in 0.6s ease-out both`;
+                }, index * 200);
+              }
+            });
 
-          // Animate connectors after steps
-          connectorsRef.current.forEach((connector, index) => {
-            if (connector) {
-              gsap.fromTo(connector,
-                { scaleX: 0 },
-                { 
-                  scaleX: 1,
-                  duration: 0.5,
-                  delay: (index + 1) * 0.2 + 0.3,
-                  ease: "power2.out"
-                }
-              );
-            }
-          });
-        }
-      }
-    });
+            // Animate connectors after steps
+            connectorsRef.current.forEach((connector, index) => {
+              if (connector) {
+                setTimeout(() => {
+                  connector.style.animation = `connector-expand 0.5s ease-out both`;
+                }, (index + 1) * 200 + 300);
+              }
+            });
+          }
+        });
+      },
+      { threshold: 0.3, rootMargin: '0px 0px -100px 0px' }
+    );
 
-    console.log('[AIWorkflow] GSAP timeline created with duration:', tl.duration());
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      observer.disconnect();
     };
   }, []);
 
