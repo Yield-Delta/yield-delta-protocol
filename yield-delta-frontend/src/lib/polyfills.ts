@@ -267,9 +267,9 @@ if (typeof globalThis !== 'undefined') {
   if (typeof TextEncoder === 'undefined') {
     try {
       const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = eval('require')('util');
-      // @ts-expect-error - Node.js TextEncoder/TextDecoder compatibility
+      // @ts-expect-error - Node.js TextEncoder/TextDecoder have different types but compatible runtime behavior
       globalThis.TextEncoder = NodeTextEncoder;
-      // @ts-expect-error - Node.js TextEncoder/TextDecoder compatibility  
+      // @ts-expect-error - Node.js TextEncoder/TextDecoder have different types but compatible runtime behavior
       globalThis.TextDecoder = NodeTextDecoder;
     } catch {
       // Fallback implementations
@@ -298,11 +298,11 @@ if (typeof globalThis !== 'undefined') {
 
   // Performance API polyfill
   if (typeof performance === 'undefined') {
-    // @ts-expect-error - Basic performance polyfill for SSR
+    // @ts-expect-error - Basic performance polyfill for SSR - types don't match but runtime behavior is adequate
     globalThis.performance = {
       now: () => Date.now(),
-      mark: () => {},
-      measure: () => {},
+      mark: () => ({ name: '', entryType: 'mark', startTime: Date.now(), duration: 0, detail: null, toJSON: () => ({}) }),
+      measure: () => ({ name: '', entryType: 'measure', startTime: Date.now(), duration: 0, detail: null, toJSON: () => ({}) }),
       clearMarks: () => {},
       clearMeasures: () => {},
       getEntriesByType: () => [],
@@ -310,7 +310,15 @@ if (typeof globalThis !== 'undefined') {
       getEntries: () => [],
       timeOrigin: Date.now(),
       eventCounts: new Map(),
-      navigation: {},
+      navigation: {
+        redirectCount: 0,
+        type: 0,
+        toJSON: () => ({}),
+        TYPE_NAVIGATE: 0,
+        TYPE_RELOAD: 1,
+        TYPE_BACK_FORWARD: 2,
+        TYPE_RESERVED: 255,
+      },
       onresourcetimingbufferfull: null,
       toJSON: () => ({}),
     };
