@@ -16,11 +16,15 @@ restartPolicyMaxRetries = 3
 [environments.production.variables]
 NODE_ENV = "production"
 NODE_OPTIONS = "--max-old-space-size=1024"
+TRUST_PROXY = "true"
+EXPRESS_TRUST_PROXY = "true"
 
 [environments.staging]
 [environments.staging.variables]
 NODE_ENV = "staging"
 NODE_OPTIONS = "--max-old-space-size=1024"
+TRUST_PROXY = "true"
+EXPRESS_TRUST_PROXY = "true"
 
 # Railway automatically handles:
 # - PORT environment variable

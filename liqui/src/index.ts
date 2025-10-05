@@ -11,6 +11,7 @@ import {
 } from './plugin-overrides.ts';
 import { RuntimeWrapper, configureStandaloneMode } from './runtime-wrapper.ts';
 import messageBusOverridePlugin from './messagebus-override-plugin.ts';
+import expressConfigPlugin from './express-config-plugin.ts';
 import { setupGlobalErrorHandlers, liquiErrorHandler } from './error-handler.ts';
 // PostgreSQL is now handled directly by ElizaOS via DATABASE_URL environment variable
 
@@ -70,8 +71,9 @@ export const projectAgent: ProjectAgent = {
     await initCharacter(runtime);
   },
   plugins: [
-    messageBusOverridePlugin, // MessageBus override - MUST be first to prevent external connections
-    sqlPlugin,        // SQL plugin for world/server management - MUST be second
+    expressConfigPlugin,      // Express config - MUST be first to configure trust proxy before server starts
+    messageBusOverridePlugin, // MessageBus override - MUST be second to prevent external connections
+    sqlPlugin,        // SQL plugin for world/server management - MUST be third
     bootstrapPlugin,
     starterPlugin,
     seiYieldDeltaPlugin,
