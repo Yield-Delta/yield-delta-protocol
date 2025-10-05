@@ -4,7 +4,7 @@
  * Railway Startup Script for Liqui Agent
  * 
  * This script configures the environment for Railway deployment
- * and ensures proper standalone mode operation.
+ * and ensures proper standalone mode operation using Bun.
  */
 
 const { spawn } = require('child_process');
@@ -20,7 +20,7 @@ process.env.TRUST_PROXY = 'true';
 process.env.EXPRESS_TRUST_PROXY = 'true';
 
 // Log startup configuration
-console.log('🚀 Railway Startup Script for Liqui Agent');
+console.log('🚀 Railway Startup Script for Liqui Agent (Bun Runtime)');
 console.log('📊 Environment Configuration:');
 console.log(`   NODE_ENV: ${process.env.NODE_ENV}`);
 console.log(`   PORT: ${process.env.PORT || '3000'}`);
@@ -28,10 +28,10 @@ console.log(`   DISABLE_MESSAGE_BUS: ${process.env.DISABLE_MESSAGE_BUS}`);
 console.log(`   CENTRAL_MESSAGE_SERVER_URL: ${process.env.CENTRAL_MESSAGE_SERVER_URL}`);
 console.log(`   DATABASE_URL: ${process.env.DATABASE_URL ? 'Configured' : 'Not configured'}`);
 console.log(`   ANTHROPIC_API_KEY: ${process.env.ANTHROPIC_API_KEY ? 'Configured' : 'Not configured'}`);
-console.log('🔧 Starting ElizaOS agent...');
+console.log('🔧 Starting ElizaOS agent with bun dev...');
 
-// Start the ElizaOS agent
-const elizaProcess = spawn('elizaos', ['start', '--port', process.env.PORT || '3000'], {
+// Start the ElizaOS agent using bun dev
+const elizaProcess = spawn('bun', ['run', 'dev'], {
   stdio: 'inherit',
   env: process.env,
   cwd: process.cwd()
