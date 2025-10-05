@@ -1,4 +1,7 @@
 
+// Import polyfills first to handle SSR compatibility
+import '@/lib/polyfills'
+
 import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from 'next-themes'

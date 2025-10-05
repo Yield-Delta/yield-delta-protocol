@@ -1,5 +1,8 @@
 "use client"
 
+// Import polyfills for SSR compatibility
+import '@/lib/polyfills'
+
 // Polyfill indexedDB on server to prevent WalletConnect SSR errors
 if (typeof window === 'undefined') {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

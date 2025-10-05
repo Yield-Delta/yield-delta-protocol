@@ -67,22 +67,32 @@ const nextConfig: NextConfig = {
       },
     };
 
-    // Client-side optimizations
+    // Global polyfills for both client and server
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      net: false,
+      tls: false,
+      crypto: false,
+      stream: false,
+      http: false,
+      https: false,
+      os: false,
+      path: false,
+      // MetaMask SDK fallbacks
+      '@react-native-async-storage/async-storage': false,
+    };
+
+    // Add global polyfills for SSR 
+    config.plugins.push(
+      new webpack.DefinePlugin({
+        'global.self': 'global',
+        'globalThis.self': 'globalThis',
+      })
+    );
+
+    // Client-side specific optimizations
     if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        net: false,
-        tls: false,
-        crypto: false,
-        stream: false,
-        http: false,
-        https: false,
-        os: false,
-        path: false,
-        // MetaMask SDK fallbacks
-        '@react-native-async-storage/async-storage': false,
-      };
       
       // Fix Three.js imports for v0.178.0+
       config.resolve.alias = {
@@ -125,6 +135,7 @@ const nextConfig: NextConfig = {
     webpackBuildWorker: true,
     optimizeCss: true,
     mdxRs: true,
+    instrumentationHook: true,
   },
   
   // MDX configuration

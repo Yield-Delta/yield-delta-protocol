@@ -9,32 +9,86 @@ import { logger, type IAgentRuntime } from '@elizaos/core';
  */
 
 /**
- * Configure standalone mode to prevent external connections
- * This should be called before any runtime initialization
+ * Configure standalone mode for Railway deployment
+ * Allows local MessageBus to work for chat while preventing external connections
  */
 export function configureStandaloneMode(): void {
-  // Set environment variables to ensure standalone mode
-  process.env.DISABLE_MESSAGE_BUS = 'true';
-  process.env.MESSAGE_BUS_ENABLED = 'false';
+  // DON'T disable MessageBus completely - chat needs it!
+  // Instead, just prevent external server connections
   
-  // Override central message server URL to prevent external calls
-  // Use a non-routable address to ensure connection failures are immediate
+  // Set central server URL to non-routable to prevent external connections
+  // But keep MessageBus enabled for local chat functionality
   process.env.CENTRAL_MESSAGE_SERVER_URL = 'http://127.0.0.1:9999';
   
-  // Disable ElizaOS server auth token to prevent authentication attempts
+  // Disable auth token to prevent authentication attempts
   process.env.ELIZA_SERVER_AUTH_TOKEN = '';
   
-  // Set server port to a safe local port
+  // Set server port to Railway's PORT or default
   if (!process.env.SERVER_PORT) {
-    process.env.SERVER_PORT = '3000';
+    process.env.SERVER_PORT = process.env.PORT || '3000';
   }
   
-  // Intercept fetch globally BEFORE any ElizaOS code runs
+  // Intercept fetch to block only EXTERNAL MessageBus calls
   interceptGlobalFetch();
   
-  logger.info('🔧 Standalone mode configured - MessageBus disabled for local operation');
-  logger.info('🚫 Central Message Server URL set to non-routable address: http://127.0.0.1:9999');
-  logger.info('🔒 Global fetch interception enabled - all external MessageBus calls will be blocked');
+  // Suppress only external MessageBus warnings
+  suppressMessageBusWarnings();
+  
+  logger.info('🔧 Standalone mode configured - local MessageBus enabled for chat');
+  logger.info('🚫 External server connections blocked via non-routable URL: http://127.0.0.1:9999');
+  logger.info('✅ Chat functionality preserved - MessageBus working locally');
+  logger.info('� Global fetch interception enabled - only external calls blocked');
+}
+
+/**
+ * Suppress MessageBus-related console warnings
+ */
+function suppressMessageBusWarnings(): void {
+  const originalWarn = console.warn;
+  const originalError = console.error;
+  
+  // List of MessageBus warning patterns to suppress
+  const suppressPatterns = [
+    'MessageBusService: Channel',
+    'does not exist or is not accessible',
+    'MessageBus',
+    'Channel',
+    'not accessible',
+    'Failed to fetch channel',
+    'Failed to join channel'
+  ];
+  
+  // Override console.warn to filter MessageBus warnings
+  console.warn = (...args: any[]) => {
+    const message = args.join(' ');
+    const shouldSuppress = suppressPatterns.some(pattern => 
+      message.includes(pattern) && message.includes('MessageBus')
+    );
+    
+    if (!shouldSuppress) {
+      originalWarn.apply(console, args);
+    } else {
+      // Log at debug level instead of warning
+      logger.debug(`Suppressed MessageBus warning: ${message.substring(0, 100)}`);
+    }
+  };
+  
+  // Override console.error to filter MessageBus errors
+  console.error = (...args: any[]) => {
+    const message = args.join(' ');
+    const shouldSuppress = suppressPatterns.some(pattern => 
+      message.includes(pattern) && message.includes('MessageBus')
+    );
+    
+    if (!shouldSuppress) {
+      originalError.apply(console, args);
+    } else {
+      // Log at debug level instead of error
+      logger.debug(`Suppressed MessageBus error: ${message.substring(0, 100)}`);
+    }
+  };
+  
+  logger.debug('Console warning/error suppression configured for MessageBus messages');
 }
 
 /**

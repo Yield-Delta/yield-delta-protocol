@@ -1,4 +1,5 @@
 import { logger, type IAgentRuntime, type Project, type ProjectAgent } from '@elizaos/core';
+// @ts-ignore - Missing type declarations in @elizaos/plugin-bootstrap distribution
 import bootstrapPlugin from '@elizaos/plugin-bootstrap';
 import sqlPlugin from '@elizaos/plugin-sql';
 import starterPlugin from './plugin.ts';
@@ -9,8 +10,7 @@ import {
   shouldUseAPIIntegration, 
   shouldDisableMessageBus
 } from './plugin-overrides.ts';
-import { RuntimeWrapper, configureStandaloneMode } from './runtime-wrapper.ts';
-import messageBusOverridePlugin from './messagebus-override-plugin.ts';
+import { configureStandaloneMode } from './runtime-wrapper.ts';
 import expressConfigPlugin from './express-config-plugin.ts';
 import { setupGlobalErrorHandlers, liquiErrorHandler } from './error-handler.ts';
 // PostgreSQL is now handled directly by ElizaOS via DATABASE_URL environment variable
@@ -27,12 +27,8 @@ const initCharacter = async (runtime: IAgentRuntime) => {
   logger.info('SEI Chain ID: 1328');
   logger.info('Optimized for 400ms finality');
   
-  // Apply runtime wrapper for MessageBusService interception
-  try {
-    RuntimeWrapper.wrap(runtime);
-  } catch (error: any) {
-    liquiErrorHandler.handleMessageBusError(error, 'RuntimeWrapper.wrap');
-  }
+  // No need for MessageBus interception - letting it work normally for chat
+  // External connections are blocked via CENTRAL_MESSAGE_SERVER_URL
   
   // Architectural alignment status
   logger.info('🔧 Architectural Alignment Status:');
@@ -72,8 +68,8 @@ export const projectAgent: ProjectAgent = {
   },
   plugins: [
     expressConfigPlugin,      // Express config - MUST be first to configure trust proxy before server starts
-    messageBusOverridePlugin, // MessageBus override - MUST be second to prevent external connections
-    sqlPlugin,        // SQL plugin for world/server management - MUST be third
+    // MessageBus override removed - let it work normally for chat
+    sqlPlugin,        // SQL plugin for world/server management - MUST be second
     bootstrapPlugin,
     starterPlugin,
     seiYieldDeltaPlugin,
