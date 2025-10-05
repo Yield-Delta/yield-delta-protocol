@@ -304,7 +304,8 @@ export class RuntimeWrapper {
     
     const originalFetch = globalThis.fetch;
     
-    globalThis.fetch = async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
+    // Create wrapped fetch function with all required properties
+    const wrappedFetch = async (input: string | URL | Request, init?: RequestInit): Promise<Response> => {
       const url = typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url;
       
       // Block MessageBusService-related endpoints
@@ -332,8 +333,16 @@ export class RuntimeWrapper {
       return originalFetch(input, init);
     };
     
+    // Copy all properties from original fetch to maintain compatibility
+    Object.setPrototypeOf(wrappedFetch, originalFetch);
+    Object.assign(wrappedFetch, originalFetch);
+    
     // Mark as intercepted
-    (globalThis.fetch as any).__elizaIntercepted = true;
+    (wrappedFetch as any).__elizaIntercepted = true;
+    
+    // Replace global fetch
+    globalThis.fetch = wrappedFetch as typeof fetch;
+    
     logger.info('🌐 Global fetch intercepted for MessageBusService endpoints');
   }
   
