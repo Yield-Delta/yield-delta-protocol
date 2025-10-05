@@ -1,7 +1,8 @@
 import { http } from 'wagmi'
 import { defineChain } from 'viem'
 import { createConfig as createWagmiConfig } from 'wagmi'
-import { metaMask, walletConnect, injected } from 'wagmi/connectors'
+// Don't import connectors at module level - they contain browser-only code
+// import { metaMask, walletConnect, injected } from 'wagmi/connectors'
 
 // SEI Mainnet (Pacific-1)
 export const seiMainnet = defineChain({
@@ -45,10 +46,16 @@ export const seiTestnet = defineChain({
   testnet: true
 })
 
-// Polyfill for SSR/build-time to prevent 'self is not defined' errors
-if (typeof self === 'undefined') {
+// Comprehensive polyfills for SSR/build-time
+if (typeof window === 'undefined') {
+  // Polyfill self for Node.js environment
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (global as any).self = global
+  (global as any).self = global;
+  // Polyfill other browser globals that might be needed
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (global as any).window = global;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (global as any).document = {}
 }
 
 // Singleton pattern to prevent multiple config instantiation
@@ -56,6 +63,11 @@ let configInstance: ReturnType<typeof createWagmiConfig> | null = null
 let isCreatingConfig = false
 
 function createConfig() {
+  // Return null during SSR - config will be created on client side
+  if (typeof window === 'undefined') {
+    return null as any
+  }
+
   // Prevent race conditions during config creation
   if (isCreatingConfig) {
     // Wait for existing creation to complete
@@ -78,8 +90,12 @@ function createConfig() {
     console.warn('Get your Project ID from: https://walletconnect.com/cloud')
   }
 
-  // Only include connectors in browser environment
-  const connectors = typeof window !== 'undefined' ? [
+  // Dynamically import connectors only in browser to avoid SSR issues
+  // This prevents the metamask-sdk from loading during build time
+  const { metaMask, walletConnect, injected } = require('wagmi/connectors')
+
+  // Create connectors only in browser
+  const connectors = [
     metaMask({
       dappMetadata: {
         name: 'SEI DLP',
@@ -98,7 +114,7 @@ function createConfig() {
     injected({
       shimDisconnect: true
     })
-  ] : []
+  ]
 
   // Create custom config without Coinbase wallet to prevent SDK errors
   configInstance = createWagmiConfig({
@@ -124,5 +140,19 @@ function createConfig() {
   return configInstance
 }
 
-// Export the config - safe to create during SSR now with polyfills and conditional connectors
-export const config = createConfig()
+// Create a minimal stub config for SSR that won't trigger browser-only dependencies
+function createStubConfig() {
+  return createWagmiConfig({
+    chains: [seiDevnet, seiMainnet, seiTestnet],
+    connectors: [], // No connectors during SSR
+    transports: {
+      [seiDevnet.id]: http(),
+      [seiMainnet.id]: http(),
+      [seiTestnet.id]: http()
+    },
+    ssr: true,
+  })
+}
+
+// Export config - use stub during SSR, real config in browser
+export const config = typeof window !== 'undefined' ? createConfig() : createStubConfig()
