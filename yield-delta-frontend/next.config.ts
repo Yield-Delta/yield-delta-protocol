@@ -90,6 +90,7 @@ const nextConfig: NextConfig = {
       new webpack.DefinePlugin({
         'global.self': 'global',
         'globalThis.self': 'globalThis',
+        'self': 'globalThis',
         // Additional browser globals that might be undefined during build
         'global.window': 'global',
         'globalThis.window': 'globalThis',
@@ -102,6 +103,7 @@ const nextConfig: NextConfig = {
       new webpack.ProvidePlugin({
         // Provide global references for packages that need them
         global: require.resolve('./src/lib/global-polyfill.js'),
+        self: require.resolve('./src/lib/global-polyfill.js'),
         Buffer: ['buffer', 'Buffer'],
         process: 'process/browser',
       })
