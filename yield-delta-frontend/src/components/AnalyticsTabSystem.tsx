@@ -28,10 +28,6 @@ export default function AnalyticsTabSystem({
   const tabsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    updateIndicator();
-  }, [activeTab, updateIndicator]);
-
   const updateIndicator = useCallback(() => {
     const activeIndex = tabs.findIndex(tab => tab.id === activeTab);
     const activeTabElement = tabsRef.current[activeIndex];
@@ -43,6 +39,10 @@ export default function AnalyticsTabSystem({
       });
     }
   }, [activeTab, tabs]);
+
+  useEffect(() => {
+    updateIndicator();
+  }, [updateIndicator]);
 
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);

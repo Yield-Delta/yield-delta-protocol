@@ -134,7 +134,6 @@ if (typeof globalThis !== 'undefined' && typeof navigator === 'undefined') {
 // Polyfill for crypto.getRandomValues in Node.js environment
 if (typeof globalThis !== 'undefined' && globalThis.crypto && !globalThis.crypto.getRandomValues) {
   try {
-    // @ts-expect-error - Adding getRandomValues for SSR compatibility
     globalThis.crypto.getRandomValues = (array: Uint8Array) => {
       // Use a simple fallback for SSR - not cryptographically secure but sufficient for build
       for (let i = 0; i < array.length; i++) {
@@ -151,7 +150,6 @@ if (typeof globalThis !== 'undefined' && globalThis.crypto && !globalThis.crypto
 if (typeof globalThis !== 'undefined') {
   // EventTarget polyfill
   if (typeof EventTarget === 'undefined') {
-    // @ts-expect-error - Adding EventTarget mock for SSR compatibility
     globalThis.EventTarget = class {
       addEventListener() {}
       removeEventListener() {}
