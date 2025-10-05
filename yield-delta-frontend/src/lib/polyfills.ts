@@ -150,7 +150,8 @@ if (typeof globalThis !== 'undefined') {
   if (!globalThis.crypto) {
     try {
       // Try to use Node.js crypto module for better compatibility
-      const nodeCrypto = require('crypto');
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const nodeCrypto = eval('require')('crypto');
       globalThis.crypto = {
         getRandomValues: (array: Uint8Array) => {
           const randomBytes = nodeCrypto.randomBytes(array.length);
@@ -175,7 +176,8 @@ if (typeof globalThis !== 'undefined') {
     }
   } else if (!globalThis.crypto.getRandomValues) {
     try {
-      const nodeCrypto = require('crypto');
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const nodeCrypto = eval('require')('crypto');
       globalThis.crypto.getRandomValues = (array: Uint8Array) => {
         const randomBytes = nodeCrypto.randomBytes(array.length);
         for (let i = 0; i < array.length; i++) {
@@ -256,7 +258,8 @@ if (typeof globalThis !== 'undefined') {
   // TextEncoder/TextDecoder polyfills for Node.js
   if (typeof TextEncoder === 'undefined') {
     try {
-      const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = require('util');
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = eval('require')('util');
       globalThis.TextEncoder = NodeTextEncoder;
       globalThis.TextDecoder = NodeTextDecoder;
     } catch {
