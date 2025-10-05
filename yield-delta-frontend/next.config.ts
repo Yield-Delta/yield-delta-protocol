@@ -117,20 +117,7 @@ const nextConfig: NextConfig = {
         );
       }
 
-      const originalEntry = config.entry;
-      config.entry = async () => {
-        const entries = await originalEntry();
-        // Add polyfills to all server entries
-        if (entries && typeof entries === 'object') {
-          Object.keys(entries).forEach(key => {
-            const entry = entries[key];
-            if (Array.isArray(entry)) {
-              entry.unshift('./src/lib/server-polyfills.js');
-            }
-          });
-        }
-        return entries;
-      };
+      // Server polyfills removed - using webpack polyfills instead
     }
 
     // Client-side specific optimizations removed (no 3D dependencies)

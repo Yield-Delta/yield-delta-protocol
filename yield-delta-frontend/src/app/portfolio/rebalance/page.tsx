@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import AIChat from '@/components/AIChat';
 import { BarChart3, TrendingUp, AlertTriangle, Zap, Clock, CheckCircle, ArrowRight, RefreshCw, MessageCircle, X } from 'lucide-react';

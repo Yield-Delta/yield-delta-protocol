@@ -230,9 +230,7 @@ const MarketSentimentPage = () => {
                   : 'opacity-0 translate-y-12 scale-95'
               }`}
               style={{
-                transitionDelay: isStatsVisible ? `${index * 150}ms` : '0ms'
-              }}
-              style={{
+                transitionDelay: isStatsVisible ? `${index * 150}ms` : '0ms',
                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
                 backdropFilter: 'blur(20px)',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
