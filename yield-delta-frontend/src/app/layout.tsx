@@ -1,18 +1,8 @@
 
 import { Inter } from 'next/font/google'
 import './globals.css'
-import dynamic from 'next/dynamic'
 import { ThemeProvider } from 'next-themes'
-
-// Dynamically import Web3Provider with no SSR to prevent wagmi/rainbowkit from loading during build
-// This prevents the 'self is not defined' error from @metamask/sdk
-const Web3Provider = dynamic(
-  () => import('@/components/providers/Web3Provider').then((mod) => mod.Web3Provider),
-  { 
-    ssr: false,
-    loading: () => <div className="min-h-screen" /> // Minimal loading state
-  }
-)
+import { ClientProviders } from '@/components/providers/ClientProviders'
 
 const inter = Inter({ subsets: ['latin'] })
 // Metadata for SEO and social sharing
@@ -48,9 +38,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {/* Client-side web3 and query providers */}
-          <Web3Provider>
+          <ClientProviders>
             {children}
-          </Web3Provider>
+          </ClientProviders>
         </ThemeProvider>
       </body>
     </html>
