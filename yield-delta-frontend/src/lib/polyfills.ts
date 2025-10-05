@@ -296,6 +296,12 @@ if (typeof globalThis !== 'undefined') {
     }
   }
 
+  // Self reference polyfill for SSR
+  if (typeof self === 'undefined') {
+    // @ts-expect-error - Self polyfill for SSR compatibility
+    globalThis.self = globalThis;
+  }
+
   // Additional browser APIs needed by wallet SDKs
   if (typeof btoa === 'undefined') {
     globalThis.btoa = (str: string) => Buffer.from(str, 'binary').toString('base64');
