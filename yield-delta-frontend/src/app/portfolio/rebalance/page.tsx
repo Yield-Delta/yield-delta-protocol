@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import AIChat from '@/components/AIChat';
 import { BarChart3, TrendingUp, AlertTriangle, Zap, Clock, CheckCircle, ArrowRight, RefreshCw, MessageCircle, X } from 'lucide-react';
@@ -146,120 +146,12 @@ const RebalancePage = () => {
     }
   };
 
-  // Three.js Setup
-  useEffect(() => {
-    const currentMount = mountRef.current;
-    if (!currentMount || scene) return;
-
-    // Scene setup
-    const newScene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-    currentMount.appendChild(renderer.domElement);
-
-    // Particle system
-    const particleCount = 1000;
-    const particles = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 100;
-      positions[i + 1] = (Math.random() - 0.5) * 100;
-      positions[i + 2] = (Math.random() - 0.5) * 100;
-
-      const color = new THREE.Color();
-      color.setHSL(Math.random() * 0.3 + 0.5, 0.7, 0.5);
-      colors[i] = color.r;
-      colors[i + 1] = color.g;
-      colors[i + 2] = color.b;
-    }
-
-    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const particleMaterial = new THREE.PointsMaterial({
-      size: 1,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.2,
-    });
-
-    const particleSystem = new THREE.Points(particles, particleMaterial);
-    newScene.add(particleSystem);
-
-    // Geometric shapes
-    const geometries = [
-      new THREE.TetrahedronGeometry(2),
-      new THREE.OctahedronGeometry(1.5),
-      new THREE.IcosahedronGeometry(1),
-    ];
-
-    geometries.forEach((geometry, index) => {
-      const material = new THREE.MeshBasicMaterial({
-        color: [0x00f5d4, 0x9b5de5, 0xff206e][index],
-        wireframe: true,
-        transparent: true,
-        opacity: 0.1,
-      });
-      
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50
-      );
-      newScene.add(mesh);
-    });
-
-    camera.position.z = 30;
-    setScene(newScene);
-
-    // Animation loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      
-      particleSystem.rotation.x += 0.001;
-      particleSystem.rotation.y += 0.002;
-
-      newScene.children.forEach((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.rotation.x += 0.01;
-          child.rotation.y += 0.01;
-        }
-      });
-
-      renderer.render(newScene, camera);
-    };
-
-    animate();
-
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (currentMount && renderer.domElement) {
-        currentMount.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
-    };
-  }, [scene]);
 
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Three.js Background */}
+      {/* Background */}
       <div 
-        ref={mountRef} 
         className="fixed inset-0 z-0"
         style={{ 
           background: 'radial-gradient(ellipse at center, rgba(155, 93, 229, 0.15) 0%, rgba(0, 245, 212, 0.05) 50%, transparent 100%)'
