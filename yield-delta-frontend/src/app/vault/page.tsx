@@ -208,32 +208,6 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   zIndex: 100
                 }}
               >
-                <style jsx>{`
-                  @media (max-width: 768px) {
-                    .vault-deposit-button-wrapper {
-                      position: relative !important;
-                      top: auto !important;
-                      right: auto !important;
-                      margin: 1rem 0 !important;
-                      display: flex !important;
-                      justify-content: center !important;
-                      width: 100% !important;
-                    }
-                    .vault-deposit-enhanced-v2 {
-                      width: calc(100% - 2rem) !important;
-                      max-width: 280px !important;
-                      height: 48px !important;
-                      fontSize: 0.9rem !important;
-                    }
-                  }
-                  @media (max-width: 480px) {
-                    .vault-deposit-enhanced-v2 {
-                      width: calc(100% - 1rem) !important;
-                      height: 44px !important;
-                      fontSize: 0.85rem !important;
-                    }
-                  }
-                `}</style>
                 <button
                   className="vault-deposit-enhanced-v2"
                   onClick={() => {
@@ -313,19 +287,6 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 position: 'relative',
                 zIndex: 2
               }}>
-                <style jsx>{`
-                  @media (min-width: 769px) {
-                    .vault-header-content {
-                      margin-right: clamp(120px, 20vw, 160px) !important;
-                    }
-                  }
-                  @media (max-width: 768px) {
-                    .vault-header-content {
-                      margin-right: 0 !important;
-                      text-align: center !important;
-                    }
-                  }
-                `}</style>
                 <div className="vault-title-section">
                   <h1 className="vault-main-title" style={{ 
                     fontSize: 'clamp(1.75rem, 5vw, 2.75rem)',
@@ -401,21 +362,6 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 position: 'relative',
                 zIndex: 2
               }}>
-                <style jsx>{`
-                  @media (max-width: 768px) {
-                    .vault-metrics-optimized {
-                      grid-template-columns: 1fr !important;
-                      gap: 0.75rem !important;
-                      padding: 1rem !important;
-                    }
-                    .vault-metric-primary-compact {
-                      grid-column: span 1 !important;
-                    }
-                    .vault-metric-wide-compact {
-                      grid-column: span 1 !important;
-                    }
-                  }
-                `}</style>
                 {/* APY - Compact Primary Focus with Better Centering */}
                 <div className="vault-metric-primary-compact" style={{
                   gridColumn: 'span 2',
@@ -607,7 +553,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
             </div>
           </div>
           
-          {/* Add CSS animations */}
+          {/* Consolidated CSS styles */}
           <style jsx>{`
             @keyframes vault-header-fade {
               from {
@@ -622,6 +568,53 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
             
             .animate-vault-header {
               animation: vault-header-fade 0.8s ease-out;
+            }
+            
+            @media (max-width: 768px) {
+              .vault-deposit-button-wrapper {
+                position: relative !important;
+                top: auto !important;
+                right: auto !important;
+                margin: 1rem 0 !important;
+                display: flex !important;
+                justify-content: center !important;
+                width: 100% !important;
+              }
+              .vault-deposit-enhanced-v2 {
+                width: calc(100% - 2rem) !important;
+                max-width: 280px !important;
+                height: 48px !important;
+                fontSize: 0.9rem !important;
+              }
+              .vault-header-content {
+                margin-right: 0 !important;
+                text-align: center !important;
+              }
+              .vault-metrics-optimized {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem !important;
+                padding: 1rem !important;
+              }
+              .vault-metric-primary-compact {
+                grid-column: span 1 !important;
+              }
+              .vault-metric-wide-compact {
+                grid-column: span 1 !important;
+              }
+            }
+            
+            @media (max-width: 480px) {
+              .vault-deposit-enhanced-v2 {
+                width: calc(100% - 1rem) !important;
+                height: 44px !important;
+                fontSize: 0.85rem !important;
+              }
+            }
+            
+            @media (min-width: 769px) {
+              .vault-header-content {
+                margin-right: clamp(120px, 20vw, 160px) !important;
+              }
             }
           `}</style>
 

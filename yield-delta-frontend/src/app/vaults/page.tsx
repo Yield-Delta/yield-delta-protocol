@@ -817,38 +817,6 @@ export default function VaultsPage() {
               initialMessage="🎯 Welcome to SEI DLP Vaults! I'm Liqui, your AI assistant. I can help you analyze vault performance, predict optimal ranges, and recommend rebalancing strategies. What vault would you like to optimize today?"
             />
             
-            {/* Inline CSS Override for AI Chat Input - Highest Specificity */}
-            <style jsx>{`
-              .ai-chat-override input {
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
-                border: 1px solid rgba(255, 255, 255, 0.2) !important;
-                color: #ffffff !important;
-                font-size: 14px !important;
-                padding: 12px 16px !important;
-                border-radius: 12px !important;
-                backdrop-filter: blur(10px) !important;
-                outline: none !important;
-              }
-              
-              .ai-chat-override input:focus {
-                border-color: rgba(0, 245, 212, 0.5) !important;
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
-                box-shadow: 0 0 20px rgba(0, 245, 212, 0.2) !important;
-              }
-              
-              .ai-chat-override input::placeholder {
-                color: rgba(255, 255, 255, 0.4) !important;
-              }
-              
-              .ai-chat-override .text-xs {
-                color: rgba(255, 255, 255, 0.5) !important;
-                font-size: 11px !important;
-              }
-              
-              .ai-chat-override * {
-                color: #ffffff;
-              }
-            `}</style>
           </div>
         </div>
       )}
@@ -861,62 +829,6 @@ export default function VaultsPage() {
         onSuccess={handleDepositSuccess}
       />
 
-      {/* Add CSS animations */}
-      <style jsx>{`
-        @keyframes fade-in-stats {
-          from {
-            opacity: 0;
-            transform: translateY(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes vault-card-entrance {
-          from {
-            opacity: 0;
-            transform: translateY(100px) rotateX(-15deg) scale(0.8);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) rotateX(0deg) scale(1);
-          }
-        }
-        
-        .animate-fade-in-stats {
-          animation: fade-in-stats 0.8s ease-out;
-        }
-        
-        .animate-vault-cards > * {
-          animation: vault-card-entrance 1.2s ease-out both;
-        }
-        
-        .animate-vault-cards > *:nth-child(1) {
-          animation-delay: 0s;
-        }
-        
-        .animate-vault-cards > *:nth-child(2) {
-          animation-delay: 0.2s;
-        }
-        
-        .animate-vault-cards > *:nth-child(3) {
-          animation-delay: 0.4s;
-        }
-        
-        .animate-vault-cards > *:nth-child(4) {
-          animation-delay: 0.6s;
-        }
-        
-        .animate-vault-cards > *:nth-child(5) {
-          animation-delay: 0.8s;
-        }
-        
-        .animate-vault-cards > *:nth-child(6) {
-          animation-delay: 1.0s;
-        }
-      `}</style>
 
       {/* Floating AI Chat Button - Ultra-Enhanced Visibility Design */}
       <div 
@@ -930,8 +842,92 @@ export default function VaultsPage() {
           pointerEvents: 'auto'
         }}
       >
-        {/* Mobile responsive positioning */}
+        {/* Consolidated CSS styles */}
         <style jsx>{`
+          @keyframes fade-in-stats {
+            from {
+              opacity: 0;
+              transform: translateY(50px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          @keyframes vault-card-entrance {
+            from {
+              opacity: 0;
+              transform: translateY(100px) rotateX(-15deg) scale(0.8);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) rotateX(0deg) scale(1);
+            }
+          }
+          
+          .animate-fade-in-stats {
+            animation: fade-in-stats 0.8s ease-out;
+          }
+          
+          .animate-vault-cards > * {
+            animation: vault-card-entrance 1.2s ease-out both;
+          }
+          
+          .animate-vault-cards > *:nth-child(1) {
+            animation-delay: 0s;
+          }
+          
+          .animate-vault-cards > *:nth-child(2) {
+            animation-delay: 0.2s;
+          }
+          
+          .animate-vault-cards > *:nth-child(3) {
+            animation-delay: 0.4s;
+          }
+          
+          .animate-vault-cards > *:nth-child(4) {
+            animation-delay: 0.6s;
+          }
+          
+          .animate-vault-cards > *:nth-child(5) {
+            animation-delay: 0.8s;
+          }
+          
+          .animate-vault-cards > *:nth-child(6) {
+            animation-delay: 1.0s;
+          }
+          
+          .ai-chat-override input {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            backdrop-filter: blur(10px) !important;
+            outline: none !important;
+          }
+          
+          .ai-chat-override input:focus {
+            border-color: rgba(0, 245, 212, 0.5) !important;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.2) !important;
+          }
+          
+          .ai-chat-override input::placeholder {
+            color: rgba(255, 255, 255, 0.4) !important;
+          }
+          
+          .ai-chat-override .text-xs {
+            color: rgba(255, 255, 255, 0.5) !important;
+            font-size: 11px !important;
+          }
+          
+          .ai-chat-override * {
+            color: #ffffff;
+          }
+          
           @media (max-width: 768px) {
             .ai-chat-button-container-override {
               bottom: 20px !important;
@@ -943,6 +939,7 @@ export default function VaultsPage() {
               padding: 18px !important;
             }
           }
+          
           @media (max-width: 480px) {
             .ai-chat-button-container-override {
               bottom: 16px !important;
