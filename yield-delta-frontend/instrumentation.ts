@@ -7,6 +7,17 @@
  * @see https://nextjs.org/docs/app/building-your-application/optimizing/instrumentation
  */
 
+// IMMEDIATE: Set self polyfill at module load time
+if (typeof globalThis !== 'undefined' && typeof globalThis.self === 'undefined') {
+  // @ts-expect-error - Adding self to globalThis for SSR compatibility
+  globalThis.self = globalThis;
+}
+
+if (typeof global !== 'undefined' && typeof global.self === 'undefined') {
+  // @ts-expect-error - Adding self to global for SSR compatibility  
+  global.self = global;
+}
+
 export async function register() {
   // CRITICAL: Apply polyfills immediately before any other code loads
   if (typeof globalThis !== 'undefined') {
