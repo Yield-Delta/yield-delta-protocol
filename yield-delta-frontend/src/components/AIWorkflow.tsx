@@ -1,11 +1,7 @@
 "use client"
 
 import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Card } from '@/components/ui/card';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const workflowSteps = [
   { 
@@ -173,6 +169,49 @@ export default function AIWorkflow() {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes step-in {
+          from {
+            opacity: 0;
+            transform: scale(0.5) translateY(50px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+        
+        @keyframes connector-expand {
+          from {
+            transform: scaleX(0);
+          }
+          to {
+            transform: scaleX(1);
+          }
+        }
+        
+        @keyframes ai-center-fade {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        
+        .animate-step-in {
+          animation: step-in 0.6s ease-out both;
+        }
+        
+        .animate-connector {
+          animation: connector-expand 0.5s ease-out both;
+        }
+        
+        .animate-ai-center {
+          animation: ai-center-fade 0.8s ease-out 1.5s both;
         }
         .ai-title-override {
           font-size: 4rem !important;
@@ -601,7 +640,7 @@ export default function AIWorkflow() {
           <div className="mt-12 md:mt-24 flex flex-col items-center" style={{ marginTop: 'clamp(3rem, 8vw, 6rem)' }}>
             <div className="relative">
               <div 
-                className="rounded-full backdrop-blur-xl border-2 flex items-center justify-center animate-float shadow-2xl"
+                className="rounded-full backdrop-blur-xl border-2 flex items-center justify-center animate-float animate-ai-center shadow-2xl"
                 style={{
                   width: 'clamp(180px, 20vw, 240px) !important',
                   height: 'clamp(180px, 20vw, 240px) !important',

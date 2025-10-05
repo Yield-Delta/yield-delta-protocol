@@ -3,11 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Navigation from '@/components/Navigation';
 import { Rocket, Settings, DollarSign, Shield, TrendingUp, AlertTriangle, CheckCircle, Code, Zap } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import * as THREE from 'three';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface VaultConfig {
   name: string;
@@ -27,10 +22,9 @@ const DeployVaultPage = () => {
   const [isDeploying, setIsDeploying] = useState(false);
   const [deploymentHash, setDeploymentHash] = useState('');
   
-  // Three.js and animation refs
-  const mountRef = useRef<HTMLDivElement>(null);
+  // Animation refs
   const formRef = useRef<HTMLDivElement>(null);
-  const [scene, setScene] = useState<THREE.Scene | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
   
   const [config, setConfig] = useState<VaultConfig>({
     name: '',
@@ -75,154 +69,64 @@ const DeployVaultPage = () => {
     }
   };
 
-  // Three.js Background Setup
+
+  // Intersection Observer for animations
   useEffect(() => {
-    const currentMount = mountRef.current;
-    if (!currentMount || scene) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-    // Scene setup
-    const newScene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-    currentMount.appendChild(renderer.domElement);
-
-    // Particle system
-    const particleCount = 800;
-    const particles = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 100;
-      positions[i + 1] = (Math.random() - 0.5) * 100;
-      positions[i + 2] = (Math.random() - 0.5) * 100;
-
-      // Colors for particles
-      const color = new THREE.Color();
-      color.setHSL(Math.random() * 0.3 + 0.5, 0.7, 0.5);
-      colors[i] = color.r;
-      colors[i + 1] = color.g;
-      colors[i + 2] = color.b;
+    if (formRef.current) {
+      observer.observe(formRef.current);
     }
-
-    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const particleMaterial = new THREE.PointsMaterial({
-      size: 1,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.3,
-    });
-
-    const particleSystem = new THREE.Points(particles, particleMaterial);
-    newScene.add(particleSystem);
-
-    // Geometric shapes for depth
-    const geometries = [
-      new THREE.TetrahedronGeometry(2),
-      new THREE.OctahedronGeometry(1.5),
-      new THREE.IcosahedronGeometry(1),
-    ];
-
-    geometries.forEach((geometry, index) => {
-      const material = new THREE.MeshBasicMaterial({
-        color: [0x00f5d4, 0x9b5de5, 0xff206e][index],
-        wireframe: true,
-        transparent: true,
-        opacity: 0.15,
-      });
-      
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50
-      );
-      newScene.add(mesh);
-    });
-
-    camera.position.z = 30;
-    setScene(newScene);
-
-    // Animation loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      
-      // Rotate particles
-      particleSystem.rotation.x += 0.001;
-      particleSystem.rotation.y += 0.002;
-
-      // Rotate geometric shapes
-      newScene.children.forEach((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.rotation.x += 0.008;
-          child.rotation.y += 0.008;
-        }
-      });
-
-      renderer.render(newScene, camera);
-    };
-
-    animate();
-
-    // Handle resize
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      if (currentMount && renderer.domElement) {
-        currentMount.removeChild(renderer.domElement);
+      if (formRef.current) {
+        observer.unobserve(formRef.current);
       }
-      renderer.dispose();
     };
-  }, [scene]);
-
-  // GSAP Animations for form steps
-  useEffect(() => {
-    if (formRef.current) {
-      gsap.fromTo(
-        formRef.current.children,
-        { 
-          opacity: 0, 
-          y: 50, 
-          rotationX: -10,
-          scale: 0.95 
-        },
-        { 
-          opacity: 1, 
-          y: 0, 
-          rotationX: 0,
-          scale: 1,
-          duration: 0.8, 
-          stagger: 0.1, 
-          ease: 'back.out(1.4)'
-        }
-      );
-    }
-  }, [step]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background relative text-white">
-      {/* Three.js Background */}
-      <div 
-        ref={mountRef} 
-        className="fixed inset-0 z-0"
-        style={{ 
-          background: 'radial-gradient(ellipse at center, rgba(155, 93, 229, 0.15) 0%, rgba(0, 245, 212, 0.05) 50%, transparent 100%)'
-        }}
-      />
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 opacity-20">
+          <div
+            className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse"
+            style={{
+              background: 'radial-gradient(circle, rgba(155, 93, 229, 0.8) 0%, transparent 70%)',
+              animationDelay: '0s',
+              animationDuration: '4s'
+            }}
+          />
+          <div
+            className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse"
+            style={{
+              background: 'radial-gradient(circle, rgba(0, 245, 212, 0.6) 0%, transparent 70%)',
+              animationDelay: '2s',
+              animationDuration: '5s'
+            }}
+          />
+          <div
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full blur-3xl animate-pulse"
+            style={{
+              background: 'radial-gradient(circle, rgba(255, 32, 110, 0.5) 0%, transparent 70%)',
+              animationDelay: '4s',
+              animationDuration: '6s'
+            }}
+          />
+        </div>
+      </div>
       
-      {/* Background overlay to reduce 3D visual interference */}
+      {/* Background overlay */}
       <div className="fixed inset-0 z-5 bg-gradient-to-b from-background/70 via-background/60 to-background/70 pointer-events-none" />
 
       {/* Navigation */}
@@ -263,7 +167,12 @@ const DeployVaultPage = () => {
         </div>
       </div>
 
-      <div className="relative z-10 container mx-auto max-w-4xl px-4 py-16" ref={formRef}>
+      <div 
+        className={`relative z-10 container mx-auto max-w-4xl px-4 py-16 transition-all duration-1000 ease-out ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+        }`} 
+        ref={formRef}
+      >
         {/* Progress Steps - Enhanced */}
         <div className="flex items-center justify-center mb-16">
           <div 

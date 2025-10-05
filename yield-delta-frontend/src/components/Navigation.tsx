@@ -4,7 +4,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Logo from './Logo';
-import { gsap } from 'gsap';
 import { Menu, X } from 'lucide-react';
 
 const WalletConnectButton = dynamic(
@@ -39,102 +38,16 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
     transparent: "bg-transparent"
   };
 
-  // GSAP Logo Animation - Professional breathe effect
-  useEffect(() => {
-    if (!logoRef.current) return;
+  // CSS-based logo animation classes
+  const logoClasses = `
+    transition-all duration-300 ease-in-out
+    hover:scale-110 hover:drop-shadow-[0_0_20px_rgba(155,93,229,0.6)]
+    animate-pulse
+  `.replace(/\s+/g, ' ').trim();
 
-    const logoElement = logoRef.current;
-    
-    // Subtle breathing effect - professional and calming
-    const tl = gsap.timeline({ repeat: -1, yoyo: true });
-    
-    tl.to(logoElement, {
-      scale: 1.05,
-      filter: 'drop-shadow(0 0 12px rgba(155, 93, 229, 0.4))',
-      duration: 3,
-      ease: 'sine.inOut'
-    });
-
-    // Professional hover enhancement
-    const hoverTl = gsap.timeline({ paused: true });
-    hoverTl.to(logoElement, {
-      scale: 1.1,
-      filter: 'drop-shadow(0 0 20px rgba(155, 93, 229, 0.6))',
-      duration: 0.3,
-      ease: 'power2.out'
-    });
-
-    const handleMouseEnter = () => hoverTl.play();
-    const handleMouseLeave = () => hoverTl.reverse();
-
-    logoElement.addEventListener('mouseenter', handleMouseEnter);
-    logoElement.addEventListener('mouseleave', handleMouseLeave);
-
-    return () => {
-      tl.kill();
-      hoverTl.kill();
-      logoElement.removeEventListener('mouseenter', handleMouseEnter);
-      logoElement.removeEventListener('mouseleave', handleMouseLeave);
-    };
-  }, []);
-
-  // GSAP Mobile Menu Animation
-  useEffect(() => {
-    if (!mobileMenuRef.current) return;
-
-    const menuElement = mobileMenuRef.current;
-    const menuItems = menuElement.querySelectorAll('.mobile-menu-item');
-    const backdrop = menuElement.querySelector('.mobile-menu-backdrop');
-    const orbs = menuElement.querySelectorAll('.mobile-menu-orb');
-
-    if (mobileMenuOpen) {
-      // Set initial states
-      gsap.set(menuElement, { opacity: 0, scale: 0.9 });
-      gsap.set(backdrop, { opacity: 0 });
-      gsap.set(menuItems, { opacity: 0, y: 30, scale: 0.9 });
-      gsap.set(orbs, { scale: 0, opacity: 0 });
-
-      // Animate in
-      const tl = gsap.timeline();
-      tl.to(menuElement, { opacity: 1, scale: 1, duration: 0.3, ease: 'power2.out' })
-        .to(backdrop, { opacity: 1, duration: 0.2 }, 0)
-        .to(orbs, { scale: 1, opacity: 0.2, duration: 0.6, ease: 'back.out(1.7)', stagger: 0.1 }, 0.1)
-        .to(menuItems, { 
-          opacity: 1, 
-          y: 0, 
-          scale: 1, 
-          duration: 0.4, 
-          ease: 'back.out(1.2)', 
-          stagger: 0.08 
-        }, 0.2);
-    }
-  }, [mobileMenuOpen]);
-
-  // Mobile menu close handler with animation
+  // Mobile menu close handler
   const closeMobileMenu = () => {
-    if (!mobileMenuRef.current) {
-      setMobileMenuOpen(false);
-      return;
-    }
-
-    const menuElement = mobileMenuRef.current;
-    const menuItems = menuElement.querySelectorAll('.mobile-menu-item');
-    const backdrop = menuElement.querySelector('.mobile-menu-backdrop');
-
-    const tl = gsap.timeline({
-      onComplete: () => setMobileMenuOpen(false)
-    });
-
-    tl.to(menuItems, { 
-      opacity: 0, 
-      y: -20, 
-      scale: 0.9, 
-      duration: 0.2, 
-      ease: 'power2.in', 
-      stagger: 0.05 
-    })
-    .to(backdrop, { opacity: 0, duration: 0.2 }, 0)
-    .to(menuElement, { opacity: 0, scale: 0.9, duration: 0.2, ease: 'power2.in' }, 0.1);
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -152,10 +65,7 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
         <div className="nav-left-simple">
           <div 
             ref={logoRef}
-            className="logo-animation-gsap"
-            style={{
-              transformStyle: 'preserve-3d'
-            }}
+            className={logoClasses}
           >
             <Logo 
               variant="icon" 
@@ -263,7 +173,14 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
       
       {/* Full-Screen Mobile Menu Overlay */}
       {!showLaunchApp && mobileMenuOpen && (
-        <div ref={mobileMenuRef} className="md:hidden fixed inset-0 z-50 flex items-center justify-center mobile-menu-overlay">
+        <div 
+          ref={mobileMenuRef} 
+          className={`
+            md:hidden fixed inset-0 z-50 flex items-center justify-center 
+            transition-all duration-300 ease-out
+            ${mobileMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}
+          `}
+        >
           {/* Backdrop with glass morphism */}
           <div 
             className="absolute inset-0 mobile-menu-backdrop"

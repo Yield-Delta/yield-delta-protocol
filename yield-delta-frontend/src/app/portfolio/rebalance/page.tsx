@@ -4,11 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import Navigation from '@/components/Navigation';
 import AIChat from '@/components/AIChat';
 import { BarChart3, TrendingUp, AlertTriangle, Zap, Clock, CheckCircle, ArrowRight, RefreshCw, MessageCircle, X } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import * as THREE from 'three';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface RebalanceAction {
   id: string;
@@ -34,11 +29,6 @@ const RebalancePage = () => {
   const [executionProgress, setExecutionProgress] = useState(0);
   const [executedTransactions, setExecutedTransactions] = useState<string[]>([]);
   
-  // Refs for animations
-  const mountRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
-  const [scene, setScene] = useState<THREE.Scene | null>(null);
 
   const rebalanceActions: RebalanceAction[] = [
     {
@@ -264,52 +254,6 @@ const RebalancePage = () => {
     };
   }, [scene]);
 
-  // GSAP Animations
-  useEffect(() => {
-    if (cardsRef.current) {
-      const cards = cardsRef.current.children;
-      
-      gsap.fromTo(
-        cards,
-        { 
-          opacity: 0, 
-          y: 100, 
-          rotationX: -15,
-          scale: 0.8 
-        },
-        { 
-          opacity: 1, 
-          y: 0, 
-          rotationX: 0,
-          scale: 1,
-          duration: 1.2, 
-          stagger: 0.2, 
-          ease: 'back.out(1.7)',
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: 'top 80%',
-          }
-        }
-      );
-    }
-
-    if (statsRef.current) {
-      gsap.fromTo(
-        statsRef.current.children,
-        { opacity: 0, y: 50 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.8, 
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: statsRef.current,
-            start: 'top 90%',
-          }
-        }
-      );
-    }
-  }, []);
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -409,11 +353,68 @@ const RebalancePage = () => {
             </div>
           </div>
         </div>
+        
+        {/* Add CSS animations */}
+        <style jsx>{`
+          @keyframes stats-fade-in {
+            from {
+              opacity: 0;
+              transform: translateY(50px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          @keyframes card-entrance {
+            from {
+              opacity: 0;
+              transform: translateY(100px) rotateX(-15deg) scale(0.8);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) rotateX(0deg) scale(1);
+            }
+          }
+          
+          .animate-stats-in > * {
+            animation: stats-fade-in 0.8s ease-out both;
+          }
+          
+          .animate-stats-in > *:nth-child(1) {
+            animation-delay: 0s;
+          }
+          
+          .animate-stats-in > *:nth-child(2) {
+            animation-delay: 0.1s;
+          }
+          
+          .animate-stats-in > *:nth-child(3) {
+            animation-delay: 0.2s;
+          }
+          
+          .animate-stats-in > *:nth-child(4) {
+            animation-delay: 0.3s;
+          }
+          
+          .animate-cards-in > * {
+            animation: card-entrance 1.2s ease-out both;
+          }
+          
+          .animate-cards-in > *:nth-child(1) {
+            animation-delay: 0s;
+          }
+          
+          .animate-cards-in > *:nth-child(2) {
+            animation-delay: 0.2s;
+          }
+        `}</style>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
         {/* Stats Overview */}
-        <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-stats-in">
           {[
             { label: 'Unrealized P&L', value: `$${portfolioStats.unrealizedPnL.toLocaleString()}`, change: '+6.9%', color: '#10b981' },
             { label: 'Potential Yield ↑', value: `+${portfolioStats.potentialYieldIncrease}%`, change: 'APY', color: '#3b82f6' },
@@ -461,7 +462,7 @@ const RebalancePage = () => {
         </div>
 
         {/* Analysis Section */}
-        <div ref={cardsRef}>
+        <div className="animate-cards-in">
           <div 
             className="mb-8 group transition-all duration-500 hover:scale-[1.02]"
             style={{

@@ -19,29 +19,15 @@ const nextConfig: NextConfig = {
   //   return []
   // },
   
-  // Production-optimized webpack config for 3D libraries
+  // Simplified webpack config for DeFi protocol
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Performance optimizations
+    // Basic performance optimizations (no 3D-specific chunks)
     config.optimization = {
       ...config.optimization,
       moduleIds: 'deterministic',
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
-          // Separate chunk for Three.js and 3D libraries
-          threejs: {
-            test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
-            name: 'threejs',
-            chunks: 'all',
-            priority: 20,
-          },
-          // Separate chunk for GSAP
-          gsap: {
-            test: /[\\/]node_modules[\\/]gsap[\\/]/,
-            name: 'gsap',
-            chunks: 'all',
-            priority: 20,
-          },
           // UI libraries
           ui: {
             test: /[\\/]node_modules[\\/](@radix-ui|lucide-react|framer-motion)[\\/]/,
@@ -107,12 +93,13 @@ const nextConfig: NextConfig = {
       })
     );
 
-    // CRITICAL: Inject self polyfill at the module level for all chunks
+    // CRITICAL: Inject self polyfill at the module level for all JS chunks only
     config.plugins.push(
       new webpack.BannerPlugin({
         banner: '(function() { if (typeof global !== "undefined" && typeof global.self === "undefined") { global.self = global; global.window = global; } if (typeof self === "undefined") { var self = (typeof global !== "undefined") ? global : this; } })();',
         raw: true,
         entryOnly: false,
+        test: /\.js$/,
       })
     );
 
@@ -146,16 +133,7 @@ const nextConfig: NextConfig = {
       };
     }
 
-    // Client-side specific optimizations
-    if (!isServer) {
-      
-      // Fix Three.js imports for v0.178.0+
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        'three/examples/jsm': 'three/examples/jsm',
-        'three$': 'three/src/Three.js',
-      };
-    }
+    // Client-side specific optimizations removed (no 3D dependencies)
 
     // Memory management
     config.infrastructureLogging = { level: 'error' };
@@ -176,10 +154,6 @@ const nextConfig: NextConfig = {
   // Experimental features for performance
   experimental: {
     optimizePackageImports: [
-      'three',
-      '@react-three/fiber',
-      '@react-three/drei',
-      'gsap',
       'nextra',
       'nextra-theme-docs',
       'lucide-react',
@@ -187,8 +161,8 @@ const nextConfig: NextConfig = {
       '@radix-ui/react-dialog',
       '@radix-ui/react-dropdown-menu',
     ],
-    webpackBuildWorker: true,
-    optimizeCss: true,
+    webpackBuildWorker: false,
+    optimizeCss: false,
     mdxRs: true,
   },
   

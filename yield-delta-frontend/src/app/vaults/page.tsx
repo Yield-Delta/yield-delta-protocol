@@ -10,15 +10,11 @@ import DemoBanner from '@/components/DemoBanner';
 import AIChat from '@/components/AIChat';
 import DepositModal from '@/components/DepositModal';
 import { MessageCircle, X, Loader2 } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import * as THREE from 'three';
 import { useSeiMarketData } from '@/hooks/useMarketData';
 import { useVaultStore, VaultData } from '@/stores/vaultStore';
 import '@/components/StatsCarousel.css';
 // import styles from './page.module.css'; // Commented out as not used
 
-gsap.registerPlugin(ScrollTrigger);
 
 // Utility functions
 const formatCurrency = (amount: number) => {
@@ -95,8 +91,6 @@ const getRiskBadgeStyle = (riskLevel: 'Low' | 'Medium' | 'High') => {
 export default function VaultsPage() {
   const router = useRouter();
   const mountRef = useRef<HTMLDivElement>(null);
-  const vaultCardsRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
   const [scene, setScene] = useState<THREE.Scene | null>(null);
   const [showChat, setShowChat] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
@@ -362,52 +356,6 @@ export default function VaultsPage() {
     };
   }, [scene]); // Add scene as dependency to prevent recreation
 
-  // GSAP Animations
-  useEffect(() => {
-    if (vaultCardsRef.current) {
-      const cards = vaultCardsRef.current.children;
-      
-      gsap.fromTo(
-        cards,
-        { 
-          opacity: 0, 
-          y: 100, 
-          rotationX: -15,
-          scale: 0.8 
-        },
-        { 
-          opacity: 1, 
-          y: 0, 
-          rotationX: 0,
-          scale: 1,
-          duration: 1.2, 
-          stagger: 0.2, 
-          ease: 'back.out(1.7)',
-          scrollTrigger: {
-            trigger: vaultCardsRef.current,
-            start: 'top 80%',
-          }
-        }
-      );
-    }
-
-    if (statsRef.current) {
-      gsap.fromTo(
-        statsRef.current.children,
-        { opacity: 0, y: 50 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.8, 
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: statsRef.current,
-            start: 'top 90%',
-          }
-        }
-      );
-    }
-  }, []);
 
 
   return (
@@ -434,7 +382,7 @@ export default function VaultsPage() {
       <div className="relative z-10" style={{ paddingTop: '3.5rem' }}>
         <div className="w-full" style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.25rem', marginTop: '0.125rem' }}>
           <div 
-            ref={statsRef}
+            className="animate-fade-in-stats"
             style={{
               background: 'linear-gradient(135deg, rgba(155, 93, 229, 0.15) 0%, rgba(0, 245, 212, 0.08) 50%, rgba(255, 32, 110, 0.12) 100%)',
               backdropFilter: 'blur(16px)',
@@ -645,8 +593,7 @@ export default function VaultsPage() {
             
             {!isLoading && !error && (
               <div 
-                ref={vaultCardsRef} 
-                className="grid gap-8 md:gap-12 max-w-7xl mx-auto"
+                className="grid gap-8 md:gap-12 max-w-7xl mx-auto animate-vault-cards"
                 style={{ 
                   gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
                   justifyContent: 'center',
@@ -913,6 +860,63 @@ export default function VaultsPage() {
         onClose={handleCloseModal}
         onSuccess={handleDepositSuccess}
       />
+
+      {/* Add CSS animations */}
+      <style jsx>{`
+        @keyframes fade-in-stats {
+          from {
+            opacity: 0;
+            transform: translateY(50px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes vault-card-entrance {
+          from {
+            opacity: 0;
+            transform: translateY(100px) rotateX(-15deg) scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) rotateX(0deg) scale(1);
+          }
+        }
+        
+        .animate-fade-in-stats {
+          animation: fade-in-stats 0.8s ease-out;
+        }
+        
+        .animate-vault-cards > * {
+          animation: vault-card-entrance 1.2s ease-out both;
+        }
+        
+        .animate-vault-cards > *:nth-child(1) {
+          animation-delay: 0s;
+        }
+        
+        .animate-vault-cards > *:nth-child(2) {
+          animation-delay: 0.2s;
+        }
+        
+        .animate-vault-cards > *:nth-child(3) {
+          animation-delay: 0.4s;
+        }
+        
+        .animate-vault-cards > *:nth-child(4) {
+          animation-delay: 0.6s;
+        }
+        
+        .animate-vault-cards > *:nth-child(5) {
+          animation-delay: 0.8s;
+        }
+        
+        .animate-vault-cards > *:nth-child(6) {
+          animation-delay: 1.0s;
+        }
+      `}</style>
 
       {/* Floating AI Chat Button - Ultra-Enhanced Visibility Design */}
       <div 

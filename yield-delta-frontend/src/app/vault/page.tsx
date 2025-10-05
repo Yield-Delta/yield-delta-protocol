@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import Navigation from '@/components/Navigation';
 import { ArrowLeft, TrendingUp, Activity, Shield, Target, BarChart3, Loader2 } from 'lucide-react';
-import gsap from 'gsap';
 import { useVaultStore } from '@/stores/vaultStore';
 import { useVaults } from '@/hooks/useVaults';
 import DepositModal from '@/components/DepositModal';
@@ -71,7 +70,6 @@ interface VaultDetailPageProps {
 
 function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams }: VaultDetailPageProps) {
   const router = useRouter();
-  const cardRef = useRef<HTMLDivElement>(null);
   
   // State
   const [showDepositModal, setShowDepositModal] = useState(action === 'deposit');
@@ -93,14 +91,6 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
     }
   }, [vaultAddress, vault, vaultsData, setSelectedVault]);
   
-  useEffect(() => {
-    if (cardRef.current) {
-      gsap.fromTo(cardRef.current, 
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }
-      );
-    }
-  }, [vault]);
 
   if (isLoading) {
     return (
@@ -184,7 +174,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
               </Button>
             </div>
             
-            <div ref={cardRef} className="vault-detail-header-card-optimized relative z-10" style={{
+            <div className="vault-detail-header-card-optimized relative z-10 animate-vault-header" style={{
               background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)',
               backdropFilter: 'blur(20px)',
               border: '1px solid rgba(255, 255, 255, 0.25)',
@@ -616,6 +606,24 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
               </div>
             </div>
           </div>
+          
+          {/* Add CSS animations */}
+          <style jsx>{`
+            @keyframes vault-header-fade {
+              from {
+                opacity: 0;
+                transform: translateY(30px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            
+            .animate-vault-header {
+              animation: vault-header-fade 0.8s ease-out;
+            }
+          `}</style>
 
           {/* Clean Tabs Section */}
           <Tabs value={activeTab} onValueChange={(value) => {

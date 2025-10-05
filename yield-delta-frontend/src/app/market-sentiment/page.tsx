@@ -3,11 +3,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Navigation from '@/components/Navigation';
 import { TrendingUp, TrendingDown, Brain, Target, Activity, Eye, Clock } from 'lucide-react';
-import * as THREE from 'three';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface SentimentData {
   metric: string;
@@ -19,10 +14,10 @@ interface SentimentData {
 
 const MarketSentimentPage = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
-  const mountRef = useRef<HTMLDivElement>(null);
   const statsCardsRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
-  const [scene, setScene] = useState<THREE.Scene | null>(null);
+  const [isStatsVisible, setIsStatsVisible] = useState(false);
+  const [isTableVisible, setIsTableVisible] = useState(false);
 
   // Mock sentiment data
   const sentimentData: SentimentData[] = [
@@ -86,173 +81,80 @@ const MarketSentimentPage = () => {
     }
   };
 
-  // Three.js Setup for background (similar to market page)
+
+  // Intersection Observer for animations
   useEffect(() => {
-    const currentMount = mountRef.current;
-    if (!currentMount || scene) return;
-
-    // Scene setup
-    const newScene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-    currentMount.appendChild(renderer.domElement);
-
-    // Particle system
-    const particleCount = 800;
-    const particles = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 100;
-      positions[i + 1] = (Math.random() - 0.5) * 100;
-      positions[i + 2] = (Math.random() - 0.5) * 100;
-
-      // Colors for particles - sentiment theme (green/purple)
-      const color = new THREE.Color();
-      color.setHSL(Math.random() * 0.3 + 0.25, 0.8, 0.6); // Green to purple range
-      colors[i] = color.r;
-      colors[i + 1] = color.g;
-      colors[i + 2] = color.b;
-    }
-
-    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const particleMaterial = new THREE.PointsMaterial({
-      size: 1.2,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.25,
-    });
-
-    const particleSystem = new THREE.Points(particles, particleMaterial);
-    newScene.add(particleSystem);
-
-    // Geometric shapes for depth
-    const geometries = [
-      new THREE.OctahedronGeometry(2),
-      new THREE.TetrahedronGeometry(1.5),
-      new THREE.IcosahedronGeometry(1),
-    ];
-
-    geometries.forEach((geometry, index) => {
-      const material = new THREE.MeshBasicMaterial({
-        color: [0x10b981, 0x8b5cf6, 0x06b6d4][index],
-        wireframe: true,
-        transparent: true,
-        opacity: 0.12,
-      });
-      
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(
-        (Math.random() - 0.5) * 60,
-        (Math.random() - 0.5) * 60,
-        (Math.random() - 0.5) * 60
-      );
-      newScene.add(mesh);
-    });
-
-    camera.position.z = 30;
-    setScene(newScene);
-
-    // Animation loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      
-      // Rotate particles
-      particleSystem.rotation.x += 0.0008;
-      particleSystem.rotation.y += 0.0015;
-
-      // Rotate geometric shapes
-      newScene.children.forEach((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.rotation.x += 0.008;
-          child.rotation.y += 0.008;
-        }
-      });
-
-      renderer.render(newScene, camera);
-    };
-
-    animate();
-
-    // Handle resize
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (currentMount && renderer.domElement) {
-        currentMount.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
-    };
-  }, [scene]);
-
-  // GSAP Animations
-  useEffect(() => {
-    if (statsCardsRef.current) {
-      const cards = statsCardsRef.current.children;
-      
-      gsap.fromTo(
-        cards,
-        { 
-          opacity: 0, 
-          y: 80, 
-          scale: 0.9 
-        },
-        { 
-          opacity: 1, 
-          y: 0, 
-          scale: 1,
-          duration: 1, 
-          stagger: 0.15, 
-          ease: 'back.out(1.4)',
-          scrollTrigger: {
-            trigger: statsCardsRef.current,
-            start: 'top 85%',
+    const statsObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsStatsVisible(true);
           }
-        }
-      );
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const tableObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsTableVisible(true);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (statsCardsRef.current) {
+      statsObserver.observe(statsCardsRef.current);
     }
 
     if (tableRef.current) {
-      gsap.fromTo(
-        tableRef.current,
-        { opacity: 0, y: 60 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 1.2,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: tableRef.current,
-            start: 'top 90%',
-          }
-        }
-      );
+      tableObserver.observe(tableRef.current);
     }
+
+    return () => {
+      if (statsCardsRef.current) {
+        statsObserver.unobserve(statsCardsRef.current);
+      }
+      if (tableRef.current) {
+        tableObserver.unobserve(tableRef.current);
+      }
+    };
   }, []);
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Three.js Background */}
-      <div 
-        ref={mountRef} 
-        className="fixed inset-0 z-0"
-        style={{ 
-          background: 'radial-gradient(ellipse at center, rgba(16, 185, 129, 0.15) 0%, rgba(139, 92, 246, 0.08) 40%, rgba(6, 182, 212, 0.05) 70%, transparent 100%)'
-        }}
-      />
+      {/* Animated Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute inset-0 opacity-20">
+          <div
+            className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse"
+            style={{
+              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.8) 0%, transparent 70%)',
+              animationDelay: '0s',
+              animationDuration: '4s'
+            }}
+          />
+          <div
+            className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse"
+            style={{
+              background: 'radial-gradient(circle, rgba(139, 92, 246, 0.6) 0%, transparent 70%)',
+              animationDelay: '2s',
+              animationDuration: '5s'
+            }}
+          />
+          <div
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full blur-3xl animate-pulse"
+            style={{
+              background: 'radial-gradient(circle, rgba(6, 182, 212, 0.5) 0%, transparent 70%)',
+              animationDelay: '4s',
+              animationDuration: '6s'
+            }}
+          />
+        </div>
+      </div>
       
       {/* Background overlay */}
       <div className="fixed inset-0 z-5 bg-gradient-to-b from-background/70 via-background/60 to-background/70 pointer-events-none" />
@@ -308,7 +210,12 @@ const MarketSentimentPage = () => {
 
       {/* Stats Cards */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
-        <div ref={statsCardsRef} className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div 
+          ref={statsCardsRef} 
+          className={`grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 transition-all duration-1000 ease-out ${
+            isStatsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
+        >
           {[
             { label: 'Bullish Indicators', value: '12', change: '+3', icon: TrendingUp, color: 'green' },
             { label: 'Market Fear Index', value: '28', change: '-5', icon: Brain, color: 'blue' },
@@ -317,7 +224,14 @@ const MarketSentimentPage = () => {
           ].map((stat, index) => (
             <div 
               key={index} 
-              className="group cursor-pointer transition-all duration-500 hover:scale-105"
+              className={`group cursor-pointer transition-all duration-700 ease-out hover:scale-105 ${
+                isStatsVisible 
+                  ? 'opacity-100 translate-y-0 scale-100' 
+                  : 'opacity-0 translate-y-12 scale-95'
+              }`}
+              style={{
+                transitionDelay: isStatsVisible ? `${index * 150}ms` : '0ms'
+              }}
               style={{
                 background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
                 backdropFilter: 'blur(20px)',
@@ -381,7 +295,9 @@ const MarketSentimentPage = () => {
         {/* Sentiment Analysis Table */}
         <div 
           ref={tableRef}
-          className="overflow-hidden"
+          className={`overflow-hidden transition-all duration-1000 ease-out ${
+            isTableVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+          }`}
           style={{
             background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
             backdropFilter: 'blur(20px)',

@@ -1,11 +1,5 @@
 "use client"
 
-import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
-
 const workflowSteps = [
   { 
     id: 'deposit', 
@@ -69,82 +63,9 @@ const performanceMetrics = [
 ];
 
 export default function AIWorkflowImproved() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const stepsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const connectorsRef = useRef<(HTMLDivElement | null)[]>([]);
-  const metricsRef = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Create timeline for workflow animation
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 70%",
-        end: "bottom 30%",
-        scrub: 1,
-        onEnter: () => {
-          // Animate steps in sequence
-          stepsRef.current.forEach((step, index) => {
-            if (step) {
-              gsap.fromTo(step,
-                { opacity: 0, scale: 0.8, y: 30 },
-                { 
-                  opacity: 1, 
-                  scale: 1, 
-                  y: 0,
-                  duration: 0.6,
-                  delay: index * 0.15,
-                  ease: "back.out(1.4)"
-                }
-              );
-            }
-          });
-
-          // Animate connectors after steps
-          connectorsRef.current.forEach((connector, index) => {
-            if (connector) {
-              gsap.fromTo(connector,
-                { scaleX: 0, opacity: 0 },
-                { 
-                  scaleX: 1,
-                  opacity: 1,
-                  duration: 0.4,
-                  delay: (index + 1) * 0.15 + 0.2,
-                  ease: "power2.out"
-                }
-              );
-            }
-          });
-
-          // Animate performance metrics
-          metricsRef.current.forEach((metric, index) => {
-            if (metric) {
-              gsap.fromTo(metric,
-                { opacity: 0, y: 20 },
-                { 
-                  opacity: 1, 
-                  y: 0,
-                  duration: 0.5,
-                  delay: 2 + index * 0.1,
-                  ease: "power2.out"
-                }
-              );
-            }
-          });
-        }
-      }
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-    };
-  }, []);
 
   return (
     <section 
-      ref={containerRef} 
       className="py-16 relative overflow-hidden"
       style={{
         background: 'linear-gradient(180deg, rgba(20, 20, 30, 0.95) 0%, rgba(0, 245, 212, 0.04) 20%, rgba(155, 93, 229, 0.03) 50%, rgba(255, 32, 110, 0.04) 80%, rgba(20, 20, 30, 0.95) 100%)',
@@ -170,12 +91,12 @@ export default function AIWorkflowImproved() {
             <div key={step.id} className="flex flex-col items-center relative">
               {/* Workflow Step Card */}
               <div
-                ref={el => { stepsRef.current[index] = el; }}
-                className="analytics-card analytics-card--workflow group cursor-pointer"
+                className="analytics-card analytics-card--workflow group cursor-pointer transition-all duration-500 hover:scale-110 animate-fade-in"
                 style={{
                   background: `radial-gradient(circle at center, ${step.color}15, rgba(30, 30, 50, 0.9))`,
                   borderColor: `${step.color}40`,
-                  boxShadow: `0 8px 32px ${step.color}20`
+                  boxShadow: `0 8px 32px ${step.color}20`,
+                  animationDelay: `${index * 0.15}s`
                 }}
               >
                 {/* Icon */}
@@ -215,9 +136,11 @@ export default function AIWorkflowImproved() {
                   {/* Desktop Arrow */}
                   <div className="absolute top-1/2 left-full transform -translate-y-1/2 z-10 hidden lg:block pointer-events-none">
                     <div
-                      ref={el => { connectorsRef.current[index] = el; }}
-                      className="flex items-center"
-                      style={{ width: '80px' }}
+                      className="flex items-center animate-fade-in"
+                      style={{ 
+                        width: '80px',
+                        animationDelay: `${(index + 1) * 0.15 + 0.2}s`
+                      }}
                     >
                       {/* Arrow Line */}
                       <div
@@ -367,11 +290,11 @@ export default function AIWorkflowImproved() {
           {performanceMetrics.map((item, index) => (
             <div 
               key={index}
-              ref={el => { metricsRef.current[index] = el; }}
-              className="analytics-card analytics-card--performance group cursor-pointer"
+              className="analytics-card analytics-card--performance group cursor-pointer animate-fade-in"
               style={{
                 background: 'rgba(30, 41, 59, 0.9)',
-                borderColor: `${item.color}30`
+                borderColor: `${item.color}30`,
+                animationDelay: `${2 + index * 0.1}s`
               }}
             >
               {/* Icon */}
@@ -425,6 +348,21 @@ export default function AIWorkflowImproved() {
           10% { opacity: 1; }
           90% { opacity: 1; }
           100% { transform: translateY(-50%) translateX(70px); opacity: 0; }
+        }
+        
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+        
+        .animate-fade-in {
+          animation: fade-in 0.6s ease-out both;
         }
         
         @keyframes flow-move-vertical {

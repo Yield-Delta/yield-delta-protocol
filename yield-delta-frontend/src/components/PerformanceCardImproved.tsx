@@ -1,7 +1,5 @@
 "use client"
 
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
 import { TrendingUp, DollarSign, Shield, Activity, Zap, Eye } from 'lucide-react';
 
 interface PerformanceCardProps {
@@ -21,39 +19,6 @@ export default function PerformanceCardImproved({
   positive = true,
   icon = 'activity'
 }: PerformanceCardProps) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const iconRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (cardRef.current) {
-      // Entrance animation
-      gsap.fromTo(cardRef.current, 
-        { 
-          opacity: 0, 
-          y: 30,
-          scale: 0.95
-        },
-        { 
-          opacity: 1, 
-          y: 0,
-          scale: 1,
-          duration: 0.6,
-          ease: "back.out(1.4)"
-        }
-      );
-    }
-
-    if (iconRef.current) {
-      // Subtle floating animation
-      gsap.to(iconRef.current, {
-        y: -5,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "power2.inOut"
-      });
-    }
-  }, []);
 
   const getIcon = () => {
     const iconProps = { size: 48, color };
@@ -76,40 +41,27 @@ export default function PerformanceCardImproved({
 
   return (
     <div 
-      ref={cardRef}
-      className="analytics-card analytics-card--performance group cursor-pointer"
+      className="analytics-card analytics-card--performance group cursor-pointer transition-all duration-300 hover:scale-105 hover:translate-y-[-8px]"
       style={{
         background: `radial-gradient(circle at top, ${color}08, rgba(30, 41, 59, 0.95))`,
         borderColor: `${color}30`,
         boxShadow: `0 8px 32px ${color}15`
       }}
       onMouseEnter={(e) => {
-        gsap.to(e.currentTarget, {
-          y: -8,
-          scale: 1.02,
-          duration: 0.3,
-          ease: "power2.out"
-        });
         e.currentTarget.style.borderColor = `${color}50`;
         e.currentTarget.style.boxShadow = `0 20px 60px ${color}25`;
       }}
       onMouseLeave={(e) => {
-        gsap.to(e.currentTarget, {
-          y: 0,
-          scale: 1,
-          duration: 0.3,
-          ease: "power2.out"
-        });
         e.currentTarget.style.borderColor = `${color}30`;
         e.currentTarget.style.boxShadow = `0 8px 32px ${color}15`;
       }}
     >
       {/* Icon */}
       <div 
-        ref={iconRef}
-        className="flex-center mb-6"
+        className="flex-center mb-6 animate-bounce"
         style={{
-          filter: `drop-shadow(0 4px 12px ${color}40)`
+          filter: `drop-shadow(0 4px 12px ${color}40)`,
+          animationDuration: '3s'
         }}
       >
         {getIcon()}
