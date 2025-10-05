@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, BarChart3, PieChart, Activity, Zap, Target } from 'lucide-react';
 
@@ -30,9 +30,9 @@ export default function AnalyticsTabSystem({
 
   useEffect(() => {
     updateIndicator();
-  }, [activeTab]);
+  }, [activeTab, updateIndicator]);
 
-  const updateIndicator = () => {
+  const updateIndicator = useCallback(() => {
     const activeIndex = tabs.findIndex(tab => tab.id === activeTab);
     const activeTabElement = tabsRef.current[activeIndex];
     
@@ -42,7 +42,7 @@ export default function AnalyticsTabSystem({
         left: activeTabElement.offsetLeft
       });
     }
-  };
+  }, [activeTab, tabs]);
 
   const handleTabClick = (tabId: string) => {
     setActiveTab(tabId);

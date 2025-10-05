@@ -135,7 +135,6 @@ const nextConfig: NextConfig = {
     webpackBuildWorker: true,
     optimizeCss: true,
     mdxRs: true,
-    instrumentationHook: true,
   },
   
   // MDX configuration

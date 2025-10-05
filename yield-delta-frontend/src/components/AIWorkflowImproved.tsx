@@ -78,7 +78,7 @@ export default function AIWorkflowImproved() {
     if (!containerRef.current) return;
 
     // Create timeline for workflow animation
-    const tl = gsap.timeline({
+    gsap.timeline({
       scrollTrigger: {
         trigger: containerRef.current,
         start: "top 70%",
