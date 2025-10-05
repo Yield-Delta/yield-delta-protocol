@@ -89,13 +89,10 @@ const nextConfig: NextConfig = {
     config.plugins.push(
       new webpack.DefinePlugin({
         'typeof self': JSON.stringify('object'),
-        'self': 'global',
-        'global.self': 'global',
-        'globalThis.self': 'globalThis',
-        // Additional browser globals that might be undefined during build
-        'global.window': 'global',
-        'globalThis.window': 'globalThis',
-        'process.browser': false,
+        'typeof window': JSON.stringify('object'),
+        'process.browser': JSON.stringify(false),
+        'self': isServer ? 'global' : 'self',
+        'window': isServer ? 'global' : 'window',
       })
     );
 
@@ -104,9 +101,18 @@ const nextConfig: NextConfig = {
       new webpack.ProvidePlugin({
         // Provide global references for packages that need them
         global: require.resolve('./src/lib/global-polyfill.js'),
-        self: require.resolve('./src/lib/global-polyfill.js'),
         Buffer: ['buffer', 'Buffer'],
         process: 'process/browser',
+        self: require.resolve('./src/lib/global-polyfill.js'),
+      })
+    );
+
+    // CRITICAL: Inject self polyfill at the module level for all chunks
+    config.plugins.push(
+      new webpack.BannerPlugin({
+        banner: '(function() { if (typeof global !== "undefined" && typeof global.self === "undefined") { global.self = global; global.window = global; } if (typeof self === "undefined") { var self = (typeof global !== "undefined") ? global : this; } })();',
+        raw: true,
+        entryOnly: false,
       })
     );
 
@@ -132,7 +138,7 @@ const nextConfig: NextConfig = {
           Object.keys(entries).forEach(key => {
             const entry = entries[key];
             if (Array.isArray(entry)) {
-              entry.unshift('./src/lib/polyfills.ts');
+              entry.unshift('./src/lib/server-polyfills.js');
             }
           });
         }

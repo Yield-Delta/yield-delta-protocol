@@ -5,9 +5,18 @@
  * third-party packages require('global') during the build process.
  */
 
-// IMMEDIATE: Set self on global before any other code
-if (typeof global !== 'undefined' && typeof global.self === 'undefined') {
+// IMMEDIATE: Set self on global before any other code at top level
+if (typeof global !== 'undefined') {
   global.self = global;
+  global.window = global;
+} else if (typeof globalThis !== 'undefined') {
+  globalThis.self = globalThis;
+  globalThis.window = globalThis;
+}
+
+// Also set at module scope
+if (typeof self === 'undefined') {
+  var self = (typeof global !== 'undefined') ? global : (typeof globalThis !== 'undefined') ? globalThis : this;
 }
 
 // Export the global object for packages that need it
