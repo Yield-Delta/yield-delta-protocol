@@ -1,0 +1,26 @@
+/**
+ * Global polyfill module for webpack fallback resolution
+ * 
+ * This file provides a 'global' module that can be resolved when
+ * third-party packages require('global') during the build process.
+ */
+
+// Export the global object for packages that need it
+const globalObject = (function() {
+  if (typeof globalThis !== 'undefined') return globalThis;
+  if (typeof global !== 'undefined') return global;
+  if (typeof window !== 'undefined') return window;
+  if (typeof self !== 'undefined') return self;
+  throw new Error('Unable to locate global object');
+})();
+
+// Ensure essential browser globals are available
+if (typeof globalObject.self === 'undefined') {
+  globalObject.self = globalObject;
+}
+
+if (typeof globalObject.window === 'undefined') {
+  globalObject.window = globalObject;
+}
+
+module.exports = globalObject;

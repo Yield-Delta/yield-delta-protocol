@@ -6,21 +6,35 @@
  * the 'self is not defined' error from @metamask/sdk and other wallet libraries.
  */
 
-// CRITICAL: Polyfill for 'self' global in Node.js environment
-// This is the primary fix for the "self is not defined" error during Next.js build
-if (typeof globalThis !== 'undefined') {
-  // Add self if it doesn't exist
-  if (typeof globalThis.self === 'undefined') {
-    // @ts-expect-error - Adding self to globalThis for SSR compatibility
-    globalThis.self = globalThis;
+// CRITICAL: Early polyfill setup - apply to both global and globalThis
+// This prevents the "self is not defined" error during Next.js build
+(function setupGlobalPolyfills() {
+  const globalObj = (function() {
+    if (typeof globalThis !== 'undefined') return globalThis;
+    if (typeof global !== 'undefined') return global;
+    if (typeof window !== 'undefined') return window;
+    if (typeof self !== 'undefined') return self;
+    throw new Error('Unable to locate global object');
+  })();
+
+  // Primary fix for 'self is not defined' 
+  if (typeof globalObj.self === 'undefined') {
+    // @ts-expect-error - Adding self for SSR compatibility
+    globalObj.self = globalObj;
   }
-  
-  // Also add to global for broader compatibility
+
+  // Ensure both global and globalThis have the same reference
   if (typeof global !== 'undefined' && typeof global.self === 'undefined') {
-    // @ts-expect-error - Adding self to global for SSR compatibility
-    global.self = global;
+    // @ts-expect-error - Adding self to global for broader compatibility
+    global.self = globalObj;
   }
-}
+
+  // Add to all possible global contexts
+  if (typeof globalThis !== 'undefined' && typeof globalThis.self === 'undefined') {
+    // @ts-expect-error - Adding self to globalThis
+    globalThis.self = globalObj;
+  }
+})();
 
 // Polyfill for 'window' global in Node.js environment  
 if (typeof globalThis !== 'undefined' && typeof window === 'undefined') {
@@ -131,18 +145,52 @@ if (typeof globalThis !== 'undefined' && typeof navigator === 'undefined') {
   });
 }
 
-// Polyfill for crypto.getRandomValues in Node.js environment
-if (typeof globalThis !== 'undefined' && globalThis.crypto && !globalThis.crypto.getRandomValues) {
-  try {
-    globalThis.crypto.getRandomValues = (array: Uint8Array) => {
-      // Use a simple fallback for SSR - not cryptographically secure but sufficient for build
-      for (let i = 0; i < array.length; i++) {
-        array[i] = Math.floor(Math.random() * 256);
-      }
-      return array;
-    };
-  } catch {
-    // Silently fail if we can't add crypto polyfill
+// Enhanced crypto polyfill for Node.js environment
+if (typeof globalThis !== 'undefined') {
+  if (!globalThis.crypto) {
+    try {
+      // Try to use Node.js crypto module for better compatibility
+      const nodeCrypto = require('crypto');
+      globalThis.crypto = {
+        getRandomValues: (array: Uint8Array) => {
+          const randomBytes = nodeCrypto.randomBytes(array.length);
+          for (let i = 0; i < array.length; i++) {
+            array[i] = randomBytes[i];
+          }
+          return array;
+        },
+        subtle: {} as SubtleCrypto,
+      };
+    } catch {
+      // Fallback to basic crypto implementation
+      globalThis.crypto = {
+        getRandomValues: (array: Uint8Array) => {
+          for (let i = 0; i < array.length; i++) {
+            array[i] = Math.floor(Math.random() * 256);
+          }
+          return array;
+        },
+        subtle: {} as SubtleCrypto,
+      };
+    }
+  } else if (!globalThis.crypto.getRandomValues) {
+    try {
+      const nodeCrypto = require('crypto');
+      globalThis.crypto.getRandomValues = (array: Uint8Array) => {
+        const randomBytes = nodeCrypto.randomBytes(array.length);
+        for (let i = 0; i < array.length; i++) {
+          array[i] = randomBytes[i];
+        }
+        return array;
+      };
+    } catch {
+      globalThis.crypto.getRandomValues = (array: Uint8Array) => {
+        for (let i = 0; i < array.length; i++) {
+          array[i] = Math.floor(Math.random() * 256);
+        }
+        return array;
+      };
+    }
   }
 }
 
@@ -203,6 +251,51 @@ if (typeof globalThis !== 'undefined') {
       static createObjectURL() { return 'blob:'; }
       static revokeObjectURL() {}
     };
+  }
+
+  // TextEncoder/TextDecoder polyfills for Node.js
+  if (typeof TextEncoder === 'undefined') {
+    try {
+      const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = require('util');
+      globalThis.TextEncoder = NodeTextEncoder;
+      globalThis.TextDecoder = NodeTextDecoder;
+    } catch {
+      // Fallback implementations
+      globalThis.TextEncoder = class {
+        encode(input: string = '') {
+          return new Uint8Array(Buffer.from(input, 'utf8'));
+        }
+      };
+      globalThis.TextDecoder = class {
+        decode(input?: BufferSource) {
+          if (!input) return '';
+          return Buffer.from(input as Uint8Array).toString('utf8');
+        }
+      };
+    }
+  }
+
+  // Additional browser APIs needed by wallet SDKs
+  if (typeof btoa === 'undefined') {
+    globalThis.btoa = (str: string) => Buffer.from(str, 'binary').toString('base64');
+  }
+  
+  if (typeof atob === 'undefined') {
+    globalThis.atob = (str: string) => Buffer.from(str, 'base64').toString('binary');
+  }
+
+  // Performance API polyfill
+  if (typeof performance === 'undefined') {
+    globalThis.performance = {
+      now: () => Date.now(),
+      mark: () => {},
+      measure: () => {},
+      clearMarks: () => {},
+      clearMeasures: () => {},
+      getEntriesByType: () => [],
+      getEntriesByName: () => [],
+      getEntries: () => [],
+    } as Performance;
   }
 }
 
