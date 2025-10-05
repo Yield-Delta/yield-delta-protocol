@@ -75,12 +75,14 @@ function createConfig() {
 
   // CRITICAL: Only include connectors in browser environment
   // During SSR/build, use empty array to prevent metamask-sdk from loading
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let connectors: any[] = []
   
   if (typeof window !== 'undefined') {
     try {
       // Dynamically require connectors only in browser to avoid SSR issues
       // This prevents the metamask-sdk from loading during build time
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { metaMask, walletConnect, injected } = require('wagmi/connectors')
       
       connectors = [
