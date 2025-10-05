@@ -88,9 +88,10 @@ const nextConfig: NextConfig = {
     // Enhanced global polyfills for SSR and build process
     config.plugins.push(
       new webpack.DefinePlugin({
+        'typeof self': JSON.stringify('object'),
+        'self': 'global',
         'global.self': 'global',
         'globalThis.self': 'globalThis',
-        'self': 'globalThis',
         // Additional browser globals that might be undefined during build
         'global.window': 'global',
         'globalThis.window': 'globalThis',
@@ -109,8 +110,20 @@ const nextConfig: NextConfig = {
       })
     );
 
-    // For server-side builds, prepend polyfills to all entry points
+    // For server-side builds, add externals and prepend polyfills
     if (isServer) {
+      // Add externals to prevent problematic packages from being bundled on server
+      config.externals = config.externals || [];
+      if (Array.isArray(config.externals)) {
+        config.externals.push(
+          // Packages that might reference 'self' and cause build issues
+          '@metamask/sdk',
+          '@dynamic-labs/sdk-react-core',
+          'valtio',
+          'use-sync-external-store'
+        );
+      }
+
       const originalEntry = config.entry;
       config.entry = async () => {
         const entries = await originalEntry();

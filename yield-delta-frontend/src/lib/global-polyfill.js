@@ -5,6 +5,11 @@
  * third-party packages require('global') during the build process.
  */
 
+// IMMEDIATE: Set self on global before any other code
+if (typeof global !== 'undefined' && typeof global.self === 'undefined') {
+  global.self = global;
+}
+
 // Export the global object for packages that need it
 const globalObject = (function() {
   if (typeof globalThis !== 'undefined') return globalThis;
@@ -21,6 +26,12 @@ if (typeof globalObject.self === 'undefined') {
 
 if (typeof globalObject.window === 'undefined') {
   globalObject.window = globalObject;
+}
+
+// Also set it directly on the Node.js global for immediate access
+if (typeof global !== 'undefined') {
+  global.self = global;
+  global.window = global;
 }
 
 module.exports = globalObject;
