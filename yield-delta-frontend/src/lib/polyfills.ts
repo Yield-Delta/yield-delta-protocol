@@ -267,10 +267,8 @@ if (typeof globalThis !== 'undefined') {
   if (typeof TextEncoder === 'undefined') {
     try {
       const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = eval('require')('util');
-      // @ts-expect-error - Node.js TextEncoder/TextDecoder have different types but compatible runtime behavior
-      globalThis.TextEncoder = NodeTextEncoder;
-      // @ts-expect-error - Node.js TextEncoder/TextDecoder have different types but compatible runtime behavior
-      globalThis.TextDecoder = NodeTextDecoder;
+      globalThis.TextEncoder = NodeTextEncoder as any;
+      globalThis.TextDecoder = NodeTextDecoder as any;
     } catch {
       // Fallback implementations
       globalThis.TextEncoder = class {
