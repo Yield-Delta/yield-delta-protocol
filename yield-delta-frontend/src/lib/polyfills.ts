@@ -150,7 +150,6 @@ if (typeof globalThis !== 'undefined') {
   if (!globalThis.crypto) {
     try {
       // Try to use Node.js crypto module for better compatibility
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const nodeCrypto = eval('require')('crypto');
       globalThis.crypto = {
         getRandomValues: (array: Uint8Array) => {
@@ -160,6 +159,11 @@ if (typeof globalThis !== 'undefined') {
           }
           return array;
         },
+        randomUUID: (() => nodeCrypto.randomUUID?.() || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        })) as () => `${string}-${string}-${string}-${string}-${string}`,
         subtle: {} as SubtleCrypto,
       };
     } catch {
@@ -171,12 +175,16 @@ if (typeof globalThis !== 'undefined') {
           }
           return array;
         },
+        randomUUID: (() => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+          const r = Math.random() * 16 | 0;
+          const v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        })) as () => `${string}-${string}-${string}-${string}-${string}`,
         subtle: {} as SubtleCrypto,
       };
     }
   } else if (!globalThis.crypto.getRandomValues) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const nodeCrypto = eval('require')('crypto');
       globalThis.crypto.getRandomValues = (array: Uint8Array) => {
         const randomBytes = nodeCrypto.randomBytes(array.length);
@@ -258,9 +266,10 @@ if (typeof globalThis !== 'undefined') {
   // TextEncoder/TextDecoder polyfills for Node.js
   if (typeof TextEncoder === 'undefined') {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { TextEncoder: NodeTextEncoder, TextDecoder: NodeTextDecoder } = eval('require')('util');
+      // @ts-expect-error - Node.js TextEncoder/TextDecoder compatibility
       globalThis.TextEncoder = NodeTextEncoder;
+      // @ts-expect-error - Node.js TextEncoder/TextDecoder compatibility  
       globalThis.TextDecoder = NodeTextDecoder;
     } catch {
       // Fallback implementations
@@ -289,6 +298,7 @@ if (typeof globalThis !== 'undefined') {
 
   // Performance API polyfill
   if (typeof performance === 'undefined') {
+    // @ts-expect-error - Basic performance polyfill for SSR
     globalThis.performance = {
       now: () => Date.now(),
       mark: () => {},
@@ -298,7 +308,12 @@ if (typeof globalThis !== 'undefined') {
       getEntriesByType: () => [],
       getEntriesByName: () => [],
       getEntries: () => [],
-    } as Performance;
+      timeOrigin: Date.now(),
+      eventCounts: new Map(),
+      navigation: {},
+      onresourcetimingbufferfull: null,
+      toJSON: () => ({}),
+    };
   }
 }
 

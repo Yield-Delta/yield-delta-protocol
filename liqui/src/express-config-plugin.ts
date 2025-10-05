@@ -24,35 +24,63 @@ export const expressConfigPlugin: Plugin = {
     try {
       logger.info('🔧 Configuring Express for Railway deployment...');
       
-      // Railway/proxy environment detection
+      // Enhanced environment detection for production deployments
       const isProxyEnvironment = !!(
         process.env.RAILWAY_ENVIRONMENT_NAME ||
         process.env.RAILWAY_STATIC_URL ||
         process.env.TRUST_PROXY === 'true' ||
-        process.env.EXPRESS_TRUST_PROXY === 'true'
+        process.env.EXPRESS_TRUST_PROXY === 'true' ||
+        // Additional production environment indicators
+        process.env.NODE_ENV === 'production' ||
+        process.env.PORT ||
+        process.env.VERCEL ||
+        process.env.HEROKU_APP_NAME ||
+        process.env.RENDER ||
+        process.env.FLY_APP_NAME
       );
       
+      logger.info(`🔍 Environment detection: isProxyEnvironment=${isProxyEnvironment}`);
+      logger.info(`📊 Environment variables: NODE_ENV=${process.env.NODE_ENV}, PORT=${process.env.PORT}`);
+      logger.info(`🚂 Railway: RAILWAY_ENVIRONMENT_NAME=${process.env.RAILWAY_ENVIRONMENT_NAME}`);
+      
       if (isProxyEnvironment) {
-        logger.info('🌐 Detected proxy environment (Railway/Cloudflare/etc.)');
+        logger.info('🌐 Detected proxy environment (Railway/Cloudflare/production)');
         logger.info('📡 Enabling Express trust proxy for rate limiting compatibility');
         
         // Set environment variables that ElizaOS/express-rate-limit checks
         process.env.TRUST_PROXY = 'true';
         process.env.EXPRESS_TRUST_PROXY = 'true';
         
-        // Try to access the Express app if available in runtime
-        // ElizaOS may expose it during server initialization
-        const expressApp = (runtime as any).app || (runtime as any).server?.app;
+        // Enhanced Express app access with retry mechanism
+        const findExpressApp = () => {
+          return (
+            (runtime as any).app ||
+            (runtime as any).server?.app ||
+            (runtime as any).expressApp ||
+            (global as any).app ||
+            (global as any).expressApp
+          );
+        };
+        
+        let expressApp = findExpressApp();
         
         if (expressApp && typeof expressApp.set === 'function') {
           // Configure Express trust proxy
-          // Options: true (trust all), number (trust n hops), string (trust specific IPs)
           expressApp.set('trust proxy', true);
           logger.info('✅ Express trust proxy enabled: true (trust all proxies)');
           logger.info('📍 X-Forwarded-For headers will now be correctly processed');
         } else {
-          logger.warn('⚠️  Express app not yet available - trust proxy configured via env vars only');
+          logger.warn('⚠️  Express app not yet available - trust proxy configured via env vars');
           logger.warn('   ElizaOS will pick up TRUST_PROXY=true during server init');
+          
+          // Retry after a short delay in case the Express app is initialized later
+          setTimeout(() => {
+            expressApp = findExpressApp();
+            if (expressApp && typeof expressApp.set === 'function') {
+              expressApp.set('trust proxy', true);
+              logger.info('✅ Express trust proxy enabled via delayed retry');
+            }
+          }, 1000);
         }
       } else {
         logger.info('🏠 Local development mode - trust proxy not needed');
