@@ -273,7 +273,6 @@ if (typeof globalThis !== 'undefined') {
       globalThis.TextDecoder = NodeTextDecoder as any;
     } catch {
       // Fallback implementations
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       globalThis.TextEncoder = class {
         encoding = 'utf-8';
         encode(input: string = '') {
@@ -282,8 +281,8 @@ if (typeof globalThis !== 'undefined') {
         encodeInto() {
           throw new Error('encodeInto not implemented in polyfill');
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       globalThis.TextDecoder = class {
         encoding = 'utf-8';
         fatal = false;
@@ -292,6 +291,7 @@ if (typeof globalThis !== 'undefined') {
           if (!input) return '';
           return Buffer.from(input as Uint8Array).toString('utf8');
         }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any;
     }
   }
