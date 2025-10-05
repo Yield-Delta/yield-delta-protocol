@@ -45,6 +45,12 @@ export const seiTestnet = defineChain({
   testnet: true
 })
 
+// Polyfill for SSR/build-time to prevent 'self is not defined' errors
+if (typeof self === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (global as any).self = global
+}
+
 // Singleton pattern to prevent multiple config instantiation
 let configInstance: ReturnType<typeof createWagmiConfig> | null = null
 let isCreatingConfig = false
@@ -72,29 +78,32 @@ function createConfig() {
     console.warn('Get your Project ID from: https://walletconnect.com/cloud')
   }
 
+  // Only include connectors in browser environment
+  const connectors = typeof window !== 'undefined' ? [
+    metaMask({
+      dappMetadata: {
+        name: 'SEI DLP',
+        url: window.location.origin
+      }
+    }),
+    walletConnect({
+      projectId: projectId || 'fallback-project-id',
+      metadata: {
+        name: 'SEI DLP',
+        description: 'AI-driven dynamic liquidity vaults on SEI EVM',
+        url: window.location.origin,
+        icons: ['https://yielddelta.xyz/favicon.svg']
+      }
+    }),
+    injected({
+      shimDisconnect: true
+    })
+  ] : []
+
   // Create custom config without Coinbase wallet to prevent SDK errors
   configInstance = createWagmiConfig({
     chains: [seiDevnet, seiMainnet, seiTestnet],
-    connectors: [
-      metaMask({
-        dappMetadata: {
-          name: 'SEI DLP',
-          url: typeof window !== 'undefined' ? window.location.origin : 'https://yielddelta.xyz'
-        }
-      }),
-      walletConnect({
-        projectId: projectId || 'fallback-project-id',
-        metadata: {
-          name: 'SEI DLP',
-          description: 'AI-driven dynamic liquidity vaults on SEI EVM',
-          url: typeof window !== 'undefined' ? window.location.origin : 'https://yielddelta.xyz',
-          icons: ['https://yielddelta.xyz/favicon.svg']
-        }
-      }),
-      injected({
-        shimDisconnect: true
-      })
-    ],
+    connectors,
     transports: {
       [seiDevnet.id]: http(),
       [seiMainnet.id]: http(),
@@ -115,4 +124,5 @@ function createConfig() {
   return configInstance
 }
 
+// Export the config - safe to create during SSR now with polyfills and conditional connectors
 export const config = createConfig()
