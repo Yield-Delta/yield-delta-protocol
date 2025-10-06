@@ -228,13 +228,22 @@
   }
 }
 
-/* Tablet landscape (769px - 1024px) - Keep 2 columns but adjust sizing */
+/* Tablet landscape (769px - 1024px) - Change to single column with 3D above text */
 @media (max-width: 1024px) and (min-width: 769px) {
   .heroGrid {
-    grid-template-columns: 1fr 1.2fr !important; /* Give more space to 3D side */
+    grid-template-columns: 1fr !important; /* Single column layout for tablet */
     gap: 2rem !important;
     min-height: auto !important;
     transition: all 0.3s ease-in-out !important;
+  }
+}
+
+/* Additional tablet-specific breakpoint to ensure proper ordering */
+@media (max-width: 1024px) {
+  .heroGrid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+    min-height: auto !important;
   }
 }
 
@@ -280,18 +289,34 @@
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
-/* Tablet landscape (769px - 1024px) - Keep side-by-side but optimize */
+/* Tablet landscape (769px - 1024px) - Stack vertically with 3D above text */
 @media (max-width: 1024px) and (min-width: 769px) {
   .hero3dContainer {
-    order: 2 !important; /* Keep 3D on right for tablet */
-    min-height: max(750px, 65vh) !important; /* Increased for better 3D visibility */
-    margin-bottom: 0 !important;
+    order: 1 !important; /* 3D first/above on tablet */
+    min-height: max(600px, 55vh) !important; /* Optimized height for tablet */
+    margin-bottom: 1rem !important;
   }
   
   .heroTextContainer {
-    order: 1 !important; /* Keep text on left for tablet */
-    text-align: left !important;
-    padding: 0 0.5rem !important;
+    order: 2 !important; /* Text second/below on tablet */
+    text-align: center !important; /* Center text for tablet */
+    padding: 0 2rem !important; /* More padding for better tablet readability */
+    min-height: auto !important;
+  }
+}
+
+/* Additional tablet breakpoint to ensure 3D appears above text on all tablet sizes */
+@media (max-width: 1024px) {
+  .hero3dContainer {
+    order: 1 !important; /* 3D first/above on tablet */
+    min-height: max(600px, 55vh) !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .heroTextContainer {
+    order: 2 !important; /* Text second/below on tablet */
+    text-align: center !important;
+    padding: 0 2rem !important;
     min-height: auto !important;
   }
 }
@@ -390,7 +415,15 @@
   }
 }
 
-@media (min-width: 1024px) {
+/* Tablet landscape (769px - 1024px) - Center buttons for tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .heroButtonContainer {
+    justify-content: center !important;
+    gap: 1rem !important;
+  }
+}
+
+@media (min-width: 1025px) {
   .heroButtonContainer {
     justify-content: flex-start !important;
   }

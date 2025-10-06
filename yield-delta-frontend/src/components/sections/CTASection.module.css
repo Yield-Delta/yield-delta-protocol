@@ -120,6 +120,8 @@
     flex-wrap: wrap;
     gap: 1rem;
     margin-top: 0.5rem;
+    /* Ensure button container is not affected by parent text alignment */
+    text-align: initial;
 }
 
 @media (min-width: 640px) {
@@ -136,7 +138,7 @@
 
 @media (min-width: 1024px) {
     .buttonContainer {
-        justify-content: flex-start;
+        justify-content: center;
         gap: 2.5rem;
     }
 }

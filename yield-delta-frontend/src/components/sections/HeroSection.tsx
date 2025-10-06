@@ -195,7 +195,7 @@ export default function HeroSection() {
                 </div>
                 
                 {/* Features section - Mobile-only, positioned after stats on mobile */}
-                <div className={`${heroStyles.heroFeaturesContainer} text-center lg:hidden`}>
+                <div className={`${heroStyles.heroFeaturesContainer} text-center md:hidden`}>
                     <div className="grid grid-cols-1 gap-3">
                         {[
                             { icon: '⚡', text: 'AI optimization' },
