@@ -66,40 +66,16 @@ const nextConfig: NextConfig = {
       os: false,
       path: false,
       // Critical: Provide 'global' module for packages that require it
-      global: require.resolve('./src/lib/global-polyfill.js'),
+      global: 'global',
       // MetaMask SDK fallbacks
       '@react-native-async-storage/async-storage': false,
     };
 
-    // Enhanced global polyfills for SSR and build process
-    config.plugins.push(
-      new webpack.DefinePlugin({
-        'typeof self': JSON.stringify('object'),
-        'typeof window': JSON.stringify('object'),
-        'process.browser': JSON.stringify(false),
-        'self': isServer ? 'global' : 'self',
-        'window': isServer ? 'global' : 'window',
-      })
-    );
-
-    // Inject polyfills at the very beginning of each entry point
+    // Simplified polyfills for SSR and build process
     config.plugins.push(
       new webpack.ProvidePlugin({
-        // Provide global references for packages that need them
-        global: require.resolve('./src/lib/global-polyfill.js'),
         Buffer: ['buffer', 'Buffer'],
         process: 'process/browser',
-        self: require.resolve('./src/lib/global-polyfill.js'),
-      })
-    );
-
-    // CRITICAL: Inject self polyfill at the module level for all JS chunks only
-    config.plugins.push(
-      new webpack.BannerPlugin({
-        banner: '(function() { if (typeof global !== "undefined" && typeof global.self === "undefined") { global.self = global; global.window = global; } if (typeof self === "undefined") { var self = (typeof global !== "undefined") ? global : this; } })();',
-        raw: true,
-        entryOnly: false,
-        test: /\.js$/,
       })
     );
 

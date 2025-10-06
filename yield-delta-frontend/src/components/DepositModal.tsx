@@ -517,32 +517,88 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         }
         
         /* Responsive handling for smaller screens - Enhanced */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+          .deposit-modal-container {
+            padding: 16px !important;
+            align-items: flex-start !important;
+            padding-top: 20px !important;
+          }
+          .deposit-modal-content {
+            width: calc(100vw - 32px) !important;
+            max-width: calc(100vw - 32px) !important;
+            min-width: 320px !important;
+            max-height: calc(100vh - 40px) !important;
+            margin: 0 !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
           .deposit-modal-container {
             padding: 12px !important;
+            padding-top: 16px !important;
           }
           .deposit-modal-content {
             width: calc(100vw - 24px) !important;
             max-width: calc(100vw - 24px) !important;
             min-width: 300px !important;
-            max-height: 90vh !important;
+            max-height: calc(100vh - 32px) !important;
           }
         }
         
         @media (max-width: 360px) {
           .deposit-modal-container {
             padding: 8px !important;
+            padding-top: 12px !important;
           }
           .deposit-modal-content {
             width: calc(100vw - 16px) !important;
             max-width: calc(100vw - 16px) !important;
             min-width: 280px !important;
-            max-height: 95vh !important;
+            max-height: calc(100vh - 24px) !important;
+          }
+        }
+        
+        /* Mobile content adjustments */
+        @media (max-width: 768px) {
+          .deposit-modal-content .scrollable-content {
+            padding: 0.75rem 1rem 0 1rem !important;
+          }
+          
+          .deposit-modal-content .action-buttons {
+            padding: 0.5rem 1rem 1rem 1rem !important;
+          }
+          
+          .deposit-modal-content .transaction-side {
+            padding: 1rem !important;
+          }
+          
+          .deposit-modal-content .modal-header {
+            padding: 1rem !important;
+            margin-bottom: 0.5rem !important;
+          }
+          
+          .deposit-modal-content .quick-amounts {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 8px !important;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .deposit-modal-content .modal-header {
+            padding: 0.75rem !important;
+          }
+          
+          .deposit-modal-content .scrollable-content {
+            padding: 0.5rem 0.75rem 0 0.75rem !important;
+          }
+          
+          .deposit-modal-content .action-buttons {
+            padding: 0.5rem 0.75rem 0.75rem 0.75rem !important;
           }
         }
         
         /* Desktop size enforcement */
-        @media (min-width: 601px) {
+        @media (min-width: 769px) {
           .deposit-modal-content {
             width: 500px !important;
             max-width: 500px !important;
@@ -617,6 +673,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       >
         {/* Scrollable Content Area */}
         <div
+          className="scrollable-content"
           style={{
             flex: '1',
             overflow: 'auto',
@@ -626,7 +683,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           }}
         >
             {/* Enhanced Modal Header */}
-            <div style={{
+            <div className="modal-header" style={{
               background: `linear-gradient(135deg, ${vaultColor}08 0%, transparent 60%)`,
               borderRadius: '16px',
               padding: '1.25rem',
@@ -877,12 +934,11 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   opacity: '0.9',
                   color: '#ffffff'
                 }}>Quick deposit amounts</div>
-                <div style={{
+                <div className="quick-amounts" style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(2, 1fr)',
                   gap: '12px'
-                }}
-                className="sm:grid-cols-4">
+                }}>
                   {[1, 5, 10, 14.83].map((amount) => (
                     <button
                       key={amount}
@@ -1155,6 +1211,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
 
           {/* Fixed Action Buttons at Bottom */}
           <div
+            className="action-buttons"
             style={{
               flexShrink: 0, // Don't shrink
               padding: '0.75rem 1.25rem 1.25rem 1.25rem', // Reduced padding
