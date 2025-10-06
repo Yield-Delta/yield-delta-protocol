@@ -15,11 +15,30 @@ export const metadata = {
     images: [{ url: '/og-image.svg', width: 1200, height: 630, alt: 'Yield Delta' }],
     type: 'website',
   },
-  icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon-32.svg',
-    apple: '/favicon-128.svg',
-  },
+  icons: [
+    {
+      rel: 'icon',
+      type: 'image/svg+xml',
+      url: '/favicon.svg',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '32x32',
+      url: '/favicon-32.svg',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png', 
+      sizes: '16x16',
+      url: '/favicon-16.svg',
+    },
+    {
+      rel: 'apple-touch-icon',
+      sizes: '128x128',
+      url: '/favicon-128.svg',
+    },
+  ],
 }
 // QueryClient is managed internally in Web3Provider
 
