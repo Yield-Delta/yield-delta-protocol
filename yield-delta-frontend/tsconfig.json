@@ -23,9 +23,6 @@
       }
     ],
     "types": [
-      "three",
-      "@react-three/fiber",
-      "@react-three/drei",
       "jest",
       "node"
     ],
