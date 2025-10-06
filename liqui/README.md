@@ -70,7 +70,9 @@ Liqui will provide:
 - **400ms Finality**: Instant position adjustments vs 12s on Ethereum
 - **Low Gas Costs**: ~$0.15 per rebalance vs $50+ on other chains
 - **Parallel Execution**: SEI-optimized transaction processing
-- **Chain ID 713715**: Native SEI EVM support
+- **Chain ID 713715**: Native SEI EVM sup
+
+port
 
 ## Testing
 

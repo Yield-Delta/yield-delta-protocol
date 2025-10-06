@@ -38,6 +38,7 @@
     "@elizaos/plugin-google-genai": "^1.0.1",
     "@elizaos/plugin-openai": "1.0.11",
     "@elizaos/plugin-sei-yield-delta": "github:lggg123/yield-delta",
+    "@elizaos/plugin-twitter": "^1.2.21",
     "@tanstack/react-query": "^5.29.0",
     "clsx": "^2.1.1",
     "react": "^18.3.1",
