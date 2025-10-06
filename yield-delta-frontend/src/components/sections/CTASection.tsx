@@ -22,7 +22,13 @@ export default function CTASection() {
                         Ready to Evolve Your DeFi Strategy?
                     </h2>
                     <p 
-                        className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-6 sm:mb-8 lg:mb-12 mobile-responsive-subheading max-w-full lg:max-w-[90%] mx-auto lg:mx-0"
+                        className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground mb-6 sm:mb-8 lg:mb-12 mobile-responsive-subheading"
+                        style={{
+                            maxWidth: '100%',
+                            lineHeight: '1.6',
+                            marginLeft: 'auto',
+                            marginRight: 'auto'
+                        }}
                     >
                         Join the future of liquidity provision with AI-powered optimization on
                         SEI
@@ -30,18 +36,27 @@ export default function CTASection() {
                     <div className={`${styles.buttonContainer}`}>
                         <Link href="/vaults" className="w-auto">
                             <Button 
-                                className="mobile-responsive-button font-bold w-auto px-3 sm:px-6 md:px-8 lg:px-12 py-4 md:py-4 lg:py-6"
+                                className="mobile-responsive-button font-bold"
                                 style={{
                                     background: 'linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%))',
                                     color: 'hsl(216 100% 4%)',
                                     minHeight: '52px',
                                     minWidth: '140px',
                                     maxWidth: '200px',
+                                    width: 'auto',
                                     boxShadow: '0 0 20px hsl(180 100% 48% / 0.3), 0 0 40px hsl(180 100% 48% / 0.1)',
                                     border: 'none',
                                     borderRadius: '12px',
                                     transition: 'all 300ms ease-in-out',
                                     fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
+                                    padding: 'clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 4vw, 2rem)',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textAlign: 'center',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
                                     flex: '0 0 auto'
                                 }}
                                 onMouseEnter={(e) => {
@@ -59,18 +74,27 @@ export default function CTASection() {
                         <Link href="/docs" className="w-auto">
                             <Button
                                 variant="outline"
-                                className="mobile-responsive-button font-bold w-auto px-3 sm:px-6 md:px-8 lg:px-12 py-4 md:py-4 lg:py-6"
+                                className="mobile-responsive-button font-bold"
                                 style={{
                                     borderColor: 'hsl(180 100% 48%)',
                                     color: 'hsl(180 100% 48%)',
                                     minHeight: '52px',
                                     minWidth: '140px',
                                     maxWidth: '200px',
+                                    width: 'auto',
                                     background: 'transparent',
                                     borderRadius: '12px',
                                     transition: 'all 300ms ease-in-out',
                                     borderWidth: '2px',
                                     fontSize: 'clamp(0.875rem, 2.5vw, 1.125rem)',
+                                    padding: 'clamp(0.75rem, 3vw, 1rem) clamp(1.5rem, 4vw, 2rem)',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textAlign: 'center',
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
                                     flex: '0 0 auto'
                                 }}
                                 onMouseEnter={(e) => {
@@ -166,25 +190,36 @@ export default function CTASection() {
                                         </div>
                                     </div>
                                     
-                                    {/* Enhanced Text with Gradient Animation */}
+                                    {/* Enhanced Text with Gradient Animation - Improved mobile responsiveness */}
                                     <div 
-                                        className={`text-xl sm:text-xl font-bold mb-2 leading-tight ${styles.titleSize} ${styles.gradientShift}`}
+                                        className={`font-bold mb-2 leading-tight ${styles.titleSize} ${styles.gradientShift}`}
                                         style={{
                                             background: 'linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)), hsl(var(--primary)))',
                                             backgroundSize: '300% 300%',
                                             WebkitBackgroundClip: 'text',
                                             backgroundClip: 'text',
                                             WebkitTextFillColor: 'transparent',
-                                            textShadow: 'none'
+                                            textShadow: 'none',
+                                            fontSize: 'clamp(1rem, 4vw, 1.5rem)',
+                                            lineHeight: '1.2',
+                                            textAlign: 'center',
+                                            maxWidth: '100%',
+                                            wordBreak: 'break-word',
+                                            hyphens: 'auto'
                                         } as React.CSSProperties}
                                     >
                                         Your DeFi Future
                                     </div>
                                     <div 
-                                        className={`text-base sm:text-base font-medium ${styles.subtitleSize} ${styles.textGlow}`}
+                                        className={`font-medium ${styles.subtitleSize} ${styles.textGlow}`}
                                         style={{
                                             color: 'hsl(var(--primary-glow))',
-                                            textShadow: '0 0 8px hsl(var(--primary-glow) / 0.6)'
+                                            textShadow: '0 0 8px hsl(var(--primary-glow) / 0.6)',
+                                            fontSize: 'clamp(0.875rem, 3vw, 1.125rem)',
+                                            lineHeight: '1.3',
+                                            textAlign: 'center',
+                                            maxWidth: '100%',
+                                            wordBreak: 'break-word'
                                         }}
                                     >
                                         Starts Here

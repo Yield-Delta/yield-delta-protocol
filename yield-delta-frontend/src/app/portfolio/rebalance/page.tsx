@@ -1,14 +1,9 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import Navigation from '@/components/Navigation';
 import AIChat from '@/components/AIChat';
 import { BarChart3, TrendingUp, AlertTriangle, Zap, Clock, CheckCircle, ArrowRight, RefreshCw, MessageCircle, X } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import * as THREE from 'three';
-
-gsap.registerPlugin(ScrollTrigger);
 
 interface RebalanceAction {
   id: string;
@@ -34,11 +29,6 @@ const RebalancePage = () => {
   const [executionProgress, setExecutionProgress] = useState(0);
   const [executedTransactions, setExecutedTransactions] = useState<string[]>([]);
   
-  // Refs for animations
-  const mountRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
-  const [scene, setScene] = useState<THREE.Scene | null>(null);
 
   const rebalanceActions: RebalanceAction[] = [
     {
@@ -156,166 +146,12 @@ const RebalancePage = () => {
     }
   };
 
-  // Three.js Setup
-  useEffect(() => {
-    const currentMount = mountRef.current;
-    if (!currentMount || scene) return;
 
-    // Scene setup
-    const newScene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-    currentMount.appendChild(renderer.domElement);
-
-    // Particle system
-    const particleCount = 1000;
-    const particles = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 100;
-      positions[i + 1] = (Math.random() - 0.5) * 100;
-      positions[i + 2] = (Math.random() - 0.5) * 100;
-
-      const color = new THREE.Color();
-      color.setHSL(Math.random() * 0.3 + 0.5, 0.7, 0.5);
-      colors[i] = color.r;
-      colors[i + 1] = color.g;
-      colors[i + 2] = color.b;
-    }
-
-    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const particleMaterial = new THREE.PointsMaterial({
-      size: 1,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.2,
-    });
-
-    const particleSystem = new THREE.Points(particles, particleMaterial);
-    newScene.add(particleSystem);
-
-    // Geometric shapes
-    const geometries = [
-      new THREE.TetrahedronGeometry(2),
-      new THREE.OctahedronGeometry(1.5),
-      new THREE.IcosahedronGeometry(1),
-    ];
-
-    geometries.forEach((geometry, index) => {
-      const material = new THREE.MeshBasicMaterial({
-        color: [0x00f5d4, 0x9b5de5, 0xff206e][index],
-        wireframe: true,
-        transparent: true,
-        opacity: 0.1,
-      });
-      
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50
-      );
-      newScene.add(mesh);
-    });
-
-    camera.position.z = 30;
-    setScene(newScene);
-
-    // Animation loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      
-      particleSystem.rotation.x += 0.001;
-      particleSystem.rotation.y += 0.002;
-
-      newScene.children.forEach((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.rotation.x += 0.01;
-          child.rotation.y += 0.01;
-        }
-      });
-
-      renderer.render(newScene, camera);
-    };
-
-    animate();
-
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (currentMount && renderer.domElement) {
-        currentMount.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
-    };
-  }, [scene]);
-
-  // GSAP Animations
-  useEffect(() => {
-    if (cardsRef.current) {
-      const cards = cardsRef.current.children;
-      
-      gsap.fromTo(
-        cards,
-        { 
-          opacity: 0, 
-          y: 100, 
-          rotationX: -15,
-          scale: 0.8 
-        },
-        { 
-          opacity: 1, 
-          y: 0, 
-          rotationX: 0,
-          scale: 1,
-          duration: 1.2, 
-          stagger: 0.2, 
-          ease: 'back.out(1.7)',
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: 'top 80%',
-          }
-        }
-      );
-    }
-
-    if (statsRef.current) {
-      gsap.fromTo(
-        statsRef.current.children,
-        { opacity: 0, y: 50 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.8, 
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: statsRef.current,
-            start: 'top 90%',
-          }
-        }
-      );
-    }
-  }, []);
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Three.js Background */}
+      {/* Background */}
       <div 
-        ref={mountRef} 
         className="fixed inset-0 z-0"
         style={{ 
           background: 'radial-gradient(ellipse at center, rgba(155, 93, 229, 0.15) 0%, rgba(0, 245, 212, 0.05) 50%, transparent 100%)'
@@ -409,11 +245,68 @@ const RebalancePage = () => {
             </div>
           </div>
         </div>
+        
+        {/* Add CSS animations */}
+        <style jsx>{`
+          @keyframes stats-fade-in {
+            from {
+              opacity: 0;
+              transform: translateY(50px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          @keyframes card-entrance {
+            from {
+              opacity: 0;
+              transform: translateY(100px) rotateX(-15deg) scale(0.8);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) rotateX(0deg) scale(1);
+            }
+          }
+          
+          .animate-stats-in > * {
+            animation: stats-fade-in 0.8s ease-out both;
+          }
+          
+          .animate-stats-in > *:nth-child(1) {
+            animation-delay: 0s;
+          }
+          
+          .animate-stats-in > *:nth-child(2) {
+            animation-delay: 0.1s;
+          }
+          
+          .animate-stats-in > *:nth-child(3) {
+            animation-delay: 0.2s;
+          }
+          
+          .animate-stats-in > *:nth-child(4) {
+            animation-delay: 0.3s;
+          }
+          
+          .animate-cards-in > * {
+            animation: card-entrance 1.2s ease-out both;
+          }
+          
+          .animate-cards-in > *:nth-child(1) {
+            animation-delay: 0s;
+          }
+          
+          .animate-cards-in > *:nth-child(2) {
+            animation-delay: 0.2s;
+          }
+        `}</style>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8">
         {/* Stats Overview */}
-        <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 animate-stats-in">
           {[
             { label: 'Unrealized P&L', value: `$${portfolioStats.unrealizedPnL.toLocaleString()}`, change: '+6.9%', color: '#10b981' },
             { label: 'Potential Yield ↑', value: `+${portfolioStats.potentialYieldIncrease}%`, change: 'APY', color: '#3b82f6' },
@@ -461,7 +354,7 @@ const RebalancePage = () => {
         </div>
 
         {/* Analysis Section */}
-        <div ref={cardsRef}>
+        <div className="animate-cards-in">
           <div 
             className="mb-8 group transition-all duration-500 hover:scale-[1.02]"
             style={{

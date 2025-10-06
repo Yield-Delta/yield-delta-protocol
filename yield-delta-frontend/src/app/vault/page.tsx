@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import Navigation from '@/components/Navigation';
 import { ArrowLeft, TrendingUp, Activity, Shield, Target, BarChart3, Loader2 } from 'lucide-react';
-import gsap from 'gsap';
 import { useVaultStore } from '@/stores/vaultStore';
 import { useVaults } from '@/hooks/useVaults';
 import DepositModal from '@/components/DepositModal';
@@ -71,7 +70,6 @@ interface VaultDetailPageProps {
 
 function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams }: VaultDetailPageProps) {
   const router = useRouter();
-  const cardRef = useRef<HTMLDivElement>(null);
   
   // State
   const [showDepositModal, setShowDepositModal] = useState(action === 'deposit');
@@ -93,14 +91,6 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
     }
   }, [vaultAddress, vault, vaultsData, setSelectedVault]);
   
-  useEffect(() => {
-    if (cardRef.current) {
-      gsap.fromTo(cardRef.current, 
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "back.out(1.7)" }
-      );
-    }
-  }, [vault]);
 
   if (isLoading) {
     return (
@@ -184,7 +174,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
               </Button>
             </div>
             
-            <div ref={cardRef} className="vault-detail-header-card-optimized relative z-10" style={{
+            <div className="vault-detail-header-card-optimized relative z-10 animate-vault-header" style={{
               background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.06) 100%)',
               backdropFilter: 'blur(20px)',
               border: '1px solid rgba(255, 255, 255, 0.25)',
@@ -218,32 +208,6 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   zIndex: 100
                 }}
               >
-                <style jsx>{`
-                  @media (max-width: 768px) {
-                    .vault-deposit-button-wrapper {
-                      position: relative !important;
-                      top: auto !important;
-                      right: auto !important;
-                      margin: 1rem 0 !important;
-                      display: flex !important;
-                      justify-content: center !important;
-                      width: 100% !important;
-                    }
-                    .vault-deposit-enhanced-v2 {
-                      width: calc(100% - 2rem) !important;
-                      max-width: 280px !important;
-                      height: 48px !important;
-                      fontSize: 0.9rem !important;
-                    }
-                  }
-                  @media (max-width: 480px) {
-                    .vault-deposit-enhanced-v2 {
-                      width: calc(100% - 1rem) !important;
-                      height: 44px !important;
-                      fontSize: 0.85rem !important;
-                    }
-                  }
-                `}</style>
                 <button
                   className="vault-deposit-enhanced-v2"
                   onClick={() => {
@@ -323,19 +287,6 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 position: 'relative',
                 zIndex: 2
               }}>
-                <style jsx>{`
-                  @media (min-width: 769px) {
-                    .vault-header-content {
-                      margin-right: clamp(120px, 20vw, 160px) !important;
-                    }
-                  }
-                  @media (max-width: 768px) {
-                    .vault-header-content {
-                      margin-right: 0 !important;
-                      text-align: center !important;
-                    }
-                  }
-                `}</style>
                 <div className="vault-title-section">
                   <h1 className="vault-main-title" style={{ 
                     fontSize: 'clamp(1.75rem, 5vw, 2.75rem)',
@@ -411,21 +362,6 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 position: 'relative',
                 zIndex: 2
               }}>
-                <style jsx>{`
-                  @media (max-width: 768px) {
-                    .vault-metrics-optimized {
-                      grid-template-columns: 1fr !important;
-                      gap: 0.75rem !important;
-                      padding: 1rem !important;
-                    }
-                    .vault-metric-primary-compact {
-                      grid-column: span 1 !important;
-                    }
-                    .vault-metric-wide-compact {
-                      grid-column: span 1 !important;
-                    }
-                  }
-                `}</style>
                 {/* APY - Compact Primary Focus with Better Centering */}
                 <div className="vault-metric-primary-compact" style={{
                   gridColumn: 'span 2',
@@ -616,6 +552,71 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
               </div>
             </div>
           </div>
+          
+          {/* Consolidated CSS styles */}
+          <style jsx>{`
+            @keyframes vault-header-fade {
+              from {
+                opacity: 0;
+                transform: translateY(30px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
+            }
+            
+            .animate-vault-header {
+              animation: vault-header-fade 0.8s ease-out;
+            }
+            
+            @media (max-width: 768px) {
+              .vault-deposit-button-wrapper {
+                position: relative !important;
+                top: auto !important;
+                right: auto !important;
+                margin: 1rem 0 !important;
+                display: flex !important;
+                justify-content: center !important;
+                width: 100% !important;
+              }
+              .vault-deposit-enhanced-v2 {
+                width: calc(100% - 2rem) !important;
+                max-width: 280px !important;
+                height: 48px !important;
+                fontSize: 0.9rem !important;
+              }
+              .vault-header-content {
+                margin-right: 0 !important;
+                text-align: center !important;
+              }
+              .vault-metrics-optimized {
+                grid-template-columns: 1fr !important;
+                gap: 0.75rem !important;
+                padding: 1rem !important;
+              }
+              .vault-metric-primary-compact {
+                grid-column: span 1 !important;
+              }
+              .vault-metric-wide-compact {
+                grid-column: span 1 !important;
+              }
+            }
+            
+            @media (max-width: 480px) {
+              .vault-deposit-enhanced-v2 {
+                width: calc(100% - 1rem) !important;
+                height: 44px !important;
+                fontSize: 0.85rem !important;
+              }
+            }
+            
+            @media (min-width: 769px) {
+              .vault-header-content {
+                margin-right: clamp(120px, 20vw, 160px) !important;
+              }
+            }
+          `}</style>
 
           {/* Clean Tabs Section */}
           <Tabs value={activeTab} onValueChange={(value) => {

@@ -2,10 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import { Card } from '@/components/ui/card';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const workflowSteps = [
   { 
@@ -53,53 +49,40 @@ export default function AIWorkflow() {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    // Create timeline for workflow animation
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: "top 70%",
-        end: "bottom 30%",
-        scrub: 1,
-        onEnter: () => {
-          // Animate steps in sequence
-          stepsRef.current.forEach((step, index) => {
-            if (step) {
-              gsap.fromTo(step,
-                { opacity: 0, scale: 0.5, y: 50 },
-                { 
-                  opacity: 1, 
-                  scale: 1, 
-                  y: 0,
-                  duration: 0.6,
-                  delay: index * 0.2,
-                  ease: "back.out(1.7)"
-                }
-              );
-            }
-          });
+    // CSS-based scroll animation using Intersection Observer
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Animate steps in sequence
+            stepsRef.current.forEach((step, index) => {
+              if (step) {
+                setTimeout(() => {
+                  step.style.animation = `step-in 0.6s ease-out both`;
+                }, index * 200);
+              }
+            });
 
-          // Animate connectors after steps
-          connectorsRef.current.forEach((connector, index) => {
-            if (connector) {
-              gsap.fromTo(connector,
-                { scaleX: 0 },
-                { 
-                  scaleX: 1,
-                  duration: 0.5,
-                  delay: (index + 1) * 0.2 + 0.3,
-                  ease: "power2.out"
-                }
-              );
-            }
-          });
-        }
-      }
-    });
+            // Animate connectors after steps
+            connectorsRef.current.forEach((connector, index) => {
+              if (connector) {
+                setTimeout(() => {
+                  connector.style.animation = `connector-expand 0.5s ease-out both`;
+                }, (index + 1) * 200 + 300);
+              }
+            });
+          }
+        });
+      },
+      { threshold: 0.3, rootMargin: '0px 0px -100px 0px' }
+    );
 
-    console.log('[AIWorkflow] GSAP timeline created with duration:', tl.duration());
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
 
     return () => {
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      observer.disconnect();
     };
   }, []);
 
@@ -173,6 +156,49 @@ export default function AIWorkflow() {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes step-in {
+          from {
+            opacity: 0;
+            transform: scale(0.5) translateY(50px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+        
+        @keyframes connector-expand {
+          from {
+            transform: scaleX(0);
+          }
+          to {
+            transform: scaleX(1);
+          }
+        }
+        
+        @keyframes ai-center-fade {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        
+        .animate-step-in {
+          animation: step-in 0.6s ease-out both;
+        }
+        
+        .animate-connector {
+          animation: connector-expand 0.5s ease-out both;
+        }
+        
+        .animate-ai-center {
+          animation: ai-center-fade 0.8s ease-out 1.5s both;
         }
         .ai-title-override {
           font-size: 4rem !important;
@@ -601,7 +627,7 @@ export default function AIWorkflow() {
           <div className="mt-12 md:mt-24 flex flex-col items-center" style={{ marginTop: 'clamp(3rem, 8vw, 6rem)' }}>
             <div className="relative">
               <div 
-                className="rounded-full backdrop-blur-xl border-2 flex items-center justify-center animate-float shadow-2xl"
+                className="rounded-full backdrop-blur-xl border-2 flex items-center justify-center animate-float animate-ai-center shadow-2xl"
                 style={{
                   width: 'clamp(180px, 20vw, 240px) !important',
                   height: 'clamp(180px, 20vw, 240px) !important',

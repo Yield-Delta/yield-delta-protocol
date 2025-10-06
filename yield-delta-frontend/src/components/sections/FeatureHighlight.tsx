@@ -2,10 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 // Pre-calculated static positions to avoid hydration mismatch
 const STATIC_DATA_POINTS = [
@@ -53,74 +49,32 @@ export default function FeatureHighlight() {
     const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
     const centerImageRef = useRef<HTMLDivElement>(null);
     const [isMounted, setIsMounted] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
 
     useEffect(() => {
-        if (!containerRef.current) return;
-
-        // Animate cards on scroll with staggered effect
-        cardsRef.current.forEach((card, index) => {
-            if (card) {
-                const staggerDelay = index * 0.15;
-                const rotationDirection = index % 2 === 0 ? -10 : 10;
-                
-                gsap.fromTo(card,
-                    {
-                        opacity: 0,
-                        y: 80,
-                        scale: 0.9,
-                        rotationY: rotationDirection,
-                        rotationX: 5
-                    },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        scale: 1,
-                        rotationY: 0,
-                        rotationX: 0,
-                        duration: 1.2,
-                        delay: staggerDelay,
-                        ease: "power3.out",
-                        scrollTrigger: {
-                            trigger: card,
-                            start: "top 85%",
-                            end: "bottom 15%",
-                            toggleActions: "play none none reverse"
-                        }
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setIsVisible(true);
                     }
-                );
-            }
-        });
+                });
+            },
+            { threshold: 0.1 }
+        );
 
-        // Animate center 3D element
-        if (centerImageRef.current) {
-            gsap.fromTo(centerImageRef.current,
-                {
-                    opacity: 0,
-                    scale: 0.5,
-                    rotationY: 180
-                },
-                {
-                    opacity: 1,
-                    scale: 1,
-                    rotationY: 0,
-                    duration: 1.5,
-                    ease: "power3.out",
-                    scrollTrigger: {
-                        trigger: centerImageRef.current,
-                        start: "top 75%",
-                        end: "bottom 25%",
-                        toggleActions: "play none none reverse"
-                    }
-                }
-            );
+        if (containerRef.current) {
+            observer.observe(containerRef.current);
         }
 
         return () => {
-            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+            if (containerRef.current) {
+                observer.unobserve(containerRef.current);
+            }
         };
     }, []);
 
@@ -184,7 +138,9 @@ export default function FeatureHighlight() {
                     <div className="absolute top-16 left-0 lg:left-16 transform z-20">
                         <div
                             ref={centerImageRef}
-                            className="relative w-112 h-112"
+                            className={`relative w-112 h-112 transition-all duration-1000 ease-out ${
+                                isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-50'
+                            }`}
                             style={{ width: '24rem', height: '24rem' }}
                         >
                             {/* Main 3D Container */}
@@ -272,8 +228,13 @@ export default function FeatureHighlight() {
                                 >
                                     <Card
                                         ref={el => { cardsRef.current[index] = el; }}
-                                        className="h-full transition-all duration-500 transform hover:scale-105 hover:rotate-1"
+                                        className={`h-full transition-all duration-700 transform hover:scale-105 hover:rotate-1 ${
+                                            isVisible 
+                                                ? 'opacity-100 translate-y-0 scale-100' 
+                                                : 'opacity-0 translate-y-20 scale-95'
+                                        }`}
                                         style={{
+                                            transitionDelay: isVisible ? `${index * 150}ms` : '0ms',
                                             background: 'linear-gradient(135deg, hsl(var(--card) / 0.8) 0%, hsl(var(--card) / 0.4) 100%)',
                                             backdropFilter: 'blur(20px)',
                                             border: '2px solid hsl(var(--primary) / 0.2)',

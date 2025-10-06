@@ -10,15 +10,11 @@ import DemoBanner from '@/components/DemoBanner';
 import AIChat from '@/components/AIChat';
 import DepositModal from '@/components/DepositModal';
 import { MessageCircle, X, Loader2 } from 'lucide-react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import * as THREE from 'three';
 import { useSeiMarketData } from '@/hooks/useMarketData';
 import { useVaultStore, VaultData } from '@/stores/vaultStore';
 import '@/components/StatsCarousel.css';
 // import styles from './page.module.css'; // Commented out as not used
 
-gsap.registerPlugin(ScrollTrigger);
 
 // Utility functions
 const formatCurrency = (amount: number) => {
@@ -95,9 +91,6 @@ const getRiskBadgeStyle = (riskLevel: 'Low' | 'Medium' | 'High') => {
 export default function VaultsPage() {
   const router = useRouter();
   const mountRef = useRef<HTMLDivElement>(null);
-  const vaultCardsRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
-  const [scene, setScene] = useState<THREE.Scene | null>(null);
   const [showChat, setShowChat] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [depositVault, setDepositVault] = useState<VaultData | null>(null);
@@ -249,170 +242,43 @@ export default function VaultsPage() {
     router.push(`/vault?address=${vault.address}&tab=analytics`)
   }
 
-  // Three.js Setup
+  // Background animation effect (CSS-based alternative to Three.js)
   useEffect(() => {
     const currentMount = mountRef.current;
-    if (!currentMount || scene) return; // Prevent multiple scene creations
+    if (!currentMount) return;
 
-    // Scene setup
-    const newScene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-    currentMount.appendChild(renderer.domElement);
-
-    // Particle system
-    const particleCount = 1000;
-    const particles = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 100;
-      positions[i + 1] = (Math.random() - 0.5) * 100;
-      positions[i + 2] = (Math.random() - 0.5) * 100;
-
-      // Colors for particles
-      const color = new THREE.Color();
-      color.setHSL(Math.random() * 0.3 + 0.5, 0.7, 0.5);
-      colors[i] = color.r;
-      colors[i + 1] = color.g;
-      colors[i + 2] = color.b;
-    }
-
-    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const particleMaterial = new THREE.PointsMaterial({
-      size: 1,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.2,
-    });
-
-    const particleSystem = new THREE.Points(particles, particleMaterial);
-    newScene.add(particleSystem);
-
-    // Geometric shapes for depth
-    const geometries = [
-      new THREE.TetrahedronGeometry(2),
-      new THREE.OctahedronGeometry(1.5),
-      new THREE.IcosahedronGeometry(1),
-    ];
-
-    geometries.forEach((geometry, index) => {
-      const material = new THREE.MeshBasicMaterial({
-        color: [0x00f5d4, 0x9b5de5, 0xff206e][index],
-        wireframe: true,
-        transparent: true,
-        opacity: 0.1,
-      });
-      
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50
+    // Create CSS-based animated background
+    const backgroundElement = document.createElement('div');
+    backgroundElement.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(155, 93, 229, 0.15) 0%,
+        rgba(0, 245, 212, 0.05) 50%,
+        transparent 100%
       );
-      newScene.add(mesh);
-    });
+      animation: backgroundPulse 4s ease-in-out infinite;
+      pointer-events: none;
+    `;
 
-    camera.position.z = 30;
-    setScene(newScene);
-    console.log('[VaultsPage] Three.js scene created with', newScene.children.length, 'objects');
-
-    // Animation loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      
-      // Rotate particles
-      particleSystem.rotation.x += 0.001;
-      particleSystem.rotation.y += 0.002;
-
-      // Rotate geometric shapes
-      newScene.children.forEach((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.rotation.x += 0.01;
-          child.rotation.y += 0.01;
-        }
-      });
-
-      renderer.render(newScene, camera);
-    };
-
-    animate();
-
-    // Handle resize
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
+    currentMount.appendChild(backgroundElement);
 
     return () => {
-      window.removeEventListener('resize', handleResize);
-      if (currentMount && renderer.domElement) {
-        currentMount.removeChild(renderer.domElement);
+      if (currentMount && backgroundElement) {
+        currentMount.removeChild(backgroundElement);
       }
-      renderer.dispose();
     };
-  }, [scene]); // Add scene as dependency to prevent recreation
-
-  // GSAP Animations
-  useEffect(() => {
-    if (vaultCardsRef.current) {
-      const cards = vaultCardsRef.current.children;
-      
-      gsap.fromTo(
-        cards,
-        { 
-          opacity: 0, 
-          y: 100, 
-          rotationX: -15,
-          scale: 0.8 
-        },
-        { 
-          opacity: 1, 
-          y: 0, 
-          rotationX: 0,
-          scale: 1,
-          duration: 1.2, 
-          stagger: 0.2, 
-          ease: 'back.out(1.7)',
-          scrollTrigger: {
-            trigger: vaultCardsRef.current,
-            start: 'top 80%',
-          }
-        }
-      );
-    }
-
-    if (statsRef.current) {
-      gsap.fromTo(
-        statsRef.current.children,
-        { opacity: 0, y: 50 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.8, 
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: statsRef.current,
-            start: 'top 90%',
-          }
-        }
-      );
-    }
   }, []);
+
 
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Three.js Background */}
+      {/* CSS Background */}
       <div 
         ref={mountRef} 
         className="fixed inset-0 z-0"
@@ -421,7 +287,7 @@ export default function VaultsPage() {
         }}
       />
       
-      {/* Background overlay to reduce 3D visual interference */}
+      {/* Background overlay */}
       <div className="fixed inset-0 z-5 bg-gradient-to-b from-background/70 via-background/60 to-background/70 pointer-events-none" />
 
       {/* Navigation */}
@@ -434,7 +300,7 @@ export default function VaultsPage() {
       <div className="relative z-10" style={{ paddingTop: '3.5rem' }}>
         <div className="w-full" style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.25rem', marginTop: '0.125rem' }}>
           <div 
-            ref={statsRef}
+            className="animate-fade-in-stats"
             style={{
               background: 'linear-gradient(135deg, rgba(155, 93, 229, 0.15) 0%, rgba(0, 245, 212, 0.08) 50%, rgba(255, 32, 110, 0.12) 100%)',
               backdropFilter: 'blur(16px)',
@@ -645,8 +511,7 @@ export default function VaultsPage() {
             
             {!isLoading && !error && (
               <div 
-                ref={vaultCardsRef} 
-                className="grid gap-8 md:gap-12 max-w-7xl mx-auto"
+                className="grid gap-8 md:gap-12 max-w-7xl mx-auto animate-vault-cards"
                 style={{ 
                   gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))',
                   justifyContent: 'center',
@@ -870,38 +735,6 @@ export default function VaultsPage() {
               initialMessage="🎯 Welcome to SEI DLP Vaults! I'm Liqui, your AI assistant. I can help you analyze vault performance, predict optimal ranges, and recommend rebalancing strategies. What vault would you like to optimize today?"
             />
             
-            {/* Inline CSS Override for AI Chat Input - Highest Specificity */}
-            <style jsx>{`
-              .ai-chat-override input {
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
-                border: 1px solid rgba(255, 255, 255, 0.2) !important;
-                color: #ffffff !important;
-                font-size: 14px !important;
-                padding: 12px 16px !important;
-                border-radius: 12px !important;
-                backdrop-filter: blur(10px) !important;
-                outline: none !important;
-              }
-              
-              .ai-chat-override input:focus {
-                border-color: rgba(0, 245, 212, 0.5) !important;
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
-                box-shadow: 0 0 20px rgba(0, 245, 212, 0.2) !important;
-              }
-              
-              .ai-chat-override input::placeholder {
-                color: rgba(255, 255, 255, 0.4) !important;
-              }
-              
-              .ai-chat-override .text-xs {
-                color: rgba(255, 255, 255, 0.5) !important;
-                font-size: 11px !important;
-              }
-              
-              .ai-chat-override * {
-                color: #ffffff;
-              }
-            `}</style>
           </div>
         </div>
       )}
@@ -913,6 +746,7 @@ export default function VaultsPage() {
         onClose={handleCloseModal}
         onSuccess={handleDepositSuccess}
       />
+
 
       {/* Floating AI Chat Button - Ultra-Enhanced Visibility Design */}
       <div 
@@ -926,8 +760,103 @@ export default function VaultsPage() {
           pointerEvents: 'auto'
         }}
       >
-        {/* Mobile responsive positioning */}
+        {/* Consolidated CSS styles */}
         <style jsx>{`
+          @keyframes backgroundPulse {
+            0%, 100% {
+              opacity: 0.8;
+              transform: scale(1);
+            }
+            50% {
+              opacity: 1;
+              transform: scale(1.05);
+            }
+          }
+          
+          @keyframes fade-in-stats {
+            from {
+              opacity: 0;
+              transform: translateY(50px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          
+          @keyframes vault-card-entrance {
+            from {
+              opacity: 0;
+              transform: translateY(100px) rotateX(-15deg) scale(0.8);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) rotateX(0deg) scale(1);
+            }
+          }
+          
+          .animate-fade-in-stats {
+            animation: fade-in-stats 0.8s ease-out;
+          }
+          
+          .animate-vault-cards > * {
+            animation: vault-card-entrance 1.2s ease-out both;
+          }
+          
+          .animate-vault-cards > *:nth-child(1) {
+            animation-delay: 0s;
+          }
+          
+          .animate-vault-cards > *:nth-child(2) {
+            animation-delay: 0.2s;
+          }
+          
+          .animate-vault-cards > *:nth-child(3) {
+            animation-delay: 0.4s;
+          }
+          
+          .animate-vault-cards > *:nth-child(4) {
+            animation-delay: 0.6s;
+          }
+          
+          .animate-vault-cards > *:nth-child(5) {
+            animation-delay: 0.8s;
+          }
+          
+          .animate-vault-cards > *:nth-child(6) {
+            animation-delay: 1.0s;
+          }
+          
+          .ai-chat-override input {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: #ffffff !important;
+            font-size: 14px !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            backdrop-filter: blur(10px) !important;
+            outline: none !important;
+          }
+          
+          .ai-chat-override input:focus {
+            border-color: rgba(0, 245, 212, 0.5) !important;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%) !important;
+            box-shadow: 0 0 20px rgba(0, 245, 212, 0.2) !important;
+          }
+          
+          .ai-chat-override input::placeholder {
+            color: rgba(255, 255, 255, 0.4) !important;
+          }
+          
+          .ai-chat-override .text-xs {
+            color: rgba(255, 255, 255, 0.5) !important;
+            font-size: 11px !important;
+          }
+          
+          .ai-chat-override * {
+            color: #ffffff;
+          }
+          
           @media (max-width: 768px) {
             .ai-chat-button-container-override {
               bottom: 20px !important;
@@ -939,6 +868,7 @@ export default function VaultsPage() {
               padding: 18px !important;
             }
           }
+          
           @media (max-width: 480px) {
             .ai-chat-button-container-override {
               bottom: 16px !important;

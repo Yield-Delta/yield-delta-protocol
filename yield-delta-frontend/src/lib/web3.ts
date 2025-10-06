@@ -1,7 +1,8 @@
 import { http } from 'wagmi'
 import { defineChain } from 'viem'
 import { createConfig as createWagmiConfig } from 'wagmi'
-import { metaMask, walletConnect, injected } from 'wagmi/connectors'
+// CRITICAL: Don't import connectors at module level - they contain browser-only code
+// that will break SSR/build. Import them dynamically inside createConfig() instead.
 
 // SEI Mainnet (Pacific-1)
 export const seiMainnet = defineChain({
@@ -72,29 +73,47 @@ function createConfig() {
     console.warn('Get your Project ID from: https://walletconnect.com/cloud')
   }
 
+  // CRITICAL: Only include connectors in browser environment
+  // During SSR/build, use empty array to prevent metamask-sdk from loading
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let connectors: any[] = []
+  
+  if (typeof window !== 'undefined') {
+    try {
+      // Dynamically require connectors only in browser to avoid SSR issues
+      // This prevents the metamask-sdk from loading during build time
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { metaMask, walletConnect, injected } = require('wagmi/connectors')
+      
+      connectors = [
+        metaMask({
+          dappMetadata: {
+            name: 'SEI DLP',
+            url: window.location.origin
+          }
+        }),
+        walletConnect({
+          projectId: projectId || 'fallback-project-id',
+          metadata: {
+            name: 'SEI DLP',
+            description: 'AI-driven dynamic liquidity vaults on SEI EVM',
+            url: window.location.origin,
+            icons: ['https://yielddelta.xyz/favicon.svg']
+          }
+        }),
+        injected({
+          shimDisconnect: true
+        })
+      ]
+    } catch (error) {
+      console.error('Failed to load wallet connectors:', error)
+    }
+  }
+
   // Create custom config without Coinbase wallet to prevent SDK errors
   configInstance = createWagmiConfig({
     chains: [seiDevnet, seiMainnet, seiTestnet],
-    connectors: [
-      metaMask({
-        dappMetadata: {
-          name: 'SEI DLP',
-          url: typeof window !== 'undefined' ? window.location.origin : 'https://yielddelta.xyz'
-        }
-      }),
-      walletConnect({
-        projectId: projectId || 'fallback-project-id',
-        metadata: {
-          name: 'SEI DLP',
-          description: 'AI-driven dynamic liquidity vaults on SEI EVM',
-          url: typeof window !== 'undefined' ? window.location.origin : 'https://yielddelta.xyz',
-          icons: ['https://yielddelta.xyz/favicon.svg']
-        }
-      }),
-      injected({
-        shimDisconnect: true
-      })
-    ],
+    connectors,
     transports: {
       [seiDevnet.id]: http(),
       [seiMainnet.id]: http(),
@@ -115,4 +134,19 @@ function createConfig() {
   return configInstance
 }
 
-export const config = createConfig()
+// Create a minimal stub config for SSR that won't trigger browser-only dependencies
+function createStubConfig() {
+  return createWagmiConfig({
+    chains: [seiDevnet, seiMainnet, seiTestnet],
+    connectors: [], // No connectors during SSR
+    transports: {
+      [seiDevnet.id]: http(),
+      [seiMainnet.id]: http(),
+      [seiTestnet.id]: http()
+    },
+    ssr: true,
+  })
+}
+
+// Export config - use stub during SSR, real config in browser
+export const config = typeof window !== 'undefined' ? createConfig() : createStubConfig()

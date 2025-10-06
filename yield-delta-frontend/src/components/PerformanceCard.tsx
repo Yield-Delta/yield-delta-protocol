@@ -2,8 +2,6 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import styles from './PerformanceCard.module.css';
-import { useEffect, useRef } from 'react';
-import { gsap } from 'gsap';
 import { TrendingUp, DollarSign, Shield, Activity } from 'lucide-react';
 
 interface PerformanceCardProps {
@@ -22,41 +20,6 @@ export default function PerformanceCard({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   positive: _positive = true 
 }: PerformanceCardProps) {
-  const iconRef = useRef<HTMLDivElement>(null);
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (iconRef.current) {
-      // 3D floating animation
-      gsap.to(iconRef.current, {
-        y: -10,
-        rotationX: 15,
-        rotationY: 10,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "power2.inOut"
-      });
-    }
-
-    if (cardRef.current) {
-      // Entrance animation
-      gsap.fromTo(cardRef.current, 
-        { 
-          opacity: 0, 
-          y: 30,
-          rotationX: -15
-        },
-        { 
-          opacity: 1, 
-          y: 0,
-          rotationX: 0,
-          duration: 0.8,
-          ease: "back.out(1.7)"
-        }
-      );
-    }
-  }, []);
 
   const getIcon = () => {
     if (description.toLowerCase().includes('apy') || description.toLowerCase().includes('trend')) {
@@ -72,8 +35,7 @@ export default function PerformanceCard({
 
   return (
     <Card 
-      ref={cardRef}
-      className={`${styles.performanceCard} group relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105`}
+      className={`${styles.performanceCard} group relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 animate-fade-in-up`}
       style={{ 
         perspective: '1000px !important',
         minHeight: '280px !important',
@@ -121,8 +83,7 @@ export default function PerformanceCard({
         }}>
           {/* 3D Animated Icon */}
           <div 
-            ref={iconRef}
-            className="mb-2 flex justify-center"
+            className="mb-2 flex justify-center animate-float"
             style={{
               transformStyle: 'preserve-3d',
               filter: `drop-shadow(0 4px 8px ${color}40)`,
@@ -224,6 +185,37 @@ export default function PerformanceCard({
           </span>
         </div>
       </CardContent>
+      
+      {/* Add CSS animations */}
+      <style jsx>{`
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px) rotateX(-15deg);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) rotateX(0deg);
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0) rotateX(0deg) rotateY(0deg);
+          }
+          50% {
+            transform: translateY(-10px) rotateX(15deg) rotateY(10deg);
+          }
+        }
+        
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out;
+        }
+        
+        .animate-float {
+          animation: float 4s ease-in-out infinite;
+        }
+      `}</style>
     </Card>
   );
 }

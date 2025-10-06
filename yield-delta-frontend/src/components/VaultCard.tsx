@@ -6,7 +6,6 @@ import { useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import gsap from 'gsap';
 import styles from './VaultCard.module.css';
 import { useRouter } from 'next/navigation';
 
@@ -29,6 +28,7 @@ export default function VaultCard({ vault, index }: VaultCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const apyRef = useRef<HTMLSpanElement>(null);
   const [displayApy, setDisplayApy] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
 
   const handleViewVault = () => {
@@ -49,56 +49,38 @@ export default function VaultCard({ vault, index }: VaultCardProps) {
   };
 
   useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
     if (cardRef.current) {
-      // Card entrance animation
-      gsap.fromTo(cardRef.current,
-        { 
-          opacity: 0, 
-          y: 50,
-          scale: 0.9
-        },
-        { 
-          opacity: 1, 
-          y: 0,
-          scale: 1,
-          duration: 0.8, 
-          delay: index * 0.2,
-          ease: "back.out(1.7)"
-        }
-      );
+      observer.observe(cardRef.current);
     }
 
-    // Animate APY counter
-    gsap.to({ value: 0 }, {
-      value: vault.apy,
-      duration: 2,
-      delay: index * 0.2 + 0.5,
-      ease: "power2.out",
-      onUpdate: function() {
-        setDisplayApy(Number(this.targets()[0].value.toFixed(1)));
+    return () => {
+      if (cardRef.current) {
+        observer.unobserve(cardRef.current);
       }
-    });
-  }, [vault.apy, index]);
+    };
+  }, []);
 
-  const handleHover = () => {
-    if (cardRef.current) {
-      gsap.to(cardRef.current, {
-        scale: 1.05,
-        duration: 0.3,
-        ease: "power2.out"
-      });
+  // Animate APY counter with CSS transition
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        setDisplayApy(vault.apy);
+      }, index * 200 + 500);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [isVisible, vault.apy, index]);
 
-  const handleLeave = () => {
-    if (cardRef.current) {
-      gsap.to(cardRef.current, {
-        scale: 1,
-        duration: 0.3,
-        ease: "power2.out"
-      });
-    }
-  };
 
   const getRiskColor = (risk: string) => {
     switch (risk) {
@@ -112,9 +94,11 @@ export default function VaultCard({ vault, index }: VaultCardProps) {
   return (
     <Card 
       ref={cardRef}
-      className={`${styles.vaultCard} cursor-pointer group relative overflow-hidden`}
-      onMouseEnter={handleHover}
-      onMouseLeave={handleLeave}
+      className={`${styles.vaultCard} cursor-pointer group relative overflow-hidden transition-all duration-700 ease-out hover:scale-105 ${
+        isVisible 
+          ? 'opacity-100 translate-y-0 scale-100' 
+          : 'opacity-0 translate-y-12 scale-90'
+      }`}
       style={{
         width: '100%',
         minWidth: '280px',
@@ -122,7 +106,8 @@ export default function VaultCard({ vault, index }: VaultCardProps) {
         minHeight: '280px',
         margin: '0 auto',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        transitionDelay: isVisible ? `${index * 200}ms` : '0ms'
       }}
     >
       {/* Animated Background Gradient */}
@@ -154,9 +139,13 @@ export default function VaultCard({ vault, index }: VaultCardProps) {
             <span className={styles.metricLabel}>APY</span>
             <span 
               ref={apyRef}
-              className={styles.apyValue}
+              className={`${styles.apyValue} transition-all duration-1000 ease-out`}
+              style={{
+                transform: isVisible ? 'scale(1)' : 'scale(0.8)',
+                opacity: isVisible ? 1 : 0.5
+              }}
             >
-              {displayApy}%
+              {displayApy.toFixed(1)}%
             </span>
           </div>
           

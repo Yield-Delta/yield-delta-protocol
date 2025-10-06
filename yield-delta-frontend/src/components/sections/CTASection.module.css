@@ -111,7 +111,7 @@
     }
 }
 
-/* Button Container Spacing Enhancements */
+/* Button Container Spacing Enhancements - Improved mobile centering */
 .buttonContainer {
     display: flex;
     flex-direction: row;
@@ -120,17 +120,54 @@
     flex-wrap: wrap;
     gap: 1rem;
     margin-top: 0.5rem;
+    width: 100%;
 }
 
-@media (min-width: 640px) {
+/* Enhanced mobile-first responsive design */
+@media (max-width: 480px) {
     .buttonContainer {
-        gap: 1.5rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        max-width: 320px;
+        margin: 1rem auto 0 auto;
+        padding: 0 1rem;
+    }
+    
+    .buttonContainer > * {
+        margin: 0.25rem 0;
+        width: 100%;
+        max-width: 280px;
+        display: flex;
+        justify-content: center;
     }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 481px) and (max-width: 640px) {
+    .buttonContainer {
+        justify-content: center;
+        gap: 1rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+    
+    .buttonContainer > * {
+        margin: 0.25rem;
+        flex: 0 0 auto;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+    .buttonContainer {
+        gap: 1.5rem;
+        justify-content: center;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
     .buttonContainer {
         gap: 2rem;
+        justify-content: center;
     }
 }
 
@@ -146,17 +183,16 @@
     margin: 0.25rem 0;
 }
 
-/* Mobile-specific button spacing */
+/* Enhanced mobile button styling for CTA section */
 @media (max-width: 480px) {
-    .buttonContainer {
-        gap: 0.75rem;
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .buttonContainer > * {
-        margin: 0.25rem 0;
-        width: 100%;
-        max-width: 280px;
+    .buttonContainer button,
+    .buttonContainer .mobile-responsive-button {
+        width: 100% !important;
+        max-width: 280px !important;
+        min-width: 200px !important;
+        margin: 0.25rem auto !important;
+        font-size: 1rem !important;
+        padding: 1rem 1.5rem !important;
+        min-height: 48px !important;
     }
 }

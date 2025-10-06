@@ -1,8 +1,11 @@
 
+// Import polyfills first to handle SSR compatibility
+import '@/lib/polyfills'
+
 import { Inter } from 'next/font/google'
 import './globals.css'
-import { Web3Provider } from '@/components/providers/Web3Provider'
 import { ThemeProvider } from 'next-themes'
+import { ClientProviders } from '@/components/providers/ClientProviders'
 
 const inter = Inter({ subsets: ['latin'] })
 // Metadata for SEO and social sharing
@@ -38,9 +41,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {/* Client-side web3 and query providers */}
-          <Web3Provider>
+          <ClientProviders>
             {children}
-          </Web3Provider>
+          </ClientProviders>
         </ThemeProvider>
       </body>
     </html>
