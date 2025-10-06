@@ -209,7 +209,7 @@ export default function AIRebalancingPage() {
       <p className="mb-4">Automatic halts during extreme market conditions:</p>
       
       <ul className="space-y-2 mb-8">
-        <li>Extreme price movements (>10% in 1 hour)</li>
+        <li>Extreme price movements ({'>'}10% in 1 hour)</li>
         <li>Low liquidity conditions</li>
         <li>High gas price environment</li>
         <li>Network congestion or instability</li>
