@@ -2,7 +2,7 @@ import React from 'react';
 import { Logo3D, LogoHorizontal3D } from './Logo3D';
 
 interface LogoProps {
-  variant?: 'default' | 'horizontal' | 'icon' | 'mono' | '3d';
+  variant?: 'default' | 'horizontal' | 'horizontal-svg' | 'icon' | 'mono' | '3d';
   size?: number;
   animated?: boolean;
   className?: string;
@@ -17,6 +17,21 @@ export function Logo({
   
   if (variant === 'horizontal') {
     return <LogoHorizontal3D height={size} className={className} />;
+  }
+  
+  if (variant === 'horizontal-svg') {
+    const height = size;
+    const width = (height / 60) * 200; // Maintain aspect ratio from original SVG
+    return (
+      <img 
+        src="/logo-horizontal.svg" 
+        alt="Yield Delta" 
+        width={width} 
+        height={height} 
+        className={className}
+        style={{ maxHeight: height }}
+      />
+    );
   }
   
   if (variant === '3d' || (variant === 'default' && animated)) {
