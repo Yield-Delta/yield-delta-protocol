@@ -3,18 +3,13 @@
 // Import polyfills for SSR compatibility
 import '@/lib/polyfills'
 
-import dynamic from 'next/dynamic'
+import { Web3Provider } from '@/components/providers/Web3Provider'
 
-// Dynamically import Web3Provider with no SSR to prevent wagmi/rainbowkit from loading during build
-// This prevents the 'self is not defined' error from @metamask/sdk
-const Web3Provider = dynamic(
-  () => import('@/components/providers/Web3Provider').then((mod) => mod.Web3Provider),
-  { 
-    ssr: false,
-    loading: () => <div className="min-h-screen" /> // Minimal loading state
-  }
-)
-
+/**
+ * Client-side providers wrapper
+ * This component is a client component that wraps all client-side providers
+ * The polyfills imported above ensure SSR compatibility
+ */
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   return <Web3Provider>{children}</Web3Provider>
 }
