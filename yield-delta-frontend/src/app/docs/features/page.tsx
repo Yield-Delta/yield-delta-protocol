@@ -36,7 +36,7 @@ export default function FeaturesPage() {
         <li><strong>Real-time Analysis</strong>: Market conditions analyzed every block</li>
         <li><strong>Optimal Ranges</strong>: ML-calculated tick ranges for maximum efficiency</li>
         <li><strong>Risk Assessment</strong>: Sophisticated risk modeling and prediction</li>
-        <li><strong>Execution Timing</strong>: Perfect timing leveraging SEI's 400ms finality</li>
+        <li><strong>Execution Timing</strong>: Perfect timing leveraging SEI&apos;s 400ms finality</li>
       </ul>
       
       <p className="mb-8">
@@ -88,7 +88,7 @@ export default function FeaturesPage() {
       
       <p className="mb-4"><strong>Built for Speed & Efficiency</strong></p>
       
-      <p className="mb-4">Leveraging SEI's unique advantages:</p>
+      <p className="mb-4">Leveraging SEI&apos;s unique advantages:</p>
       
       <ul className="space-y-2 mb-6">
         <li><strong>400ms Finality</strong>: Lightning-fast transaction confirmation</li>

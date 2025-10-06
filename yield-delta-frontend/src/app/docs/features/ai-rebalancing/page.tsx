@@ -4,7 +4,7 @@ export default function AIRebalancingPage() {
       <h1 className="text-4xl font-bold mb-8">AI-Powered Rebalancing</h1>
       
       <p className="text-lg text-muted-foreground mb-8">
-        Yield Delta's AI rebalancing system uses machine learning to automatically optimize liquidity positions, maximizing yields while minimizing risk on the SEI Network.
+        Yield Delta&apos;s AI rebalancing system uses machine learning to automatically optimize liquidity positions, maximizing yields while minimizing risk on the SEI Network.
       </p>
 
       <h2 className="text-2xl font-semibold mb-4">Overview</h2>
@@ -19,7 +19,7 @@ export default function AIRebalancingPage() {
         <li><strong>Automated Optimization</strong>: No manual intervention required</li>
         <li><strong>Real-time Analysis</strong>: Market conditions analyzed every block (~400ms)</li>
         <li><strong>Risk Management</strong>: Built-in risk controls and position limits</li>
-        <li><strong>Gas Efficiency</strong>: Optimized for SEI's low-cost, high-speed network</li>
+        <li><strong>Gas Efficiency</strong>: Optimized for SEI&apos;s low-cost, high-speed network</li>
         <li><strong>Performance Tracking</strong>: Transparent metrics and historical analysis</li>
       </ul>
 
@@ -315,5 +315,5 @@ export default function AIRebalancingPage() {
 
 export const metadata = {
   title: 'AI-Powered Rebalancing - Yield Delta Documentation',
-  description: 'Learn how Yield Delta\'s AI engine automatically optimizes liquidity positions using machine learning for maximum yield generation.',
+  description: 'Learn how Yield Delta&apos;s AI engine automatically optimizes liquidity positions using machine learning for maximum yield generation.',
 };

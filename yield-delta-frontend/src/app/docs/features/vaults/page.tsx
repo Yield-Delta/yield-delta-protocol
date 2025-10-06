@@ -4,13 +4,13 @@ export default function VaultsPage() {
       <h1 className="text-4xl font-bold mb-8">Vault Management</h1>
       
       <p className="text-lg text-muted-foreground mb-8">
-        Yield Delta's vault system provides secure, gas-optimized yield generation using ERC-4626 compatible smart contracts with advanced AI optimization.
+        Yield Delta&apos;s vault system provides secure, gas-optimized yield generation using ERC-4626 compatible smart contracts with advanced AI optimization.
       </p>
 
       <h2 className="text-2xl font-semibold mb-4">Overview</h2>
       
       <p className="mb-6">
-        Our vault architecture combines traditional DeFi vault functionality with cutting-edge AI-powered optimization specifically designed for the SEI Network's high-speed environment.
+        Our vault architecture combines traditional DeFi vault functionality with cutting-edge AI-powered optimization specifically designed for the SEI Network&apos;s high-speed environment.
       </p>
 
       <h3 className="text-xl font-semibold mb-4">Key Features</h3>
@@ -18,7 +18,7 @@ export default function VaultsPage() {
       <ul className="space-y-2 mb-8">
         <li><strong>ERC-4626 Compatibility</strong>: Standard vault interface for maximum interoperability</li>
         <li><strong>AI-Driven Optimization</strong>: Machine learning algorithms continuously optimize positions</li>
-        <li><strong>Gas Efficiency</strong>: Optimized for SEI's 400ms block finality</li>
+        <li><strong>Gas Efficiency</strong>: Optimized for SEI&apos;s 400ms block finality</li>
         <li><strong>Multiple Strategies</strong>: Support for various yield generation approaches</li>
         <li><strong>Auto-Compounding</strong>: Automatic reinvestment of rewards</li>
       </ul>
@@ -328,5 +328,5 @@ export default function VaultsPage() {
 
 export const metadata = {
   title: 'Vault Management - Yield Delta Documentation',
-  description: 'Learn about Yield Delta\'s ERC-4626 compatible vaults with AI-powered optimization for maximum yield generation.',
+  description: 'Learn about Yield Delta&apos;s ERC-4626 compatible vaults with AI-powered optimization for maximum yield generation.',
 };

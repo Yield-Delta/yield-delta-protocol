@@ -180,7 +180,7 @@ bun dev`}</code>
 
       <h3 className="text-xl font-semibold mb-4">2. Access the Application</h3>
       
-      <p className="mb-4">Navigate to <code className="bg-muted px-2 py-1 rounded">http://localhost:3000</code> and you'll see:</p>
+      <p className="mb-4">Navigate to <code className="bg-muted px-2 py-1 rounded">http://localhost:3000</code> and you&apos;ll see:</p>
       
       <ul className="space-y-2 mb-6">
         <li><strong>Landing Page</strong>: Overview of platform features</li>
@@ -192,8 +192,8 @@ bun dev`}</code>
       
       <ol className="space-y-2 mb-6">
         <li><strong>Visit Vaults Page</strong> (<code className="bg-muted px-2 py-1 rounded">/vaults</code>)</li>
-        <li><strong>Select a Strategy</strong> (e.g., "SEI-USDC Concentrated Liquidity")</li>
-        <li><strong>Click "Deposit"</strong> to open the deposit modal</li>
+        <li><strong>Select a Strategy</strong> (e.g., &quot;SEI-USDC Concentrated Liquidity&quot;)</li>
+        <li><strong>Click &quot;Deposit&quot;</strong> to open the deposit modal</li>
         <li><strong>Enter Amount</strong> (try 5 SEI in demo mode)</li>
         <li><strong>Confirm Transaction</strong> and watch the simulation</li>
       </ol>
@@ -249,7 +249,7 @@ curl http://localhost:3000/api/docs`}</code>
       <h3 className="text-xl font-semibold mb-4">Demo Mode Verification</h3>
       
       <ol className="space-y-2 mb-6">
-        <li>Look for "DEMO MODE" badges in the UI</li>
+        <li>Look for &quot;DEMO MODE&quot; badges in the UI</li>
         <li>Try a deposit - should complete in ~2 seconds</li>
         <li>Check browser console for demo logs</li>
         <li>Verify no real blockchain transactions</li>
@@ -331,7 +331,7 @@ bun update`}</code>
       <hr className="my-8" />
 
       <p className="text-center text-muted-foreground italic">
-        Ready to optimize your yields with Yield Delta? Let's go! 🚀
+        Ready to optimize your yields with Yield Delta? Let&apos;s go! 🚀
       </p>
     </div>
   );

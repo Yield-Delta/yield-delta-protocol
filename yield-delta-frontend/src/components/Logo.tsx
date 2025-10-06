@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import { Logo3D, LogoHorizontal3D } from './Logo3D';
 
 interface LogoProps {
@@ -23,11 +24,11 @@ export function Logo({
     const height = size;
     const width = (height / 60) * 200; // Maintain aspect ratio from original SVG
     return (
-      <img 
-        src="/logo-horizontal.svg" 
-        alt="Yield Delta" 
-        width={width} 
-        height={height} 
+      <Image
+        src="/logo-horizontal.svg"
+        alt="Yield Delta"
+        width={width}
+        height={height}
         className={className}
         style={{ maxHeight: height }}
       />
