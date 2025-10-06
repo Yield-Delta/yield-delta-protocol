@@ -33,7 +33,7 @@
     "@elizaos/adapter-supabase": "^0.25.6-alpha.1",
     "@elizaos/cli": "latest",
     "@elizaos/core": "latest",
-    "@elizaos/plugin-anthropic": "^1.0.4",
+    "@elizaos/plugin-anthropic": "^1.0.6",
     "@elizaos/plugin-bootstrap": "latest",
     "@elizaos/plugin-google-genai": "^1.0.1",
     "@elizaos/plugin-openai": "1.0.11",
