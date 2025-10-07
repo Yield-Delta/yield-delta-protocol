@@ -13,6 +13,7 @@ import { useVaultStore } from '@/stores/vaultStore';
 import { useVaults } from '@/hooks/useVaults';
 import DepositModal from '@/components/DepositModal';
 import VaultClientWrapper from '@/components/VaultClientWrapper';
+import TokenPairDisplay from '@/components/TokenPairDisplay';
 
 // Utility functions
 const formatCurrency = (amount: number) => {
@@ -986,19 +987,9 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                     
                     <div>
                       <h4 className="font-semibold mb-3 text-lg">Token Pair</h4>
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold">
-                            {vault.tokenA.charAt(0)}
-                          </div>
-                          <span className="text-base font-medium">{vault.tokenA}</span>
-                        </div>
-                        <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/5 border border-secondary/20">
-                          <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-sm font-bold">
-                            {vault.tokenB.charAt(0)}
-                          </div>
-                          <span className="text-base font-medium">{vault.tokenB}</span>
-                        </div>
+                      <div className="flex items-center justify-start md:justify-center py-2">
+                        {/* Modern token pair display */}
+                        <TokenPairDisplay tokenA={vault.tokenA} tokenB={vault.tokenB} size={48} />
                       </div>
                     </div>
                   </div>
