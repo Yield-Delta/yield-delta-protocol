@@ -121,10 +121,10 @@ export class RuntimeWrapper {
         const originalMethod = service[methodName].bind(service);
         
         service[methodName] = async (...args: any[]) => {
-          logger.debug(`🚫 MessageBusService.${methodName} blocked (standalone mode)`, { 
+          logger.debug(`🚫 MessageBusService.${methodName} blocked (standalone mode): ${JSON.stringify({ 
             args: args.length > 0 ? args[0] : 'no args',
             timestamp: new Date().toISOString()
-          });
+          })}`);
           
           // Return appropriate mock responses based on method
           switch (methodName) {
