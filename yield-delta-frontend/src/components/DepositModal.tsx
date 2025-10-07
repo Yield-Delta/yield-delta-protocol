@@ -477,11 +477,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           max-width: none !important;
         }
         
-        html body .deposit-modal-content,
-        html body div.deposit-modal-content {
-          max-width: 560px !important;
-          width: 560px !important;
-        }
+        /* Removed conflicting CSS rules that set 560px width */
         
         /* NUCLEAR OPTION: Ultimate width enforcement */
         .deposit-modal-container > .deposit-modal-content,
@@ -519,25 +515,21 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 12px !important;
-          }
-          .deposit-modal-content {
-            width: calc(100vw - 24px) !important;
-            max-width: calc(100vw - 24px) !important;
-            min-width: 300px !important;
-            max-height: 90vh !important;
-          }
-        }
-        
-        @media (max-width: 360px) {
-          .deposit-modal-container {
             padding: 8px !important;
           }
           .deposit-modal-content {
             width: calc(100vw - 16px) !important;
             max-width: calc(100vw - 16px) !important;
-            min-width: 280px !important;
-            max-height: 95vh !important;
+            min-width: 300px !important;
+            max-height: 80vh !important;
+          }
+        }
+        
+        @media (max-width: 375px) {
+          .deposit-modal-content {
+            width: calc(100vw - 12px) !important;
+            max-width: calc(100vw - 12px) !important;
+            max-height: 75vh !important;
           }
         }
         
@@ -548,6 +540,13 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
             max-width: 500px !important;
             min-width: 500px !important;
             max-height: 85vh !important;
+          }
+        }
+
+        /* Reduce content padding on mobile */
+        @media (max-width: 600px) {
+          .modal-scrollable-content {
+            padding: 1rem 0.75rem 0 0.75rem !important;
           }
         }
       `}</style>
@@ -617,12 +616,13 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       >
         {/* Scrollable Content Area */}
         <div
+          className="modal-scrollable-content"
           style={{
             flex: '1',
             overflow: 'auto',
             padding: '1rem 1.25rem 0 1.25rem', // Reduced side padding
             minHeight: '0', // Allow flex shrinking
-            maxHeight: 'calc(85vh - 140px)' // Account for header and footer space
+            maxHeight: 'calc(80vh - 200px)' // Account for header and footer space
           }}
         >
             {/* Enhanced Modal Header */}
@@ -805,7 +805,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         onChange={(e) => setDepositAmount(e.target.value)}
                         style={{
                           color: '#ffffff',
-                          fontSize: '2rem',
+                          fontSize: 'clamp(1.5rem, 5vw, 2rem)',
                           fontWeight: '800',
                           textAlign: 'left',
                           backgroundColor: 'transparent',
@@ -842,14 +842,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   }}>
                     <h3 className="text-lg font-bold mb-4 opacity-90">You will receive</h3>
                     <div style={{ marginBottom: '8px' }}>
-                      <div style={{ 
+                      <div style={{
                         color: vaultColor,
-                        fontSize: '2rem',
+                        fontSize: 'clamp(1.5rem, 5vw, 2rem)',
                         fontWeight: '800',
                         marginBottom: '4px',
                         lineHeight: '1.2'
                       }}>
-                        {depositAmount && parseFloat(depositAmount) > 0 
+                        {depositAmount && parseFloat(depositAmount) > 0
                           ? (parseFloat(depositAmount) * 0.95).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                           : '0.00'
                         }
