@@ -9,20 +9,13 @@ import { logger, type IAgentRuntime } from '@elizaos/core';
  */
 
 /**
- * Configure standalone mode to prevent external connections
- * This should be called before any runtime initialization
+ * Configure standalone mode (currently does nothing - MessageBus is enabled)
+ * This function is kept for backward compatibility
  */
 export function configureStandaloneMode(): void {
-  // Set environment variables to ensure standalone mode
-  process.env.DISABLE_MESSAGE_BUS = 'true';
-  process.env.MESSAGE_BUS_ENABLED = 'false';
-  
-  // Override central message server URL to prevent external calls
-  if (!process.env.CENTRAL_MESSAGE_SERVER_URL) {
-    process.env.CENTRAL_MESSAGE_SERVER_URL = 'http://localhost:9999';
-  }
-  
-  logger.info('🔧 Standalone mode configured - MessageBus disabled for local operation');
+  // MessageBus is now fully enabled - no blocking
+  // This function is kept in case we need to add configuration later
+  logger.info('🔧 Standalone mode configured - MessageBus fully enabled');
 }
 
 /**

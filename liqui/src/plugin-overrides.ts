@@ -230,8 +230,8 @@ export const shouldUsePythonAI = () => {
 
 /**
  * Check if MessageBusService should be disabled for standalone operation
+ * NOTE: Currently always returns false - MessageBus is fully enabled
  */
 export const shouldDisableMessageBus = () => {
-  return process.env.DISABLE_MESSAGE_BUS === 'true' ||
-         process.env.MESSAGE_BUS_ENABLED === 'false';
+  return false; // MessageBus is always enabled now
 };
