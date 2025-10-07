@@ -6,14 +6,9 @@ import seiYieldDeltaPlugin from '../node_modules/@elizaos/plugin-sei-yield-delta
 import { character } from './character.ts';
 import { 
   pluginOverrides, 
-  shouldUseAPIIntegration, 
-  shouldDisableMessageBus
+  shouldUseAPIIntegration
 } from './plugin-overrides.ts';
-import { RuntimeWrapper, configureStandaloneMode } from './runtime-wrapper.ts';
 // PostgreSQL is now handled directly by ElizaOS via DATABASE_URL environment variable
-
-// Configure standalone mode before any runtime initialization
-configureStandaloneMode();
 
 const initCharacter = async (runtime: IAgentRuntime) => {
   logger.info('Initializing SEI DLP Liqui character');
@@ -21,8 +16,7 @@ const initCharacter = async (runtime: IAgentRuntime) => {
   logger.info('SEI Chain ID: 1328');
   logger.info('Optimized for 400ms finality');
   
-  // Apply runtime wrapper for MessageBusService interception
-  RuntimeWrapper.wrap(runtime);
+  // MessageBus is now fully enabled - no interception needed
   
   // Architectural alignment status
   logger.info('🔧 Architectural Alignment Status:');
@@ -31,7 +25,7 @@ const initCharacter = async (runtime: IAgentRuntime) => {
   logger.info(`🤖 Python AI Engine: ${process.env.PYTHON_AI_ENGINE_ACTIVE === 'true' ? 'ENABLED' : 'DISABLED'}`);
   logger.info(`🌐 Main Project API: ${process.env.MAIN_PROJECT_API || 'http://localhost:3001'}`);
   logger.info(`🎯 Eliza Agent URL: ${process.env.ELIZA_AGENT_URL || 'http://localhost:3000'}`);
-  logger.info(`📡 MessageBus Service: ${shouldDisableMessageBus() ? 'DISABLED (Standalone Mode)' : 'ENABLED'}`);
+  logger.info(`📡 MessageBus Service: ENABLED`);
   
   // Configuration warnings
   if (!shouldUseAPIIntegration()) {
