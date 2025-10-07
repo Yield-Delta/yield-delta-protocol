@@ -310,7 +310,7 @@ export default function AIWorkflow() {
 
         {/* Workflow Steps */}
         <div className="relative py-8 md:py-12" style={{ paddingTop: '3rem', paddingBottom: '2rem' }}>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-16 px-4 md:px-8 max-w-full overflow-visible">
+          <div className="flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16 px-4 lg:px-8 max-w-full overflow-visible">
             {workflowSteps.map((step, index) => (
               <div key={step.id} className="flex flex-col items-center relative w-full md:w-auto">
                 {/* Circular Step Card */}
@@ -489,9 +489,9 @@ export default function AIWorkflow() {
                 {/* Enhanced Connector Arrow - Desktop only */}
                 {index < workflowSteps.length - 1 && (
                   <>
-                    {/* Horizontal Arrow for Desktop */}
+                    {/* Horizontal Arrow for Desktop/Tablet Landscape */}
                     <div 
-                      className="absolute top-20 left-full transform -translate-y-1/2 z-10 hidden md:block" 
+                      className="absolute top-20 left-full transform -translate-y-1/2 z-10 hidden lg:block" 
                       style={{ width: '4rem' }}
                     >
                       {/* Main Arrow Line */}
@@ -541,9 +541,9 @@ export default function AIWorkflow() {
                       </div>
                     </div>
 
-                    {/* Vertical Arrow for Mobile */}
+                    {/* Vertical Arrow for Mobile/Tablet Portrait */}
                     <div 
-                      className="flex items-center justify-center mt-4 mb-2 md:hidden z-10" 
+                      className="flex items-center justify-center mt-4 mb-2 lg:hidden z-10" 
                       style={{ height: '3rem' }}
                     >
                       {/* Main Arrow Line */}
@@ -724,7 +724,7 @@ export default function AIWorkflow() {
             marginBottom: '4rem !important'
           }}
         >
-          <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 lg:gap-10">
+          <div className="flex flex-col lg:flex-row justify-center items-center lg:items-stretch gap-6 lg:gap-8 xl:gap-10">
           {[
             { metric: '62%', label: 'Less Impermanent Loss', color: '#00f5d4' },
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },
