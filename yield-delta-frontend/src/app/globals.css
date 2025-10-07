@@ -3103,17 +3103,6 @@ html body div.deposit-modal-container.deposit-modal-container.deposit-modal-cont
   z-index: 999999 !important;
 }
 
-html body div.deposit-modal-content.deposit-modal-content.deposit-modal-content {
-  width: 920px !important;
-  max-width: 920px !important;
-  min-width: 320px !important;
-  position: relative !important;
-  margin: 0 auto !important;
-  flex-shrink: 0 !important;
-  flex-grow: 0 !important;
-  flex-basis: 920px !important;
-}
-
 /* Override any global container constraints when modal is active */
 body:has(.deposit-modal-container) *:not(.deposit-modal-content):not(.deposit-modal-content *) {
   max-width: none !important;
