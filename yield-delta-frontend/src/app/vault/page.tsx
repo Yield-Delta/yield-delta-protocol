@@ -630,18 +630,18 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 gridTemplateColumns: 'repeat(3, 1fr)',
                 width: '100%',
                 maxWidth: 'calc(80rem - 2rem)', // Match vaults page width
-                height: '3.5rem',
+                height: '4.5rem',
                 margin: '0 auto',
                 padding: '0.5rem',
-                gap: '0.25rem',
+                gap: '0.5rem',
                 borderRadius: '0.75rem',
                 backgroundColor: 'rgba(15, 23, 42, 0.8)',
                 border: 'none',
                 outline: 'none',
                 backdropFilter: 'blur(20px)',
-                boxShadow: '0 10px 35px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08) inset',
+                boxShadow: 'none',
                 marginTop: '0',
-                marginBottom: '1rem',
+                marginBottom: '1.5rem',
                 boxSizing: 'border-box'
               }}
             >
@@ -653,8 +653,8 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   router.push(`/vault?${params.toString()}`);
                 }}
                 style={{
-                  height: '2.75rem',
-                  fontSize: '0.9375rem',
+                  height: '3.5rem',
+                  fontSize: '1rem',
                   fontWeight: '700',
                   padding: '0 1rem',
                   width: '100%',
@@ -685,8 +685,8 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   router.push(`/vault?${params.toString()}`);
                 }}
                 style={{
-                  height: '2.75rem',
-                  fontSize: '0.9375rem',
+                  height: '3.5rem',
+                  fontSize: '1rem',
                   fontWeight: '700',
                   padding: '0 1rem',
                   width: '100%',
@@ -717,8 +717,8 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   router.push(`/vault?${params.toString()}`);
                 }}
                 style={{
-                  height: '2.75rem',
-                  fontSize: '0.9375rem',
+                  height: '3.5rem',
+                  fontSize: '1rem',
                   fontWeight: '700',
                   padding: '0 1rem',
                   width: '100%',
@@ -961,31 +961,43 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                     </p>
                   </div>
                   
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid md:grid-cols-2 gap-8">
                     <div>
-                      <h4 className="font-semibold mb-2">Key Features</h4>
-                      <ul className="space-y-1 text-sm text-muted-foreground">
-                        <li>• AI-driven range optimization</li>
-                        <li>• Automatic rebalancing</li>
-                        <li>• MEV protection</li>
-                        <li>• Gas optimization</li>
+                      <h4 className="font-semibold mb-3 text-lg">Key Features</h4>
+                      <ul className="space-y-2 text-sm text-muted-foreground list-none">
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-0.5">•</span>
+                          <span>AI-driven range optimization</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-0.5">•</span>
+                          <span>Automatic rebalancing</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-0.5">•</span>
+                          <span>MEV protection</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-primary mt-0.5">•</span>
+                          <span>Gas optimization</span>
+                        </li>
                       </ul>
                     </div>
                     
                     <div>
-                      <h4 className="font-semibold mb-2">Token Pair</h4>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold">
+                      <h4 className="font-semibold mb-3 text-lg">Token Pair</h4>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-sm font-bold">
                             {vault.tokenA.charAt(0)}
                           </div>
-                          <span>{vault.tokenA}</span>
+                          <span className="text-base font-medium">{vault.tokenA}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-secondary/20 flex items-center justify-center text-xs font-bold">
+                        <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/5 border border-secondary/20">
+                          <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-sm font-bold">
                             {vault.tokenB.charAt(0)}
                           </div>
-                          <span>{vault.tokenB}</span>
+                          <span className="text-base font-medium">{vault.tokenB}</span>
                         </div>
                       </div>
                     </div>
