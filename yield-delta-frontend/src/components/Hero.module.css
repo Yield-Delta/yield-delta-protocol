@@ -465,6 +465,57 @@
   overflow: visible !important;
 }
 
+/* Responsive 3D Height - Properly sized for all breakpoints */
+.responsive3dHeight {
+  height: 1000px !important; /* Desktop default */
+  min-height: 700px !important;
+}
+
+/* Large desktop */
+@media (min-width: 1536px) {
+  .responsive3dHeight {
+    height: 1200px !important;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1280px) and (max-width: 1535px) {
+  .responsive3dHeight {
+    height: 1100px !important;
+  }
+}
+
+/* Laptop/Small desktop */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .responsive3dHeight {
+    height: 1000px !important;
+  }
+}
+
+/* Tablet landscape - KEY FIX: Match the height shown in IMG_0320.png */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .responsive3dHeight {
+    height: 600px !important; /* Reduced height for tablet to match screenshot */
+    min-height: 600px !important;
+  }
+}
+
+/* Tablet portrait */
+@media (min-width: 640px) and (max-width: 768px) {
+  .responsive3dHeight {
+    height: 700px !important;
+    min-height: 650px !important;
+  }
+}
+
+/* Mobile */
+@media (max-width: 639px) {
+  .responsive3dHeight {
+    height: 700px !important;
+    min-height: 700px !important;
+  }
+}
+
 .enhanced3dContainer > div {
   width: 100% !important;
   height: 100% !important;

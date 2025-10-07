@@ -131,7 +131,7 @@ export default function HeroSection() {
                     
                     {/* 3D container - Fixed responsive sizing for better visibility */}
                     <div className="flex justify-center w-full">
-                        <div className={`${heroStyles.enhanced3dContainer} relative w-full h-[700px] sm:h-[800px] md:h-[900px] lg:h-[1000px] xl:h-[1100px] 2xl:h-[1200px] min-h-[700px] max-h-none`}>
+                        <div className={`${heroStyles.enhanced3dContainer} ${heroStyles.responsive3dHeight} relative w-full`}>
                             <Hero3DProgressive />
                         </div>
                     </div>
