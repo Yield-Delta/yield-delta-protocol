@@ -724,7 +724,7 @@ export default function AIWorkflow() {
             marginBottom: '4rem !important'
           }}
         >
-          <div className="flex flex-col lg:flex-row justify-center items-center lg:items-stretch gap-6 lg:gap-8 xl:gap-10">
+          <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 lg:gap-10">
           {[
             { metric: '62%', label: 'Less Impermanent Loss', color: '#00f5d4' },
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },
