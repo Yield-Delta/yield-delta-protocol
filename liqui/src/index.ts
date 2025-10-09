@@ -8,6 +8,8 @@ import {
   pluginOverrides, 
   shouldUseAPIIntegration
 } from './plugin-overrides.ts';
+import { logMessageBusConfig } from './messagebus-config.ts';
+import { logServerConfig } from './server-config.ts';
 // PostgreSQL is now handled directly by ElizaOS via DATABASE_URL environment variable
 
 const initCharacter = async (runtime: IAgentRuntime) => {
@@ -16,7 +18,9 @@ const initCharacter = async (runtime: IAgentRuntime) => {
   logger.info('SEI Chain ID: 1328');
   logger.info('Optimized for 400ms finality');
   
-  // MessageBus is now fully enabled - no interception needed
+  // Log server and MessageBus configuration
+  logServerConfig();
+  logMessageBusConfig();
   
   // Architectural alignment status
   logger.info('🔧 Architectural Alignment Status:');
@@ -25,7 +29,6 @@ const initCharacter = async (runtime: IAgentRuntime) => {
   logger.info(`🤖 Python AI Engine: ${process.env.PYTHON_AI_ENGINE_ACTIVE === 'true' ? 'ENABLED' : 'DISABLED'}`);
   logger.info(`🌐 Main Project API: ${process.env.MAIN_PROJECT_API || 'http://localhost:3001'}`);
   logger.info(`🎯 Eliza Agent URL: ${process.env.ELIZA_AGENT_URL || 'http://localhost:3000'}`);
-  logger.info(`📡 MessageBus Service: ENABLED`);
   
   // Configuration warnings
   if (!shouldUseAPIIntegration()) {
