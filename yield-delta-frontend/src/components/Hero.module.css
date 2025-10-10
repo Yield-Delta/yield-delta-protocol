@@ -14,9 +14,18 @@
 
 @media (max-width: 1024px) {
   .section {
-    min-height: max(700px, 85vh) !important;
+    min-height: auto !important; /* Allow natural height based on content */
     padding-top: 3rem !important;
     padding-bottom: 3rem !important;
+  }
+}
+
+/* Tablet landscape specific section adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .section {
+    min-height: auto !important; /* Natural height to prevent forced overflow */
+    padding-top: 2.5rem !important;
+    padding-bottom: 2.5rem !important;
   }
 }
 
@@ -236,6 +245,8 @@
     min-height: auto !important;
     padding: 0 1rem !important;
     transition: all 0.3s ease-in-out !important;
+    align-items: start !important; /* Align grid items to top to prevent overlap */
+    grid-auto-rows: auto !important; /* Let rows size naturally to content */
   }
 }
 
@@ -279,16 +290,18 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero3dContainer {
     order: 1 !important; /* Move 3D to left side on tablet */
-    min-height: 700px !important; /* Increased height to prevent 3D content from being cut off */
+    min-height: 450px !important; /* Reduced height to fit within grid cell */
+    max-height: 550px !important; /* Prevent overflow beyond grid cell */
     margin-bottom: 0 !important;
     z-index: 1 !important; /* 3D stays in background layer */
+    overflow: hidden !important; /* Prevent content from overflowing */
   }
 
   .heroTextContainer {
     order: 2 !important; /* Move text to right side on tablet */
     text-align: left !important; /* Left-align text like desktop */
     padding: 0 0.5rem !important; /* Optimized padding for tablet */
-    min-height: 700px !important; /* Match 3D container height to ensure visibility */
+    min-height: auto !important; /* Allow natural height based on content */
     display: flex !important; /* Ensure flex display */
     flex-direction: column !important; /* Stack content vertically */
     justify-content: center !important; /* Center content vertically */
@@ -325,9 +338,11 @@
   flex-direction: column !important;
   align-items: center !important;
   width: 100% !important;
-  gap: 2rem !important;
+  gap: 1rem !important; /* Reduced gap to prevent overflow */
   position: relative !important; /* Establish positioning context */
   z-index: 1 !important; /* Base layer for wrapper */
+  /* height removed to allow natural content flow - prevents overflow issues */
+  overflow: visible !important; /* Allow content to be visible */
 }
 
 /* Features Container - Positioned below 3D visualization */
@@ -338,7 +353,7 @@
   padding: 0 1rem !important;
   margin-top: 1rem !important;
   position: relative !important; /* Establish positioning context */
-  z-index: 10 !important; /* Features appear above 3D content */
+  z-index: 2 !important; /* Slightly elevated but not excessive */
 }
 
 /* Features Grid - Layout for feature items */
@@ -377,13 +392,13 @@
   margin-top: 2rem !important;
   padding: 0 1rem !important;
   position: relative !important; /* Establish positioning context */
-  z-index: 10 !important; /* Stats appear above 3D content */
+  z-index: 2 !important; /* Slightly elevated but not excessive */
 }
 
 /* Responsive adjustments for features and stats */
 @media (max-width: 1024px) {
   .hero3dFeaturesWrapper {
-    gap: 1.5rem !important;
+    gap: 0.75rem !important; /* Further reduced gap for tablet */
   }
 
   .heroFeaturesGrid {
@@ -391,7 +406,17 @@
   }
 
   .heroStatsWrapper {
-    margin-top: 1.5rem !important;
+    margin-top: 0.75rem !important; /* Reduced margin to prevent overflow */
+  }
+}
+
+/* Tablet landscape specific wrapper constraints */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero3dFeaturesWrapper {
+    gap: 0.5rem !important; /* Minimal gap to fit all content */
+    justify-content: flex-start !important; /* Align items to top */
+    height: auto !important; /* Remove height constraint - allow natural flow */
+    max-height: none !important; /* Remove max-height limit */
   }
 }
 
@@ -402,11 +427,39 @@
   }
 
   .heroFeaturesContainer {
-    z-index: 15 !important; /* Ensure features are above 3D on tablet */
+    z-index: 2 !important; /* Features in normal flow, not excessive z-index */
+    margin-top: 0.5rem !important; /* Minimal top margin */
+    padding: 0 0.5rem !important; /* Compact padding */
+  }
+
+  .heroFeaturesGrid {
+    gap: 0.5rem !important; /* Compact gap between feature items */
+    max-width: 100% !important; /* Use full available width */
+  }
+
+  .heroFeatureItem {
+    padding: 0.5rem 0.75rem !important; /* Compact padding */
+    font-size: 0.8125rem !important; /* Smaller font size */
   }
 
   .heroStatsWrapper {
-    z-index: 15 !important; /* Ensure stats are above 3D on tablet */
+    z-index: 2 !important; /* Stats in normal flow, not excessive z-index */
+    margin-top: 0.5rem !important; /* Minimal top margin */
+    padding: 0 0.5rem !important; /* Compact padding */
+  }
+
+  .heroStatsCard {
+    min-height: 65px !important; /* Reduced height for tablet */
+    padding: 0.5rem !important; /* Compact padding */
+  }
+
+  .heroStatsValue {
+    font-size: 0.875rem !important; /* Smaller font for tablet */
+    margin-bottom: 0.25rem !important;
+  }
+
+  .heroStatsLabel {
+    font-size: 0.6875rem !important; /* Smaller label font */
   }
 
   .enhanced3dContainer {
@@ -608,8 +661,9 @@
 /* Tablet landscape - Optimized height for side-by-side layout */
 @media (min-width: 769px) and (max-width: 1023px) {
   .responsive3dHeight {
-    height: 700px !important; /* Increased height to prevent 3D content from being cut off */
-    min-height: 700px !important;
+    height: 450px !important; /* Reduced to fit within grid cell without overflow */
+    min-height: 450px !important;
+    max-height: 500px !important; /* Prevent exceeding container bounds */
   }
 }
 
