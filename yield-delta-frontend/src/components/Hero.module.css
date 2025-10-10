@@ -210,7 +210,7 @@
   display: grid !important;
   grid-template-columns: 1fr 1fr !important; /* Equal columns for better balance */
   gap: 4rem !important;
-  align-items: center !important;
+  align-items: start !important; /* Changed from center to start for better control */
   width: 100% !important;
   max-width: 1400px !important; /* Increased max width for better spacing */
   margin: 0 auto !important;

@@ -61,12 +61,12 @@ export default function HeroSection() {
 
             {/* Responsive 2-column grid layout using CSS Module grid */}
             <div className={`relative z-10 ${heroStyles.heroGrid}`}>
-                
+
                 {/* Left Column: Text Content */}
                 <div className={`${heroStyles.heroTextContainer} flex flex-col justify-center space-y-6`}>
                     <div ref={heroTextRef}>
                         <h1 className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-8 lg:mb-8 leading-tight mobile-responsive-heading">
-                            <span 
+                            <span
                                 className={`${heroStyles.heroTitleAnimated} gradient-text-fallback`}
                                 style={{
                                     background: 'linear-gradient(45deg, #00f5d4, #9b5de5, #ff206e, #fbae3c, #00f5d4, #9b5de5)',
@@ -82,7 +82,7 @@ export default function HeroSection() {
                                 Your Liquidity,
                             </span>
                             <br />
-                            <span 
+                            <span
                                 className={`${heroStyles.heroTitleAnimated} gradient-text-fallback`}
                                 style={{
                                     background: 'linear-gradient(45deg, #00f5d4, #9b5de5, #ff206e, #fbae3c, #00f5d4, #9b5de5)',
@@ -126,21 +126,60 @@ export default function HeroSection() {
                     </div>
                 </div>
 
-                {/* Right Column: 3D Scene + Stats */}
-                <div className={`${heroStyles.hero3dContainer} flex flex-col space-y-6 lg:space-y-8`}>
-                    
-                    {/* 3D container - Fixed responsive sizing for better visibility */}
-                    <div className="flex justify-center w-full">
-                        <div className={`${heroStyles.enhanced3dContainer} ${heroStyles.responsive3dHeight} relative w-full`}>
-                            <Hero3DProgressive />
+                {/* Right Column: 3D Scene + Features (grouped together) */}
+                <div className={`${heroStyles.hero3dFeaturesWrapper} flex flex-col`}>
+
+                    {/* 3D Visualization Container */}
+                    <div className={`${heroStyles.hero3dContainer}`}>
+                        <div className="flex justify-center w-full">
+                            <div className={`${heroStyles.enhanced3dContainer} ${heroStyles.responsive3dHeight} relative w-full`}>
+                                <Hero3DProgressive />
+                            </div>
                         </div>
                     </div>
 
-                    {/* Stats section - Mobile-optimized with hero TVL layout */}
-                    <div ref={statsRef} className="w-full mt-8 lg:mt-12">
+                    {/* Features section - Positioned under 3D on desktop/tablet, after 3D on mobile */}
+                    <div className={`${heroStyles.heroFeaturesContainer}`}>
+                        <div className={`${heroStyles.heroFeaturesGrid}`}>
+                            {[
+                                { icon: '⚡', text: 'AI optimization' },
+                                { icon: '🛡️', text: 'Reduced impermanent loss' },
+                                { icon: '🚀', text: 'SEI integration' },
+                            ].map((feature, i) => (
+                                <div
+                                    key={i}
+                                    className={`${heroStyles.heroFeatureItem}`}
+                                >
+                                    <span className="text-lg lg:text-xl flex-shrink-0">{feature.icon}</span>
+                                    <span className="text-sm lg:text-base">{feature.text}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Stats section - Desktop/Tablet only */}
+                    <div ref={statsRef} className={`${heroStyles.heroStatsWrapper}`}>
+                        <div className="hidden md:block">
+                            <div className={`${heroStyles.heroStatsContainer} grid grid-cols-3 gap-6`}>
+                                {[
+                                    { value: '$8.3M', label: 'Total TVL' },
+                                    { value: '18.5%', label: 'Avg APY' },
+                                    { value: '400ms', label: 'Block Time' },
+                                ].map((stat, i) => (
+                                    <Card key={i} className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroStatsCard}`}>
+                                        <div className={`${heroStyles.heroStatsValue} text-primary-glow`}>
+                                            {stat.value}
+                                        </div>
+                                        <div className={`${heroStyles.heroStatsLabel} text-primary-glow`}>
+                                            {stat.label}
+                                        </div>
+                                    </Card>
+                                ))}
+                            </div>
+                        </div>
+
                         {/* Mobile Hero TVL Card + Secondary Stats Layout */}
                         <div className="block md:hidden">
-                            {/* Primary TVL Hero Card */}
                             <Card className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroPrimaryStatsCard} mb-3`}>
                                 <div className={`${heroStyles.heroPrimaryStatsValue} text-primary-glow`}>
                                     $8.3M
@@ -149,8 +188,7 @@ export default function HeroSection() {
                                     Total Value Locked
                                 </div>
                             </Card>
-                            
-                            {/* Secondary Stats - 2 Column Grid */}
+
                             <div className="grid grid-cols-2 gap-3">
                                 <Card className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroSecondaryStatsCard}`}>
                                     <div className={`${heroStyles.heroSecondaryStatsValue} text-primary-glow`}>
@@ -170,47 +208,8 @@ export default function HeroSection() {
                                 </Card>
                             </div>
                         </div>
-
-                        {/* Desktop/Tablet - Original 3-column layout */}
-                        <div className="hidden md:block">
-                            <div className={`${heroStyles.heroStatsContainer} grid grid-cols-3 gap-6`}>
-                                {[
-                                    { value: '$8.3M', label: 'Total TVL' },
-                                    { value: '18.5%', label: 'Avg APY' },
-                                    { value: '400ms', label: 'Block Time' },
-                                ].map((stat, i) => (
-                                    <Card key={i} className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroStatsCard}`}>
-                                        <div className={`${heroStyles.heroStatsValue} text-primary-glow`}>
-                                            {stat.value}
-                                        </div>
-                                        <div className={`${heroStyles.heroStatsLabel} text-primary-glow`}>
-                                            {stat.label}
-                                        </div>
-                                    </Card>
-                                ))}
-                            </div>
-                        </div>
                     </div>
 
-                </div>
-                
-                {/* Features section - Mobile-only, positioned after stats on mobile */}
-                <div className={`${heroStyles.heroFeaturesContainer} text-center md:hidden`}>
-                    <div className="grid grid-cols-1 gap-3">
-                        {[
-                            { icon: '⚡', text: 'AI optimization' },
-                            { icon: '🛡️', text: 'Reduced impermanent loss' },
-                            { icon: '🚀', text: 'SEI integration' },
-                        ].map((feature, i) => (
-                            <div
-                                key={i}
-                                className="flex items-center justify-center space-x-2 text-primary-glow p-2"
-                            >
-                                <span className="text-lg flex-shrink-0">{feature.icon}</span>
-                                <span className="text-sm">{feature.text}</span>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             </div>
             
