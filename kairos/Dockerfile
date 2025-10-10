@@ -35,6 +35,9 @@ COPY package.json bun.lock* ./
 # Install dependencies
 RUN bun install
 
+# Build the SEI Yield Delta plugin (GitHub package needs to be built)
+RUN cd node_modules/@elizaos/plugin-sei-yield-delta && bun run build
+
 # Copy the rest of the application
 COPY . .
 
