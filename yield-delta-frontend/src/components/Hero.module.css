@@ -110,7 +110,7 @@
     min-height: 300px !important;
     margin-bottom: 1rem !important;
   }
-  
+
   .textContainer {
     order: 1 !important;
     text-align: center !important;
@@ -133,7 +133,7 @@
   .container3d {
     min-height: 200px !important;
   }
-  
+
   .textContainer {
     padding: 0 0.5rem !important;
   }
@@ -141,7 +141,7 @@
 
 /* Background Effects */
 .neuralGrid {
-  background-image: 
+  background-image:
     linear-gradient(hsl(var(--border) / 0.1) 1px, transparent 1px),
     linear-gradient(90deg, hsl(var(--border) / 0.1) 1px, transparent 1px) !important;
   background-size: 50px 50px !important;
@@ -270,9 +270,8 @@
   align-items: center !important;
   width: 100% !important;
   height: 100% !important;
-  min-height: max(800px, 70vh) !important; /* Increased for better 3D display */
+  min-height: 500px !important; /* REDUCED from 800px to prevent overlap */
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
-  z-index: 1 !important; /* Ensure 3D is behind other content */
 }
 
 .heroTextContainer {
@@ -282,7 +281,7 @@
   flex-direction: column !important;
   justify-content: center !important;
   padding: 0 !important;
-  min-height: 700px !important; /* Increased to match 3D container */
+  min-height: 500px !important; /* Match 3D container */
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
@@ -291,10 +290,9 @@
   .hero3dContainer {
     order: 1 !important; /* 3D first in stacked layout */
     min-height: 500px !important; /* Adequate height for 3D visualization */
-    max-height: none !important; /* Remove height restriction */
+    max-height: 500px !important; /* Prevent overflow by limiting height */
     margin-bottom: 1.5rem !important; /* Space before text content */
-    z-index: 1 !important;
-    overflow: visible !important; /* Allow proper rendering */
+    overflow: hidden !important; /* Clip canvas to container bounds */
   }
 
   .heroTextContainer {
@@ -305,7 +303,6 @@
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
-    z-index: 2 !important;
   }
 }
 
@@ -338,10 +335,7 @@
   flex-direction: column !important;
   align-items: center !important;
   width: 100% !important;
-  gap: 1rem !important; /* Reduced gap to prevent overflow */
-  position: relative !important; /* Establish positioning context */
-  z-index: 1 !important; /* Base layer for wrapper */
-  /* height removed to allow natural content flow - prevents overflow issues */
+  gap: 1.5rem !important; /* Spacing between 3D, features, and stats */
   overflow: visible !important; /* Allow content to be visible */
 }
 
@@ -352,8 +346,6 @@
   justify-content: center !important;
   padding: 0 1rem !important;
   margin-top: 1rem !important;
-  position: relative !important; /* Establish positioning context */
-  z-index: 2 !important; /* Slightly elevated but not excessive */
 }
 
 /* Features Grid - Layout for feature items */
@@ -389,16 +381,14 @@
 /* Stats Wrapper - Contains stats cards below features */
 .heroStatsWrapper {
   width: 100% !important;
-  margin-top: 2rem !important;
+  margin-top: 1.5rem !important;
   padding: 0 1rem !important;
-  position: relative !important; /* Establish positioning context */
-  z-index: 2 !important; /* Slightly elevated but not excessive */
 }
 
 /* Responsive adjustments for features and stats */
 @media (max-width: 1024px) {
   .hero3dFeaturesWrapper {
-    gap: 0.75rem !important; /* Further reduced gap for tablet */
+    gap: 1rem !important;
   }
 
   .heroFeaturesGrid {
@@ -406,7 +396,7 @@
   }
 
   .heroStatsWrapper {
-    margin-top: 0.75rem !important; /* Reduced margin to prevent overflow */
+    margin-top: 1rem !important;
   }
 }
 
@@ -418,16 +408,8 @@
     height: auto !important; /* Natural flow based on content */
     max-height: none !important;
   }
-}
-
-/* Tablet-specific z-index adjustments (769px - 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .hero3dFeaturesWrapper {
-    z-index: 1 !important;
-  }
 
   .heroFeaturesContainer {
-    z-index: 2 !important;
     margin-top: 1rem !important; /* More space after 3D visualization */
     padding: 0 1rem !important;
   }
@@ -443,7 +425,6 @@
   }
 
   .heroStatsWrapper {
-    z-index: 2 !important;
     margin-top: 1.5rem !important; /* More space after features */
     padding: 0 1rem !important;
   }
@@ -460,10 +441,6 @@
 
   .heroStatsLabel {
     font-size: 0.75rem !important;
-  }
-
-  .enhanced3dContainer {
-    z-index: 1 !important;
   }
 }
 
@@ -597,13 +574,13 @@
 
 /* Additional Hero-Specific Keyframes */
 @keyframes colorShift {
-  0% { 
+  0% {
     background-position: 0% 50%;
   }
-  50% { 
+  50% {
     background-position: 100% 50%;
   }
-  100% { 
+  100% {
     background-position: 0% 50%;
   }
 }
@@ -625,46 +602,46 @@
   width: 100% !important;
   height: 100% !important;
   min-height: inherit !important;
+  max-height: inherit !important; /* Respect parent max-height */
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  overflow: visible !important;
-  z-index: 1 !important; /* Keep 3D visualization in back layer */
+  overflow: hidden !important; /* Clip canvas to bounds */
 }
 
 /* Responsive 3D Height - Properly sized for all breakpoints */
 .responsive3dHeight {
-  height: 1000px !important; /* Desktop default */
-  min-height: 700px !important;
+  height: 500px !important; /* REDUCED from 1000px - Desktop default */
+  min-height: 500px !important;
 }
 
 /* Large desktop */
 @media (min-width: 1536px) {
   .responsive3dHeight {
-    height: 1200px !important;
+    height: 600px !important;
   }
 }
 
 /* Desktop */
 @media (min-width: 1280px) and (max-width: 1535px) {
   .responsive3dHeight {
-    height: 1100px !important;
+    height: 550px !important;
   }
 }
 
 /* Laptop/Small desktop */
 @media (min-width: 1024px) and (max-width: 1279px) {
   .responsive3dHeight {
-    height: 1000px !important;
+    height: 500px !important;
   }
 }
 
 /* Tablet landscape - Adequate height for stacked single-column layout */
 @media (min-width: 769px) and (max-width: 1023px) {
   .responsive3dHeight {
-    height: 600px !important; /* Increased height for better 3D visibility in stacked layout */
+    height: 500px !important; /* Fixed height for consistent rendering */
     min-height: 500px !important;
-    max-height: none !important; /* Remove restriction to allow proper rendering */
+    max-height: 500px !important; /* Enforce strict height to prevent overflow */
   }
 }
 
@@ -695,9 +672,18 @@
   width: 100% !important;
   height: 100% !important;
   min-height: inherit !important;
-  max-width: none !important;
-  max-height: none !important;
+  max-width: 100% !important; /* Constrain canvas width */
+  max-height: 100% !important; /* Constrain canvas height */
   display: block !important;
+  object-fit: contain !important; /* Ensure canvas fits within bounds */
+}
+
+/* Tablet landscape - ensure canvas doesn't interfere with content below */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .enhanced3dContainer canvas {
+    pointer-events: auto !important; /* Allow interactions with 3D */
+    position: relative !important;
+  }
 }
 
 /* React Three Fiber Canvas container fixes */
@@ -705,6 +691,15 @@
   width: 100% !important;
   height: 100% !important;
   min-height: inherit !important;
+  max-height: inherit !important; /* Respect parent max-height */
+}
+
+/* Tablet landscape - constrain R3F container */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .enhanced3dContainer div[style*="position: relative"] {
+    max-height: 500px !important; /* Match parent container height */
+    overflow: hidden !important;
+  }
 }
 
 /* Hero Stats Container - Mobile-optimized layout */
@@ -750,18 +745,18 @@
     gap: 0.5rem !important;
     padding: 0 0.25rem !important;
   }
-  
+
   .heroStatsCard {
     padding: 0.5rem 0.25rem !important;
     min-height: 65px !important;
     border-radius: 8px !important; /* Slightly smaller radius for mobile */
   }
-  
+
   .heroStatsValue {
     font-size: 0.875rem !important; /* 14px */
     font-weight: 700 !important;
   }
-  
+
   .heroStatsLabel {
     font-size: 0.6875rem !important; /* 11px */
     opacity: 0.8 !important;
@@ -774,16 +769,16 @@
     gap: 0.375rem !important;
     padding: 0 0.125rem !important;
   }
-  
+
   .heroStatsCard {
     padding: 0.375rem 0.125rem !important;
     min-height: 60px !important;
   }
-  
+
   .heroStatsValue {
     font-size: 0.75rem !important; /* 12px for very small screens */
   }
-  
+
   .heroStatsLabel {
     font-size: 0.625rem !important; /* 10px for very small screens */
   }
@@ -795,17 +790,17 @@
     gap: 1.5rem !important;
     padding: 0 !important;
   }
-  
+
   .heroStatsCard {
     min-height: 80px !important;
     padding: 0.75rem !important;
   }
-  
+
   .heroStatsValue {
     font-size: 1rem !important; /* 16px */
     margin-bottom: 0.5rem !important;
   }
-  
+
   .heroStatsLabel {
     font-size: 0.75rem !important; /* 12px */
   }
@@ -816,16 +811,16 @@
   .heroStatsContainer {
     gap: 2rem !important;
   }
-  
+
   .heroStatsCard {
     min-height: 90px !important;
     padding: 1rem !important;
   }
-  
+
   .heroStatsValue {
     font-size: 1.125rem !important; /* 18px */
   }
-  
+
   .heroStatsLabel {
     font-size: 0.875rem !important; /* 14px */
   }
@@ -992,11 +987,9 @@
     transform: translateY(-3px) scale(1.01) !important;
     box-shadow: 0 12px 32px hsl(var(--primary) / 0.18), inset 0 1px 0 hsl(var(--border) / 0.4) !important;
   }
-  
+
   .heroSecondaryStatsCard:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 8px 24px hsl(var(--primary) / 0.12), inset 0 1px 0 hsl(var(--border) / 0.3) !important;
   }
 }
-
-/* Legacy button layout styles - replaced by heroButtonContainer */
