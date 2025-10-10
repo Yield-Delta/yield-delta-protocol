@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
-import { Send, Bot, User, Loader2, AlertCircle, CheckCircle } from 'lucide-react'
+import { Send, Bot, User, Loader2, AlertCircle } from 'lucide-react'
 
 // Enhanced CSS for animations, interactions, and accessibility
 const chatScrollbarStyles = `
@@ -266,7 +266,13 @@ interface Message {
   confidence?: number
   actions?: string[]
   suggestions?: string[]
-  metadata?: Record<string, unknown>
+  metadata?: {
+    error?: boolean
+    processingSource?: string
+    aiEngineUsed?: boolean
+    agentName?: string
+    [key: string]: unknown
+  }
 }
 
 interface AIChatProps {
@@ -280,21 +286,14 @@ interface AIChatProps {
   }
 }
 
-export default function AIChat({ 
-  vaultAddress, 
+export default function AIChat({
+  vaultAddress,
   className = '',
-  initialMessage = "Hello! I'm Liqui, your SEI DLP AI assistant. How can I help optimize your vault today?",
+  initialMessage,
   context = {}
 }: AIChatProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      content: initialMessage,
-      sender: 'ai',
-      timestamp: new Date(),
-      confidence: 1.0
-    }
-  ])
+  const [agentName, setAgentName] = useState('Kairos')
+  const [messages, setMessages] = useState<Message[]>([])
   const [inputMessage, setInputMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [agentStatus, setAgentStatus] = useState<'online' | 'offline' | 'unknown'>('unknown')
@@ -330,7 +329,7 @@ export default function AIChat({
     return () => clearTimeout(timeoutId)
   }, [messages])
 
-  // Check agent status on mount
+  // Check agent status on mount and initialize with greeting
   useEffect(() => {
     checkAgentStatus()
     // Check status every 30 seconds
@@ -340,10 +339,10 @@ export default function AIChat({
 
   // Get or create user ID on mount
   useEffect(() => {
-    let currentUserId = localStorage.getItem('liqui-chat-user-id');
+    let currentUserId = localStorage.getItem('yd-chat-user-id');
     if (!currentUserId) {
       currentUserId = crypto.randomUUID();
-      localStorage.setItem('liqui-chat-user-id', currentUserId);
+      localStorage.setItem('yd-chat-user-id', currentUserId);
     }
     setUserId(currentUserId);
   }, []);
@@ -352,10 +351,53 @@ export default function AIChat({
     try {
       const response = await fetch('/api/eliza/chat')
       const data = await response.json()
-      setAgentStatus(data.agentStatus || 'offline')
+
+      if (data.success) {
+        setAgentStatus(data.agentStatus || 'offline')
+
+        // Update agent name from response
+        if (data.agentName) {
+          setAgentName(data.agentName)
+        }
+
+        // Initialize welcome message if empty
+        if (messages.length === 0) {
+          const welcomeMessage = initialMessage ||
+            `Hello! I'm ${data.agentName || 'Kairos'}, your Yield Delta AI assistant. How can I help optimize your vault today?`
+
+          setMessages([{
+            id: '1',
+            content: welcomeMessage,
+            sender: 'ai',
+            timestamp: new Date(),
+            confidence: 1.0,
+            metadata: {
+              agentName: data.agentName || 'Kairos'
+            }
+          }])
+        }
+      }
     } catch (error) {
       console.log('[AIChat] Agent status check failed:', error);
       setAgentStatus('offline')
+
+      // Still initialize message even if agent is offline
+      if (messages.length === 0) {
+        const fallbackMessage = initialMessage ||
+          "Hello! I'm Kairos, your Yield Delta AI assistant. Currently running in limited mode. How can I help you today?"
+
+        setMessages([{
+          id: '1',
+          content: fallbackMessage,
+          sender: 'ai',
+          timestamp: new Date(),
+          confidence: 0.7,
+          metadata: {
+            agentName: 'Kairos',
+            processingSource: 'ui-fallback'
+          }
+        }])
+      }
     }
   }
 
@@ -417,27 +459,35 @@ export default function AIChat({
         
         setMessages(prev => [...prev, aiMessage])
         
-        // Update agent status based on response
-        if (data.data.metadata?.processingSource === 'eliza-agent') {
+        // Update agent status and name based on response
+        if (data.data.metadata?.processingSource?.includes('-agent')) {
           setAgentStatus('online')
         } else if (data.data.metadata?.processingSource === 'ui-fallback') {
           setAgentStatus('offline')
+        }
+
+        // Update agent name if provided
+        if (data.data.metadata?.agentName) {
+          setAgentName(data.data.metadata.agentName)
         }
       } else {
         throw new Error(data.error || 'Failed to get AI response')
       }
     } catch (error) {
       console.error('Chat error:', error)
-      
+
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}. The AI agent may be offline - I'm running in fallback mode with basic responses.`,
+        content: `Sorry, I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}. The ${agentName} agent may be offline - I'm running in fallback mode with basic responses.`,
         sender: 'ai',
         timestamp: new Date(),
         confidence: 0,
-        metadata: { error: true }
+        metadata: {
+          error: true,
+          agentName: agentName
+        }
       }
-      
+
       setMessages(prev => [...prev, errorMessage])
     } finally {
       setIsLoading(false)
@@ -468,7 +518,7 @@ export default function AIChat({
   const getStatusIcon = () => {
     switch (agentStatus) {
       case 'online':
-        return <CheckCircle className="w-3 h-3 text-green-400" />
+        return <div className="w-3 h-3 rounded-full bg-green-400" />
       case 'offline':
         return <AlertCircle className="w-3 h-3 text-red-400" />
       default:
@@ -540,7 +590,7 @@ export default function AIChat({
                 lineHeight: '1'
               }}
             >
-              Liqui Assistant
+              {agentName} Assistant
             </h3>
             <p 
               className="text-xs font-medium"
@@ -798,7 +848,7 @@ export default function AIChat({
                       <div className="w-2 h-2 bg-cyan-400 rounded-full typing-dot"></div>
                       <div className="w-2 h-2 bg-cyan-400 rounded-full typing-dot"></div>
                     </div>
-                    <span className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>Liqui is thinking...</span>
+                    <span className="text-sm" style={{ color: 'rgba(255, 255, 255, 0.7)' }}>{agentName} is thinking...</span>
                   </div>
                 ) : (
                   <div 
