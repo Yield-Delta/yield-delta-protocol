@@ -12,8 +12,8 @@ export const character: Character = {
     // Core plugins first
     '@elizaos/plugin-sql',
 
-    // SEI Yield Delta plugin
-    '@elizaos/plugin-sei-yield-delta',
+    // SEI Yield Delta plugin is loaded via projectAgent.plugins in index.ts
+    // (not loaded here to avoid npm resolution issues)
 
     // Text-only plugins (no embedding support)
     ...(process.env.ANTHROPIC_API_KEY?.trim() ? ['@elizaos/plugin-anthropic'] : []),

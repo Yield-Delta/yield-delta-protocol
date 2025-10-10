@@ -1,7 +1,7 @@
 import { logger, type IAgentRuntime, type Project, type ProjectAgent } from '@elizaos/core';
 import starterPlugin from './plugin.ts';
 import { character } from './character.ts';
-import seiYieldDeltaPlugin from '../node_modules/@elizaos/plugin-sei-yield-delta/src/index.ts';
+import seiYieldDeltaPlugin from '@elizaos/plugin-sei-yield-delta';
 
 const initCharacter = ({ runtime }: { runtime: IAgentRuntime }) => {
   logger.info('Initializing character');
