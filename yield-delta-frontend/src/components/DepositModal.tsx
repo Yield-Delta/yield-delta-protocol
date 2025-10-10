@@ -515,12 +515,12 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 8px !important;
+            padding: 12px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 16px) !important;
-            max-width: calc(100vw - 16px) !important;
-            min-width: 300px !important;
+            width: calc(100vw - 24px) !important;
+            max-width: calc(100vw - 24px) !important;
+            min-width: 280px !important;
             max-height: 80vh !important;
           }
         }
@@ -538,7 +538,6 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           .deposit-modal-content {
             width: 500px !important;
             max-width: 500px !important;
-            min-width: 500px !important;
             max-height: 85vh !important;
           }
         }
@@ -546,7 +545,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Reduce content padding on mobile */
         @media (max-width: 600px) {
           .modal-scrollable-content {
-            padding: 1rem 0.75rem 0 0.75rem !important;
+            padding: 0.75rem 0.625rem 0 0.625rem !important;
           }
         }
       `}</style>
@@ -578,7 +577,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       }}
       data-testid="modal-backdrop"
     >
-      <div 
+      <div
         className="rounded-3xl shadow-2xl flex flex-col deposit-modal-content"
         style={{
           background: `linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%)`,
@@ -589,9 +588,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           borderRight: `1px solid ${vaultColor}20`,
           maxHeight: '85vh',
           height: 'auto',
-          width: '500px',
-          maxWidth: '500px',
-          minWidth: '320px',
+          minWidth: '280px',
           zIndex: 10001,
           position: 'relative',
           margin: '0',
@@ -620,9 +617,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           style={{
             flex: '1',
             overflow: 'auto',
-            padding: '1rem 1.25rem 0 1.25rem', // Reduced side padding
-            minHeight: '0', // Allow flex shrinking
-            maxHeight: 'calc(80vh - 200px)' // Account for header and footer space
+            padding: '1rem 1rem 0 1rem',
+            minHeight: '0',
+            maxHeight: 'calc(80vh - 200px)'
           }}
         >
             {/* Enhanced Modal Header */}
@@ -1156,8 +1153,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           {/* Fixed Action Buttons at Bottom */}
           <div
             style={{
-              flexShrink: 0, // Don't shrink
-              padding: '0.75rem 1.25rem 1.25rem 1.25rem', // Reduced padding
+              flexShrink: 0,
+              padding: '0.75rem 1rem 1rem 1rem',
               background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 80%, transparent 100%)',
               backdropFilter: 'blur(8px)',
               borderTop: '1px solid rgba(255, 255, 255, 0.1)',
