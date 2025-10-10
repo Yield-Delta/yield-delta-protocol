@@ -228,22 +228,13 @@
   }
 }
 
-/* Tablet landscape (769px - 1024px) - Change to single column with 3D above text */
-@media (max-width: 1024px) and (min-width: 769px) {
+/* Tablet landscape (769px - 1024px) - Maintain 2-column layout for side-by-side display */
+@media (min-width: 769px) and (max-width: 1024px) {
   .heroGrid {
-    grid-template-columns: 1fr !important; /* Single column layout for tablet */
-    gap: 2rem !important;
+    grid-template-columns: 1fr 1fr !important; /* Keep 2-column layout for tablet */
+    gap: 1.5rem !important;
     min-height: auto !important;
     transition: all 0.3s ease-in-out !important;
-  }
-}
-
-/* Additional tablet-specific breakpoint to ensure proper ordering */
-@media (max-width: 1024px) {
-  .heroGrid {
-    grid-template-columns: 1fr !important;
-    gap: 2rem !important;
-    min-height: auto !important;
   }
 }
 
@@ -289,34 +280,18 @@
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
-/* Tablet landscape (769px - 1024px) - Stack vertically with 3D above text */
-@media (max-width: 1024px) and (min-width: 769px) {
+/* Tablet landscape (769px - 1024px) - Maintain side-by-side layout like desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
   .hero3dContainer {
-    order: 1 !important; /* 3D first/above on tablet */
-    min-height: max(600px, 55vh) !important; /* Optimized height for tablet */
-    margin-bottom: 1rem !important;
+    order: 2 !important; /* Keep 3D on right side like desktop */
+    min-height: max(500px, 50vh) !important; /* Optimized height for tablet */
+    margin-bottom: 0 !important;
   }
-  
-  .heroTextContainer {
-    order: 2 !important; /* Text second/below on tablet */
-    text-align: center !important; /* Center text for tablet */
-    padding: 0 2rem !important; /* More padding for better tablet readability */
-    min-height: auto !important;
-  }
-}
 
-/* Additional tablet breakpoint to ensure 3D appears above text on all tablet sizes */
-@media (max-width: 1024px) {
-  .hero3dContainer {
-    order: 1 !important; /* 3D first/above on tablet */
-    min-height: max(600px, 55vh) !important;
-    margin-bottom: 1rem !important;
-  }
-  
   .heroTextContainer {
-    order: 2 !important; /* Text second/below on tablet */
-    text-align: center !important;
-    padding: 0 2rem !important;
+    order: 1 !important; /* Keep text on left side like desktop */
+    text-align: left !important; /* Left-align text like desktop */
+    padding: 0 1rem !important; /* Moderate padding for tablet */
     min-height: auto !important;
   }
 }
@@ -492,11 +467,11 @@
   }
 }
 
-/* Tablet landscape - KEY FIX: Match the height shown in IMG_0320.png */
+/* Tablet landscape - Optimized height for side-by-side layout */
 @media (min-width: 769px) and (max-width: 1023px) {
   .responsive3dHeight {
-    height: 600px !important; /* Reduced height for tablet to match screenshot */
-    min-height: 600px !important;
+    height: 500px !important; /* Reduced height for better tablet fit */
+    min-height: 500px !important;
   }
 }
 
