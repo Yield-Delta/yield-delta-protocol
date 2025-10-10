@@ -237,15 +237,15 @@
   }
 }
 
-/* Tablet landscape (769px - 1024px) - Maintain 2-column layout for side-by-side display */
+/* Tablet landscape (769px - 1024px) - CHANGED TO SINGLE COLUMN to fix overlap issue */
 @media (min-width: 769px) and (max-width: 1024px) {
   .heroGrid {
-    grid-template-columns: 1fr 1fr !important; /* Keep 2-column layout for tablet */
+    grid-template-columns: 1fr !important; /* Single column to stack all content vertically */
     gap: 2rem !important;
     min-height: auto !important;
     padding: 0 1rem !important;
     transition: all 0.3s ease-in-out !important;
-    align-items: start !important; /* Align grid items to top to prevent overlap */
+    align-items: center !important;
     grid-auto-rows: auto !important; /* Let rows size naturally to content */
   }
 }
@@ -286,26 +286,26 @@
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
-/* Tablet landscape (769px - 1024px) - Maintain side-by-side layout with 3D on LEFT */
+/* Tablet landscape (769px - 1024px) - SINGLE COLUMN STACKED LAYOUT */
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero3dContainer {
-    order: 1 !important; /* Move 3D to left side on tablet */
-    min-height: 450px !important; /* Reduced height to fit within grid cell */
-    max-height: 550px !important; /* Prevent overflow beyond grid cell */
-    margin-bottom: 0 !important;
-    z-index: 1 !important; /* 3D stays in background layer */
-    overflow: hidden !important; /* Prevent content from overflowing */
+    order: 1 !important; /* 3D first in stacked layout */
+    min-height: 500px !important; /* Adequate height for 3D visualization */
+    max-height: none !important; /* Remove height restriction */
+    margin-bottom: 1.5rem !important; /* Space before text content */
+    z-index: 1 !important;
+    overflow: visible !important; /* Allow proper rendering */
   }
 
   .heroTextContainer {
-    order: 2 !important; /* Move text to right side on tablet */
-    text-align: left !important; /* Left-align text like desktop */
-    padding: 0 0.5rem !important; /* Optimized padding for tablet */
-    min-height: auto !important; /* Allow natural height based on content */
-    display: flex !important; /* Ensure flex display */
-    flex-direction: column !important; /* Stack content vertically */
-    justify-content: center !important; /* Center content vertically */
-    z-index: 2 !important; /* Text in front layer */
+    order: 2 !important; /* Text second in stacked layout */
+    text-align: center !important; /* Center text for tablet */
+    padding: 0 1rem !important;
+    min-height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    z-index: 2 !important;
   }
 }
 
@@ -413,57 +413,57 @@
 /* Tablet landscape specific wrapper constraints */
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero3dFeaturesWrapper {
-    gap: 0.5rem !important; /* Minimal gap to fit all content */
-    justify-content: flex-start !important; /* Align items to top */
-    height: auto !important; /* Remove height constraint - allow natural flow */
-    max-height: none !important; /* Remove max-height limit */
+    gap: 1.5rem !important; /* Adequate spacing between 3D, features, and stats */
+    justify-content: flex-start !important;
+    height: auto !important; /* Natural flow based on content */
+    max-height: none !important;
   }
 }
 
 /* Tablet-specific z-index adjustments (769px - 1024px) */
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero3dFeaturesWrapper {
-    z-index: 1 !important; /* Wrapper base layer */
+    z-index: 1 !important;
   }
 
   .heroFeaturesContainer {
-    z-index: 2 !important; /* Features in normal flow, not excessive z-index */
-    margin-top: 0.5rem !important; /* Minimal top margin */
-    padding: 0 0.5rem !important; /* Compact padding */
+    z-index: 2 !important;
+    margin-top: 1rem !important; /* More space after 3D visualization */
+    padding: 0 1rem !important;
   }
 
   .heroFeaturesGrid {
-    gap: 0.5rem !important; /* Compact gap between feature items */
-    max-width: 100% !important; /* Use full available width */
+    gap: 0.75rem !important;
+    max-width: 600px !important; /* Constrain width for better layout */
   }
 
   .heroFeatureItem {
-    padding: 0.5rem 0.75rem !important; /* Compact padding */
-    font-size: 0.8125rem !important; /* Smaller font size */
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem !important;
   }
 
   .heroStatsWrapper {
-    z-index: 2 !important; /* Stats in normal flow, not excessive z-index */
-    margin-top: 0.5rem !important; /* Minimal top margin */
-    padding: 0 0.5rem !important; /* Compact padding */
+    z-index: 2 !important;
+    margin-top: 1.5rem !important; /* More space after features */
+    padding: 0 1rem !important;
   }
 
   .heroStatsCard {
-    min-height: 65px !important; /* Reduced height for tablet */
-    padding: 0.5rem !important; /* Compact padding */
+    min-height: 75px !important;
+    padding: 0.75rem !important;
   }
 
   .heroStatsValue {
-    font-size: 0.875rem !important; /* Smaller font for tablet */
-    margin-bottom: 0.25rem !important;
+    font-size: 1rem !important;
+    margin-bottom: 0.5rem !important;
   }
 
   .heroStatsLabel {
-    font-size: 0.6875rem !important; /* Smaller label font */
+    font-size: 0.75rem !important;
   }
 
   .enhanced3dContainer {
-    z-index: 1 !important; /* 3D container stays in back */
+    z-index: 1 !important;
   }
 }
 
@@ -580,11 +580,12 @@
   }
 }
 
-/* Tablet landscape (769px - 1024px) - Center buttons since text is on right side */
+/* Tablet landscape (769px - 1024px) - Center buttons in stacked layout */
 @media (min-width: 769px) and (max-width: 1024px) {
   .heroButtonContainer {
     justify-content: center !important;
     gap: 1rem !important;
+    margin-top: 1.5rem !important;
   }
 }
 
@@ -658,12 +659,12 @@
   }
 }
 
-/* Tablet landscape - Optimized height for side-by-side layout */
+/* Tablet landscape - Adequate height for stacked single-column layout */
 @media (min-width: 769px) and (max-width: 1023px) {
   .responsive3dHeight {
-    height: 450px !important; /* Reduced to fit within grid cell without overflow */
-    min-height: 450px !important;
-    max-height: 500px !important; /* Prevent exceeding container bounds */
+    height: 600px !important; /* Increased height for better 3D visibility in stacked layout */
+    min-height: 500px !important;
+    max-height: none !important; /* Remove restriction to allow proper rendering */
   }
 }
 
