@@ -1,12 +1,12 @@
 [build]
 builder = "nixpacks"
-buildCommand = "bun install && npm run build"
+buildCommand = "bun install && bun i -g @elizaos/cli"
 
 [build.nixpacks]
 node_version = "20"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "elizaos start"
 healthcheckPath = "/"
 healthcheckTimeout = 300
 restartPolicyType = "on_failure"
