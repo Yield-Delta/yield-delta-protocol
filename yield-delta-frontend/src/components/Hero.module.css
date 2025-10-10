@@ -20,7 +20,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .section {
     min-height: auto !important;
     padding-top: 6rem !important;
@@ -66,7 +66,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .grid {
     gap: 1.5rem !important;
     padding: 0 0.5rem !important;
@@ -109,12 +109,12 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .container3d {
     min-height: 250px !important;
     margin-bottom: 0.5rem !important;
   }
-  
+
   .textContainer {
     padding: 0 0.75rem !important;
   }
@@ -232,25 +232,19 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .heroGrid {
     grid-template-columns: 1fr 1fr !important; /* Keep 2-column layout for tablet */
-    gap: 1.5rem !important;
+    gap: 2rem !important;
     min-height: auto !important;
+    padding: 0 1rem !important;
     transition: all 0.3s ease-in-out !important;
   }
 }
 
-/* Tablet portrait and smaller (768px and below) - Single column */
-@media (max-width: 768px) {
+/* Tablet portrait and smaller (767px and below) - Single column */
+@media (max-width: 767px) {
   .heroGrid {
     grid-template-columns: 1fr !important;
-    gap: 3rem !important;
-    min-height: auto !important;
-    transition: all 0.3s ease-in-out !important;
-  }
-}
-
-@media (max-width: 768px) {
-  .heroGrid {
     gap: 2rem !important;
+    min-height: auto !important;
     padding: 0 0.5rem !important;
     transition: all 0.3s ease-in-out !important;
   }
@@ -284,33 +278,36 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero3dContainer {
     order: 2 !important; /* Keep 3D on right side like desktop */
-    min-height: max(500px, 50vh) !important; /* Optimized height for tablet */
+    min-height: 500px !important; /* Balanced height for side-by-side layout on tablet */
     margin-bottom: 0 !important;
   }
 
   .heroTextContainer {
     order: 1 !important; /* Keep text on left side like desktop */
     text-align: left !important; /* Left-align text like desktop */
-    padding: 0 1rem !important; /* Moderate padding for tablet */
-    min-height: auto !important;
+    padding: 0 0.5rem !important; /* Optimized padding for tablet */
+    min-height: 500px !important; /* Match 3D container height to ensure visibility */
+    display: flex !important; /* Ensure flex display */
+    flex-direction: column !important; /* Stack content vertically */
+    justify-content: center !important; /* Center content vertically */
   }
 }
 
-/* Tablet portrait and smaller (768px and below) - Stack vertically */
-@media (max-width: 768px) {
+/* Mobile and tablet portrait (767px and below) - Stack vertically */
+@media (max-width: 767px) {
   .hero3dContainer {
     order: 1 !important; /* 3D first on mobile */
     min-height: max(650px, 60vh) !important; /* Significantly increased for mobile 3D visibility */
     margin-bottom: 1rem !important;
   }
-  
+
   .heroTextContainer {
     order: 3 !important; /* Text third on mobile (after features) */
     text-align: center !important;
     padding: 0 1rem !important;
     min-height: auto !important;
   }
-  
+
   .heroFeaturesContainer {
     order: 2 !important; /* Features second on mobile (after 3D, before text) */
     width: 100% !important;
@@ -319,11 +316,11 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 639px) {
   .heroTextContainer {
     padding: 0 0.5rem !important;
   }
-  
+
   .hero3dContainer {
     min-height: max(600px, 55vh) !important; /* Increased minimum height for small screens */
   }
@@ -383,17 +380,17 @@
   margin-top: 1rem !important;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .heroButtonContainer {
     justify-content: center !important;
     gap: 0.75rem !important;
   }
 }
 
-/* Tablet landscape (769px - 1024px) - Center buttons for tablet */
-@media (max-width: 1024px) and (min-width: 769px) {
+/* Tablet landscape (769px - 1024px) - Left-align buttons for tablet to match desktop */
+@media (min-width: 769px) and (max-width: 1024px) {
   .heroButtonContainer {
-    justify-content: center !important;
+    justify-content: flex-start !important;
     gap: 1rem !important;
   }
 }
@@ -470,13 +467,13 @@
 /* Tablet landscape - Optimized height for side-by-side layout */
 @media (min-width: 769px) and (max-width: 1023px) {
   .responsive3dHeight {
-    height: 500px !important; /* Reduced height for better tablet fit */
+    height: 500px !important; /* Balanced height for side-by-side layout on tablet */
     min-height: 500px !important;
   }
 }
 
 /* Tablet portrait */
-@media (min-width: 640px) and (max-width: 768px) {
+@media (min-width: 640px) and (max-width: 767px) {
   .responsive3dHeight {
     height: 700px !important;
     min-height: 650px !important;
