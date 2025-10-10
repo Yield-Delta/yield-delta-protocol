@@ -278,7 +278,7 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .hero3dContainer {
     order: 1 !important; /* Move 3D to left side on tablet */
-    min-height: 500px !important; /* Balanced height for side-by-side layout on tablet */
+    min-height: 700px !important; /* Increased height to prevent 3D content from being cut off */
     margin-bottom: 0 !important;
   }
 
@@ -286,7 +286,7 @@
     order: 2 !important; /* Move text to right side on tablet */
     text-align: left !important; /* Left-align text like desktop */
     padding: 0 0.5rem !important; /* Optimized padding for tablet */
-    min-height: 500px !important; /* Match 3D container height to ensure visibility */
+    min-height: 700px !important; /* Match 3D container height to ensure visibility */
     display: flex !important; /* Ensure flex display */
     flex-direction: column !important; /* Stack content vertically */
     justify-content: center !important; /* Center content vertically */
@@ -467,8 +467,8 @@
 /* Tablet landscape - Optimized height for side-by-side layout */
 @media (min-width: 769px) and (max-width: 1023px) {
   .responsive3dHeight {
-    height: 500px !important; /* Balanced height for side-by-side layout on tablet */
-    min-height: 500px !important;
+    height: 700px !important; /* Increased height to prevent 3D content from being cut off */
+    min-height: 700px !important;
   }
 }
 
