@@ -21,7 +21,7 @@
 }
 
 /* Tablet landscape specific section adjustments */
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1023px) {
   .section {
     min-height: auto !important; /* Natural height to prevent forced overflow */
     padding-top: 2.5rem !important;
@@ -237,8 +237,8 @@
   }
 }
 
-/* Tablet landscape (769px - 1024px) - CHANGED TO SINGLE COLUMN to fix overlap issue */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* Tablet landscape (769px - 1023px) - CHANGED TO SINGLE COLUMN to fix overlap issue */
+@media (min-width: 769px) and (max-width: 1023px) {
   .heroGrid {
     grid-template-columns: 1fr !important; /* Single column to stack all content vertically */
     gap: 2rem !important;
@@ -280,13 +280,14 @@
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
+  gap: 1.5rem !important; /* Spacing between child elements */
   padding: 0 !important;
   min-height: 500px !important; /* Match 3D container */
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
 }
 
-/* Tablet landscape (769px - 1024px) - SINGLE COLUMN STACKED LAYOUT */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* Tablet landscape (769px - 1023px) - SINGLE COLUMN STACKED LAYOUT */
+@media (min-width: 769px) and (max-width: 1023px) {
   .hero3dContainer {
     order: 1 !important; /* 3D first in stacked layout */
     min-height: 500px !important; /* Adequate height for 3D visualization */
@@ -401,7 +402,7 @@
 }
 
 /* Tablet landscape specific wrapper constraints */
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1023px) {
   .hero3dFeaturesWrapper {
     gap: 1.5rem !important; /* Adequate spacing between 3D, features, and stats */
     justify-content: flex-start !important;
@@ -557,8 +558,8 @@
   }
 }
 
-/* Tablet landscape (769px - 1024px) - Center buttons in stacked layout */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* Tablet landscape (769px - 1023px) - Center buttons in stacked layout */
+@media (min-width: 769px) and (max-width: 1023px) {
   .heroButtonContainer {
     justify-content: center !important;
     gap: 1rem !important;
@@ -679,7 +680,7 @@
 }
 
 /* Tablet landscape - ensure canvas doesn't interfere with content below */
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1023px) {
   .enhanced3dContainer canvas {
     pointer-events: auto !important; /* Allow interactions with 3D */
     position: relative !important;
@@ -695,7 +696,7 @@
 }
 
 /* Tablet landscape - constrain R3F container */
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1023px) {
   .enhanced3dContainer div[style*="position: relative"] {
     max-height: 500px !important; /* Match parent container height */
     overflow: hidden !important;
@@ -706,8 +707,19 @@
 .heroStatsContainer {
   width: 100% !important;
   display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 1.5rem !important;
   align-items: stretch !important;
   transition: all 0.3s ease-in-out !important;
+}
+
+/* Tablet landscape - reduce gap for better fit */
+@media (min-width: 769px) and (max-width: 1023px) {
+  .heroStatsContainer {
+    gap: 1rem !important;
+    max-width: 600px !important;
+    margin: 0 auto !important;
+  }
 }
 
 /* Mobile-first responsive stats cards */

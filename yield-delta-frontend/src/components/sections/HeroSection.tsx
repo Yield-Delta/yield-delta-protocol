@@ -63,7 +63,7 @@ export default function HeroSection() {
             <div className={`relative z-10 ${heroStyles.heroGrid}`}>
 
                 {/* Left Column: Text Content */}
-                <div className={`${heroStyles.heroTextContainer} flex flex-col justify-center space-y-6`}>
+                <div className={heroStyles.heroTextContainer}>
                     <div ref={heroTextRef}>
                         <h1 className="text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold mb-6 sm:mb-8 lg:mb-8 leading-tight mobile-responsive-heading">
                             <span
@@ -127,20 +127,18 @@ export default function HeroSection() {
                 </div>
 
                 {/* Right Column: 3D Scene + Features (grouped together) */}
-                <div className={`${heroStyles.hero3dFeaturesWrapper} flex flex-col`}>
+                <div className={heroStyles.hero3dFeaturesWrapper}>
 
                     {/* 3D Visualization Container */}
-                    <div className={`${heroStyles.hero3dContainer}`}>
-                        <div className="flex justify-center w-full">
-                            <div className={`${heroStyles.enhanced3dContainer} ${heroStyles.responsive3dHeight} relative w-full`}>
-                                <Hero3DProgressive />
-                            </div>
+                    <div className={heroStyles.hero3dContainer}>
+                        <div className={`${heroStyles.enhanced3dContainer} ${heroStyles.responsive3dHeight}`}>
+                            <Hero3DProgressive />
                         </div>
                     </div>
 
                     {/* Features section - Positioned under 3D on desktop/tablet, after 3D on mobile */}
-                    <div className={`${heroStyles.heroFeaturesContainer}`}>
-                        <div className={`${heroStyles.heroFeaturesGrid}`}>
+                    <div className={heroStyles.heroFeaturesContainer}>
+                        <div className={heroStyles.heroFeaturesGrid}>
                             {[
                                 { icon: '⚡', text: 'AI optimization' },
                                 { icon: '🛡️', text: 'Reduced impermanent loss' },
@@ -148,7 +146,7 @@ export default function HeroSection() {
                             ].map((feature, i) => (
                                 <div
                                     key={i}
-                                    className={`${heroStyles.heroFeatureItem}`}
+                                    className={heroStyles.heroFeatureItem}
                                 >
                                     <span className="text-lg lg:text-xl flex-shrink-0">{feature.icon}</span>
                                     <span className="text-sm lg:text-base">{feature.text}</span>
@@ -158,9 +156,9 @@ export default function HeroSection() {
                     </div>
 
                     {/* Stats section - Desktop/Tablet only */}
-                    <div ref={statsRef} className={`${heroStyles.heroStatsWrapper}`}>
+                    <div ref={statsRef} className={heroStyles.heroStatsWrapper}>
                         <div className="hidden md:block">
-                            <div className={`${heroStyles.heroStatsContainer} grid grid-cols-3 gap-6`}>
+                            <div className={heroStyles.heroStatsContainer}>
                                 {[
                                     { value: '$8.3M', label: 'Total TVL' },
                                     { value: '18.5%', label: 'Avg APY' },
