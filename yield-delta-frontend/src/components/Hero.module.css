@@ -304,6 +304,8 @@
   height: 100% !important;
   min-height: 500px !important; /* REDUCED from 800px to prevent overlap */
   transition: all 0.3s ease-in-out !important; /* Smooth transitions */
+  z-index: 5 !important;
+  margin-bottom: 2rem !important;
 }
 
 .heroTextContainer {
@@ -334,6 +336,8 @@
     border: 8px dashed #ff0000 !important;
     background: rgba(255, 0, 0, 0.1) !important;
     position: relative !important;
+    z-index: 10 !important;
+    margin-bottom: 2rem !important;
   }
 
   .hero3dContainer::before {
@@ -413,12 +417,14 @@
   width: 100% !important;
   gap: 1.5rem !important; /* Spacing between 3D, features, and stats */
   overflow: visible !important; /* Allow content to be visible */
+  isolation: isolate !important;
 }
 
 /* NUCLEAR OPTION: Flatten wrapper on tablet to break out of grid - EXPANDED RANGE */
 @media (min-width: 769px) and (max-width: 1280px) {
   .hero3dFeaturesWrapper {
-    display: contents !important; /* Flatten the wrapper - children become direct flex items */
+    display: flex !important;
+    isolation: isolate !important;
   }
 }
 
@@ -429,6 +435,8 @@
   justify-content: center !important;
   padding: 0 1rem !important;
   margin-top: 1rem !important;
+  z-index: 1 !important;
+  position: relative !important;
 }
 
 /* NUCLEAR: Explicit ordering on tablet when wrapper is flattened - EXPANDED RANGE */
@@ -439,6 +447,7 @@
     padding: 0 1rem !important;
     width: 100% !important;
     flex-shrink: 0 !important;
+    z-index: 1 !important;
   }
 }
 
@@ -477,6 +486,8 @@
   width: 100% !important;
   margin-top: 1.5rem !important;
   padding: 0 1rem !important;
+  z-index: 1 !important;
+  position: relative !important;
 }
 
 /* NUCLEAR: Explicit ordering on tablet when wrapper is flattened - EXPANDED RANGE */
@@ -697,6 +708,7 @@
   align-items: center !important;
   justify-content: center !important;
   overflow: hidden !important; /* Clip canvas to bounds */
+  z-index: inherit !important;
 }
 
 /* Responsive 3D Height - Properly sized for all breakpoints */
@@ -759,13 +771,16 @@
   max-height: 100% !important; /* Constrain canvas height */
   display: block !important;
   object-fit: contain !important; /* Ensure canvas fits within bounds */
+  position: static !important;
+  z-index: auto !important;
 }
 
 /* Tablet landscape - ensure canvas doesn't interfere with content below - EXPANDED RANGE */
 @media (min-width: 769px) and (max-width: 1280px) {
   .enhanced3dContainer canvas {
     pointer-events: auto !important; /* Allow interactions with 3D */
-    position: relative !important;
+    position: static !important;
+    z-index: auto !important;
   }
 }
 

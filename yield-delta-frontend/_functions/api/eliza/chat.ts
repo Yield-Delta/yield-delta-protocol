@@ -100,13 +100,21 @@ export async function onRequestGet(context: any) {
   const KAIROS_AGENT_URL = context.env.KAIROS_AGENT_URL || context.env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
   const ELIZA_AGENT_URL = context.env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
   const ACTIVE_AGENT = context.env.ACTIVE_AGENT || 'kairos'
+  const ELIZA_SERVER_AUTH_TOKEN = context.env.ELIZA_SERVER_AUTH_TOKEN || ''
 
   const activeUrl = ACTIVE_AGENT === 'kairos' ? KAIROS_AGENT_URL : ELIZA_AGENT_URL
 
   try {
+    // Build headers with API key if available
+    const headers: Record<string, string> = {}
+    if (ELIZA_SERVER_AUTH_TOKEN) {
+      headers['X-API-KEY'] = ELIZA_SERVER_AUTH_TOKEN
+    }
+
     // Check health with retry logic
-    const response = await fetchWithRetry(`${activeUrl}/health`, {
+    const response = await fetchWithRetry(`${activeUrl}/api/health`, {
       method: 'GET',
+      headers,
       signal: AbortSignal.timeout(5000)
     }, 2)
 
@@ -204,14 +212,27 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>, env: any)
   const KAIROS_AGENT_URL = env.KAIROS_AGENT_URL || env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
   const ELIZA_AGENT_URL = env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
   const ACTIVE_AGENT = env.ACTIVE_AGENT || 'kairos'
+  const ELIZA_SERVER_AUTH_TOKEN = env.ELIZA_SERVER_AUTH_TOKEN || ''
 
   const agentUrl = ACTIVE_AGENT === 'kairos' ? KAIROS_AGENT_URL : ELIZA_AGENT_URL
   const agentName = ACTIVE_AGENT === 'kairos' ? 'Kairos' : 'Liqui'
-  
+
   try {
+    // Build headers with API key if available
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-Source': 'yield-delta-dashboard',
+      'X-Agent-Name': agentName
+    }
+
+    if (ELIZA_SERVER_AUTH_TOKEN) {
+      headers['X-API-KEY'] = ELIZA_SERVER_AUTH_TOKEN
+    }
+
     // First check if the agent is reachable with retry logic
-    const healthCheck = await fetchWithRetry(`${agentUrl}/health`, {
+    const healthCheck = await fetchWithRetry(`${agentUrl}/api/health`, {
       method: 'GET',
+      headers,
       signal: AbortSignal.timeout(5000)
     }, 2)
 
@@ -242,11 +263,7 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>, env: any)
     // Send to agent with retry logic
     const response = await fetchWithRetry(`${agentUrl}/api/chat`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Source': 'yield-delta-dashboard',
-        'X-Agent-Name': agentName
-      },
+      headers,
       body: JSON.stringify(agentMessage),
       signal: AbortSignal.timeout(20000)
     }, 2)
