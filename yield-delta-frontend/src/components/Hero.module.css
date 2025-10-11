@@ -161,6 +161,11 @@
   100% { transform: translateY(100px); opacity: 0; }
 }
 
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
+}
+
 /* Hero Title Animation Styles */
 .heroTitleAnimated {
   position: relative;
@@ -249,6 +254,31 @@
     align-items: center !important;
     width: 100% !important;
     max-width: 800px !important;
+
+    /* DEBUGGING CSS - HIGHLY VISIBLE */
+    background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%) !important;
+    border: 10px solid #00ff00 !important;
+    box-shadow: 0 0 40px #ff00ff, inset 0 0 40px rgba(255, 255, 0, 0.3) !important;
+    position: relative !important;
+  }
+
+  /* Add visible label showing media query is active */
+  .heroGrid::before {
+    content: "TABLET LANDSCAPE MODE ACTIVE (769px-1280px)" !important;
+    position: absolute !important;
+    top: 10px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    background: #ff0000 !important;
+    color: #ffffff !important;
+    padding: 20px 40px !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    border: 5px solid #ffff00 !important;
+    border-radius: 10px !important;
+    z-index: 9999 !important;
+    box-shadow: 0 0 20px #ff0000 !important;
+    animation: pulse 2s ease-in-out infinite !important;
   }
 }
 
@@ -299,6 +329,25 @@
     overflow: hidden !important;
     width: 100% !important;
     flex-shrink: 0 !important; /* Prevent shrinking */
+
+    /* DEBUGGING CSS - VISIBLE BORDER FOR 3D CONTAINER */
+    border: 8px dashed #ff0000 !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+    position: relative !important;
+  }
+
+  .hero3dContainer::before {
+    content: "3D CONTAINER (ORDER: 2)" !important;
+    position: absolute !important;
+    top: 5px !important;
+    left: 5px !important;
+    background: #ff0000 !important;
+    color: #ffffff !important;
+    padding: 10px 20px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    border-radius: 5px !important;
+    z-index: 9999 !important;
   }
 
   .heroTextContainer {
@@ -311,6 +360,25 @@
     justify-content: center !important;
     width: 100% !important;
     flex-shrink: 0 !important; /* Prevent shrinking */
+
+    /* DEBUGGING CSS - VISIBLE BORDER FOR TEXT CONTAINER */
+    border: 8px dashed #0000ff !important;
+    background: rgba(0, 0, 255, 0.1) !important;
+    position: relative !important;
+  }
+
+  .heroTextContainer::before {
+    content: "TEXT CONTAINER (ORDER: 1)" !important;
+    position: absolute !important;
+    top: 5px !important;
+    left: 5px !important;
+    background: #0000ff !important;
+    color: #ffffff !important;
+    padding: 10px 20px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    border-radius: 5px !important;
+    z-index: 9999 !important;
   }
 }
 
@@ -854,7 +922,17 @@
 
 /* Mobile Hero Stats Layout Styles */
 .heroPrimaryStatsCard {
-  composes: heroStatsCard;
+  /* Base heroStatsCard styles - duplicated since composes is not supported in Next.js 15 Turbopack */
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  aspect-ratio: auto !important;
+  min-height: 70px !important;
+  transition: all 0.3s ease-in-out !important;
+
+  /* Primary card specific styles */
   min-height: 80px !important;
   background-color: hsl(var(--card) / 0.9) !important; /* Slightly more prominent */
   border: 2px solid hsl(var(--primary) / 0.3) !important; /* Subtle primary border */
@@ -863,10 +941,6 @@
   max-width: 280px !important;
   margin: 0 auto !important;
   width: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
 }
 
 /* Responsive width constraints for primary TVL card */
@@ -930,13 +1004,18 @@
 }
 
 .heroSecondaryStatsCard {
-  composes: heroStatsCard;
-  min-height: 70px !important;
-  padding: 0.75rem 0.5rem !important;
+  /* Base heroStatsCard styles - duplicated since composes is not supported in Next.js 15 Turbopack */
+  min-width: 0 !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
+  aspect-ratio: auto !important;
+  min-height: 70px !important;
+  transition: all 0.3s ease-in-out !important;
+
+  /* Secondary card specific styles */
+  padding: 0.75rem 0.5rem !important;
   text-align: center !important;
 }
 

@@ -14,6 +14,7 @@ export const character: Character = {
 
     // SEI Yield Delta plugin is loaded via projectAgent.plugins in index.ts
     // (not loaded here to avoid npm resolution issues)
+    '@elizaos/plugin-twitter',
 
     // Text-only plugins (no embedding support)
     ...(process.env.ANTHROPIC_API_KEY?.trim() ? ['@elizaos/plugin-anthropic'] : []),
