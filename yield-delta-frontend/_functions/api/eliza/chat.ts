@@ -103,6 +103,7 @@ export async function onRequestGet(context: any) {
   const ELIZA_SERVER_AUTH_TOKEN = context.env.ELIZA_SERVER_AUTH_TOKEN || ''
 
   const activeUrl = ACTIVE_AGENT === 'kairos' ? KAIROS_AGENT_URL : ELIZA_AGENT_URL
+  const agentName = ACTIVE_AGENT === 'kairos' ? 'Kairos' : 'Liqui'
 
   try {
     // Build headers with API key if available
@@ -111,14 +112,12 @@ export async function onRequestGet(context: any) {
       headers['X-API-KEY'] = ELIZA_SERVER_AUTH_TOKEN
     }
 
-    // Check health with retry logic
-    const response = await fetchWithRetry(`${activeUrl}/api/health`, {
+    // Check if agents endpoint is accessible with retry logic
+    const response = await fetchWithRetry(`${activeUrl}/api/agents`, {
       method: 'GET',
       headers,
       signal: AbortSignal.timeout(5000)
     }, 2)
-
-    const agentName = ACTIVE_AGENT === 'kairos' ? 'Kairos' : 'Liqui'
 
     return new Response(JSON.stringify({
       success: true,
@@ -214,7 +213,12 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>, env: any)
   const ACTIVE_AGENT = env.ACTIVE_AGENT || 'kairos'
   const ELIZA_SERVER_AUTH_TOKEN = env.ELIZA_SERVER_AUTH_TOKEN || ''
 
+  // Agent IDs from Railway deployment
+  const KAIROS_AGENT_ID = 'a823d035-4008-0c15-a813-b5e540c102ef'
+  const ELIZA_AGENT_ID = 'b850bc30-45f8-0041-a00a-83df46d8555d'
+
   const agentUrl = ACTIVE_AGENT === 'kairos' ? KAIROS_AGENT_URL : ELIZA_AGENT_URL
+  const agentId = ACTIVE_AGENT === 'kairos' ? KAIROS_AGENT_ID : ELIZA_AGENT_ID
   const agentName = ACTIVE_AGENT === 'kairos' ? 'Kairos' : 'Liqui'
 
   try {
@@ -229,8 +233,8 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>, env: any)
       headers['X-API-KEY'] = ELIZA_SERVER_AUTH_TOKEN
     }
 
-    // First check if the agent is reachable with retry logic
-    const healthCheck = await fetchWithRetry(`${agentUrl}/api/health`, {
+    // First check if the agents endpoint is reachable with retry logic
+    const healthCheck = await fetchWithRetry(`${agentUrl}/api/agents`, {
       method: 'GET',
       headers,
       signal: AbortSignal.timeout(5000)
@@ -240,53 +244,10 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>, env: any)
       throw new Error(`${agentName} agent health check failed: ${healthCheck.status}`)
     }
 
-    // Format message for ElizaOS agent (correct UIMessage format)
-    const agentMessage = {
-      content: {
-        text: data.message,
-        source: 'yield-delta-dashboard',
-        agentName: agentName
-      },
-      user: 'dashboard-user',
-      room: data.vaultAddress ? `vault-${data.vaultAddress}` : 'general-chat',
-      context: {
-        chainId: data.chainId,
-        vaultAddress: data.vaultAddress,
-        currentPage: data.context?.currentPage || 'vaults',
-        timestamp: new Date().toISOString(),
-        protocol: 'yield-delta',
-        chain: 'SEI',
-        ...data.context
-      }
-    }
-
-    // Send to agent with retry logic
-    const response = await fetchWithRetry(`${agentUrl}/api/chat`, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(agentMessage),
-      signal: AbortSignal.timeout(20000)
-    }, 2)
-
-    if (!response.ok) {
-      throw new Error(`${agentName} agent error: ${response.status} ${response.statusText}`)
-    }
-
-    const agentData = await response.json()
-
-    return {
-      message: agentData.response || agentData.content?.text || agentData.message || 'No response from AI agent',
-      confidence: agentData.confidence || 0.85,
-      actions: agentData.actions || [],
-      suggestions: agentData.suggestions || generateSmartSuggestions(data.message),
-      metadata: {
-        model: ACTIVE_AGENT === 'kairos' ? 'kairos-ai-agent' : 'liqui-ai-agent',
-        responseTime: agentData.responseTime || '~1s',
-        processingSource: `${ACTIVE_AGENT}-agent`,
-        chainOptimized: 'SEI',
-        agentName: agentName
-      }
-    }
+    // TODO: ElizaOS API messaging endpoints need configuration
+    // The /api/agents endpoint works (agent is online), but messaging endpoints return 404
+    // Falling back to UI fallback responses until API is properly exposed
+    throw new Error(`${agentName} agent is online but messaging API endpoints are not available`)
   } catch (error) {
     console.error(`Failed to call ${agentName} agent, using fallback response:`, error)
 
