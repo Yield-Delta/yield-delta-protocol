@@ -985,7 +985,7 @@ const RebalancePage = () => {
                     executionStatus
                   }
                 }}
-                initialMessage="🎯 Welcome to Portfolio Rebalancing! I'm Liqui, your AI assistant. I can help you analyze rebalance recommendations, explain optimization strategies, and guide you through the execution process. What would you like to know about your portfolio rebalancing?"
+                initialMessage="🎯 Welcome to Portfolio Rebalancing! I'm Kairos, your AI assistant. I can help you analyze rebalance recommendations, explain optimization strategies, and guide you through the execution process. What would you like to know about your portfolio rebalancing?"
               />
               
               <style jsx>{`
@@ -1088,7 +1088,7 @@ const RebalancePage = () => {
                   zIndex: 999
                 }}
               >
-                {showChat ? '✕ Close AI Assistant' : '🤖 Ask Liqui AI'}
+                {showChat ? '✕ Close AI Assistant' : '🤖 Ask Kairos AI'}
               </div>
             </button>
             

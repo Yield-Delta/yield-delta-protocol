@@ -867,7 +867,7 @@ export default function VaultsPage() {
                   marketData: marketData
                 }
               }}
-              initialMessage="🎯 Welcome to SEI DLP Vaults! I'm Liqui, your AI assistant. I can help you analyze vault performance, predict optimal ranges, and recommend rebalancing strategies. What vault would you like to optimize today?"
+              initialMessage="🎯 Welcome to SEI DLP Vaults! I'm Kairos, your AI assistant. I can help you analyze vault performance, predict optimal ranges, and recommend rebalancing strategies. What vault would you like to optimize today?"
             />
             
             {/* Inline CSS Override for AI Chat Input - Highest Specificity */}
@@ -1040,7 +1040,7 @@ export default function VaultsPage() {
                 zIndex: 9999999
               }}
             >
-              {showChat ? '✕ Close AI Assistant' : '🤖 Ask Liqui AI'}
+              {showChat ? '✕ Close AI Assistant' : '🤖 Ask Kairos AI'}
               <div 
                 className="absolute top-full left-1/2 transform -translate-x-1/2"
                 style={{

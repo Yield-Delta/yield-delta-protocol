@@ -259,14 +259,14 @@ export default function FeatureHighlight() {
 
                     {/* Staggered Feature Cards */}
                     <div className="pt-20 pb-20 lg:pl-96">
-                        <div className="flex flex-col lg:flex-row items-center justify-center lg:justify-start" style={{ gap: '2rem' }}>
+                        <div className="flex flex-col md:flex-row items-center justify-center md:justify-start" style={{ gap: '2rem' }}>
                             {features.map((feature, index) => (
                                 <div
                                     key={feature.title}
                                     className={`w-full ${
-                                        index === 0 ? 'lg:mt-0' :
-                                        index === 1 ? 'lg:mt-32' : 
-                                        'lg:mt-16'
+                                        index === 0 ? 'md:mt-0' :
+                                        index === 1 ? 'md:mt-32' :
+                                        'md:mt-16'
                                     }`}
                                     style={{ maxWidth: '360px' }}
                                 >
