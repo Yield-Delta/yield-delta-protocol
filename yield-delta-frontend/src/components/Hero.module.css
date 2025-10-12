@@ -369,6 +369,7 @@
 
 /* Features Container - Positioned below 3D visualization */
 .heroFeaturesContainer {
+  order: 3 !important; /* Default order for flex layouts - ensures correct positioning */
   width: 100% !important;
   display: flex !important;
   justify-content: center !important;
@@ -423,6 +424,7 @@
 
 /* Stats Wrapper - Contains stats cards below features */
 .heroStatsWrapper {
+  order: 4 !important; /* Default order for flex layouts - ensures correct positioning */
   width: 100% !important;
   margin-top: 1.5rem !important;
   padding: 0 1rem !important;
