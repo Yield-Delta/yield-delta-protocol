@@ -515,21 +515,149 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 12px !important;
+            padding: 8px !important;
+            align-items: flex-start !important;
+            padding-top: 16px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 24px) !important;
-            max-width: calc(100vw - 24px) !important;
+            width: calc(100vw - 16px) !important;
+            max-width: calc(100vw - 16px) !important;
             min-width: 280px !important;
-            max-height: 80vh !important;
+            max-height: 92vh !important;
+          }
+
+          /* Reduce header padding on mobile */
+          .modal-header-section {
+            padding: 1rem 0.875rem !important;
+            margin-bottom: 0.5rem !important;
+          }
+
+          /* Compact icon section on mobile */
+          .modal-icons-container {
+            margin-bottom: 0.5rem !important;
+          }
+
+          .modal-icon-box {
+            padding: 12px !important;
+            border-radius: 16px !important;
+          }
+
+          .modal-icon-box svg {
+            width: 24px !important;
+            height: 24px !important;
+          }
+
+          .modal-arrow-icon {
+            margin: 0 12px !important;
+          }
+
+          /* Reduce title size on mobile */
+          .modal-title {
+            font-size: 1.375rem !important;
+            margin-bottom: 0.5rem !important;
+          }
+
+          .modal-title svg {
+            width: 20px !important;
+            height: 20px !important;
+          }
+
+          /* Compact subtitle on mobile */
+          .modal-subtitle {
+            font-size: 0.875rem !important;
+            margin-bottom: 0.5rem !important;
+          }
+
+          .modal-subtitle svg {
+            width: 16px !important;
+            height: 16px !important;
+          }
+
+          /* Reduce transaction section padding */
+          .transaction-side {
+            padding: 1rem !important;
+          }
+
+          /* Compact amount input */
+          .amount-input-card input {
+            font-size: 1.75rem !important;
+          }
+
+          /* Reduce APY section on mobile */
+          .apy-display-large {
+            font-size: 2rem !important;
+          }
+
+          /* Compact spacing throughout */
+          .space-y-4 > * + * {
+            margin-top: 0.75rem !important;
+          }
+
+          /* Compact quick deposit section on mobile */
+          .quick-deposit-section {
+            margin-bottom: 12px !important;
+          }
+
+          .quick-deposit-label {
+            font-size: 0.9375rem !important;
+            margin-bottom: 10px !important;
+          }
+
+          .quick-deposit-grid {
+            gap: 10px !important;
+          }
+
+          .quick-deposit-amount {
+            font-size: 1rem !important;
+          }
+
+          .quick-deposit-shares {
+            font-size: 0.75rem !important;
+          }
+
+          /* Transaction flow spacing on mobile */
+          .transaction-flow-container {
+            margin-bottom: 12px !important;
+          }
+
+          .transaction-flow-section-title {
+            font-size: 1rem !important;
+            margin-bottom: 12px !important;
+          }
+
+          .transaction-flow-arrow-wrapper {
+            padding: 0.375rem 0 !important;
+          }
+
+          /* Reduce quick deposit button padding */
+          .quick-deposit-button {
+            padding: 10px !important;
+          }
+
+          /* Compact footer */
+          .modal-footer {
+            padding: 0.625rem 0.875rem 0.875rem 0.875rem !important;
+          }
+
+          .modal-footer button {
+            height: 44px !important;
+            font-size: 0.9375rem !important;
           }
         }
-        
+
         @media (max-width: 375px) {
           .deposit-modal-content {
             width: calc(100vw - 12px) !important;
             max-width: calc(100vw - 12px) !important;
-            max-height: 75vh !important;
+            max-height: 94vh !important;
+          }
+
+          .modal-title {
+            font-size: 1.25rem !important;
+          }
+
+          .apy-display-large {
+            font-size: 1.75rem !important;
           }
         }
         
@@ -545,7 +673,76 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Reduce content padding on mobile */
         @media (max-width: 600px) {
           .modal-scrollable-content {
-            padding: 0.75rem 0.625rem 0 0.625rem !important;
+            padding: 0.75rem 0.875rem 0 0.875rem !important;
+            max-height: calc(92vh - 140px) !important;
+          }
+        }
+
+        @media (max-width: 375px) {
+          .modal-scrollable-content {
+            padding: 0.625rem 0.75rem 0 0.75rem !important;
+            max-height: calc(94vh - 140px) !important;
+          }
+        }
+
+        /* Trust indicators on mobile */
+        @media (max-width: 600px) {
+          .trust-indicators {
+            gap: 12px !important;
+            font-size: 0.8125rem !important;
+          }
+
+          .trust-indicators svg {
+            width: 14px !important;
+            height: 14px !important;
+          }
+
+          /* Reduce arrow container on mobile */
+          .arrow-container {
+            width: 36px !important;
+            height: 36px !important;
+          }
+
+          .arrow-container svg {
+            width: 18px !important;
+            height: 18px !important;
+          }
+
+          /* Compact important notice on mobile */
+          .important-notice {
+            padding: 12px !important;
+            margin-bottom: 12px !important;
+          }
+
+          .important-notice h4 {
+            font-size: 0.9375rem !important;
+          }
+
+          .important-notice p {
+            font-size: 0.8125rem !important;
+          }
+
+          /* Compact APY info section on mobile */
+          .apy-info-section {
+            padding: 10px !important;
+          }
+
+          .apy-label {
+            font-size: 1rem !important;
+          }
+
+          .apy-daily {
+            font-size: 1.125rem !important;
+          }
+
+          .apy-daily-label {
+            font-size: 0.75rem !important;
+          }
+
+          .apy-meta {
+            margin-top: 10px !important;
+            padding-top: 10px !important;
+            font-size: 0.8125rem !important;
           }
         }
       `}</style>
@@ -623,7 +820,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           }}
         >
             {/* Enhanced Modal Header */}
-            <div style={{
+            <div className="modal-header-section" style={{
               background: `linear-gradient(135deg, ${vaultColor}08 0%, transparent 60%)`,
               borderRadius: '16px',
               padding: '1.25rem',
@@ -643,14 +840,15 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
               />
               
               {/* Icon Section */}
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
+              <div className="modal-icons-container" style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 marginBottom: '0.75rem',
                 position: 'relative'
               }}>
-                <div 
+                <div
+                  className="modal-icon-box"
                   style={{
                     background: `linear-gradient(135deg, ${vaultColor}20, ${vaultColor}10)`,
                     border: `2px solid ${vaultColor}40`,
@@ -662,15 +860,17 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                 >
                   <Vault style={{ width: '32px', height: '32px', color: vaultColor }} />
                 </div>
-                <ArrowRight 
-                  style={{ 
+                <ArrowRight
+                  className="modal-arrow-icon"
+                  style={{
                     margin: '0 16px',
                     opacity: '0.6',
                     color: vaultColor,
                     animation: 'slideRight 2s ease-in-out infinite'
-                  }} 
+                  }}
                 />
-                <div 
+                <div
+                  className="modal-icon-box"
                   style={{
                     background: `linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1))`,
                     border: '2px solid rgba(34, 197, 94, 0.4)',
@@ -685,8 +885,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
               </div>
 
               {/* Enhanced Title */}
-              <h2 
-                style={{ 
+              <h2
+                className="modal-title"
+                style={{
                   fontSize: 'clamp(1.5rem, 4vw, 2rem)',
                   fontWeight: '900',
                   marginBottom: '0.75rem',
@@ -734,7 +935,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
 
               {/* Enhanced Subtitle */}
               <div style={{ textAlign: 'center' }}>
-                <p 
+                <p
+                  className="modal-subtitle"
                   style={{
                     fontSize: 'clamp(0.9rem, 2.5vw, 1.125rem)',
                     color: 'rgba(255, 255, 255, 0.9)',
@@ -755,12 +957,12 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                 </p>
                 
                 {/* Trust Indicators */}
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  gap: '16px', 
-                  fontSize: '0.875rem', 
+                <div className="trust-indicators" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '16px',
+                  fontSize: '0.875rem',
                   opacity: '0.8',
                   flexWrap: 'wrap'
                 }}>
@@ -792,7 +994,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     backdropFilter: 'blur(8px) !important',
                     boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1) !important'
                   }}>
-                    <h3 className="text-lg font-bold mb-4 opacity-90">You will deposit</h3>
+                    <h3 className="transaction-flow-section-title text-lg font-bold mb-4 opacity-90">You will deposit</h3>
                     <div className="amount-input-card relative">
                       <input
                         id="deposit-amount"
@@ -821,8 +1023,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   </div>
 
                   {/* Arrow - Centered between sections */}
-                  <div className="flex justify-center py-2">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{
+                  <div className="transaction-flow-arrow-wrapper flex justify-center py-2">
+                    <div className="arrow-container w-10 h-10 rounded-full flex items-center justify-center" style={{
                       backgroundColor: `${vaultColor}20`,
                       border: `1px solid ${vaultColor}40`
                     }}>
@@ -837,7 +1039,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     backdropFilter: 'blur(8px) !important',
                     boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1) !important'
                   }}>
-                    <h3 className="text-lg font-bold mb-4 opacity-90">You will receive</h3>
+                    <h3 className="transaction-flow-section-title text-lg font-bold mb-4 opacity-90">You will receive</h3>
                     <div style={{ marginBottom: '8px' }}>
                       <div style={{
                         color: vaultColor,
@@ -865,8 +1067,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
               </div>
 
               {/* Preset Amount Cards - Compact Layout */}
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{
+              <div className="quick-deposit-section" style={{ marginBottom: '16px' }}>
+                <div className="quick-deposit-label" style={{
                   display: 'block',
                   fontSize: '1rem',
                   fontWeight: '600',
@@ -874,22 +1076,22 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   opacity: '0.9',
                   color: '#ffffff'
                 }}>Quick deposit amounts</div>
-                <div style={{
+                <div className="quick-deposit-grid" style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(2, 1fr)',
                   gap: '12px'
-                }}
-                className="sm:grid-cols-4">
+                }}>
                   {[1, 5, 10, 14.83].map((amount) => (
                     <button
                       key={amount}
                       onClick={() => setDepositAmount(amount.toString())}
+                      className="quick-deposit-button"
                       style={{
-                        background: depositAmount === amount.toString() 
-                          ? `linear-gradient(135deg, ${vaultColor}20, ${vaultColor}10)` 
+                        background: depositAmount === amount.toString()
+                          ? `linear-gradient(135deg, ${vaultColor}20, ${vaultColor}10)`
                           : 'rgba(255, 255, 255, 0.08)',
-                        border: depositAmount === amount.toString() 
-                          ? `2px solid ${vaultColor}` 
+                        border: depositAmount === amount.toString()
+                          ? `2px solid ${vaultColor}`
                           : '1px solid rgba(255, 255, 255, 0.12)',
                         backdropFilter: 'blur(8px)',
                         boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
@@ -909,7 +1111,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
-                      <div style={{
+                      <div className="quick-deposit-amount" style={{
                         color: depositAmount === amount.toString() ? vaultColor : '#ffffff',
                         fontSize: '1.125rem',
                         fontWeight: '700',
@@ -917,7 +1119,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                       }}>
                         {amount} {selectedToken || primaryToken?.symbol || 'SEI'}
                       </div>
-                      <div style={{
+                      <div className="quick-deposit-shares" style={{
                         color: '#ffffff',
                         opacity: '0.6',
                         fontSize: '0.8rem'
@@ -930,7 +1132,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
               </div>
 
               {/* Contract Limitation Warning */}
-              <div style={{
+              <div className="important-notice" style={{
                 background: 'linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.08))',
                 border: '1px solid rgba(255, 193, 7, 0.3)',
                 backdropFilter: 'blur(12px)',
@@ -978,7 +1180,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
               </div>
 
               {/* Enhanced Yield Display */}
-              <div style={{
+              <div className="apy-info-section" style={{
                 background: `linear-gradient(135deg, ${vaultColor}15, ${vaultColor}08)`,
                 border: `1px solid ${vaultColor}30`,
                 backdropFilter: 'blur(12px)',
@@ -1004,15 +1206,17 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   <div style={{ flex: '1' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                       <Info style={{ width: '20px', height: '20px', opacity: '0.7', color: vaultColor }} />
-                      <span style={{ 
-                        fontSize: '1.125rem', 
-                        fontWeight: '700', 
-                        opacity: '0.9', 
+                      <span className="apy-label" style={{
+                        fontSize: '1.125rem',
+                        fontWeight: '700',
+                        opacity: '0.9',
                         color: '#ffffff',
                         textShadow: '0 1px 2px rgba(0,0,0,0.3)'
                       }}>Annual Percentage Yield</span>
                     </div>
-                    <div style={{ 
+                    <div
+                      className="apy-display-large"
+                      style={{
                       color: vaultColor,
                       textShadow: `0 0 20px ${vaultColor}40, 0 2px 4px rgba(0,0,0,0.4)`,
                       fontSize: '3rem',
@@ -1025,14 +1229,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     </div>
                   </div>
                   <div style={{ textAlign: 'right', paddingLeft: '24px' }}>
-                    <div style={{ 
-                      fontSize: '0.8rem', 
-                      opacity: '0.7', 
+                    <div className="apy-daily-label" style={{
+                      fontSize: '0.8rem',
+                      opacity: '0.7',
                       marginBottom: '2px',
                       color: '#ffffff',
                       fontWeight: '500'
                     }}>Expected daily</div>
-                    <div style={{ 
+                    <div className="apy-daily" style={{
                       color: vaultColor,
                       fontSize: '1.25rem',
                       fontWeight: '700',
@@ -1042,13 +1246,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     </div>
                   </div>
                 </div>
-                
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'space-between', 
-                  marginTop: '12px', 
-                  paddingTop: '12px', 
+
+
+                <div className="apy-meta" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginTop: '12px',
+                  paddingTop: '12px',
                   borderTop: '1px solid rgba(255,255,255,0.1)',
                   position: 'relative'
                 }}>
@@ -1152,6 +1357,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
 
           {/* Fixed Action Buttons at Bottom */}
           <div
+            className="modal-footer"
             style={{
               flexShrink: 0,
               padding: '0.75rem 1rem 1rem 1rem',
