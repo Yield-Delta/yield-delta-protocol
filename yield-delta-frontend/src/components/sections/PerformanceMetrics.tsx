@@ -7,18 +7,18 @@ export default function PerformanceMetrics() {
         <section className="py-12 md:py-16 lg:py-20 relative" style={{ paddingTop: 'clamp(3rem, 6vw, 5rem)', paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12 md:mb-16 lg:mb-20" style={{ marginBottom: 'clamp(3rem, 8vw, 6rem)' }}>
-                    <h2 
+                    <h2
                         className="text-5xl lg:text-6xl font-bold mb-6 holo-text"
-                        style={{ 
+                        style={{
                             fontSize: 'clamp(3rem, 6vw, 4.5rem)',
                             fontWeight: 'bold',
                             marginBottom: '2rem',
                             lineHeight: '1.1'
                         }}
                     >
-                        Real-Time Performance
+                        Projected Performance
                     </h2>
-                    <p 
+                    <p
                         style={{
                             fontSize: '2.25rem',
                             fontWeight: '500',
@@ -31,17 +31,15 @@ export default function PerformanceMetrics() {
                             opacity: '0.9'
                         }}
                     >
-                        Track your vault performance with AI-powered analytics and real-time metrics.
+                        Track your vault performance with AI-powered analytics and projected metrics.
                     </p>
                 </div>
                 
-                <div 
-                    className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 md:gap-8 lg:gap-10 max-w-7xl mx-auto px-4 sm:px-6"
+                <div
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 lg:gap-10 max-w-7xl mx-auto px-4 sm:px-6"
                     style={{
                         display: 'grid',
-                        justifyItems: 'center',
-                        alignItems: 'stretch',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))'
+                        alignItems: 'stretch'
                     }}
                 >
                     <PerformanceCard
@@ -84,6 +82,20 @@ export default function PerformanceMetrics() {
                         description="Active Strategies"
                         comparison="Continuously optimizing"
                         color="#ff9800"
+                        positive={true}
+                    />
+                    <PerformanceCard
+                        metric="1,247"
+                        description="Active Users"
+                        comparison="+23% growth this month"
+                        color="#00f5d4"
+                        positive={true}
+                    />
+                    <PerformanceCard
+                        metric="$2.1M"
+                        description="Daily Volume"
+                        comparison="Record high performance"
+                        color="#9b5de5"
                         positive={true}
                     />
                 </div>
