@@ -32,13 +32,8 @@ export default function VaultCard({ vault, index }: VaultCardProps) {
   const router = useRouter();
 
   const handleViewVault = () => {
-    // Use the actual vault address from the vault data
-    const vaultAddress = vault.address;
-    if (vaultAddress) {
-      router.push(`/vault?address=${vaultAddress}&tab=analytics`);
-    } else {
-      console.error('No address found for vault:', vault.name);
-    }
+    // Navigate to the specific vault's analytics page
+    router.push(`/vault?address=${vault.address}&tab=analytics`);
   };
 
   const formatTvl = (tvl: number | string) => {

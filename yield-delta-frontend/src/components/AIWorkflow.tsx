@@ -137,6 +137,26 @@ export default function AIWorkflow() {
       />
       
       <style jsx>{`
+        /* Smooth horizontal scrolling */
+        .overflow-x-auto {
+          scrollbar-width: thin;
+          scrollbar-color: hsl(var(--primary) / 0.5) transparent;
+          -webkit-overflow-scrolling: touch;
+          scroll-behavior: smooth;
+        }
+        .overflow-x-auto::-webkit-scrollbar {
+          height: 6px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+          background: hsl(var(--primary) / 0.5);
+          border-radius: 3px;
+        }
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+          background: hsl(var(--primary) / 0.7);
+        }
         @keyframes flowMove {
           0% { transform: translateX(-100%) translateY(-50%); opacity: 0; }
           10% { opacity: 1; }
@@ -310,9 +330,9 @@ export default function AIWorkflow() {
 
         {/* Workflow Steps */}
         <div className="relative py-8 md:py-12" style={{ paddingTop: '3rem', paddingBottom: '2rem' }}>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 lg:gap-16 px-4 lg:px-8 max-w-full overflow-visible">
+          <div className="flex flex-row items-start justify-start md:justify-center gap-4 md:gap-8 lg:gap-16 px-4 lg:px-8 max-w-full overflow-x-auto overflow-y-visible pb-4">
             {workflowSteps.map((step, index) => (
-              <div key={step.id} className="flex flex-col items-center relative w-full md:w-auto">
+              <div key={step.id} className="flex flex-col items-center relative flex-shrink-0" style={{ minWidth: '140px' }}>
                 {/* Circular Step Card */}
                 <div
                   ref={el => { stepsRef.current[index] = el; }}
@@ -486,13 +506,13 @@ export default function AIWorkflow() {
                   </p>
                 </div>
 
-                {/* Enhanced Connector Arrow - Desktop only */}
+                {/* Enhanced Connector Arrow - Horizontal on all screens */}
                 {index < workflowSteps.length - 1 && (
                   <>
-                    {/* Horizontal Arrow for Desktop/Tablet Landscape */}
+                    {/* Horizontal Arrow for all screen sizes */}
                     <div
-                      className="absolute top-20 left-full transform -translate-y-1/2 z-10 hidden md:block" 
-                      style={{ width: '4rem' }}
+                      className="absolute top-20 left-full transform -translate-y-1/2 z-10"
+                      style={{ width: 'clamp(2rem, 4vw, 4rem)' }}
                     >
                       {/* Main Arrow Line */}
                       <div
@@ -533,57 +553,6 @@ export default function AIWorkflow() {
                             borderTop: '4px solid transparent !important',
                             borderBottom: '4px solid transparent !important',
                             borderRight: '0 !important',
-                            filter: `drop-shadow(0 0 8px ${workflowSteps[index + 1].color}80) !important`,
-                            display: 'block !important',
-                            opacity: '1 !important'
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* Vertical Arrow for Mobile/Tablet Portrait */}
-                    <div
-                      className="flex items-center justify-center mt-4 mb-2 md:hidden z-10" 
-                      style={{ height: '3rem' }}
-                    >
-                      {/* Main Arrow Line */}
-                      <div
-                        className="relative transition-all duration-500"
-                        style={{
-                          width: '4px !important',
-                          height: '100% !important',
-                          background: `linear-gradient(to bottom, ${workflowSteps[index].color}, ${workflowSteps[index + 1].color}) !important`,
-                          boxShadow: `0 0 12px ${workflowSteps[index].color}60, 0 0 24px ${workflowSteps[index + 1].color}40 !important`,
-                          borderRadius: '2px !important',
-                          display: 'block !important',
-                          opacity: '1 !important'
-                        }}
-                      >
-                        {/* Animated Flow Dots */}
-                        <div 
-                          className="absolute left-1/2 top-0 w-2 h-2 rounded-full transform -translate-x-1/2 animate-bounce"
-                          style={{
-                            backgroundColor: workflowSteps[index].color,
-                            animation: 'streamFlow 2s linear infinite',
-                            boxShadow: `0 0 8px ${workflowSteps[index].color}`
-                          }}
-                        ></div>
-                      </div>
-                      
-                      {/* Arrow Head */}
-                      <div 
-                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1"
-                        style={{ zIndex: 10 }}
-                      >
-                        <div 
-                          className="transition-all duration-300"
-                          style={{
-                            width: '0 !important',
-                            height: '0 !important',
-                            borderTop: `8px solid ${workflowSteps[index + 1].color} !important`,
-                            borderLeft: '4px solid transparent !important',
-                            borderRight: '4px solid transparent !important',
-                            borderBottom: '0 !important',
                             filter: `drop-shadow(0 0 8px ${workflowSteps[index + 1].color}80) !important`,
                             display: 'block !important',
                             opacity: '1 !important'
@@ -716,7 +685,7 @@ export default function AIWorkflow() {
         </div>
 
         {/* Performance Metrics */}
-        <div 
+        <div
           className="max-w-5xl mx-auto px-4 md:px-6"
           style={{
             marginTop: 'clamp(4rem, 10vw, 8rem) !important',
@@ -724,7 +693,7 @@ export default function AIWorkflow() {
             marginBottom: '4rem !important'
           }}
         >
-          <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 lg:gap-10">
+          <div className="flex flex-row justify-start md:justify-center items-stretch gap-4 md:gap-8 lg:gap-10 overflow-x-auto pb-4">
           {[
             { metric: '62%', label: 'Less Impermanent Loss', color: '#00f5d4' },
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },
@@ -732,10 +701,11 @@ export default function AIWorkflow() {
           ].map((item, index) => (
             <Card
               key={index}
-              className="cursor-pointer group relative overflow-hidden hover:scale-105 transition-all duration-300"
+              className="cursor-pointer group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
               style={{
-                minWidth: '200px',
-                flex: '1 1 280px',
+                minWidth: 'clamp(180px, 30vw, 280px)',
+                maxWidth: '320px',
+                flex: '0 0 auto',
                 backdropFilter: 'blur(24px)',
                 WebkitBackdropFilter: 'blur(24px)',
                 border: '4px solid hsl(var(--primary) / 0.4)',
