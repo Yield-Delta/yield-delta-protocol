@@ -730,11 +730,10 @@ export default function AIWorkflow() {
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },
             { metric: '24/7', label: 'AI Monitoring', color: '#ff206e' }
           ].map((item, index) => (
-            <Card 
-              key={index} 
+            <Card
+              key={index}
               className="cursor-pointer group relative overflow-hidden hover:scale-105 transition-all duration-300"
               style={{
-                maxWidth: '280px',
                 minWidth: '200px',
                 flex: '1 1 280px',
                 backdropFilter: 'blur(24px)',
