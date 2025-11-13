@@ -330,7 +330,7 @@ export default function AIWorkflow() {
 
         {/* Workflow Steps */}
         <div className="relative py-8 md:py-12" style={{ paddingTop: '3rem', paddingBottom: '2rem' }}>
-          <div className="flex flex-row items-start justify-start md:justify-center gap-4 md:gap-8 lg:gap-16 px-4 lg:px-8 max-w-full overflow-x-auto overflow-y-visible pb-4">
+          <div className="flex flex-col md:flex-row items-start justify-center gap-4 md:gap-8 lg:gap-16 px-4 lg:px-8 max-w-full overflow-x-auto overflow-y-visible pb-4" style={{ justifyContent: 'center' }}>
             {workflowSteps.map((step, index) => (
               <div key={step.id} className="flex flex-col items-center relative flex-shrink-0" style={{ minWidth: '140px' }}>
                 {/* Circular Step Card */}
@@ -693,7 +693,7 @@ export default function AIWorkflow() {
             marginBottom: '4rem !important'
           }}
         >
-          <div className="flex flex-row justify-start md:justify-center items-stretch gap-4 md:gap-8 lg:gap-10 overflow-x-auto pb-4">
+          <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-8 lg:gap-10 overflow-x-auto pb-4" style={{ justifyContent: 'center' }}>
           {[
             { metric: '62%', label: 'Less Impermanent Loss', color: '#00f5d4' },
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },

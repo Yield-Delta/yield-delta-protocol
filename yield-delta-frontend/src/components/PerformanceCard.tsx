@@ -71,12 +71,13 @@ export default function PerformanceCard({
   };
 
   return (
-    <Card 
+    <Card
       ref={cardRef}
       className={`${styles.performanceCard} group relative overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105`}
-      style={{ 
+      style={{
         perspective: '1000px !important',
         minHeight: '280px !important',
+        maxWidth: '320px !important',
         width: '100% !important',
         display: 'flex !important',
         flexDirection: 'column',
