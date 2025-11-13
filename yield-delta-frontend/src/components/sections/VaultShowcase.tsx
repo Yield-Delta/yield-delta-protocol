@@ -4,7 +4,7 @@ import VaultCard from '@/components/VaultCard';
 
 const vaultData = [
     {
-        address: '0x7890123456789012345678901234567890123456',
+        address: '0x34C0aA990D6e0D099325D7491136BA35FBcdFb38',
         name: 'Stable Max Yield Vault',
         apy: 4.5,
         tvl: 8500000,
@@ -13,7 +13,7 @@ const vaultData = [
         description: 'Stable yield farming with algorithmic rebalancing across blue-chip pairs.',
     },
     {
-        address: '0x8901234567890123456789012345678901234567',
+        address: '0x6C0e4d44bcdf6f922637e041FdA4b7c1Fe5667E6',
         name: 'SEI Hypergrowth Vault',
         apy: 42.0,
         tvl: 1800000,
@@ -22,7 +22,7 @@ const vaultData = [
         description: 'Native SEI ecosystem exposure with automated liquidity provision.',
     },
     {
-        address: '0x9012345678901234567890123456789012345678',
+        address: '0x271115bA107A8F883DE36Eaf3a1CC41a4C5E1a56',
         name: 'Blue Chip DeFi Vault',
         apy: 15.6,
         tvl: 4200000,
