@@ -73,33 +73,24 @@
 }
 
 /* Responsive Optimizations */
-@media (max-width: 768px) {
-    .ctaVisualContainer {
-        max-width: 320px !important;
-    }
-    .rocketSize {
-        font-size: 4rem !important;
-    }
-    .titleSize {
-        font-size: 1.125rem !important;
-    }
-    .subtitleSize {
-        font-size: 0.875rem !important;
-    }
-}
-
+/* Mobile (< 480px) - Smallest container */
 @media (max-width: 480px) {
     .ctaVisualContainer {
         max-width: 280px !important;
     }
-    .rocketSize {
-        font-size: 3.5rem !important;
+}
+
+/* Mobile (480px - 767px) - Small container */
+@media (min-width: 480px) and (max-width: 767px) {
+    .ctaVisualContainer {
+        max-width: 320px !important;
     }
-    .titleSize {
-        font-size: 1rem !important;
-    }
-    .subtitleSize {
-        font-size: 0.8rem !important;
+}
+
+/* Tablet (768px - 1023px) - Medium container */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .ctaVisualContainer {
+        max-width: 480px !important;
     }
 }
 

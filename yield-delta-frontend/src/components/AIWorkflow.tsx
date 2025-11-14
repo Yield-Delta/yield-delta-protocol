@@ -148,6 +148,24 @@ export default function AIWorkflow() {
           }
         }
 
+        /* Performance metrics container responsive flex fix */
+        .performance-metrics-container {
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 1.5rem !important;
+        }
+        @media (min-width: 768px) {
+          .performance-metrics-container {
+            flex-direction: row !important;
+            gap: 2rem !important;
+          }
+        }
+        @media (min-width: 1024px) {
+          .performance-metrics-container {
+            gap: 3rem !important;
+          }
+        }
+
         /* Smooth horizontal scrolling */
         .overflow-x-auto {
           scrollbar-width: thin;
@@ -759,7 +777,7 @@ export default function AIWorkflow() {
             marginBottom: '4rem !important'
           }}
         >
-          <div className="flex flex-col md:flex-row justify-center items-stretch gap-4 md:gap-8 lg:gap-10 overflow-x-auto pb-4" style={{ justifyContent: 'center' }}>
+          <div className="performance-metrics-container flex flex-col md:flex-row justify-center items-center md:items-stretch gap-6 md:gap-8 lg:gap-12" style={{ justifyContent: 'center', alignItems: 'center' }}>
           {[
             { metric: '62%', label: 'Less Impermanent Loss', color: '#00f5d4' },
             { metric: '400ms', label: 'SEI Block Time', color: '#9b5de5' },
@@ -767,11 +785,11 @@ export default function AIWorkflow() {
           ].map((item, index) => (
             <Card
               key={index}
-              className="cursor-pointer group relative overflow-hidden hover:scale-105 transition-all duration-300 flex-shrink-0"
+              className="cursor-pointer group relative overflow-hidden hover:scale-105 transition-all duration-300"
               style={{
                 minWidth: 'clamp(180px, 30vw, 280px)',
                 maxWidth: '320px',
-                flex: '0 0 auto',
+                flex: '1 1 0',
                 backdropFilter: 'blur(24px)',
                 WebkitBackdropFilter: 'blur(24px)',
                 border: '4px solid hsl(var(--primary) / 0.4)',
