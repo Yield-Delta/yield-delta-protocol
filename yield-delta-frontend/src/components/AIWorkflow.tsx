@@ -330,7 +330,7 @@ export default function AIWorkflow() {
 
         {/* Workflow Steps */}
         <div className="relative py-8 md:py-12" style={{ paddingTop: '3rem', paddingBottom: '2rem' }}>
-          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 lg:gap-16 px-4 lg:px-8 max-w-full overflow-x-auto overflow-y-visible pb-4" style={{ justifyContent: 'center' }}>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-4 md:gap-8 lg:gap-16 px-4 lg:px-8 max-w-full overflow-x-auto overflow-y-visible pb-4" style={{ justifyContent: 'center' }}>
             {workflowSteps.map((step, index) => (
               <div key={step.id} className="flex flex-col items-center relative flex-shrink-0" style={{ minWidth: '140px' }}>
                 {/* Circular Step Card */}
@@ -506,12 +506,12 @@ export default function AIWorkflow() {
                   </p>
                 </div>
 
-                {/* Enhanced Connector Arrow - Horizontal on all screens */}
+                {/* Enhanced Connector Arrow - Hidden on mobile, horizontal on tablet/desktop */}
                 {index < workflowSteps.length - 1 && (
                   <>
-                    {/* Horizontal Arrow for all screen sizes */}
+                    {/* Horizontal Arrow for tablet/desktop only */}
                     <div
-                      className="absolute top-20 left-full transform -translate-y-1/2 z-10"
+                      className="hidden sm:block absolute top-20 left-full transform -translate-y-1/2 z-10"
                       style={{ width: 'clamp(2rem, 4vw, 4rem)' }}
                     >
                       {/* Main Arrow Line */}
