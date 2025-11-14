@@ -141,8 +141,9 @@ export default function CTASection() {
                                     {/* Animated Icon Container */}
                                     <div className="relative mb-4 sm:mb-6">
                                         <div
-                                            className={`text-7xl md:text-[7rem] lg:text-[10rem] mb-2 inline-block relative ${styles.rocketPulse}`}
+                                            className={`mb-2 inline-block relative ${styles.rocketPulse}`}
                                             style={{
+                                                fontSize: 'clamp(4.5rem, 12vw, 10rem)',
                                                 filter: 'drop-shadow(0 0 20px hsl(var(--primary) / 0.6))'
                                             }}
                                         >
@@ -168,8 +169,9 @@ export default function CTASection() {
                                     
                                     {/* Enhanced Text with Gradient Animation */}
                                     <div
-                                        className={`text-xl md:text-3xl lg:text-4xl font-bold mb-2 leading-tight ${styles.gradientShift}`}
+                                        className={`font-bold mb-2 leading-tight ${styles.gradientShift}`}
                                         style={{
+                                            fontSize: 'clamp(1.25rem, 5vw, 2.5rem)',
                                             background: 'linear-gradient(45deg, hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--accent)), hsl(var(--primary)))',
                                             backgroundSize: '300% 300%',
                                             WebkitBackgroundClip: 'text',
@@ -181,8 +183,9 @@ export default function CTASection() {
                                         Your DeFi Future
                                     </div>
                                     <div
-                                        className={`text-base md:text-xl lg:text-2xl font-medium ${styles.textGlow}`}
+                                        className={`font-medium ${styles.textGlow}`}
                                         style={{
+                                            fontSize: 'clamp(1rem, 3vw, 1.5rem)',
                                             color: 'hsl(var(--primary-glow))',
                                             textShadow: '0 0 8px hsl(var(--primary-glow) / 0.6)'
                                         }}
