@@ -137,6 +137,17 @@ export default function AIWorkflow() {
       />
       
       <style jsx>{`
+        /* Workflow container responsive flex fix */
+        .workflow-container {
+          display: flex !important;
+          flex-direction: column !important;
+        }
+        @media (min-width: 640px) {
+          .workflow-container {
+            flex-direction: row !important;
+          }
+        }
+
         /* Smooth horizontal scrolling */
         .overflow-x-auto {
           scrollbar-width: thin;
@@ -330,9 +341,9 @@ export default function AIWorkflow() {
 
         {/* Workflow Steps */}
         <div className="relative py-8 md:py-12" style={{ paddingTop: '3rem', paddingBottom: '2rem' }}>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-4 md:gap-8 lg:gap-16 px-4 lg:px-8 max-w-full overflow-x-auto overflow-y-visible pb-4" style={{ justifyContent: 'center' }}>
+          <div className="workflow-container items-center justify-center gap-8 sm:gap-4 md:gap-8 lg:gap-16 px-4 lg:px-8 w-full pb-4 max-w-full sm:flex-nowrap" style={{ justifyContent: 'center' }}>
             {workflowSteps.map((step, index) => (
-              <div key={step.id} className="flex flex-col items-center relative flex-shrink-0" style={{ minWidth: '140px' }}>
+              <div key={step.id} className="flex flex-col items-center relative flex-shrink-0" style={{ minWidth: '140px', width: 'auto' }}>
                 {/* Circular Step Card */}
                 <div
                   ref={el => { stepsRef.current[index] = el; }}
@@ -506,13 +517,68 @@ export default function AIWorkflow() {
                   </p>
                 </div>
 
-                {/* Enhanced Connector Arrow - Hidden on mobile, horizontal on tablet/desktop */}
+                {/* Enhanced Connector Arrow - Vertical on mobile, horizontal on tablet/desktop */}
                 {index < workflowSteps.length - 1 && (
                   <>
+                    {/* Vertical Arrow for mobile only */}
+                    <div
+                      className="block sm:hidden absolute top-full left-1/2 transform -translate-x-1/2 z-10 mt-4"
+                      style={{ height: 'clamp(2rem, 4vw, 4rem)', width: '4px' }}
+                    >
+                      {/* Main Arrow Line */}
+                      <div
+                        className="relative origin-top transition-all duration-500"
+                        style={{
+                          width: '4px !important',
+                          height: '100% !important',
+                          background: `linear-gradient(to bottom, ${workflowSteps[index].color}, ${workflowSteps[index + 1].color}) !important`,
+                          boxShadow: `0 0 12px ${workflowSteps[index].color}60, 0 0 24px ${workflowSteps[index + 1].color}40 !important`,
+                          borderRadius: '2px !important',
+                          display: 'block !important',
+                          opacity: '1 !important'
+                        }}
+                      >
+                        {/* Animated Flow Dots */}
+                        <div
+                          className="absolute left-1/2 top-0 w-2 h-2 rounded-full transform -translate-x-1/2"
+                          style={{
+                            backgroundColor: workflowSteps[index].color,
+                            animation: 'streamFlow 2s linear infinite',
+                            boxShadow: `0 0 8px ${workflowSteps[index].color}`
+                          }}
+                        ></div>
+                      </div>
+
+                      {/* Arrow Head */}
+                      <div
+                        className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1"
+                        style={{ zIndex: 10 }}
+                      >
+                        <div
+                          className="transition-all duration-300"
+                          style={{
+                            width: '0 !important',
+                            height: '0 !important',
+                            borderTop: `8px solid ${workflowSteps[index + 1].color} !important`,
+                            borderLeft: '4px solid transparent !important',
+                            borderRight: '4px solid transparent !important',
+                            borderBottom: '0 !important',
+                            filter: `drop-shadow(0 0 8px ${workflowSteps[index + 1].color}80) !important`,
+                            display: 'block !important',
+                            opacity: '1 !important'
+                          }}
+                        />
+                      </div>
+                    </div>
+
                     {/* Horizontal Arrow for tablet/desktop only */}
                     <div
-                      className="hidden sm:block absolute top-20 left-full transform -translate-y-1/2 z-10"
-                      style={{ width: 'clamp(2rem, 4vw, 4rem)' }}
+                      className="hidden sm:block absolute left-full z-10"
+                      style={{
+                        width: 'clamp(2rem, 4vw, 4rem)',
+                        top: 'calc(clamp(120px, 15vw, 160px) / 2)',
+                        transform: 'translateY(-50%)'
+                      }}
                     >
                       {/* Main Arrow Line */}
                       <div
