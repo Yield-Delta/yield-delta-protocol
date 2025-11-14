@@ -77,8 +77,10 @@ export default function PerformanceCard({
       style={{
         perspective: '1000px !important',
         minHeight: '280px !important',
-        maxWidth: '320px !important',
         width: '100% !important',
+        flex: '1 1 auto',
+        minWidth: '280px',
+        maxWidth: '350px',
         display: 'flex !important',
         flexDirection: 'column',
         backdropFilter: 'blur(24px) !important',
