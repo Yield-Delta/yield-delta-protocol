@@ -24,7 +24,7 @@ export default function GettingStartedPage() {
       
       <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
         <code>{`# Clone with submodules for complete setup
-git clone --recurse-submodules https://github.com/your-org/sei-dlp-core.git
+git clone --recurse-submodules https://github.com/yield-delta/yield-delta-protocol.git
 cd sei-dlp-core`}</code>
       </pre>
 
@@ -39,8 +39,8 @@ cd ai-engine
 pip install -r requirements.txt
 cd ..
 
-# Install Liqui (ElizaOS) dependencies  
-cd liqui
+# Install Kairos (ElizaOS) dependencies  
+cd kairos
 bun install
 cd ..`}</code>
       </pre>
@@ -83,7 +83,7 @@ bun dev
 # Or start individual services:
 bun dev:frontend    # Next.js frontend on :3000
 bun dev:ai          # AI engine on :8000  
-bun dev:liqui       # ElizaOS agent on :8001`}</code>
+bun dev:kairos       # ElizaOS agent on :3001`}</code>
       </pre>
 
       <h2 className="text-2xl font-semibold mb-4">🔧 Development Setup</h2>
@@ -99,7 +99,7 @@ bun dev:liqui       # ElizaOS agent on :8001`}</code>
 │   └── lib/            # Utility functions
 ├── contracts/          # Smart contracts (Solidity)
 ├── ai-engine/          # Python AI/ML engine
-├── liqui/              # ElizaOS agent
+├── kairos/              # ElizaOS agent
 └── docs/               # Documentation`}</code>
       </pre>
 
@@ -117,7 +117,7 @@ DATABASE_URL=postgresql://user:pass@localhost:5432/yielddelta`}</code>
 
       <h3 className="text-xl font-semibold mb-4">Smart Contract Setup</h3>
       
-      <p className="mb-4">Deploy contracts to SEI devnet:</p>
+      <p className="mb-4">Deploy contracts to SEI testnet:</p>
       
       <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
         <code>{`cd contracts
@@ -133,7 +133,7 @@ forge script script/Deploy.s.sol \\
 
 # Verify contract
 forge verify-contract $CONTRACT_ADDRESS \\
-  --chain-id 713715 \\
+  --chain-id 1328 \\
   --etherscan-api-key $SEISCAN_API_KEY`}</code>
       </pre>
 
@@ -160,7 +160,7 @@ forge verify-contract $CONTRACT_ADDRESS \\
       <ul className="space-y-2 mb-8">
         <li><strong>Standard</strong>: ERC-4626 vault standard</li>
         <li><strong>Language</strong>: Solidity with Foundry</li>
-        <li><strong>Network</strong>: SEI EVM (Chain ID: 713715/1328)</li>
+        <li><strong>Network</strong>: SEI EVM (Chain ID: 1328)</li>
         <li><strong>Features</strong>: Gas optimization, MEV protection</li>
       </ul>
 
@@ -211,7 +211,7 @@ bun dev`}</code>
         </div>
         
         <div>
-          <h4 className="font-semibold">Liqui Chat (AI assistant button)</h4>
+          <h4 className="font-semibold">Kairos Chat (AI assistant button)</h4>
           <ul className="ml-4 space-y-1">
             <li>Ask questions about strategy</li>
             <li>Get personalized recommendations</li>
@@ -275,7 +275,7 @@ bun test`}</code>
         <code>{`# Kill processes on common ports
 lsof -ti:3000 | xargs kill -9  # Frontend
 lsof -ti:8000 | xargs kill -9  # AI Engine  
-lsof -ti:8001 | xargs kill -9  # ElizaOS`}</code>
+lsof -ti:3001 | xargs kill -9  # ElizaOS`}</code>
       </pre>
 
       <h3 className="text-xl font-semibold mb-4">Environment Variables</h3>
@@ -324,8 +324,8 @@ bun update`}</code>
       <h3 className="text-xl font-semibold mb-4">Community</h3>
       <ul className="space-y-2 mb-8">
         <li><a href="https://discord.gg/sei" className="text-primary hover:text-primary/80">Discord</a> - Join the community</li>
-        <li><a href="https://github.com/your-org/sei-dlp-core" className="text-primary hover:text-primary/80">GitHub</a> - View source code</li>
-        <li><a href="https://twitter.com/sei_dlp" className="text-primary hover:text-primary/80">Twitter</a> - Follow updates</li>
+        <li><a href="https://github.com/yield-delta/yield-delta-protocol" className="text-primary hover:text-primary/80">GitHub</a> - View source code</li>
+        <li><a href="https://twitter.com/yielddelta" className="text-primary hover:text-primary/80">Twitter</a> - Follow updates</li>
       </ul>
 
       <hr className="my-8" />
