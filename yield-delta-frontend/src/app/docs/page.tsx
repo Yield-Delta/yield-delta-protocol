@@ -116,7 +116,7 @@ export default function DocsHomePage() {
       <h2 className="text-2xl font-semibold mb-4">Network Information</h2>
       
       <ul className="space-y-2 mb-8">
-        <li><strong>Chain ID</strong>: 713715 (SEI Devnet) / 1328 (SEI Mainnet)</li>
+        <li><strong>Chain ID</strong>: 1328 (SEI Testnet) / 1329 (SEI Mainnet)</li>
         <li><strong>Native Token</strong>: SEI</li>
         <li><strong>Block Time</strong>: ~400ms</li>
         <li><strong>Explorer</strong>: <a href="https://seitrace.com" className="text-primary hover:text-primary/80">SeiTrace</a></li>
@@ -126,8 +126,8 @@ export default function DocsHomePage() {
       
       <ul className="space-y-2 mb-8">
         <li><strong>Discord</strong>: <a href="https://discord.gg/sei" className="text-primary hover:text-primary/80">Join our community</a></li>
-        <li><strong>GitHub</strong>: <a href="https://github.com/your-org/sei-dlp-core" className="text-primary hover:text-primary/80">Contribute to the project</a></li>
-        <li><strong>Twitter</strong>: <a href="https://twitter.com/sei_dlp" className="text-primary hover:text-primary/80">@SEI_DLP</a></li>
+        <li><strong>GitHub</strong>: <a href="https://github.com/yield-delta/yield-delta-protocol" className="text-primary hover:text-primary/80">Contribute to the project</a></li>
+        <li><strong>Twitter</strong>: <a href="https://twitter.com/yielddelta" className="text-primary hover:text-primary/80">@SEI_DLP</a></li>
       </ul>
 
       <hr className="my-8" />
