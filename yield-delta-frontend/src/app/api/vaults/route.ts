@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
     const vaults = [
       // NEW FIXED VAULTS (Deployed 2024 - Updated Nov 2024)
       {
-        address: '0xd2Af89E8f48d232f62e3918E0194177C075fe53E', // Native SEI Vault (NEW DEPLOYMENT)
+        address: '0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9', // Native SEI Vault (NEW DEPLOYMENT - Nov 16 2024)
         name: 'Native SEI Vault',
         strategy: 'concentrated_liquidity',
         tokenA: 'SEI',
