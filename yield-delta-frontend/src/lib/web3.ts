@@ -1,7 +1,6 @@
 import { http } from 'wagmi'
 import { defineChain } from 'viem'
-import { createConfig as createWagmiConfig } from 'wagmi'
-import { metaMask, walletConnect, injected } from 'wagmi/connectors'
+import { getDefaultConfig } from '@rainbow-me/rainbowkit'
 
 // SEI Mainnet (Pacific-1)
 export const seiMainnet = defineChain({
@@ -46,7 +45,7 @@ export const seiTestnet = defineChain({
 })
 
 // Singleton pattern to prevent multiple config instantiation
-let configInstance: ReturnType<typeof createWagmiConfig> | null = null
+let configInstance: ReturnType<typeof getDefaultConfig> | null = null
 let isCreatingConfig = false
 
 function createConfig() {
@@ -66,49 +65,27 @@ function createConfig() {
   isCreatingConfig = true
 
   const projectId = process.env.NEXT_PUBLIC_WC_ID
-  
+
   if (!projectId || projectId === 'dummy-project-id' || projectId === 'your_walletconnect_project_id_here') {
     console.warn('⚠️ WalletConnect Project ID not set. Please add NEXT_PUBLIC_WC_ID to your .env.local file.')
     console.warn('Get your Project ID from: https://walletconnect.com/cloud')
   }
 
-  // Create custom config without Coinbase wallet to prevent SDK errors
-  configInstance = createWagmiConfig({
-    chains: [seiDevnet, seiMainnet, seiTestnet],
-    connectors: [
-      metaMask({
-        dappMetadata: {
-          name: 'SEI DLP',
-          url: typeof window !== 'undefined' ? window.location.origin : 'https://yielddelta.xyz'
-        }
-      }),
-      walletConnect({
-        projectId: projectId || 'fallback-project-id',
-        metadata: {
-          name: 'SEI DLP',
-          description: 'AI-driven dynamic liquidity vaults on SEI EVM',
-          url: typeof window !== 'undefined' ? window.location.origin : 'https://yielddelta.xyz',
-          icons: ['https://yielddelta.xyz/favicon.svg']
-        }
-      }),
-      injected({
-        shimDisconnect: true
-      })
-    ],
+  // Use RainbowKit's getDefaultConfig for proper wallet integration
+  // This includes automatic wallet detection and proper modal functionality
+  configInstance = getDefaultConfig({
+    appName: 'Yield Delta',
+    projectId: projectId || 'fallback-project-id',
+    chains: [seiTestnet, seiDevnet, seiMainnet],
+    ssr: true,
     transports: {
       [seiDevnet.id]: http(),
       [seiMainnet.id]: http(),
       [seiTestnet.id]: http()
     },
-    ssr: true,
     batch: {
       multicall: false,
     },
-    // CRITICAL: Eliminate aggressive polling that causes MetaMask eth_accounts errors
-    pollingInterval: 120000, // 2 minutes - very conservative to prevent conflicts
-    // Additional config to prevent MetaMask provider conflicts
-    syncConnectedChain: false, // Prevents automatic chain switching conflicts
-    multiInjectedProviderDiscovery: false, // Prevents conflicts between multiple wallets
   })
 
   isCreatingConfig = false
