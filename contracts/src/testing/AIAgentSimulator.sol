@@ -3,7 +3,6 @@ pragma solidity ^0.8.20;
 
 import "../../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
 import "../../lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
-import "../../lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol";
 import "./MockPriceFeed.sol";
 import "../AIOracle.sol";
 import "../interfaces/IStrategyVault.sol";
@@ -15,7 +14,6 @@ import "../interfaces/IStrategyVault.sol";
  */
 contract AIAgentSimulator is Ownable {
     using ECDSA for bytes32;
-    using MessageHashUtils for bytes32;
     
     struct AgentStrategy {
         string name;
@@ -62,12 +60,13 @@ contract AIAgentSimulator is Ownable {
         address _aiOracle,
         address _agentSigner,
         address initialOwner
-    ) Ownable(initialOwner) {
+    ) {
         priceFeed = MockPriceFeed(_priceFeed);
         aiOracle = AIOracle(_aiOracle);
         agentSigner = _agentSigner;
-        
+
         _initializeStrategies();
+        transferOwnership(initialOwner);
     }
     
     /**

@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 import "../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+import "../lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol";
 import "../lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
 import "./interfaces/IStrategyVault.sol";
 
@@ -60,9 +60,9 @@ contract StrategyVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
         uint24 _poolFee,
         address _aiOracle,
         address initialOwner
-    ) ERC20(name, symbol) Ownable(initialOwner) {
+    ) ERC20(name, symbol) {
         require(block.chainid == SEI_CHAIN_ID, "Invalid chain");
-        
+
         vaultInfo = VaultInfo({
             name: name,
             strategy: "AI_DYNAMIC_LIQUIDITY",
@@ -73,9 +73,11 @@ contract StrategyVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
             totalValueLocked: 0,
             isActive: true
         });
-        
+
         aiOracle = _aiOracle;
-        
+
+        transferOwnership(initialOwner);
+
         emit VaultCreated(address(this), name, _token0, _token1);
     }
 

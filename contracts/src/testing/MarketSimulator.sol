@@ -58,10 +58,11 @@ contract MarketSimulator is Ownable {
         address _priceFeed,
         address _aiOracle,
         address initialOwner
-    ) Ownable(initialOwner) {
+    ) {
         priceFeed = MockPriceFeed(_priceFeed);
         aiOracle = AIOracle(_aiOracle);
         _initializeTestScenarios();
+        transferOwnership(initialOwner);
     }
     
     /**

@@ -30,16 +30,16 @@ export async function GET(request: NextRequest) {
     
     // Bull market vault data - synchronized with deployed smart contracts
     const vaults = [
-      // NEW FIXED VAULTS (Deployed 2024)
+      // NEW FIXED VAULTS (Deployed 2024 - Updated Nov 2024)
       {
-        address: '0xAC64527866CCfA796Fa87A257B3f927179a895e6', // Native SEI Vault (FIXED)
+        address: '0xd2Af89E8f48d232f62e3918E0194177C075fe53E', // Native SEI Vault (NEW DEPLOYMENT)
         name: 'Native SEI Vault',
         strategy: 'concentrated_liquidity',
         tokenA: 'SEI',
         tokenB: 'SEI',
         fee: 0.003,
         tickSpacing: 60,
-        tvl: 500000, // $500K TVL
+        tvl: 0, // Real TVL starts at 0
         apy: 0.150,
         chainId: 1328,
         active: true,
@@ -52,8 +52,8 @@ export async function GET(request: NextRequest) {
         position: {
           lowerTick: -887220,
           upperTick: 887220,
-          liquidity: '500000000000000000',
-          tokensOwed0: '25000000',
+          liquidity: '0',
+          tokensOwed0: '0',
           tokensOwed1: '0'
         }
       },

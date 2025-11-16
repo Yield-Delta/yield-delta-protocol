@@ -258,7 +258,7 @@ export default function AIWorkflow() {
           text-shadow: none !important;
         }
         .performance-card-label-cyan {
-          font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
+          font-size: clamp(0.75rem, 3.5vw, 1.25rem) !important;
           font-weight: 700 !important;
           color: white !important;
           text-decoration: underline !important;
@@ -269,7 +269,7 @@ export default function AIWorkflow() {
           filter: drop-shadow(0 0 8px #00f5d4) !important;
         }
         .performance-card-label-purple {
-          font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
+          font-size: clamp(0.75rem, 3.5vw, 1.25rem) !important;
           font-weight: 700 !important;
           color: white !important;
           text-decoration: underline !important;
@@ -280,7 +280,7 @@ export default function AIWorkflow() {
           filter: drop-shadow(0 0 8px #9b5de5) !important;
         }
         .performance-card-label-pink {
-          font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
+          font-size: clamp(0.75rem, 3.5vw, 1.25rem) !important;
           font-weight: 700 !important;
           color: white !important;
           text-decoration: underline !important;
@@ -291,9 +291,9 @@ export default function AIWorkflow() {
           filter: drop-shadow(0 0 8px #ff206e) !important;
         }
         .performance-card-metric {
-          font-size: clamp(2rem, 6vw, 3rem) !important;
+          font-size: clamp(1.5rem, 6vw, 3rem) !important;
           font-weight: 800 !important;
-          margin-bottom: 0.75rem !important;
+          margin-bottom: 0.5rem !important;
         }
         .performance-metrics-divider-container {
           margin-top: 8rem !important;
@@ -822,8 +822,8 @@ export default function AIWorkflow() {
               />
               
               {/* Animated 3D Icon */}
-              <div className="mb-4 relative z-10 transform-gpu transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
-                <div 
+              <div className="mb-2 md:mb-4 relative z-10 transform-gpu transition-all duration-300 group-hover:scale-110 group-hover:rotate-3">
+                <div
                   className="animate-pulse"
                   style={{
                     filter: `drop-shadow(0 6px 12px ${item.color}40)`,
@@ -831,27 +831,25 @@ export default function AIWorkflow() {
                   }}
                 >
                   {index === 0 && (
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                         className="animate-bounce">
-                      <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" 
+                    <svg className="w-10 h-10 md:w-14 md:h-14 animate-bounce" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z"
                             stroke={item.color} strokeWidth="2.5" fill={`${item.color}20`}/>
                       <path d="M9 12L11 14L15 10" stroke={item.color} strokeWidth="2.5" fill="none"
                             className="animate-pulse"/>
                     </svg>
                   )}
                   {index === 1 && (
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                         className="animate-spin" style={{ animationDuration: '3s' }}>
+                    <svg className="w-10 h-10 md:w-14 md:h-14 animate-spin" style={{ animationDuration: '3s' }} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <circle cx="12" cy="12" r="10" stroke={item.color} strokeWidth="2.5" fill={`${item.color}15`}/>
-                      <polyline points="12,6 12,12 16,14" stroke={item.color} strokeWidth="3" 
+                      <polyline points="12,6 12,12 16,14" stroke={item.color} strokeWidth="3"
                                className="animate-pulse"/>
                     </svg>
                   )}
                   {index === 2 && (
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" 
+                    <svg className="w-10 h-10 md:w-14 md:h-14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z"
                             stroke={item.color} strokeWidth="2.5" fill={`${item.color}10`}/>
-                      <circle cx="12" cy="12" r="3" stroke={item.color} strokeWidth="2.5" 
+                      <circle cx="12" cy="12" r="3" stroke={item.color} strokeWidth="2.5"
                              fill={item.color} className="animate-ping"/>
                     </svg>
                   )}

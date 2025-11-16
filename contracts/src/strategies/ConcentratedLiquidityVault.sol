@@ -5,7 +5,7 @@ import "../interfaces/IStrategyVault.sol";
 import "../../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 import "../../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import "../../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import "../../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+import "../../lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol";
 import "../../lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
 
 contract ConcentratedLiquidityVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
@@ -48,7 +48,7 @@ contract ConcentratedLiquidityVault is IStrategyVault, ERC20, Ownable, Reentranc
         address _token1,
         address _aiOracle,
         address _initialOwner
-    ) ERC20("Concentrated Liquidity SEI/USDC", "SEIDLP") Ownable(_initialOwner) {
+    ) ERC20("Concentrated Liquidity SEI/USDC", "SEIDLP") {
         vaultInfo = VaultInfo({
             name: "Concentrated Liquidity",
             strategy: "AI-optimized concentrated liquidity ranges",
@@ -60,6 +60,7 @@ contract ConcentratedLiquidityVault is IStrategyVault, ERC20, Ownable, Reentranc
             isActive: true
         });
         aiOracle = _aiOracle;
+        transferOwnership(_initialOwner);
     }
 
     function deposit(

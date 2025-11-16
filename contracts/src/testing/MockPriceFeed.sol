@@ -46,11 +46,12 @@ contract MockPriceFeed is Ownable {
     event SignificantPriceMove(address indexed token, uint256 oldPrice, uint256 newPrice, int256 changePercent);
     event TradingOpportunity(address indexed token0, address indexed token1, string opportunityType, uint256 confidence);
     
-    constructor(address initialOwner) Ownable(initialOwner) {
+    constructor(address initialOwner) {
         // Initialize default market scenario
         _createScenario("Normal Market", 86400, 0, 2000); // 1 day, neutral, low volatility
         currentScenario = 0;
         scenarioStartTime = block.timestamp;
+        transferOwnership(initialOwner);
     }
     
     /**

@@ -60,7 +60,7 @@ contract SEIVaultTest is Test {
         token.mint(user2, INITIAL_BALANCE);
     }
     
-    function test_InitialState() public view {
+    function test_InitialState() public {
         assertEq(vault.asset(), address(token));
         assertEq(vault.name(), "SEI Vault Token");
         assertEq(vault.symbol(), "SVT");
@@ -181,23 +181,13 @@ contract SEIVaultTest is Test {
     }
     
     function test_OnlyOwnerCanSetParallelExecution() public {
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Ownable.OwnableUnauthorizedAccount.selector,
-                user1
-            )
-        );
+        vm.expectRevert("Ownable: caller is not the owner");
         vm.prank(user1);
         vault.setParallelExecution(false);
     }
     
     function test_OnlyOwnerCanOptimizeFinality() public {
-        vm.expectRevert(
-            abi.encodeWithSelector(
-                Ownable.OwnableUnauthorizedAccount.selector,
-                user1
-            )
-        );
+        vm.expectRevert("Ownable: caller is not the owner");
         vm.prank(user1);
         vault.optimizeForFinality();
     }

@@ -2,7 +2,7 @@
 pragma solidity ^0.8.20;
 
 import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+import "../lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol";
 import "./StrategyVault.sol";
 
 /**
@@ -44,9 +44,10 @@ contract VaultFactory is Ownable, ReentrancyGuard {
         _;
     }
 
-    constructor(address _defaultAIOracle, address initialOwner) Ownable(initialOwner) {
+    constructor(address _defaultAIOracle, address initialOwner) {
         require(block.chainid == SEI_CHAIN_ID, "Must deploy on SEI");
         defaultAIOracle = _defaultAIOracle;
+        transferOwnership(initialOwner);
     }
 
     /**

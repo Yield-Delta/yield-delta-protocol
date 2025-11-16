@@ -4,7 +4,7 @@ pragma solidity ^0.8.20;
 import "../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 import "../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+import "../lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol";
 import "./interfaces/ISEIVault.sol";
 
 /**
@@ -59,12 +59,12 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
         string memory _symbol,
         address _owner,
         address _aiModel
-    ) ERC20(_name, _symbol) Ownable(_owner) {
+    ) ERC20(_name, _symbol) {
         require(block.chainid == SEI_CHAIN_ID, "Invalid SEI chain");
         // Note: _asset can be address(0) for native SEI vaults
         require(_owner != address(0), "Invalid owner");
         require(_aiModel != address(0), "Invalid AI model");
-        
+
         vaultInfo = VaultInfo({
             name: _name,
             strategy: "SEI_AI_CONCENTRATED_LIQUIDITY",
@@ -75,9 +75,11 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
             totalValueLocked: 0,
             isActive: true
         });
-        
+
         aiModel = _aiModel;
-        
+
+        transferOwnership(_owner);
+
         emit VaultCreated(address(this), _name, _asset, address(0));
     }
     

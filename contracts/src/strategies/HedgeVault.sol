@@ -5,7 +5,7 @@ import "../interfaces/IStrategyVault.sol";
 import "../../lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol";
 import "../../lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
 import "../../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import "../../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+import "../../lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol";
 import "../../lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
 
 contract HedgeVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
@@ -48,7 +48,7 @@ contract HedgeVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
         address _token1,
         address _aiOracle,
         address _initialOwner
-    ) ERC20("Hedge BTC/SEI", "BTCLP") Ownable(_initialOwner) {
+    ) ERC20("Hedge BTC/SEI", "BTCLP") {
         vaultInfo = VaultInfo({
             name: "Hedge Strategy",
             strategy: "Delta-hedged position management",
@@ -60,6 +60,7 @@ contract HedgeVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
             isActive: true
         });
         aiOracle = _aiOracle;
+        transferOwnership(_initialOwner);
     }
 
     function deposit(

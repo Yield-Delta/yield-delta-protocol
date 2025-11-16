@@ -2,9 +2,8 @@
 pragma solidity ^0.8.20;
 
 import "../lib/openzeppelin-contracts/contracts/access/Ownable.sol";
-import "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+import "../lib/openzeppelin-contracts/contracts/security/ReentrancyGuard.sol";
 import "../lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol";
-import "../lib/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol";
 import "./interfaces/IStrategyVault.sol";
 
 /**
@@ -14,7 +13,6 @@ import "./interfaces/IStrategyVault.sol";
  */
 contract AIOracle is Ownable, ReentrancyGuard {
     using ECDSA for bytes32;
-    using MessageHashUtils for bytes32;
 
     struct AIRebalanceRequest {
         address vault;
@@ -73,8 +71,9 @@ contract AIOracle is Ownable, ReentrancyGuard {
         _;
     }
 
-        constructor(address initialOwner) Ownable(initialOwner) {
+        constructor(address initialOwner) {
         require(block.chainid == SEI_CHAIN_ID, "Invalid chain");
+        transferOwnership(initialOwner);
     }
 
     /**
