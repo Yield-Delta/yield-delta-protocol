@@ -5,8 +5,8 @@ compatibility_date = "2024-11-17"
 pages_build_output_dir = ".vercel/output/static"
 build_command = "npm run build"
 
-# Enable Node.js compatibility and experimental features
-compatibility_flags = ["nodejs_compat", "streams_enable_constructors"]
+# Enable Node.js compatibility
+compatibility_flags = ["nodejs_compat"]
 
 # Production environment - SEI Atlantic-2 Testnet
 [env.production]
