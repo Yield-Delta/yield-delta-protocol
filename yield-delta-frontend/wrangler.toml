@@ -12,8 +12,8 @@ compatibility_flags = ["nodejs_compat"]
 name = "yield-delta-frontend"
 [env.production.vars]
 NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
-ELIZA_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
-KAIROS_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
+ELIZA_AGENT_URL = "https://localhost:3000"
+KAIROS_AGENT_URL = "https://localhost:3000"
 NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://yield-delta-protocol-production.up.railway.app/ws"
 # Set to "kairos" or "eliza" to choose which agent to use
 ACTIVE_AGENT = "kairos"
@@ -50,9 +50,9 @@ NEXT_PUBLIC_WC_ID = "b0773f8609b00e0caeb50c05f85a20e8"
 name = "yield-delta-frontend-preview"
 [env.preview.vars]
 NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
-ELIZA_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
-KAIROS_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
-NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://yield-delta-protocol-production.up.railway.app/ws"
+ELIZA_AGENT_URL = "https://localhost:3000"
+KAIROS_AGENT_URL = "https://localhost:3000"
+NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://localhost:3000/ws"
 ACTIVE_AGENT = "kairos"
 # Authentication token for Kairos agent API
 ELIZA_SERVER_AUTH_TOKEN = "egUaYvBLRmP9NYm7o2HCioQWyjfh4IvmZQVkHk5cGa0="

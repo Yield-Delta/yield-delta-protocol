@@ -14429,13 +14429,17 @@ class SeiOracleProvider {
   priceCache = new Map;
   fundingRateCache = new Map;
   updateInterval = null;
-  yeiConfig = {
-    api3ContractAddress: "0x2880aB155794e7179c9eE2e38200202908C17B43",
-    pythContractAddress: "0x2880aB155794e7179c9eE2e38200202908C17B43",
-    redstoneContractAddress: "0x1111111111111111111111111111111111111111"
-  };
+  yeiConfig;
   constructor(runtime) {
     this.runtime = runtime;
+    const api3Address = runtime.getSetting("YEI_API3_CONTRACT") || "0x2880aB155794e7179c9eE2e38200202908C17B43";
+    const pythAddress = runtime.getSetting("YEI_PYTH_CONTRACT") || "0x2880aB155794e7179c9eE2e38200202908C17B43";
+    const redstoneAddress = runtime.getSetting("YEI_REDSTONE_CONTRACT") || "0x1111111111111111111111111111111111111111";
+    this.yeiConfig = {
+      api3ContractAddress: api3Address,
+      pythContractAddress: pythAddress,
+      redstoneContractAddress: redstoneAddress
+    };
     this.config = {
       pythPriceFeeds: {
         BTC: "0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43",
@@ -15385,6 +15389,11 @@ async function validateSeiConfig(runtime) {
     const dragonswapApiUrl = runtime.getSetting("DRAGONSWAP_API_URL");
     const oracleApiKey = runtime.getSetting("ORACLE_API_KEY");
     const yeiApiKey = runtime.getSetting("YEI_API_KEY");
+    const yeiApi3Contract = runtime.getSetting("YEI_API3_CONTRACT");
+    const yeiPythContract = runtime.getSetting("YEI_PYTH_CONTRACT");
+    const yeiRedstoneContract = runtime.getSetting("YEI_REDSTONE_CONTRACT");
+    const symphonyApiUrl = runtime.getSetting("SYMPHONY_API_URL");
+    const symphonyTimeout = runtime.getSetting("SYMPHONY_TIMEOUT");
     const userGeography = runtime.getSetting("USER_GEOGRAPHY");
     const perpPreference = runtime.getSetting("PERP_PREFERENCE");
     const coinbaseApiKey = runtime.getSetting("COINBASE_ADVANCED_API_KEY");
@@ -15412,6 +15421,11 @@ async function validateSeiConfig(runtime) {
       DRAGONSWAP_API_URL: dragonswapApiUrl,
       ORACLE_API_KEY: oracleApiKey,
       YEI_API_KEY: yeiApiKey,
+      YEI_API3_CONTRACT: yeiApi3Contract,
+      YEI_PYTH_CONTRACT: yeiPythContract,
+      YEI_REDSTONE_CONTRACT: yeiRedstoneContract,
+      SYMPHONY_API_URL: symphonyApiUrl,
+      SYMPHONY_TIMEOUT: symphonyTimeout ? parseInt(symphonyTimeout) : undefined,
       USER_GEOGRAPHY: userGeography,
       PERP_PREFERENCE: perpPreference,
       COINBASE_ADVANCED_API_KEY: coinbaseApiKey,
@@ -18152,5 +18166,5 @@ export {
   character
 };
 
-//# debugId=BE3A3A672069232D64756E2164756E21
+//# debugId=898896F88EC6149564756E2164756E21
 //# sourceMappingURL=index.js.map
