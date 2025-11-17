@@ -93,15 +93,18 @@ export function useEnhancedVaultDeposit(vaultData: {
     });
   }
 
-  // Monitor transaction receipt
-  const { 
-    data: receipt, 
-    isLoading: isConfirming, 
+  // Monitor transaction receipt with timeout and confirmation settings
+  const {
+    data: receipt,
+    isLoading: isConfirming,
     isSuccess: isConfirmed,
     isError: isReceiptError,
     error: receiptError
   } = useWaitForTransactionReceipt({
     hash,
+    confirmations: 2, // Wait for 2 confirmations for better reliability on SEI
+    timeout: 60_000, // 60 second timeout to prevent infinite waiting
+    pollingInterval: 1_000, // Poll every 1 second for faster feedback on SEI
   });
 
   // Monitor transaction state changes
@@ -148,10 +151,35 @@ export function useEnhancedVaultDeposit(vaultData: {
   }, [isConfirmed, receipt]);
 
   useEffect(() => {
-    if (isReceiptError) {
+    if (isReceiptError && receiptError) {
       console.error('❌ [Transaction] Receipt ERROR:', receiptError);
+
+      // Handle specific error types
+      const errorMessage = receiptError.message || String(receiptError);
+
+      if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
+        console.error('⏱️ [Transaction] TIMEOUT: Transaction took too long to confirm');
+        console.error('💡 [Transaction] This could be due to:');
+        console.error('   - Network congestion on SEI testnet');
+        console.error('   - RPC endpoint issues');
+        console.error('   - Transaction stuck in mempool');
+        console.error('🔍 [Transaction] Check transaction status on SeiTrace:',
+          hash ? `https://seitrace.com/atlantic-2/tx/${hash}` : 'N/A');
+
+        addNotification({
+          type: 'error',
+          title: 'Transaction Timeout',
+          message: `Transaction confirmation timed out after 60 seconds. Check SeiTrace for transaction status: ${hash?.substring(0, 10)}...`
+        });
+      } else {
+        console.error('💥 [Transaction] Receipt error details:', {
+          message: errorMessage,
+          hash,
+          error: receiptError
+        });
+      }
     }
-  }, [isReceiptError, receiptError]);
+  }, [isReceiptError, receiptError, hash, addNotification]);
 
   // Enhanced logging for transaction states (current snapshot)
   console.log('📊 [useEnhancedVaultDeposit] Current Transaction State:', {

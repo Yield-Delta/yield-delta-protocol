@@ -79,9 +79,21 @@ function createConfig() {
     chains: [seiTestnet, seiDevnet, seiMainnet],
     ssr: true,
     transports: {
-      [seiDevnet.id]: http(),
-      [seiMainnet.id]: http(),
-      [seiTestnet.id]: http()
+      [seiDevnet.id]: http(undefined, {
+        timeout: 30_000, // 30 second timeout for RPC requests
+        retryCount: 3,
+        retryDelay: 1_000,
+      }),
+      [seiMainnet.id]: http(undefined, {
+        timeout: 30_000,
+        retryCount: 3,
+        retryDelay: 1_000,
+      }),
+      [seiTestnet.id]: http(undefined, {
+        timeout: 30_000, // 30 second timeout for RPC requests
+        retryCount: 3, // Retry failed requests up to 3 times
+        retryDelay: 1_000, // Wait 1 second between retries
+      })
     },
     batch: {
       multicall: false,

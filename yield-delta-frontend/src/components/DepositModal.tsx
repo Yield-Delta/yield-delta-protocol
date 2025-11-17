@@ -86,8 +86,6 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   const [transactionStatus, setTransactionStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // Demo simulation flag - controlled by environment variable
-  const [isDemoMode] = useState(process.env.NEXT_PUBLIC_DEMO_MODE === 'true');
   // Get actual wallet connection
   const { address, isConnected } = useAccount();
   
@@ -184,21 +182,23 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   useEffect(() => {
     if (depositMutation.isError && depositMutation.error && transactionStatus !== 'error') {
       console.error('[DepositModal] Transaction failed:', depositMutation.error);
-      
+
       // Handle specific error cases
       const error = depositMutation.error;
       let errorMessage = 'Unknown error occurred';
-      
+
       if (error.message.includes('user rejected transaction')) {
         errorMessage = 'Transaction was rejected by the user';
       } else if (error.message.includes('insufficient funds')) {
         errorMessage = 'Insufficient funds for this transaction';
       } else if (error.message.includes('Insufficient balance')) {
         errorMessage = 'Your wallet balance is too low for this deposit';
+      } else if (error.message.includes('timeout') || error.message.includes('timed out')) {
+        errorMessage = 'Transaction confirmation timed out. Please check SeiTrace to verify if your transaction was successful.';
       } else {
         errorMessage = error.message;
       }
-      
+
       setErrorMessage(errorMessage);
       setTransactionStatus('error');
     }
@@ -254,8 +254,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       depositAmount,
       selectedToken,
       isValidAmount,
-      vaultName: vault?.name,
-      isDemoMode
+      vaultName: vault?.name
     });
 
     if (!isValidAmount || !vault || !selectedToken) {
@@ -274,43 +273,6 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
     setErrorMessage(null);
 
     try {
-      if (isDemoMode) {
-        // DEMO MODE: Simulate successful transaction
-        console.log('🎭 [DepositModal] Demo mode: Simulating successful deposit');
-        
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
-        // Generate fake transaction hash
-        const fakeHash = `0x${Math.random().toString(16).substr(2, 64)}`;
-        setTransactionHash(fakeHash);
-        setTransactionStatus('success');
-        
-        // Show success notification
-        onSuccess(fakeHash);
-        
-        // Reset deposit amount but keep modal open to show success
-        setDepositAmount('');
-
-        console.log('🎉 [DepositModal] Demo deposit completed successfully!', {
-          amount: depositAmount,
-          token: selectedToken,
-          vault: vault.name,
-          fakeHash
-        });
-
-        // Give user time to see the success message before redirecting
-        setTimeout(() => {
-          if (vault) {
-            router.push(`/vault?address=${vault.address}&tab=overview`);
-          }
-          handleClose();
-        }, 3000);
-        
-        return;
-      }
-
-      // REAL MODE: Use actual blockchain transaction (original code)
       // Validate the deposit using enhanced validation
       const validation = depositMutation.validateDeposit({
         amount: depositAmount,
@@ -901,31 +863,16 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                  <Shield style={{ 
-                    width: '24px', 
-                    height: '24px', 
+                  <Shield style={{
+                    width: '24px',
+                    height: '24px',
                     color: vaultColor,
                     filter: 'drop-shadow(0 0 10px currentColor)'
                   }} />
                   Deposit to {vault.name}
-                  {isDemoMode && (
-                    <span style={{
-                      fontSize: '0.75rem',
-                      background: 'linear-gradient(135deg, #10b981, #059669)',
-                      color: '#ffffff',
-                      padding: '4px 8px',
-                      borderRadius: '8px',
-                      fontWeight: '600',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px',
-                      marginLeft: '8px'
-                    }}>
-                      DEMO MODE
-                    </span>
-                  )}
-                  <Coins style={{ 
-                    width: '24px', 
-                    height: '24px', 
+                  <Coins style={{
+                    width: '24px',
+                    height: '24px',
                     color: vaultColor,
                     filter: 'drop-shadow(0 0 10px currentColor)',
                     animation: 'spin 4s linear infinite'

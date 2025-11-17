@@ -1,37 +1,43 @@
 name = "yield-delta-frontend"
-compatibility_date = "2024-09-23"
+compatibility_date = "2024-11-17"
 
 # For Cloudflare Pages deployment
 pages_build_output_dir = ".vercel/output/static"
 build_command = "npm run build"
 
-# Enable Node.js compatibility
-compatibility_flags = ["nodejs_compat"]
+# Enable Node.js compatibility and experimental features
+compatibility_flags = ["nodejs_compat", "streams_enable_constructors"]
 
+# Production environment - SEI Atlantic-2 Testnet
 [env.production]
 name = "yield-delta-frontend"
 [env.production.vars]
+# Build configuration
 NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
-ELIZA_AGENT_URL = "http://localhost:3000"
-KAIROS_AGENT_URL = "http://localhost:3000"
+NODE_ENV = "production"
+
+# AI Agent Configuration (Kairos)
+ELIZA_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
+KAIROS_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
 NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://yield-delta-protocol-production.up.railway.app/ws"
-# Set to "kairos" or "eliza" to choose which agent to use
 ACTIVE_AGENT = "kairos"
-# Authentication token for Kairos agent API
 ELIZA_SERVER_AUTH_TOKEN = "egUaYvBLRmP9NYm7o2HCioQWyjfh4IvmZQVkHk5cGa0="
 
-# SEI Network Configuration
+# SEI Network Configuration (Atlantic-2 Testnet)
 NEXT_PUBLIC_SEI_CHAIN_ID = "1328"
-NEXT_PUBLIC_API_URL = "http://www.yielddelta.xyz/api"
+NEXT_PUBLIC_NETWORK_NAME = "SEI Atlantic-2 Testnet"
+NEXT_PUBLIC_RPC_URL = "https://evm-rpc-testnet.sei-apis.com"
+NEXT_PUBLIC_EXPLORER_URL = "https://seitrace.com/atlantic-2"
+NEXT_PUBLIC_API_URL = "https://www.yielddelta.xyz/api"
 
-# Vault Contract Addresses (Updated Nov 16 2024 - Clean deployment)
+# Vault Contract Addresses (Nov 16 2024 - Production Deployment)
 NEXT_PUBLIC_NATIVE_SEI_VAULT = "0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9"
 NEXT_PUBLIC_ERC20_USDC_VAULT = "0xcF796aEDcC293db74829e77df7c26F482c9dBEC0"
 NEXT_PUBLIC_AI_ORACLE = "0x8d6870cAEF6B62251f6056550336343C056569AD"
 NEXT_PUBLIC_VAULT_FACTORY = "0x42bC207Ad68d05223Bf4520D75C0475d6978c48f"
 NEXT_PUBLIC_VAULT_ADDRESS = "0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9"
 
-# Token Contract Addresses (SEI Testnet)
+# Token Contract Addresses (SEI Atlantic-2 Testnet)
 NEXT_PUBLIC_TOKEN_SEI = "0x0000000000000000000000000000000000000000"
 NEXT_PUBLIC_TOKEN_WSEI = "0xE30feDd158A2e3b13e9badaeABaFc5516e95e8C7"
 NEXT_PUBLIC_TOKEN_USDC = "0x647Dc1B1BFb17171326c12A2dcd8464E871F097B"
@@ -39,36 +45,50 @@ NEXT_PUBLIC_TOKEN_USDT = "0x13f991ac97ef04cc0288a96a82aa808fb1966574"
 NEXT_PUBLIC_TOKEN_ETH = "0x80641cae989b52868e924115a7ffc2d231033555"
 NEXT_PUBLIC_TOKEN_BTC = "0x84b2440238dc8c938d0d1e88d8b973a43a86c450"
 
-# Feature Flags
+# Feature Flags (Production Testnet)
 NEXT_PUBLIC_DEMO_MODE = "false"
 NEXT_PUBLIC_ENABLE_3D_VISUALIZATION = "true"
+NEXT_PUBLIC_ENABLE_ANALYTICS = "true"
+NEXT_PUBLIC_ENABLE_ERROR_TRACKING = "true"
 
 # WalletConnect Configuration
 NEXT_PUBLIC_WC_ID = "b0773f8609b00e0caeb50c05f85a20e8"
 
+# Performance & Security
+NEXT_PUBLIC_ENABLE_CACHE = "true"
+NEXT_PUBLIC_MAX_RETRIES = "3"
+NEXT_PUBLIC_REQUEST_TIMEOUT = "30000"
+
+# Preview environment - SEI Atlantic-2 Testnet (for PR previews)
 [env.preview]
 name = "yield-delta-frontend-preview"
 [env.preview.vars]
+# Build configuration
 NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
-ELIZA_AGENT_URL = "http://localhost:3000"
-KAIROS_AGENT_URL = "http://localhost:3000"
-NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://localhost:3000/ws"
+NODE_ENV = "preview"
+
+# AI Agent Configuration (Kairos - Preview)
+ELIZA_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
+KAIROS_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
+NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://yield-delta-protocol-production.up.railway.app/ws"
 ACTIVE_AGENT = "kairos"
-# Authentication token for Kairos agent API
 ELIZA_SERVER_AUTH_TOKEN = "egUaYvBLRmP9NYm7o2HCioQWyjfh4IvmZQVkHk5cGa0="
 
-# SEI Network Configuration
+# SEI Network Configuration (Atlantic-2 Testnet)
 NEXT_PUBLIC_SEI_CHAIN_ID = "1328"
-NEXT_PUBLIC_API_URL = "http://www.yielddelta.xyz/api"
+NEXT_PUBLIC_NETWORK_NAME = "SEI Atlantic-2 Testnet"
+NEXT_PUBLIC_RPC_URL = "https://evm-rpc-testnet.sei-apis.com"
+NEXT_PUBLIC_EXPLORER_URL = "https://seitrace.com/atlantic-2"
+NEXT_PUBLIC_API_URL = "https://www.yielddelta.xyz/api"
 
-# Vault Contract Addresses (Updated Nov 16 2024 - Clean deployment)
+# Vault Contract Addresses (Nov 16 2024 - Production Deployment)
 NEXT_PUBLIC_NATIVE_SEI_VAULT = "0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9"
 NEXT_PUBLIC_ERC20_USDC_VAULT = "0xcF796aEDcC293db74829e77df7c26F482c9dBEC0"
 NEXT_PUBLIC_AI_ORACLE = "0x8d6870cAEF6B62251f6056550336343C056569AD"
 NEXT_PUBLIC_VAULT_FACTORY = "0x42bC207Ad68d05223Bf4520D75C0475d6978c48f"
 NEXT_PUBLIC_VAULT_ADDRESS = "0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9"
 
-# Token Contract Addresses (SEI Testnet)
+# Token Contract Addresses (SEI Atlantic-2 Testnet)
 NEXT_PUBLIC_TOKEN_SEI = "0x0000000000000000000000000000000000000000"
 NEXT_PUBLIC_TOKEN_WSEI = "0xE30feDd158A2e3b13e9badaeABaFc5516e95e8C7"
 NEXT_PUBLIC_TOKEN_USDC = "0x647Dc1B1BFb17171326c12A2dcd8464E871F097B"
@@ -76,9 +96,17 @@ NEXT_PUBLIC_TOKEN_USDT = "0x13f991ac97ef04cc0288a96a82aa808fb1966574"
 NEXT_PUBLIC_TOKEN_ETH = "0x80641cae989b52868e924115a7ffc2d231033555"
 NEXT_PUBLIC_TOKEN_BTC = "0x84b2440238dc8c938d0d1e88d8b973a43a86c450"
 
-# Feature Flags
+# Feature Flags (Preview - More verbose logging)
 NEXT_PUBLIC_DEMO_MODE = "false"
 NEXT_PUBLIC_ENABLE_3D_VISUALIZATION = "true"
+NEXT_PUBLIC_ENABLE_ANALYTICS = "false"
+NEXT_PUBLIC_ENABLE_ERROR_TRACKING = "true"
+NEXT_PUBLIC_DEBUG_MODE = "true"
 
 # WalletConnect Configuration
 NEXT_PUBLIC_WC_ID = "b0773f8609b00e0caeb50c05f85a20e8"
+
+# Performance & Security
+NEXT_PUBLIC_ENABLE_CACHE = "false"
+NEXT_PUBLIC_MAX_RETRIES = "3"
+NEXT_PUBLIC_REQUEST_TIMEOUT = "30000"
