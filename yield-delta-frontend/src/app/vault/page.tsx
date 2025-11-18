@@ -89,6 +89,15 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   const { position, hasPosition } = useVaultPosition(
     vaultAddress || ''
   );
+
+  // Debug logging for position
+  useEffect(() => {
+    if (position) {
+      console.log('[VaultPage] User position:', position);
+      console.log('[VaultPage] Shares being passed to modal:', position.shares);
+      console.log('[VaultPage] ShareValue being passed to modal:', position.shareValue);
+    }
+  }, [position]);
   
   // Get vault data
   const vault = selectedVault || (vaultAddress ? getVaultByAddress(vaultAddress) : null);

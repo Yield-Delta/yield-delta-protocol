@@ -6,6 +6,7 @@ import { Loader2, ArrowRight, Info, Shield, TrendingDown, X } from 'lucide-react
 import { useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits, formatEther } from 'viem';
 import { useAppStore } from '@/stores/appStore';
+import { useTokenBalance } from '@/hooks/useTokenBalance';
 import SEIVault from '@/lib/abis/SEIVault';
 
 interface VaultData {
@@ -58,6 +59,9 @@ export default function WithdrawModal({
   const { address, isConnected } = useAccount();
   const addNotification = useAppStore((state) => state.addNotification);
 
+  // Fetch user's SEI balance for gas fee validation
+  const seiBalance = useTokenBalance('SEI');
+
   // Ensure component is mounted (client-side)
   useEffect(() => {
     setMounted(true);
@@ -79,13 +83,16 @@ export default function WithdrawModal({
   useEffect(() => {
     if (isOpen) {
       console.log('[WithdrawModal] Modal opening with vault:', vault?.name);
+      console.log('[WithdrawModal] Received userShares (Wei):', userShares);
+      console.log('[WithdrawModal] Received userValue (Ether):', userValue);
+      console.log('[WithdrawModal] Formatted shares display:', parseFloat(formatEther(BigInt(userShares))).toFixed(4));
       setWithdrawAmount('');
       setTransactionStatus('idle');
       setErrorMessage(null);
     } else {
       console.log('[WithdrawModal] Modal closed');
     }
-  }, [isOpen, vault?.name]);
+  }, [isOpen, vault?.name, userShares, userValue]);
 
   // Handle transaction confirmation
   useEffect(() => {
@@ -145,7 +152,7 @@ export default function WithdrawModal({
         address: vault.address as `0x${string}`,
         abi: SEIVault,
         functionName: 'seiOptimizedWithdraw',
-        args: [sharesInWei, address as `0x${string}`],
+        args: [sharesInWei, address as `0x${string}`, address as `0x${string}`],
       });
     } catch (err) {
       console.error('Withdrawal error:', err);
@@ -161,231 +168,496 @@ export default function WithdrawModal({
     setWithdrawAmount(sharesInEther);
   };
 
+  // Debug: Log the conversion process
+  console.log('[WithdrawModal] userShares string:', userShares);
+  console.log('[WithdrawModal] userShares as BigInt:', BigInt(userShares).toString());
+  console.log('[WithdrawModal] userShares formatted as Ether:', formatEther(BigInt(userShares)));
+
   const userSharesDisplay = parseFloat(formatEther(BigInt(userShares))).toFixed(4);
   const userValueDisplay = parseFloat(userValue).toFixed(2);
 
   const modalContent = (
-    <div
-      className="fixed inset-0 z-[99999] flex items-center justify-center"
-      style={{
-        background: 'rgba(0, 0, 0, 0.8)',
-        backdropFilter: 'blur(8px)',
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-      }}
-      onClick={onClose}
-    >
+    <>
+      <style jsx>{`
+        @keyframes modalEnter {
+          from {
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+          }
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-8px) rotate(2deg); }
+        }
+
+        @keyframes slideRight {
+          0%, 100% { transform: translateX(0px); opacity: 0.6; }
+          50% { transform: translateX(4px); opacity: 1; }
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 0.2; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(1.02); }
+        }
+
+        .withdraw-modal-container {
+          width: 100vw !important;
+          height: 100vh !important;
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          z-index: 10000 !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          margin: 0 !important;
+          padding: 20px !important;
+          box-sizing: border-box !important;
+        }
+
+        .withdraw-modal-content {
+          width: 500px !important;
+          max-width: 500px !important;
+          min-width: 320px !important;
+          max-height: 85vh !important;
+          position: relative !important;
+          margin: 0 !important;
+          box-sizing: border-box !important;
+          flex-shrink: 0 !important;
+        }
+
+        @media (max-width: 600px) {
+          .withdraw-modal-container {
+            padding: 8px !important;
+            align-items: flex-start !important;
+            padding-top: 16px !important;
+          }
+          .withdraw-modal-content {
+            width: calc(100vw - 16px) !important;
+            max-width: calc(100vw - 16px) !important;
+            min-width: 280px !important;
+            max-height: 92vh !important;
+          }
+        }
+
+        @media (max-width: 375px) {
+          .withdraw-modal-content {
+            width: calc(100vw - 12px) !important;
+            max-width: calc(100vw - 12px) !important;
+            max-height: 94vh !important;
+          }
+        }
+
+        @media (min-width: 601px) {
+          .withdraw-modal-content {
+            width: 500px !important;
+            max-width: 500px !important;
+            max-height: 85vh !important;
+          }
+        }
+      `}</style>
       <div
-        className="relative w-full max-w-2xl mx-4"
-        onClick={(e) => e.stopPropagation()}
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center withdraw-modal-container"
         style={{
-          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.98) 100%)',
-          border: `2px solid ${vaultColor}40`,
-          borderRadius: '24px',
-          boxShadow: `
-            0 0 80px ${vaultColor}30,
-            0 20px 60px rgba(0, 0, 0, 0.5),
-            inset 0 1px 0 rgba(255, 255, 255, 0.1)
-          `,
-          maxHeight: '90vh',
-          overflow: 'auto',
+          position: 'fixed',
+          top: '0',
+          left: '0',
+          right: '0',
+          bottom: '0',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          pointerEvents: 'auto',
+          zIndex: 10000,
+          width: '100vw',
+          height: '100vh',
+          margin: '0',
+          padding: '20px',
+          boxSizing: 'border-box'
         }}
+        onClick={onClose}
       >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full transition-all duration-200 hover:bg-white/10"
-          style={{ zIndex: 10 }}
+        <div
+          className="rounded-3xl shadow-2xl flex flex-col withdraw-modal-content"
+          style={{
+            background: `linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%)`,
+            backdropFilter: 'blur(24px) saturate(180%)',
+            border: `2px solid rgba(255, 255, 255, 0.15)`,
+            borderTop: `3px solid ${vaultColor}60`,
+            borderLeft: `1px solid ${vaultColor}20`,
+            borderRight: `1px solid ${vaultColor}20`,
+            maxHeight: '85vh',
+            height: 'auto',
+            minWidth: '280px',
+            zIndex: 10001,
+            position: 'relative',
+            margin: '0',
+            boxShadow: `0 32px 80px ${vaultColor}20, 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.1)`,
+            color: '#ffffff',
+            borderRadius: '24px',
+            animation: 'modalEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+            display: 'flex',
+            flexDirection: 'column',
+            boxSizing: 'border-box',
+            flexShrink: 0
+          }}
+          onClick={(e) => e.stopPropagation()}
         >
-          <X className="w-6 h-6 text-white/70 hover:text-white" />
-        </button>
-
-        {/* Header */}
-        <div className="p-8 pb-6">
-          <div className="flex items-center gap-4 mb-4">
-            <div
-              className="p-3 rounded-xl"
-              style={{
-                background: `linear-gradient(135deg, ${vaultColor}30, ${vaultColor}15)`,
-                border: `1px solid ${vaultColor}40`,
-              }}
-            >
-              <TrendingDown className="w-6 h-6" style={{ color: vaultColor }} />
-            </div>
-            <div>
-              <h2 className="text-2xl font-bold text-white">Withdraw from Vault</h2>
-              <p className="text-sm text-white/60">{vault.name}</p>
-            </div>
-          </div>
-
-          {/* User Position Summary */}
+          {/* Scrollable Content Area */}
           <div
-            className="p-4 rounded-xl mt-4"
+            className="modal-scrollable-content"
             style={{
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              flex: '1',
+              overflow: 'auto',
+              padding: '1rem 1rem 0 1rem',
+              minHeight: '0',
+              maxHeight: 'calc(80vh - 200px)'
             }}
           >
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-white/60 mb-1">Your Shares</p>
-                <p className="text-lg font-bold text-white">{userSharesDisplay}</p>
-              </div>
-              <div>
-                <p className="text-xs text-white/60 mb-1">Current Value</p>
-                <p className="text-lg font-bold" style={{ color: vaultColor }}>${userValueDisplay}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Form */}
-        <div className="px-8 pb-8">
-          {/* Withdrawal Amount Input */}
-          <div className="mb-6">
-            <div className="flex justify-between items-center mb-2">
-              <label className="text-sm font-medium text-white/80">
-                Withdrawal Amount (Shares)
-              </label>
-              <button
-                onClick={handleMaxWithdraw}
-                className="text-xs font-medium px-3 py-1 rounded-full transition-all duration-200"
+            {/* Enhanced Modal Header */}
+            <div style={{
+              background: `linear-gradient(135deg, ${vaultColor}08 0%, transparent 60%)`,
+              borderRadius: '16px',
+              padding: '1.25rem',
+              position: 'relative',
+              overflow: 'hidden',
+              marginBottom: '0.75rem'
+            }}>
+              {/* Background Animation */}
+              <div
                 style={{
-                  background: `linear-gradient(135deg, ${vaultColor}30, ${vaultColor}20)`,
-                  border: `1px solid ${vaultColor}50`,
-                  color: vaultColor,
+                  position: 'absolute',
+                  inset: '0',
+                  opacity: '0.2',
+                  background: `radial-gradient(ellipse at center, ${vaultColor}15 0%, transparent 70%)`,
+                  animation: 'pulse 3s ease-in-out infinite'
+                }}
+              />
+
+              {/* Icon Section */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '0.75rem',
+                position: 'relative'
+              }}>
+                <div
+                  style={{
+                    background: `linear-gradient(135deg, ${vaultColor}20, ${vaultColor}10)`,
+                    border: `2px solid ${vaultColor}40`,
+                    borderRadius: '20px',
+                    padding: '16px',
+                    boxShadow: `0 0 40px ${vaultColor}30, 0 8px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)`,
+                    animation: 'float 2s ease-in-out infinite'
+                  }}
+                >
+                  <TrendingDown style={{ width: '32px', height: '32px', color: vaultColor }} />
+                </div>
+              </div>
+
+              {/* Title */}
+              <h2
+                style={{
+                  fontSize: 'clamp(1.5rem, 4vw, 2rem)',
+                  fontWeight: '900',
+                  marginBottom: '0.5rem',
+                  lineHeight: '1.2',
+                  color: '#ffffff',
+                  textShadow: `0 0 30px ${vaultColor}60, 0 4px 8px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.6)`,
+                  letterSpacing: '-0.02em',
+                  textAlign: 'center',
+                  position: 'relative'
                 }}
               >
-                MAX
-              </button>
-            </div>
-            <input
-              type="number"
-              value={withdrawAmount}
-              onChange={(e) => setWithdrawAmount(e.target.value)}
-              placeholder="0.0"
-              disabled={transactionStatus === 'pending'}
-              className="w-full px-4 py-3 rounded-xl text-lg font-medium text-white bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none transition-all duration-200"
-            />
-            <p className="text-xs text-white/50 mt-2">
-              Available: {userSharesDisplay} shares
-            </p>
-          </div>
+                Withdraw from Vault
+              </h2>
 
-          {/* Info Card */}
-          <div
-            className="p-4 rounded-xl mb-6"
-            style={{
-              background: 'rgba(59, 130, 246, 0.1)',
-              border: '1px solid rgba(59, 130, 246, 0.3)',
-            }}
-          >
-            <div className="flex gap-3">
-              <Info className="w-5 h-5 text-blue-400 flex-shrink-0 mt-0.5" />
-              <div className="text-sm text-white/80">
-                <p className="mb-2">Withdrawing shares will convert them back to your deposited tokens. The value may have changed based on vault performance.</p>
-                <p className="text-xs text-white/60">Current APY: {(vault.apy * 100).toFixed(2)}%</p>
+              {/* Subtitle - Vault Name */}
+              <p style={{
+                fontSize: 'clamp(0.9rem, 2.5vw, 1.125rem)',
+                color: 'rgba(255, 255, 255, 0.7)',
+                textAlign: 'center',
+                fontWeight: '600'
+              }}>
+                {vault.name}
+              </p>
+            </div>
+
+            {/* User Position Summary */}
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.08)',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              backdropFilter: 'blur(8px)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
+              borderRadius: '16px',
+              padding: '1rem',
+              marginBottom: '1rem'
+            }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Your Shares</p>
+                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#ffffff' }}>{userSharesDisplay}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Current Value</p>
+                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: vaultColor }}>${userValueDisplay}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Error Message */}
-          {errorMessage && (
-            <div
-              className="p-4 rounded-xl mb-6"
-              style={{
-                background: 'rgba(239, 68, 68, 0.1)',
-                border: '1px solid rgba(239, 68, 68, 0.3)',
-              }}
-            >
-              <p className="text-sm text-red-400">{errorMessage}</p>
+            {/* Withdrawal Amount Input */}
+            <div style={{ marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <label style={{ fontSize: '0.875rem', fontWeight: '600', color: 'rgba(255, 255, 255, 0.9)' }}>
+                  Withdrawal Amount (Shares)
+                </label>
+                <button
+                  onClick={handleMaxWithdraw}
+                  style={{
+                    background: `linear-gradient(135deg, ${vaultColor}30, ${vaultColor}20)`,
+                    border: `1px solid ${vaultColor}50`,
+                    color: vaultColor,
+                    fontSize: '0.75rem',
+                    fontWeight: '700',
+                    padding: '0.25rem 0.75rem',
+                    borderRadius: '9999px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  MAX
+                </button>
+              </div>
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                backdropFilter: 'blur(8px)',
+                borderRadius: '12px',
+                padding: '1rem',
+                position: 'relative'
+              }}>
+                <input
+                  type="number"
+                  value={withdrawAmount}
+                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                  placeholder="0.0"
+                  disabled={transactionStatus === 'pending'}
+                  style={{
+                    color: '#ffffff',
+                    fontSize: 'clamp(1.5rem, 5vw, 2rem)',
+                    fontWeight: '800',
+                    textAlign: 'left',
+                    backgroundColor: 'transparent',
+                    border: 'none',
+                    outline: 'none',
+                    boxShadow: 'none',
+                    width: '100%',
+                    fontFamily: 'inherit',
+                    padding: '0',
+                    margin: '0'
+                  }}
+                />
+              </div>
+              <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '0.5rem' }}>
+                Available: {userSharesDisplay} shares
+              </p>
             </div>
-          )}
 
-          {/* Transaction Status */}
-          {transactionStatus === 'pending' && (
-            <div
-              className="p-4 rounded-xl mb-6 flex items-center gap-3"
-              style={{
+            {/* Info Card */}
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.08))',
+              border: '1px solid rgba(255, 193, 7, 0.3)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '16px',
+              padding: '1rem',
+              marginBottom: '1rem'
+            }}>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <Info style={{ width: '20px', height: '20px', color: '#ffc107', flexShrink: 0, marginTop: '0.125rem' }} />
+                <div style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                  <p style={{ marginBottom: '0.5rem', lineHeight: '1.5' }}>
+                    Withdrawing shares will convert them back to your deposited tokens. The value may have changed based on vault performance.
+                  </p>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)' }}>
+                    Current APY: {(vault.apy * 100).toFixed(2)}%
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Error Message */}
+            {errorMessage && (
+              <div style={{
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                backdropFilter: 'blur(12px)',
+                borderRadius: '16px',
+                padding: '1rem',
+                marginBottom: '1rem'
+              }}>
+                <p style={{ fontSize: '0.875rem', color: '#ef4444' }}>{errorMessage}</p>
+              </div>
+            )}
+
+            {/* Transaction Status */}
+            {transactionStatus === 'pending' && (
+              <div style={{
                 background: `linear-gradient(135deg, ${vaultColor}20, ${vaultColor}10)`,
                 border: `1px solid ${vaultColor}40`,
-              }}
-            >
-              <Loader2 className="w-5 h-5 animate-spin" style={{ color: vaultColor }} />
-              <div>
-                <p className="text-sm font-medium text-white">
-                  {isConfirming ? 'Confirming withdrawal...' : 'Processing withdrawal...'}
-                </p>
-                <p className="text-xs text-white/60">Please wait while your transaction is confirmed</p>
+                backdropFilter: 'blur(12px)',
+                borderRadius: '16px',
+                padding: '1rem',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem'
+              }}>
+                <Loader2 style={{ width: '20px', height: '20px', color: vaultColor }} className="animate-spin" />
+                <div>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#ffffff' }}>
+                    {isConfirming ? 'Confirming withdrawal...' : 'Processing withdrawal...'}
+                  </p>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+                    Please wait while your transaction is confirmed
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {transactionStatus === 'success' && (
-            <div
-              className="p-4 rounded-xl mb-6 flex items-center gap-3"
-              style={{
-                background: 'rgba(34, 197, 94, 0.1)',
+            {transactionStatus === 'success' && (
+              <div style={{
+                background: 'rgba(34, 197, 94, 0.15)',
                 border: '1px solid rgba(34, 197, 94, 0.3)',
-              }}
-            >
-              <Shield className="w-5 h-5 text-green-400" />
-              <div>
-                <p className="text-sm font-medium text-white">Withdrawal successful!</p>
-                <p className="text-xs text-white/60">Your tokens have been returned to your wallet</p>
+                backdropFilter: 'blur(12px)',
+                borderRadius: '16px',
+                padding: '1rem',
+                marginBottom: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem'
+              }}>
+                <Shield style={{ width: '20px', height: '20px', color: '#22c55e' }} />
+                <div>
+                  <p style={{ fontSize: '0.875rem', fontWeight: '600', color: '#ffffff' }}>Withdrawal successful!</p>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+                    Your tokens have been returned to your wallet
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-4">
-            <button
-              onClick={onClose}
-              disabled={transactionStatus === 'pending'}
-              className="flex-1 px-6 py-3 rounded-xl font-medium text-white transition-all duration-200"
-              style={{
-                background: 'rgba(255, 255, 255, 0.1)',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleWithdraw}
-              disabled={
-                !isConnected ||
-                transactionStatus === 'pending' ||
-                transactionStatus === 'success' ||
-                !withdrawAmount ||
-                parseFloat(withdrawAmount) <= 0
-              }
-              className="flex-1 px-6 py-3 rounded-xl font-bold text-black transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-              style={{
-                background: `linear-gradient(135deg, ${vaultColor}, ${vaultColor}DD)`,
-                boxShadow: `0 0 30px ${vaultColor}40`,
-              }}
-            >
-              {transactionStatus === 'pending' ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Processing...
-                </span>
-              ) : transactionStatus === 'success' ? (
-                'Withdrawn!'
-              ) : (
-                <span className="flex items-center justify-center gap-2">
-                  Withdraw
-                  <ArrowRight className="w-5 h-5" />
-                </span>
-              )}
-            </button>
+          {/* Fixed Action Buttons at Bottom */}
+          <div style={{
+            flexShrink: 0,
+            padding: '0.75rem 1rem 1rem 1rem',
+            background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 80%, transparent 100%)',
+            backdropFilter: 'blur(8px)',
+            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '0 0 24px 24px'
+          }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '12px'
+            }}>
+              <button
+                onClick={onClose}
+                disabled={transactionStatus === 'pending'}
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  color: '#ffffff',
+                  borderRadius: '16px',
+                  backdropFilter: 'blur(8px)',
+                  height: '48px',
+                  fontSize: '1rem',
+                  fontWeight: '600',
+                  cursor: transactionStatus === 'pending' ? 'not-allowed' : 'pointer',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.2s ease',
+                  opacity: transactionStatus === 'pending' ? 0.5 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (transactionStatus !== 'pending') {
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleWithdraw}
+                disabled={
+                  !isConnected ||
+                  transactionStatus === 'pending' ||
+                  transactionStatus === 'success' ||
+                  !withdrawAmount ||
+                  parseFloat(withdrawAmount) <= 0
+                }
+                style={{
+                  background: `linear-gradient(135deg, ${vaultColor} 0%, ${vaultColor}dd 100%)`,
+                  border: 'none',
+                  color: '#000000',
+                  borderRadius: '16px',
+                  boxShadow: `0 12px 40px ${vaultColor}40, inset 0 1px 0 rgba(255,255,255,0.2)`,
+                  height: '48px',
+                  fontSize: '1rem',
+                  fontWeight: '700',
+                  cursor: (!isConnected || transactionStatus === 'pending' || transactionStatus === 'success' || !withdrawAmount || parseFloat(withdrawAmount) <= 0) ? 'not-allowed' : 'pointer',
+                  fontFamily: 'inherit',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  opacity: (!isConnected || transactionStatus === 'pending' || transactionStatus === 'success' || !withdrawAmount || parseFloat(withdrawAmount) <= 0) ? 0.5 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (isConnected && transactionStatus !== 'pending' && transactionStatus !== 'success' && withdrawAmount && parseFloat(withdrawAmount) > 0) {
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                }}
+              >
+                {transactionStatus === 'pending' ? (
+                  <>
+                    <Loader2 style={{ width: '20px', height: '20px' }} className="animate-spin" />
+                    Processing...
+                  </>
+                ) : transactionStatus === 'success' ? (
+                  'Withdrawn!'
+                ) : (
+                  <>
+                    Withdraw
+                    <ArrowRight style={{ width: '20px', height: '20px' }} />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 
   return createPortal(modalContent, document.body);
