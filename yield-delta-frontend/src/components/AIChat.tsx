@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { Send, Bot, User, Loader2, AlertCircle } from 'lucide-react'
 
 // Enhanced CSS for animations, interactions, and accessibility
@@ -335,7 +335,7 @@ export default function AIChat({
     // Check status every 30 seconds
     const interval = setInterval(checkAgentStatus, 30000)
     return () => clearInterval(interval)
-  }, [])
+  }, [checkAgentStatus])
 
   // Get or create user ID on mount
   useEffect(() => {
@@ -347,7 +347,7 @@ export default function AIChat({
     setUserId(currentUserId);
   }, []);
 
-  const checkAgentStatus = async () => {
+  const checkAgentStatus = useCallback(async () => {
     try {
       const response = await fetch('/api/eliza/chat')
       const data = await response.json()
@@ -399,7 +399,7 @@ export default function AIChat({
         }])
       }
     }
-  }
+  }, [messages.length, initialMessage])
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading || !userId) return

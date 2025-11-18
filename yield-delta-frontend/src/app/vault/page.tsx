@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import Navigation from '@/components/Navigation';
-import { ArrowLeft, TrendingUp, Activity, Shield, Target, BarChart3, Loader2 } from 'lucide-react';
+import { ArrowLeft, TrendingUp, Activity, Shield, Target, BarChart3, Loader2, Coins } from 'lucide-react';
 import gsap from 'gsap';
 import { useVaultStore } from '@/stores/vaultStore';
 import { useVaults } from '@/hooks/useVaults';
@@ -86,7 +86,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   const { data: vaultsData, isLoading } = useVaults();
 
   // Get user's position in this vault
-  const { position, hasPosition, isLoading: positionLoading } = useVaultPosition(
+  const { position, hasPosition } = useVaultPosition(
     vaultAddress || ''
   );
   

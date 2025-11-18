@@ -24,8 +24,19 @@ const nextConfig: NextConfig = {
         https: false,
         os: false,
         path: false,
+        // Ignore React Native dependencies from MetaMask SDK
+        '@react-native-async-storage/async-storage': false,
+        'react-native': false,
       };
     }
+
+    // Ignore warnings from MetaMask SDK about optional React Native dependencies
+    config.ignoreWarnings = [
+      { module: /node_modules\/@metamask\/sdk/ },
+      { message: /Can't resolve '@react-native-async-storage\/async-storage'/ },
+      { message: /Can't resolve 'react-native'/ },
+    ];
+
     return config;
   },
 

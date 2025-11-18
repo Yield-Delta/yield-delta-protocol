@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { Loader2, ArrowRight, Info, Shield, TrendingDown, Coins, X } from 'lucide-react';
+import { Loader2, ArrowRight, Info, Shield, TrendingDown, X } from 'lucide-react';
 import { useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits, formatEther } from 'viem';
 import { useAppStore } from '@/stores/appStore';
@@ -56,7 +56,7 @@ export default function WithdrawModal({
   const { address, isConnected } = useAccount();
   const addNotification = useAppStore((state) => state.addNotification);
 
-  const { writeContract, data: hash, error, isPending, isSuccess, isError } = useWriteContract();
+  const { writeContract, data: hash, error, isError } = useWriteContract();
 
   const {
     isLoading: isConfirming,
