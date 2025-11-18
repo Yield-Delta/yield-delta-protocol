@@ -191,7 +191,7 @@ const DashboardPage = () => {
             <div className="text-center py-20">
               <Info className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-white mb-2">No Active Positions</h2>
-              <p className="text-gray-400 mb-6">You haven't deposited to any vaults yet.</p>
+              <p className="text-gray-400 mb-6">You haven&apos;t deposited to any vaults yet.</p>
               <Link
                 href="/vaults"
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-xl font-semibold hover:from-blue-600 hover:to-purple-600 transition-all"
