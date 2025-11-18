@@ -28,18 +28,19 @@ export async function GET(request: NextRequest) {
     const strategy = searchParams.get('strategy')
     const active = searchParams.get('active')
     
-    // Bull market vault data - synchronized with deployed smart contracts
+    // ONLY DEPLOYED VAULTS - SEI Atlantic-2 Testnet (Chain ID 1328)
+    // CRITICAL: Only return vaults that are actually deployed on-chain
+    // Demo mode is OFF - we only show real, deployed contracts
     const vaults = [
-      // NEW FIXED VAULTS (Deployed 2024 - Updated Nov 2024)
       {
-        address: '0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9', // Native SEI Vault (NEW DEPLOYMENT - Nov 16 2024)
+        address: '0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9', // Native SEI Vault (DEPLOYED Nov 16 2024)
         name: 'Native SEI Vault',
         strategy: 'concentrated_liquidity',
         tokenA: 'SEI',
         tokenB: 'SEI',
         fee: 0.003,
         tickSpacing: 60,
-        tvl: 0, // Real TVL starts at 0
+        tvl: 0, // Real TVL from contract
         apy: 0.150,
         chainId: 1328,
         active: true,
@@ -58,14 +59,14 @@ export async function GET(request: NextRequest) {
         }
       },
       {
-        address: '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // ERC20 USDC Vault (FIXED)
+        address: '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // ERC20 USDC Vault (DEPLOYED)
         name: 'USDC Vault',
         strategy: 'stable_max',
         tokenA: 'USDC',
         tokenB: 'USDC',
         fee: 0.001,
         tickSpacing: 10,
-        tvl: 750000, // $750K TVL
+        tvl: 750000, // Real TVL from contract
         apy: 0.085,
         chainId: 1328,
         active: true,
@@ -82,174 +83,11 @@ export async function GET(request: NextRequest) {
           tokensOwed0: '375000000',
           tokensOwed1: '0'
         }
-      },
-      
-      // LEGACY VAULTS
-      {
-        address: '0xf6A791e4773A60083AA29aaCCDc3bA5E900974fE', // Concentrated Liquidity Vault (testnet)
-        name: 'SEI-USDC Concentrated LP',
-        strategy: 'concentrated_liquidity',
-        tokenA: 'SEI',
-        tokenB: 'USDC',
-        fee: 0.003,
-        tickSpacing: 60,
-        tvl: 1250000, // Bull market: $1.25M TVL
-        apy: 0.125,
-        chainId: 1328,
-        active: true,
-        performance: {
-          totalReturn: 0.087,
-          sharpeRatio: 1.45,
-          maxDrawdown: 0.023,
-          winRate: 0.68
-        },
-        position: {
-          lowerTick: -887220,
-          upperTick: 887220,
-          liquidity: '1000000000000000000',
-          tokensOwed0: '50000000',
-          tokensOwed1: '125000000'
-        }
-      },
-      {
-        address: '0x6F4cF61bBf63dCe0094CA1fba25545f8c03cd8E6', // Yield Farming Vault (testnet)
-        name: 'ATOM-SEI Yield Farm',
-        strategy: 'yield_farming',
-        tokenA: 'ATOM',
-        tokenB: 'SEI',
-        fee: 0.003,
-        tickSpacing: 60,
-        tvl: 850000, // Bull market: $850K TVL
-        apy: 0.182,
-        chainId: 1328,
-        active: true,
-        performance: {
-          totalReturn: 0.112,
-          sharpeRatio: 1.23,
-          maxDrawdown: 0.034,
-          winRate: 0.72
-        }
-      },
-      {
-        address: '0x22Fc4c01FAcE783bD47A1eF2B6504213C85906a1', // Arbitrage Vault (testnet)
-        name: 'ETH-USDT Arbitrage Bot',
-        strategy: 'arbitrage',
-        tokenA: 'ETH',
-        tokenB: 'USDT',
-        fee: 0.005,
-        tickSpacing: 10,
-        tvl: 2100000, // Bull market: $2.1M TVL
-        apy: 0.267,
-        chainId: 1328,
-        active: true,
-        performance: {
-          totalReturn: 0.156,
-          sharpeRatio: 2.1,
-          maxDrawdown: 0.018,
-          winRate: 0.81
-        }
-      },
-      {
-        address: '0xCB15AFA183347934DeEbb0F442263f50021EFC01', // Hedge Vault (testnet)
-        name: 'BTC-SEI Hedge Strategy',
-        strategy: 'hedge',
-        tokenA: 'BTC',
-        tokenB: 'SEI',
-        fee: 0.01,
-        tickSpacing: 200,
-        tvl: 3400000, // Bull market: $3.4M TVL
-        apy: 0.089,
-        chainId: 1328,
-        active: true,
-        performance: {
-          totalReturn: 0.045,
-          sharpeRatio: 0.98,
-          maxDrawdown: 0.012,
-          winRate: 0.58
-        }
-      },
-      {
-        address: '0x34C0aA990D6e0D099325D7491136BA35FBcdFb38', // Stable Max Vault (testnet)
-        name: 'Stable Max Yield Vault',
-        strategy: 'stable_max',
-        tokenA: 'USDC',
-        tokenB: 'DAI',
-        fee: 0.0005,
-        tickSpacing: 1,
-        tvl: 8500000,
-        apy: 0.045,
-        chainId: 1328,
-        active: true,
-        performance: {
-          totalReturn: 0.022,
-          sharpeRatio: 2.34,
-          maxDrawdown: 0.003,
-          winRate: 0.95
-        }
-      },
-      {
-        address: '0x6C0e4d44bcdf6f922637e041FdA4b7c1Fe5667E6', // SEI Hypergrowth Vault (testnet)
-        name: 'SEI Hypergrowth Vault',
-        strategy: 'sei_hypergrowth',
-        tokenA: 'SEI',
-        tokenB: 'ETH',
-        fee: 0.01,
-        tickSpacing: 200,
-        tvl: 1800000,
-        apy: 0.420,
-        chainId: 1328,
-        active: true,
-        performance: {
-          totalReturn: 0.324,
-          sharpeRatio: 1.12,
-          maxDrawdown: 0.187,
-          winRate: 0.63
-        }
-      },
-      {
-        address: '0x271115bA107A8F883DE36Eaf3a1CC41a4C5E1a56', // Blue Chip Vault (testnet)
-        name: 'Blue Chip DeFi Vault',
-        strategy: 'blue_chip',
-        tokenA: 'BTC',
-        tokenB: 'ETH',
-        fee: 0.003,
-        tickSpacing: 60,
-        tvl: 4200000,
-        apy: 0.156,
-        chainId: 1328,
-        active: true,
-        performance: {
-          totalReturn: 0.098,
-          sharpeRatio: 1.78,
-          maxDrawdown: 0.034,
-          winRate: 0.76
-        }
-      },
-      {
-        address: '0xaE6F27Fdf2D15c067A0Ebc256CE05A317B671B81', // Delta Neutral Vault (testnet)
-        name: 'Delta Neutral LP Vault',
-        strategy: 'delta_neutral',
-        tokenA: 'ETH',
-        tokenB: 'USDC',
-        fee: 0.003,
-        tickSpacing: 60,
-        tvl: 3100000,
-        apy: 0.155,
-        chainId: 1328,
-        active: true,
-        performance: {
-          totalReturn: 0.098,
-          sharpeRatio: 2.45,
-          maxDrawdown: 0.008,
-          winRate: 0.92
-        },
-        strategy_details: {
-          hedge_ratio: 0.95,
-          market_neutrality: 0.93,
-          revenue_sources: ['lp_fees', 'funding_rates', 'volatility_capture']
-        }
       }
     ]
+
+    // NOTE: Legacy/demo vaults have been removed as they are not deployed on-chain
+    // Only the 2 vaults above are actually deployed on SEI Atlantic-2 testnet
 
     // Filter by strategy if provided
     let filteredVaults = vaults

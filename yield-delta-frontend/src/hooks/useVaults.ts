@@ -283,22 +283,14 @@ export const useDepositToVault = (vaultAddress: string) => {
       throw new Error('Vault address not provided')
     }
 
-    // Enhanced validation for SEI testnet vault addresses
+    // ONLY DEPLOYED VAULTS - SEI Atlantic-2 Testnet (Chain ID 1328)
+    // These are the ONLY vaults actually deployed on-chain
     const validTestnetVaults = [
-      // NEW FIXED VAULTS - Deployed 2024
-      '0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9', // Native SEI Vault (FIXED - Nov 16 2024)
-      '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // ERC20 USDC Vault (FIXED)
-
-      // Legacy vault addresses (for backwards compatibility)
-      '0xf6A791e4773A60083AA29aaCCDc3bA5E900974fE',
-      '0x6F4cF61bBf63dCe0094CA1fba25545f8c03cd8E6',
-      '0x22Fc4c01FAcE783bD47A1eF2B6504213C85906a1',
-      '0xCB15AFA183347934DeEbb0F442263f50021EFC01',
-      '0x34C0aA990D6e0D099325D7491136BA35FBcdFb38',
-      '0x6C0e4d44bcdf6f922637e041FdA4b7c1Fe5667E6',
-      '0x271115bA107A8F883DE36Eaf3a1CC41a4C5E1a56',
-      '0xaE6F27Fdf2D15c067A0Ebc256CE05A317B671B81'
+      '0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9', // Native SEI Vault (DEPLOYED Nov 16 2024)
+      '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // ERC20 USDC Vault (DEPLOYED)
     ]
+
+    // Legacy/demo vault addresses have been removed - they were never deployed
 
     const normalizedVaultAddress = vaultAddress.toLowerCase()
     const isValidTestnetVault = validTestnetVaults.some(addr => addr.toLowerCase() === normalizedVaultAddress)
