@@ -157,6 +157,107 @@ export default function VaultsPage() {
 }`}</code>
       </pre>
 
+      <h2 className="text-2xl font-semibold mb-4">Understanding Vault Shares</h2>
+
+      <p className="mb-4">
+        Yield Delta vaults use a <strong>share-based system</strong>, similar to mutual funds or ETFs. When you deposit, you receive vault shares that represent your proportional ownership of the vault&apos;s total value.
+      </p>
+
+      <h3 className="text-xl font-semibold mb-4">Why Shares Instead of Direct Deposits?</h3>
+      
+      <p className="mb-4">
+        The share system ensures <strong>fair distribution of profits and losses</strong> among all vault participants. As the vault earns yield, the value of each share increases - meaning your shares become worth more SEI over time.
+      </p>
+
+      <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-6">
+        <h4 className="font-semibold mb-3 flex items-center gap-2">
+          <span className="text-xl">💡</span> Key Concept
+        </h4>
+        <p className="mb-2">
+          <strong>Share Price = Total Vault Assets ÷ Total Shares Outstanding</strong>
+        </p>
+        <p className="text-sm text-muted-foreground">
+          When you deposit, you receive fewer shares if the vault has performed well (higher share price), but the SEI value remains correct. When you withdraw, you burn shares and receive SEI based on the current share price.
+        </p>
+      </div>
+
+      <h3 className="text-xl font-semibold mb-4">Share Calculation Examples</h3>
+
+      <div className="space-y-6 mb-8">
+        <div className="bg-muted p-4 rounded-lg">
+          <h4 className="font-semibold mb-2">Scenario 1: First Deposit (Empty Vault)</h4>
+          <ul className="space-y-1 text-sm ml-4">
+            <li>You deposit: <strong>5 SEI</strong></li>
+            <li>Vault total assets: <strong>0 SEI</strong></li>
+            <li>Total shares: <strong>0</strong></li>
+            <li>➡️ You receive: <strong>5 shares</strong> (1:1 ratio)</li>
+          </ul>
+        </div>
+
+        <div className="bg-muted p-4 rounded-lg">
+          <h4 className="font-semibold mb-2">Scenario 2: After Vault Earns 50% Profit</h4>
+          <ul className="space-y-1 text-sm ml-4">
+            <li>Vault grew from 100 SEI to <strong>150 SEI</strong></li>
+            <li>Total shares: <strong>100</strong></li>
+            <li>Share price: <strong>1.50 SEI per share</strong></li>
+            <li>You deposit: <strong>5 SEI</strong></li>
+            <li>➡️ You receive: <strong>3.333 shares</strong></li>
+            <li>✅ Your share value: 3.333 × 1.50 = <strong>5 SEI</strong> (correct!)</li>
+          </ul>
+        </div>
+
+        <div className="bg-muted p-4 rounded-lg">
+          <h4 className="font-semibold mb-2">Scenario 3: Withdrawal After More Gains</h4>
+          <ul className="space-y-1 text-sm ml-4">
+            <li>Your shares: <strong>3.333</strong></li>
+            <li>Vault grew further, share price now: <strong>1.75 SEI per share</strong></li>
+            <li>Your share value: 3.333 × 1.75 = <strong>5.833 SEI</strong></li>
+            <li>➡️ You earned: <strong>0.833 SEI profit</strong> (16.7% return on 5 SEI)</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 className="text-xl font-semibold mb-4">What You See in the UI</h3>
+
+      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
+        <code>{`// Deposit Modal Preview
+Depositing: 5 SEI
+You will receive: 3.7594 shares
+Rate: 1 SEI = 0.7519 shares
+Share Price: 1.3300 SEI per share
+
+// Your Position (After Deposit)
+Your Shares: 3.7594
+Share Value: 5.0000 SEI
+Price/Share: 1.3300 SEI
+
+// Withdraw Modal
+Your Shares: 3.7594
+Share Value: 5.8325 SEI  ← Value increased!
+Price/Share: 1.5513 SEI  ← Share price went up
+Profit: +0.8325 SEI (+16.65%)`}</code>
+      </pre>
+
+      <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-6 mb-8">
+        <h4 className="font-semibold mb-3 flex items-center gap-2">
+          <span className="text-xl">⚠️</span> Important Notes
+        </h4>
+        <ul className="space-y-2 text-sm">
+          <li>
+            <strong>Share prices are dynamic</strong> - They change based on vault performance, not fixed at 1:1
+          </li>
+          <li>
+            <strong>Your SEI value is always accurate</strong> - Fewer shares × higher price = correct value
+          </li>
+          <li>
+            <strong>Profits compound automatically</strong> - As vault earns, your shares become more valuable
+          </li>
+          <li>
+            <strong>Early depositors benefit</strong> - Lower share prices when you deposit mean more potential gains
+          </li>
+        </ul>
+      </div>
+
       <h2 className="text-2xl font-semibold mb-4">User Interface</h2>
 
       <h3 className="text-xl font-semibold mb-4">Vault Dashboard</h3>
@@ -198,9 +299,21 @@ export default function VaultsPage() {
       <ol className="space-y-2 mb-6">
         <li><strong>Select Vault</strong>: Choose from available vault strategies</li>
         <li><strong>Enter Amount</strong>: Specify deposit amount with balance validation</li>
+        <li><strong>Preview Shares</strong>: See exactly how many shares you&apos;ll receive at current price</li>
         <li><strong>Review Terms</strong>: Confirm fees, risks, and expected returns</li>
         <li><strong>Execute Transaction</strong>: Submit to blockchain with gas estimation</li>
-        <li><strong>Confirmation</strong>: Receive transaction hash and updated position</li>
+        <li><strong>Confirmation</strong>: Receive transaction hash and updated position with your new shares</li>
+      </ol>
+
+      <h3 className="text-xl font-semibold mb-4">Withdrawal Flow</h3>
+      
+      <ol className="space-y-2 mb-6">
+        <li><strong>View Position</strong>: Check your current shares, value, and profit/loss</li>
+        <li><strong>Enter Amount</strong>: Specify how many shares to withdraw</li>
+        <li><strong>Preview SEI Amount</strong>: See exactly how much SEI you&apos;ll receive at current share price</li>
+        <li><strong>Check Lock Period</strong>: Ensure any time locks have expired</li>
+        <li><strong>Execute Transaction</strong>: Submit withdrawal to blockchain</li>
+        <li><strong>Confirmation</strong>: Receive SEI in your wallet and updated position</li>
       </ol>
 
       <h2 className="text-2xl font-semibold mb-4">Risk Management</h2>

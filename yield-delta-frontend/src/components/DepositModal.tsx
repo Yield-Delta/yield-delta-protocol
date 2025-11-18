@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Loader2, ArrowRight, Info, Shield, TrendingUp, Coins, Vault, DollarSign, Percent, CheckCircle2, Zap } from 'lucide-react';
 import { useEnhancedVaultDeposit } from '@/hooks/useEnhancedVaultDeposit';
+import { useVaultSharePrice } from '@/hooks/useVaultSharePrice';
 import { 
   getTokenRequirementText, 
   getPrimaryDepositToken
@@ -111,6 +112,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   };
   
   const depositMutation = useEnhancedVaultDeposit(vaultData);
+  
+  // Get real-time share price for accurate deposit preview
+  const { getSharesForAmount, pricePerShare } = useVaultSharePrice(vault?.address || '');
   
   // Enhanced balance information available through depositMutation.userBalance
   
@@ -996,7 +1000,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         lineHeight: '1.2'
                       }}>
                         {depositAmount && parseFloat(depositAmount) > 0
-                          ? (parseFloat(depositAmount) * 0.95).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                          ? parseFloat(getSharesForAmount(depositAmount)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })
                           : '0.00'
                         }
                       </div>
@@ -1007,7 +1011,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         opacity: '0.9'
                       }}>{vault.name} Shares</div>
                     </div>
-                    <div className="text-sm opacity-60 mt-2">Rate: 1 SEI = 0.95 shares</div>
+                    <div className="text-sm opacity-60 mt-2">Rate: 1 SEI = {(1 / parseFloat(pricePerShare)).toFixed(4)} shares (${pricePerShare} SEI/share)</div>
                   </div>
 
                 </div>
@@ -1071,7 +1075,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         opacity: '0.6',
                         fontSize: '0.8rem'
                       }}>
-                        ~{(amount * 0.95).toLocaleString()} shares
+                        ~{parseFloat(getSharesForAmount(amount.toString())).toFixed(4)} shares
                       </div>
                     </button>
                   ))}
@@ -1096,6 +1100,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     textShadow: '0 1px 2px rgba(0,0,0,0.3)'
                   }}>Important Notice</span>
                 </div>
+                <p style={{
+                  fontSize: '0.875rem',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  lineHeight: '1.5',
+                  margin: '0 0 12px 0'
+                }}>
+                  <strong>Share Price:</strong> You receive {(1 / parseFloat(pricePerShare)).toFixed(4)} shares per SEI deposited. Share prices change based on vault performance - when the vault performs well, each share becomes worth more SEI.
+                </p>
                 <p style={{
                   fontSize: '0.875rem',
                   color: 'rgba(255, 255, 255, 0.9)',

@@ -51,6 +51,13 @@ export default function WithdrawModal({
   userShares = '0',
   userValue = '0'
 }: WithdrawModalProps) {
+  console.log('[WithdrawModal] Props received:', { 
+    userShares, 
+    userValue,
+    userSharesType: typeof userShares,
+    userSharesLength: userShares.length 
+  });
+  
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -401,14 +408,21 @@ export default function WithdrawModal({
               padding: '1rem',
               marginBottom: '1rem'
             }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
                 <div>
                   <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Your Shares</p>
                   <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#ffffff' }}>{userSharesDisplay}</p>
                 </div>
                 <div>
-                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Current Value</p>
-                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: vaultColor }}>${userValueDisplay}</p>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Share Value</p>
+                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: vaultColor }}>{userValueDisplay} SEI</p>
+                  <p style={{ fontSize: '0.625rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '0.125rem' }}>≈ ${userValueDisplay}</p>
+                </div>
+                <div>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Price/Share</p>
+                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#10b981' }}>
+                    {parseFloat(userShares) > 0 ? (parseFloat(userValue) / parseFloat(formatEther(BigInt(userShares)))).toFixed(4) : '0.0000'} SEI
+                  </p>
                 </div>
               </div>
             </div>
@@ -490,10 +504,10 @@ export default function WithdrawModal({
                 <Info style={{ width: '20px', height: '20px', color: '#ffc107', flexShrink: 0, marginTop: '0.125rem' }} />
                 <div style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.9)' }}>
                   <p style={{ marginBottom: '0.5rem', lineHeight: '1.5' }}>
-                    Withdrawing shares will convert them back to your deposited tokens. The value may have changed based on vault performance.
+                    Withdrawing your {userSharesDisplay} shares will give you approximately {userValueDisplay} SEI. Share prices change based on vault performance and the current exchange rate.
                   </p>
                   <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                    Current APY: {(vault.apy * 100).toFixed(2)}%
+                    Current APY: {(vault.apy * 100).toFixed(2)}% • Price per share: {parseFloat(userShares) > 0 ? (parseFloat(userValue) / parseFloat(formatEther(BigInt(userShares)))).toFixed(4) : '0.0000'} SEI
                   </p>
                 </div>
               </div>

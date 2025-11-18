@@ -35,6 +35,10 @@ const navigation: NavItem[] = [
     ],
   },
   {
+    title: 'FAQ',
+    href: '/docs/faq',
+  },
+  {
     title: 'AI Engine',
     href: '/docs/ai-engine',
   },
