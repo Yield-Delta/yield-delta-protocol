@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Loader2, ArrowRight, Info, Shield, TrendingDown, X } from 'lucide-react';
 import { useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits, formatEther } from 'viem';
@@ -52,9 +53,15 @@ export default function WithdrawModal({
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   const { address, isConnected } = useAccount();
   const addNotification = useAppStore((state) => state.addNotification);
+
+  // Ensure component is mounted (client-side)
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const { writeContract, data: hash, error, isError } = useWriteContract();
 
@@ -71,11 +78,14 @@ export default function WithdrawModal({
   // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
+      console.log('[WithdrawModal] Modal opening with vault:', vault?.name);
       setWithdrawAmount('');
       setTransactionStatus('idle');
       setErrorMessage(null);
+    } else {
+      console.log('[WithdrawModal] Modal closed');
     }
-  }, [isOpen]);
+  }, [isOpen, vault?.name]);
 
   // Handle transaction confirmation
   useEffect(() => {
@@ -104,7 +114,7 @@ export default function WithdrawModal({
     }
   }, [isError, isReceiptError, error, addNotification]);
 
-  if (!vault || !isOpen) return null;
+  if (!vault || !isOpen || !mounted) return null;
 
   const vaultColor = getVaultColor(vault.strategy);
 
@@ -154,12 +164,17 @@ export default function WithdrawModal({
   const userSharesDisplay = parseFloat(formatEther(BigInt(userShares))).toFixed(4);
   const userValueDisplay = parseFloat(userValue).toFixed(2);
 
-  return (
+  const modalContent = (
     <div
       className="fixed inset-0 z-[99999] flex items-center justify-center"
       style={{
         background: 'rgba(0, 0, 0, 0.8)',
         backdropFilter: 'blur(8px)',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
       }}
       onClick={onClose}
     >
@@ -372,4 +387,6 @@ export default function WithdrawModal({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }
