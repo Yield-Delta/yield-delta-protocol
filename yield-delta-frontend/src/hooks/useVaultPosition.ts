@@ -59,12 +59,12 @@ export function useVaultPosition(vaultAddress: string) {
     console.log('[useVaultPosition] Is Array?:', Array.isArray(data));
     console.log('[useVaultPosition] Data keys:', data ? Object.keys(data as object) : []);
     console.log('[useVaultPosition] ===== NUMERIC INDICES =====');
-    console.log('[useVaultPosition] [0] (should be shares):', contractData[0]?.toString());
-    console.log('[useVaultPosition] [1] (should be shareValue):', contractData[1]?.toString());
-    console.log('[useVaultPosition] [2] (should be totalDeposited):', contractData[2]?.toString());
-    console.log('[useVaultPosition] [3] (should be totalWithdrawn):', contractData[3]?.toString());
-    console.log('[useVaultPosition] [4] (should be depositTime):', contractData[4]?.toString());
-    console.log('[useVaultPosition] [5] (should be lockTimeRemaining):', contractData[5]?.toString());
+    console.log('[useVaultPosition] [0] (shares):', contractData[0]?.toString(), '=', (Number(contractData[0]) / 1e18).toFixed(6), 'shares');
+    console.log('[useVaultPosition] [1] (shareValue):', contractData[1]?.toString(), '=', (Number(contractData[1]) / 1e18).toFixed(6), 'SEI');
+    console.log('[useVaultPosition] [2] (totalDeposited):', contractData[2]?.toString(), '=', (Number(contractData[2]) / 1e18).toFixed(6), 'SEI');
+    console.log('[useVaultPosition] [3] (totalWithdrawn):', contractData[3]?.toString(), '=', (Number(contractData[3]) / 1e18).toFixed(6), 'SEI');
+    console.log('[useVaultPosition] [4] (depositTime):', contractData[4]?.toString());
+    console.log('[useVaultPosition] [5] (lockTimeRemaining):', contractData[5]?.toString());
     console.log('[useVaultPosition] ===== NAMED PROPERTIES =====');
     console.log('[useVaultPosition] .shares:', contractData.shares?.toString());
     console.log('[useVaultPosition] .shareValue:', contractData.shareValue?.toString());
@@ -82,6 +82,21 @@ export function useVaultPosition(vaultAddress: string) {
       console.log('[useVaultPosition] ShareValue (Ether):', (Number(position.shareValue) / 1e18).toFixed(18));
       console.log('[useVaultPosition] TotalDeposited (Wei):', position.totalDeposited);
       console.log('[useVaultPosition] TotalDeposited (Ether):', (Number(position.totalDeposited) / 1e18).toFixed(18));
+      console.log('[useVaultPosition] ===== DISCREPANCY CHECK =====');
+      const deposited = Number(position.totalDeposited) / 1e18;
+      const currentValue = Number(position.shareValue) / 1e18;
+      const difference = currentValue - deposited;
+      const percentChange = deposited > 0 ? (difference / deposited * 100) : 0;
+      console.log('[useVaultPosition] Amount deposited:', deposited.toFixed(6), 'SEI');
+      console.log('[useVaultPosition] Current value:', currentValue.toFixed(6), 'SEI');
+      console.log('[useVaultPosition] Difference:', difference.toFixed(6), 'SEI', `(${percentChange > 0 ? '+' : ''}${percentChange.toFixed(2)}%)`);
+      if (Math.abs(difference) > 0.01) {
+        console.warn('[useVaultPosition] ⚠️  WARNING: Share value differs from deposited amount!');
+        console.warn('[useVaultPosition] This could indicate:');
+        console.warn('[useVaultPosition] - Vault has gained/lost value');
+        console.warn('[useVaultPosition] - Share price changed due to other deposits/withdrawals');
+        console.warn('[useVaultPosition] - Possible contract state issue');
+      }
     }
     console.log('[useVaultPosition] ===============================');
   }

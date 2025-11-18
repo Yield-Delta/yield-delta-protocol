@@ -1161,6 +1161,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
         onSuccess={handleWithdrawSuccess}
         userShares={position?.shares || '0'}
         userValue={position ? formatEther(BigInt(position.shareValue)) : '0'}
+        totalDeposited={position?.totalDeposited || '0'}
       />
 
     </div>

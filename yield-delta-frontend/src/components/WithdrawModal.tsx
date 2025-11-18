@@ -7,6 +7,7 @@ import { useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagm
 import { parseUnits, formatEther } from 'viem';
 import { useAppStore } from '@/stores/appStore';
 import { useTokenBalance } from '@/hooks/useTokenBalance';
+import { useVaultState } from '@/hooks/useVaultState';
 import SEIVault from '@/lib/abis/SEIVault';
 
 interface VaultData {
@@ -25,8 +26,9 @@ interface WithdrawModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (txHash: string) => void;
-  userShares?: string; // User's current shares in the vault
-  userValue?: string; // Current value of user's position
+  userShares?: string; // User's current shares in the vault (Wei)
+  userValue?: string; // Current value of user's position (Ether)
+  totalDeposited?: string; // Total amount user deposited (Wei)
 }
 
 const getVaultColor = (strategy: string) => {
@@ -49,7 +51,8 @@ export default function WithdrawModal({
   onClose,
   onSuccess,
   userShares = '0',
-  userValue = '0'
+  userValue = '0',
+  totalDeposited = '0'
 }: WithdrawModalProps) {
   console.log('[WithdrawModal] Props received:', { 
     userShares, 
@@ -68,6 +71,9 @@ export default function WithdrawModal({
 
   // Fetch user's SEI balance for gas fee validation
   const _seiBalance = useTokenBalance('SEI');
+
+  // Get vault state for debugging
+  const vaultState = useVaultState(vault?.address || '');
 
   // Ensure component is mounted (client-side)
   useEffect(() => {
@@ -93,13 +99,17 @@ export default function WithdrawModal({
       console.log('[WithdrawModal] Received userShares (Wei):', userShares);
       console.log('[WithdrawModal] Received userValue (Ether):', userValue);
       console.log('[WithdrawModal] Formatted shares display:', parseFloat(formatEther(BigInt(userShares))).toFixed(4));
+      console.log('[WithdrawModal] Vault State:', vaultState);
+      console.log('[WithdrawModal] Expected withdrawal:', 
+        `${parseFloat(formatEther(BigInt(userShares))).toFixed(4)} shares × ${vaultState.sharePrice} SEI/share = ${userValue} SEI`
+      );
       setWithdrawAmount('');
       setTransactionStatus('idle');
       setErrorMessage(null);
     } else {
       console.log('[WithdrawModal] Modal closed');
     }
-  }, [isOpen, vault?.name, userShares, userValue]);
+  }, [isOpen, vault?.name, userShares, userValue, vaultState]);
 
   // Handle transaction confirmation
   useEffect(() => {
@@ -408,20 +418,50 @@ export default function WithdrawModal({
               padding: '1rem',
               marginBottom: '1rem'
             }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                 <div>
                   <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Your Shares</p>
                   <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#ffffff' }}>{userSharesDisplay}</p>
+                  <p style={{ fontSize: '0.625rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '0.125rem' }}>Price: {parseFloat(userShares) > 0 ? (parseFloat(userValue) / parseFloat(formatEther(BigInt(userShares)))).toFixed(4) : '0.0000'} SEI/share</p>
                 </div>
                 <div>
-                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Share Value</p>
-                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: vaultColor }}>{userValueDisplay} SEI</p>
-                  <p style={{ fontSize: '0.625rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '0.125rem' }}>≈ ${userValueDisplay}</p>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Amount Deposited</p>
+                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#ffffff' }}>{parseFloat(formatEther(BigInt(totalDeposited))).toFixed(4)} SEI</p>
+                  <p style={{ fontSize: '0.625rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '0.125rem' }}>Your original deposit</p>
                 </div>
+              </div>
+              <div style={{
+                background: parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) 
+                  ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05))'
+                  : 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05))',
+                border: parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited)))
+                  ? '1px solid rgba(16, 185, 129, 0.3)'
+                  : '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '12px',
+                padding: '0.75rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
                 <div>
-                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Price/Share</p>
-                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#10b981' }}>
-                    {parseFloat(userShares) > 0 ? (parseFloat(userValue) / parseFloat(formatEther(BigInt(userShares)))).toFixed(4) : '0.0000'} SEI
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.125rem' }}>Current Withdrawal Value</p>
+                  <p style={{ fontSize: '1.25rem', fontWeight: '800', color: vaultColor }}>{userValueDisplay} SEI</p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.125rem' }}>Change</p>
+                  <p style={{ 
+                    fontSize: '1rem', 
+                    fontWeight: '700',
+                    color: parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) ? '#10b981' : '#ef4444'
+                  }}>
+                    {parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) ? '+' : ''}
+                    {(parseFloat(userValue) - parseFloat(formatEther(BigInt(totalDeposited)))).toFixed(4)} SEI
+                  </p>
+                  <p style={{ fontSize: '0.625rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+                    ({parseFloat(formatEther(BigInt(totalDeposited))) > 0 
+                      ? ((parseFloat(userValue) - parseFloat(formatEther(BigInt(totalDeposited)))) / parseFloat(formatEther(BigInt(totalDeposited))) * 100).toFixed(2)
+                      : '0.00'
+                    }%)
                   </p>
                 </div>
               </div>
@@ -493,21 +533,38 @@ export default function WithdrawModal({
 
             {/* Info Card */}
             <div style={{
-              background: 'linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.08))',
-              border: '1px solid rgba(255, 193, 7, 0.3)',
+              background: parseFloat(userValue) < parseFloat(formatEther(BigInt(totalDeposited)))
+                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08))'
+                : 'linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.08))',
+              border: parseFloat(userValue) < parseFloat(formatEther(BigInt(totalDeposited)))
+                ? '1px solid rgba(239, 68, 68, 0.3)'
+                : '1px solid rgba(255, 193, 7, 0.3)',
               backdropFilter: 'blur(12px)',
               borderRadius: '16px',
               padding: '1rem',
               marginBottom: '1rem'
             }}>
               <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <Info style={{ width: '20px', height: '20px', color: '#ffc107', flexShrink: 0, marginTop: '0.125rem' }} />
+                <Info style={{ width: '20px', height: '20px', color: parseFloat(userValue) < parseFloat(formatEther(BigInt(totalDeposited))) ? '#ef4444' : '#ffc107', flexShrink: 0, marginTop: '0.125rem' }} />
                 <div style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.9)' }}>
-                  <p style={{ marginBottom: '0.5rem', lineHeight: '1.5' }}>
-                    Withdrawing your {userSharesDisplay} shares will give you approximately {userValueDisplay} SEI. Share prices change based on vault performance and the current exchange rate.
-                  </p>
+                  {parseFloat(userValue) < parseFloat(formatEther(BigInt(totalDeposited))) ? (
+                    <>
+                      <p style={{ marginBottom: '0.5rem', lineHeight: '1.5', fontWeight: '600' }}>
+                        ⚠️ Current value is lower than your deposit
+                      </p>
+                      <p style={{ marginBottom: '0.5rem', lineHeight: '1.5', fontSize: '0.8rem' }}>
+                        You deposited <strong>{parseFloat(formatEther(BigInt(totalDeposited))).toFixed(4)} SEI</strong>, but your shares are currently worth <strong>{userValueDisplay} SEI</strong> due to changes in the vault's share price. This can happen when the vault's asset balance changes relative to total shares (e.g., other withdrawals, losses, or share price adjustments).
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <p style={{ marginBottom: '0.5rem', lineHeight: '1.5' }}>
+                        Withdrawing your {userSharesDisplay} shares will give you {userValueDisplay} SEI at the current share price.
+                      </p>
+                    </>
+                  )}
                   <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                    Current APY: {(vault.apy * 100).toFixed(2)}% • Price per share: {parseFloat(userShares) > 0 ? (parseFloat(userValue) / parseFloat(formatEther(BigInt(userShares)))).toFixed(4) : '0.0000'} SEI
+                    Current APY: {(vault.apy * 100).toFixed(2)}% • Share price: {parseFloat(userShares) > 0 ? (parseFloat(userValue) / parseFloat(formatEther(BigInt(userShares)))).toFixed(4) : '0.0000'} SEI per share
                   </p>
                 </div>
               </div>
