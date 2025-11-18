@@ -983,14 +983,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     </div>
                   </div>
 
-                  {/* You will receive */}
+                  {/* You will receive - Simplified */}
                   <div className="transaction-side p-6 rounded-2xl" style={{
                     background: 'rgba(255, 255, 255, 0.08) !important',
                     border: '1px solid rgba(255, 255, 255, 0.12) !important',
                     backdropFilter: 'blur(8px) !important',
                     boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1) !important'
                   }}>
-                    <h3 className="transaction-flow-section-title text-lg font-bold mb-4 opacity-90">You will receive</h3>
+                    <h3 className="transaction-flow-section-title text-lg font-bold mb-4 opacity-90">Your deposit</h3>
                     <div style={{ marginBottom: '8px' }}>
                       <div style={{
                         color: vaultColor,
@@ -1000,7 +1000,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         lineHeight: '1.2'
                       }}>
                         {depositAmount && parseFloat(depositAmount) > 0
-                          ? parseFloat(getSharesForAmount(depositAmount)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+                          ? parseFloat(depositAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })
                           : '0.00'
                         }
                       </div>
@@ -1009,9 +1009,11 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         fontSize: '1rem',
                         fontWeight: '600',
                         opacity: '0.9'
-                      }}>{vault.name} Shares</div>
+                      }}>SEI deposited into {vault.name}</div>
                     </div>
-                    <div className="text-sm opacity-60 mt-2">Rate: 1 SEI = {(1 / parseFloat(pricePerShare)).toFixed(4)} shares (${pricePerShare} SEI/share)</div>
+                    <div className="text-sm opacity-60 mt-2">
+                      Your deposit will start earning {(vault.apy * 100).toFixed(2)}% APY immediately
+                    </div>
                   </div>
 
                 </div>
@@ -1070,13 +1072,6 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                       }}>
                         {amount} {selectedToken || primaryToken?.symbol || 'SEI'}
                       </div>
-                      <div className="quick-deposit-shares" style={{
-                        color: '#ffffff',
-                        opacity: '0.6',
-                        fontSize: '0.8rem'
-                      }}>
-                        ~{parseFloat(getSharesForAmount(amount.toString())).toFixed(4)} shares
-                      </div>
                     </button>
                   ))}
                 </div>
@@ -1106,7 +1101,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   lineHeight: '1.5',
                   margin: '0 0 12px 0'
                 }}>
-                  <strong>Share Price:</strong> You receive {(1 / parseFloat(pricePerShare)).toFixed(4)} shares per SEI deposited. Share prices change based on vault performance - when the vault performs well, each share becomes worth more SEI.
+                  <strong>How it works:</strong> Your deposit is managed by the vault's AI strategy to maximize yield. You can withdraw your funds (plus any earnings) at any time after the lock period.
                 </p>
                 <p style={{
                   fontSize: '0.875rem',

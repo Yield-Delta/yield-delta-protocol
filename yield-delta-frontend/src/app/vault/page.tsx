@@ -16,6 +16,7 @@ import WithdrawModal from '@/components/WithdrawModal';
 import VaultClientWrapper from '@/components/VaultClientWrapper';
 import TokenPairDisplay from '@/components/TokenPairDisplay';
 import { useVaultPosition } from '@/hooks/useVaultPosition';
+import { useVaultDiagnostics } from '@/hooks/useVaultDiagnostics';
 import { formatEther } from 'viem';
 
 // Utility functions
@@ -89,6 +90,9 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   const { position, hasPosition } = useVaultPosition(
     vaultAddress || ''
   );
+  
+  // Diagnostic hook to check for contract balance issues causing value loss
+  const diagnostics = useVaultDiagnostics(vaultAddress || '');
 
   // Debug logging for position
   useEffect(() => {
@@ -845,36 +849,45 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                         background: 'rgba(255, 255, 255, 0.05)',
                         border: '1px solid rgba(255, 255, 255, 0.1)'
                       }}>
-                        <span className="text-muted-foreground text-xs font-medium block mb-1">Shares</span>
+                        <span className="text-muted-foreground text-xs font-medium block mb-1">Deposited</span>
                         <span className="font-bold text-white text-lg">
-                          {parseFloat(formatEther(BigInt(position.shares))).toFixed(4)}
+                          {parseFloat(formatEther(BigInt(position.totalDeposited))).toFixed(4)} SEI
                         </span>
                       </div>
                       <div className="p-3 rounded-xl" style={{
                         background: 'rgba(255, 255, 255, 0.05)',
                         border: '1px solid rgba(255, 255, 255, 0.1)'
                       }}>
-                        <span className="text-muted-foreground text-xs font-medium block mb-1">Value</span>
+                        <span className="text-muted-foreground text-xs font-medium block mb-1">Current Value</span>
                         <span className="font-bold text-green-400 text-lg" style={{
                           textShadow: '0 0 15px rgba(34, 197, 94, 0.4)'
                         }}>
-                          ${parseFloat(formatEther(BigInt(position.shareValue))).toFixed(2)}
+                          {parseFloat(formatEther(BigInt(position.shareValue))).toFixed(4)} SEI
+                        </span>
+                      </div>
+                      <div className="p-3 rounded-xl" style={{
+                        background: parseFloat(formatEther(BigInt(position.shareValue))) >= parseFloat(formatEther(BigInt(position.totalDeposited)))
+                          ? 'rgba(16, 185, 129, 0.1)'
+                          : 'rgba(239, 68, 68, 0.1)',
+                        border: parseFloat(formatEther(BigInt(position.shareValue))) >= parseFloat(formatEther(BigInt(position.totalDeposited)))
+                          ? '1px solid rgba(16, 185, 129, 0.3)'
+                          : '1px solid rgba(239, 68, 68, 0.3)'
+                      }}>
+                        <span className="text-muted-foreground text-xs font-medium block mb-1">Profit/Loss</span>
+                        <span className={`font-bold text-lg ${
+                          parseFloat(formatEther(BigInt(position.shareValue))) >= parseFloat(formatEther(BigInt(position.totalDeposited)))
+                            ? 'text-green-400'
+                            : 'text-red-400'
+                        }`}>
+                          {parseFloat(formatEther(BigInt(position.shareValue))) >= parseFloat(formatEther(BigInt(position.totalDeposited))) ? '+' : ''}
+                          {(parseFloat(formatEther(BigInt(position.shareValue))) - parseFloat(formatEther(BigInt(position.totalDeposited)))).toFixed(4)} SEI
                         </span>
                       </div>
                       <div className="p-3 rounded-xl" style={{
                         background: 'rgba(255, 255, 255, 0.05)',
                         border: '1px solid rgba(255, 255, 255, 0.1)'
                       }}>
-                        <span className="text-muted-foreground text-xs font-medium block mb-1">Deposited</span>
-                        <span className="font-bold text-white text-lg">
-                          ${parseFloat(formatEther(BigInt(position.totalDeposited))).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="p-3 rounded-xl" style={{
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.1)'
-                      }}>
-                        <span className="text-muted-foreground text-xs font-medium block mb-1">P&L</span>
+                        <span className="text-muted-foreground text-xs font-medium block mb-1">Return %</span>
                         <span className={`font-bold text-lg ${
                           parseFloat(formatEther(BigInt(position.shareValue))) >= parseFloat(formatEther(BigInt(position.totalDeposited)))
                             ? 'text-green-400'

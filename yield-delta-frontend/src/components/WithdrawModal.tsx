@@ -408,60 +408,64 @@ export default function WithdrawModal({
               </p>
             </div>
 
-            {/* User Position Summary */}
+            {/* User Position Summary - Simplified */}
             <div style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              border: '1px solid rgba(255, 255, 255, 0.12)',
-              backdropFilter: 'blur(8px)',
+              background: parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) 
+                ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(16, 185, 129, 0.04))'
+                : 'linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(239, 68, 68, 0.04))',
+              border: parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited)))
+                ? '2px solid rgba(16, 185, 129, 0.4)'
+                : '2px solid rgba(239, 68, 68, 0.4)',
+              backdropFilter: 'blur(12px)',
               boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
               borderRadius: '16px',
-              padding: '1rem',
+              padding: '1.25rem',
               marginBottom: '1rem'
             }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Your Shares</p>
-                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#ffffff' }}>{userSharesDisplay}</p>
-                  <p style={{ fontSize: '0.625rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '0.125rem' }}>Price: {parseFloat(userShares) > 0 ? (parseFloat(userValue) / parseFloat(formatEther(BigInt(userShares)))).toFixed(4) : '0.0000'} SEI/share</p>
+              <div style={{ marginBottom: '1rem' }}>
+                <p style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.5rem' }}>Your Position</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.25rem' }}>
+                  <span style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.8)' }}>Deposited</span>
+                  <span style={{ fontSize: '1rem', fontWeight: '600', color: '#ffffff' }}>
+                    {parseFloat(formatEther(BigInt(totalDeposited))).toFixed(4)} SEI
+                  </span>
                 </div>
-                <div>
-                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Amount Deposited</p>
-                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#ffffff' }}>{parseFloat(formatEther(BigInt(totalDeposited))).toFixed(4)} SEI</p>
-                  <p style={{ fontSize: '0.625rem', color: 'rgba(255, 255, 255, 0.5)', marginTop: '0.125rem' }}>Your original deposit</p>
-                </div>
-              </div>
-              <div style={{
-                background: parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) 
-                  ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.05))'
-                  : 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05))',
-                border: parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited)))
-                  ? '1px solid rgba(16, 185, 129, 0.3)'
-                  : '1px solid rgba(239, 68, 68, 0.3)',
-                borderRadius: '12px',
-                padding: '0.75rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <div>
-                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.125rem' }}>Current Withdrawal Value</p>
-                  <p style={{ fontSize: '1.25rem', fontWeight: '800', color: vaultColor }}>{userValueDisplay} SEI</p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)', marginBottom: '0.125rem' }}>Change</p>
-                  <p style={{ 
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                  <span style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.8)' }}>
+                    {parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) ? 'Profit' : 'Loss'}
+                  </span>
+                  <span style={{ 
                     fontSize: '1rem', 
                     fontWeight: '700',
                     color: parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) ? '#10b981' : '#ef4444'
                   }}>
                     {parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) ? '+' : ''}
                     {(parseFloat(userValue) - parseFloat(formatEther(BigInt(totalDeposited)))).toFixed(4)} SEI
-                  </p>
-                  <p style={{ fontSize: '0.625rem', color: 'rgba(255, 255, 255, 0.6)' }}>
-                    ({parseFloat(formatEther(BigInt(totalDeposited))) > 0 
+                  </span>
+                </div>
+              </div>
+              <div style={{
+                borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                paddingTop: '1rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <div>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>You will receive</p>
+                  <p style={{ fontSize: '1.5rem', fontWeight: '800', color: vaultColor }}>{userValueDisplay} SEI</p>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Return</p>
+                  <p style={{ 
+                    fontSize: '1.125rem', 
+                    fontWeight: '700',
+                    color: parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) ? '#10b981' : '#ef4444'
+                  }}>
+                    {parseFloat(formatEther(BigInt(totalDeposited))) > 0 
                       ? ((parseFloat(userValue) - parseFloat(formatEther(BigInt(totalDeposited)))) / parseFloat(formatEther(BigInt(totalDeposited))) * 100).toFixed(2)
                       : '0.00'
-                    }%)
+                    }%
                   </p>
                 </div>
               </div>
@@ -531,44 +535,52 @@ export default function WithdrawModal({
               </p>
             </div>
 
-            {/* Info Card */}
-            <div style={{
-              background: parseFloat(userValue) < parseFloat(formatEther(BigInt(totalDeposited)))
-                ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08))'
-                : 'linear-gradient(135deg, rgba(255, 193, 7, 0.15), rgba(255, 193, 7, 0.08))',
-              border: parseFloat(userValue) < parseFloat(formatEther(BigInt(totalDeposited)))
-                ? '1px solid rgba(239, 68, 68, 0.3)'
-                : '1px solid rgba(255, 193, 7, 0.3)',
-              backdropFilter: 'blur(12px)',
-              borderRadius: '16px',
-              padding: '1rem',
-              marginBottom: '1rem'
-            }}>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <Info style={{ width: '20px', height: '20px', color: parseFloat(userValue) < parseFloat(formatEther(BigInt(totalDeposited))) ? '#ef4444' : '#ffc107', flexShrink: 0, marginTop: '0.125rem' }} />
-                <div style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.9)' }}>
-                  {parseFloat(userValue) < parseFloat(formatEther(BigInt(totalDeposited))) ? (
-                    <>
-                      <p style={{ marginBottom: '0.5rem', lineHeight: '1.5', fontWeight: '600' }}>
-                        ⚠️ Current value is lower than your deposit
-                      </p>
-                      <p style={{ marginBottom: '0.5rem', lineHeight: '1.5', fontSize: '0.8rem' }}>
-                        You deposited <strong>{parseFloat(formatEther(BigInt(totalDeposited))).toFixed(4)} SEI</strong>, but your shares are currently worth <strong>{userValueDisplay} SEI</strong> due to changes in the vault's share price. This can happen when the vault's asset balance changes relative to total shares (e.g., other withdrawals, losses, or share price adjustments).
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <p style={{ marginBottom: '0.5rem', lineHeight: '1.5' }}>
-                        Withdrawing your {userSharesDisplay} shares will give you {userValueDisplay} SEI at the current share price.
-                      </p>
-                    </>
-                  )}
-                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.7)' }}>
-                    Current APY: {(vault.apy * 100).toFixed(2)}% • Share price: {parseFloat(userShares) > 0 ? (parseFloat(userValue) / parseFloat(formatEther(BigInt(userShares)))).toFixed(4) : '0.0000'} SEI per share
-                  </p>
+            {/* Info Card - Simplified */}
+            {parseFloat(userValue) < parseFloat(formatEther(BigInt(totalDeposited))) && (
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.08))',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                backdropFilter: 'blur(12px)',
+                borderRadius: '16px',
+                padding: '1rem',
+                marginBottom: '1rem'
+              }}>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <Info style={{ width: '20px', height: '20px', color: '#ef4444', flexShrink: 0, marginTop: '0.125rem' }} />
+                  <div style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                    <p style={{ marginBottom: '0.5rem', lineHeight: '1.5', fontWeight: '600' }}>
+                      ⚠️ Your position has decreased in value
+                    </p>
+                    <p style={{ lineHeight: '1.5', fontSize: '0.8rem' }}>
+                      This can happen due to market conditions, impermanent loss, or changes in the vault's performance. Your withdrawal amount reflects the current value of your position.
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+            
+            {parseFloat(userValue) >= parseFloat(formatEther(BigInt(totalDeposited))) && parseFloat(userValue) > parseFloat(formatEther(BigInt(totalDeposited))) && (
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0.08))',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                backdropFilter: 'blur(12px)',
+                borderRadius: '16px',
+                padding: '1rem',
+                marginBottom: '1rem'
+              }}>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <Info style={{ width: '20px', height: '20px', color: '#10b981', flexShrink: 0, marginTop: '0.125rem' }} />
+                  <div style={{ fontSize: '0.875rem', color: 'rgba(255, 255, 255, 0.9)' }}>
+                    <p style={{ marginBottom: '0.5rem', lineHeight: '1.5', fontWeight: '600' }}>
+                      🎉 Your position is profitable!
+                    </p>
+                    <p style={{ lineHeight: '1.5', fontSize: '0.8rem' }}>
+                      Your vault position has earned {((parseFloat(userValue) - parseFloat(formatEther(BigInt(totalDeposited)))) / parseFloat(formatEther(BigInt(totalDeposited))) * 100).toFixed(2)}% since your deposit.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Error Message */}
             {errorMessage && (
