@@ -1,6 +1,6 @@
 /**
  * Hook for managing token balances in SEI DLP
- * Supports both native SEI and ERC20 token balances
+ * Supports both native SEI and ERC20 token balance
  */
 
 import { useAccount, useBalance, useReadContract } from 'wagmi';
