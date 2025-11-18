@@ -8481,7 +8481,7 @@ var character = {
     secrets: {},
     avatar: "https://elizaos.github.io/eliza-avatars/Eliza/portrait.png"
   },
-  system: "You are Kairos, a DeFi AI agent specialized in SEI blockchain operations. You have direct access to real-time cryptocurrency prices through the SEI oracle provider, and can execute various DeFi strategies including token transfers, DEX trading, arbitrage, and portfolio management. When users ask about crypto prices, use your oracle provider to fetch current prices. You are knowledgeable about SEI Network, DragonSwap, YEI Finance, and advanced DeFi concepts like funding rate arbitrage, delta-neutral strategies, and IL protection. Always provide accurate, actionable DeFi advice.",
+  system: "You are Kairos, a DeFi AI agent specialized in SEI blockchain operations. You have direct access to real-time cryptocurrency prices through the SEI oracle provider which fetches dynamic prices from multiple sources: MockPriceFeed contracts, YEI Finance multi-oracle (API3, Pyth, Redstone), Binance CEX prices, with fallback to cached data. When users ask about crypto prices, you automatically retrieve live prices using the PRICE_QUERY action - never use hardcoded values. You can execute various DeFi strategies including token transfers, DEX trading, arbitrage, and portfolio management. You are knowledgeable about SEI Network, DragonSwap, YEI Finance, and advanced DeFi concepts like funding rate arbitrage, delta-neutral strategies, and IL protection. Always provide accurate, actionable DeFi advice with real-time data.",
   bio: [
     "DeFi AI agent specialized in SEI blockchain",
     "Real-time access to cryptocurrency prices via oracle providers",
@@ -8515,7 +8515,7 @@ var character = {
       {
         name: "Kairos",
         content: {
-          text: "Let me check the current SEI price for you. SEI is currently trading at $0.452 according to the latest oracle data."
+          text: "Let me check the current SEI price for you using the oracle provider. I will fetch the real-time price from our multi-oracle system which includes MockPriceFeed, YEI Finance oracles, and CEX data."
         }
       }
     ],
@@ -14512,46 +14512,29 @@ class SeiOracleProvider {
         return cached;
       }
       let price = null;
-      try {
-        const mockPrice = await this.getMockPriceFeedPrice(symbol);
-        if (mockPrice && mockPrice > 0) {
-          price = {
-            symbol,
-            price: mockPrice,
-            source: "mock-price-feed",
-            timestamp: Date.now(),
-            confidence: 0.99
-          };
-          elizaLogger2.info(`MockPriceFeed price for ${symbol}: $${mockPrice}`);
-        }
-      } catch (error) {
-        elizaLogger2.warn(`MockPriceFeed failed for ${symbol}, falling back to other oracles: ${error}`);
-      }
-      if (!price) {
-        const yeiSupportedSymbols = ["BTC", "ETH", "SEI", "USDC", "USDT"];
-        if (yeiSupportedSymbols.includes(symbol.toUpperCase())) {
-          try {
-            const yeiPrice = await this.getYeiPrice(symbol);
-            if (yeiPrice && yeiPrice > 0) {
-              price = {
-                symbol,
-                price: yeiPrice,
-                source: "yei-multi-oracle",
-                timestamp: Date.now(),
-                confidence: 0.95
-              };
-            }
-          } catch (error) {
-            elizaLogger2.warn(`YEI oracle failed for ${symbol}, falling back to other oracles: ${error}`);
+      const yeiSupportedSymbols = ["BTC", "ETH", "SEI", "USDC", "USDT"];
+      if (yeiSupportedSymbols.includes(symbol.toUpperCase())) {
+        try {
+          const yeiPrice = await this.getYeiPrice(symbol);
+          if (yeiPrice && yeiPrice > 0) {
+            price = {
+              symbol,
+              price: yeiPrice,
+              source: "yei-multi-oracle",
+              timestamp: Date.now(),
+              confidence: 0.95
+            };
           }
+        } catch (error) {
+          elizaLogger2.warn(`YEI oracle failed for ${symbol}, falling back to other oracles: ${error}`);
         }
-        if (!price)
-          price = await this.getPythPrice(symbol);
-        if (!price)
-          price = await this.getChainlinkPrice(symbol);
-        if (!price)
-          price = await this.getCexPrice(symbol);
       }
+      if (!price)
+        price = await this.getPythPrice(symbol);
+      if (!price)
+        price = await this.getChainlinkPrice(symbol);
+      if (!price)
+        price = await this.getCexPrice(symbol);
       if (price && !isNaN(price.price) && price.price > 0) {
         this.priceCache.set(symbol, price);
         return price;
@@ -14943,11 +14926,16 @@ class SeiOracleProvider {
     }
   }
 }
+var oracleInstance = null;
 var oracleProvider = {
   name: "seiOracle",
   get: async (runtime, message, state) => {
-    const provider = new SeiOracleProvider(runtime);
-    return provider.get(runtime, message, state);
+    if (!oracleInstance) {
+      oracleInstance = new SeiOracleProvider(runtime);
+      oracleInstance.startPriceUpdates();
+      elizaLogger2.info("SEI Oracle Provider initialized and price updates started");
+    }
+    return oracleInstance.get(runtime, message, state);
   }
 };
 
@@ -18041,6 +18029,196 @@ ${optimization.reasoning}`,
   ]
 };
 
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/price-query.ts
+import {
+  elizaLogger as elizaLogger13
+} from "@elizaos/core";
+var priceQueryAction = {
+  name: "PRICE_QUERY",
+  similes: [
+    "GET_PRICE",
+    "CHECK_PRICE",
+    "CRYPTO_PRICE",
+    "TOKEN_PRICE",
+    "MARKET_PRICE"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const priceKeywords = [
+      "price of",
+      "price for",
+      "current price",
+      "how much is",
+      "what is the price",
+      "what's the price",
+      "whats the price",
+      "sei price",
+      "btc price",
+      "eth price",
+      "usdc price",
+      "trading at",
+      "worth",
+      "value of",
+      "quote"
+    ];
+    const hasKeyword = priceKeywords.some((keyword) => content.includes(keyword));
+    const cryptoSymbols = ["sei", "btc", "eth", "usdc", "usdt", "sol", "avax", "atom"];
+    const mentionsSymbol = cryptoSymbols.some((symbol) => content.includes(symbol));
+    const contextWords = ["price", "cost", "worth", "value", "trading", "quote"];
+    const hasContext = contextWords.some((word) => content.includes(word));
+    return hasKeyword || mentionsSymbol && hasContext;
+  },
+  description: "Get real-time cryptocurrency prices from oracle providers",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger13.info("Price Query Action triggered");
+      const oracle = new SeiOracleProvider(runtime);
+      const content = message.content?.text || "";
+      const symbols = extractSymbols(content);
+      if (symbols.length === 0) {
+        if (callback) {
+          callback({
+            text: "I couldn't identify which cryptocurrency you're asking about. Please specify a symbol like SEI, BTC, ETH, or USDC.",
+            content: {
+              text: "I couldn't identify which cryptocurrency you're asking about. Please specify a symbol like SEI, BTC, ETH, or USDC.",
+              action: "PRICE_QUERY",
+              error: "No symbol identified"
+            }
+          });
+        }
+        return;
+      }
+      elizaLogger13.info(`Fetching prices for symbols: ${symbols.join(", ")}`);
+      const priceResults = await Promise.all(symbols.map(async (symbol) => {
+        try {
+          const price = await oracle.getPrice(symbol);
+          return { symbol, price, error: null };
+        } catch (error) {
+          elizaLogger13.error(`Failed to get price for ${symbol}: ${error}`);
+          return { symbol, price: null, error: error instanceof Error ? error.message : "Unknown error" };
+        }
+      }));
+      let response = "";
+      if (priceResults.length === 1) {
+        const result = priceResults[0];
+        if (result.price) {
+          response = `The current price of ${result.symbol.toUpperCase()} is $${result.price.price.toFixed(4)} (Source: ${result.price.source}, updated ${formatTimestamp(result.price.timestamp)})`;
+        } else {
+          response = `I'm unable to fetch the current price for ${result.symbol.toUpperCase()} at the moment. ${result.error ? `Error: ${result.error}` : "Please try again later."}`;
+        }
+      } else {
+        const successfulPrices = priceResults.filter((r) => r.price !== null);
+        const failedSymbols = priceResults.filter((r) => r.price === null);
+        if (successfulPrices.length > 0) {
+          response = `Here are the current cryptocurrency prices:
+
+`;
+          successfulPrices.forEach((result) => {
+            if (result.price) {
+              response += `${result.symbol.toUpperCase()}: $${result.price.price.toFixed(4)} (${result.price.source})
+`;
+            }
+          });
+          if (failedSymbols.length > 0) {
+            response += `
+Unable to fetch prices for: ${failedSymbols.map((r) => r.symbol.toUpperCase()).join(", ")}`;
+          }
+        } else {
+          response = "I'm unable to fetch cryptocurrency prices at the moment. Please try again later.";
+        }
+      }
+      elizaLogger13.info(`Price query response: ${response}`);
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "PRICE_QUERY",
+            prices: priceResults.filter((r) => r.price !== null).map((r) => ({
+              symbol: r.symbol,
+              price: r.price?.price,
+              source: r.price?.source,
+              timestamp: r.price?.timestamp
+            }))
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger13.error("Error in price query action:", error);
+      if (callback) {
+        callback({
+          text: "I encountered an error while fetching cryptocurrency prices. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "PRICE_QUERY"
+          }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What's the current price of SEI?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "The current price of SEI is $0.4520 (Source: mock-price-feed, updated just now)"
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "How much is BTC and ETH trading at?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Here are the current cryptocurrency prices:
+
+BTC: $45000.00 (mock-price-feed)
+ETH: $2500.00 (mock-price-feed)`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What is the price of SEI?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "The current price of SEI is $0.4520 (Source: mock-price-feed, updated just now)"
+        }
+      }
+    ]
+  ]
+};
+function extractSymbols(text) {
+  const normalizedText = text.toUpperCase();
+  const knownSymbols = ["BTC", "ETH", "SEI", "USDC", "USDT", "SOL", "AVAX", "ATOM", "DAI"];
+  const foundSymbols = knownSymbols.filter((symbol) => {
+    const regex = new RegExp(`\\b${symbol}\\b|${symbol}[/\\s,.]`, "i");
+    return regex.test(normalizedText);
+  });
+  return [...new Set(foundSymbols)];
+}
+function formatTimestamp(timestamp) {
+  const now = Date.now();
+  const diff = now - timestamp;
+  if (diff < 60000)
+    return "just now";
+  if (diff < 3600000)
+    return `${Math.floor(diff / 60000)} minutes ago`;
+  if (diff < 86400000)
+    return `${Math.floor(diff / 3600000)} hours ago`;
+  return `${Math.floor(diff / 86400000)} days ago`;
+}
+
 // node_modules/@elizaos/plugin-sei-yield-delta/src/evaluators/amm-risk.ts
 var ammRiskEvaluator = {
   name: "AMM_RISK_EVALUATOR",
@@ -18125,6 +18303,7 @@ var seiYieldDeltaPlugin = {
   name: "sei-yield-delta",
   description: "Advanced DeFi yield optimization and arbitrage strategies for SEI blockchain with IL protection",
   actions: [
+    priceQueryAction,
     transferAction,
     dragonSwapTradeAction,
     fundingArbitrageAction,
@@ -18166,5 +18345,5 @@ export {
   character
 };
 
-//# debugId=898896F88EC6149564756E2164756E21
+//# debugId=B033C68E13439E2364756E2164756E21
 //# sourceMappingURL=index.js.map
