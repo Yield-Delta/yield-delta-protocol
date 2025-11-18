@@ -304,49 +304,7 @@ export default function AIChat({
   const inputRef = useRef<HTMLInputElement>(null)
   const chatContainerRef = useRef<HTMLDivElement>(null)
 
-  // Enhanced auto-scroll with smooth behavior
-  useEffect(() => {
-    const scrollToBottom = () => {
-      if (messagesEndRef.current && chatContainerRef.current) {
-        const chatContainer = chatContainerRef.current
-        const isNearBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 50
-        
-        // Always auto-scroll for new messages, especially AI responses
-        const shouldScroll = isNearBottom || messages.length === 1 || 
-                           (messages.length > 0 && messages[messages.length - 1].sender === 'ai')
-        
-        if (shouldScroll) {
-          messagesEndRef.current.scrollIntoView({ 
-            behavior: 'smooth',
-            block: 'end' 
-          })
-        }
-      }
-    }
-
-    // Delay scroll to allow for message animation
-    const timeoutId = setTimeout(scrollToBottom, 150)
-    return () => clearTimeout(timeoutId)
-  }, [messages])
-
-  // Check agent status on mount and initialize with greeting
-  useEffect(() => {
-    checkAgentStatus()
-    // Check status every 30 seconds
-    const interval = setInterval(checkAgentStatus, 30000)
-    return () => clearInterval(interval)
-  }, [checkAgentStatus])
-
-  // Get or create user ID on mount
-  useEffect(() => {
-    let currentUserId = localStorage.getItem('yd-chat-user-id');
-    if (!currentUserId) {
-      currentUserId = crypto.randomUUID();
-      localStorage.setItem('yd-chat-user-id', currentUserId);
-    }
-    setUserId(currentUserId);
-  }, []);
-
+  // Define checkAgentStatus before it's used in useEffect
   const checkAgentStatus = useCallback(async () => {
     try {
       const response = await fetch('/api/eliza/chat')
@@ -400,6 +358,49 @@ export default function AIChat({
       }
     }
   }, [messages.length, initialMessage])
+
+  // Enhanced auto-scroll with smooth behavior
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (messagesEndRef.current && chatContainerRef.current) {
+        const chatContainer = chatContainerRef.current
+        const isNearBottom = chatContainer.scrollTop + chatContainer.clientHeight >= chatContainer.scrollHeight - 50
+        
+        // Always auto-scroll for new messages, especially AI responses
+        const shouldScroll = isNearBottom || messages.length === 1 || 
+                           (messages.length > 0 && messages[messages.length - 1].sender === 'ai')
+        
+        if (shouldScroll) {
+          messagesEndRef.current.scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'end' 
+          })
+        }
+      }
+    }
+
+    // Delay scroll to allow for message animation
+    const timeoutId = setTimeout(scrollToBottom, 150)
+    return () => clearTimeout(timeoutId)
+  }, [messages])
+
+  // Check agent status on mount and initialize with greeting
+  useEffect(() => {
+    checkAgentStatus()
+    // Check status every 30 seconds
+    const interval = setInterval(checkAgentStatus, 30000)
+    return () => clearInterval(interval)
+  }, [checkAgentStatus])
+
+  // Get or create user ID on mount
+  useEffect(() => {
+    let currentUserId = localStorage.getItem('yd-chat-user-id');
+    if (!currentUserId) {
+      currentUserId = crypto.randomUUID();
+      localStorage.setItem('yd-chat-user-id', currentUserId);
+    }
+    setUserId(currentUserId);
+  }, []);
 
   const sendMessage = async () => {
     if (!inputMessage.trim() || isLoading || !userId) return
