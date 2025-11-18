@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Loader2, ArrowRight, Info, Shield, TrendingDown, X } from 'lucide-react';
 import { useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits, formatEther } from 'viem';
@@ -49,9 +50,12 @@ export default function WithdrawModal({
   userShares = '0',
   userValue = '0'
 }: WithdrawModalProps) {
+  console.log('[WithdrawModal] Component called with:', { isOpen, vault: vault?.name });
+  
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   const { address, isConnected } = useAccount();
   const addNotification = useAppStore((state) => state.addNotification);
@@ -67,6 +71,11 @@ export default function WithdrawModal({
     confirmations: 2,
     timeout: 60_000,
   });
+
+  // Set mounted state for client-side rendering
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Reset form when modal opens
   useEffect(() => {
@@ -104,7 +113,49 @@ export default function WithdrawModal({
     }
   }, [isError, isReceiptError, error, addNotification]);
 
-  if (!vault || !isOpen) return null;
+  // Debug: Inspect modal DOM when it should be visible
+  useEffect(() => {
+    if (isOpen && isMounted) {
+      setTimeout(() => {
+        const modal = document.getElementById('withdraw-modal-overlay');
+        console.log('[WithdrawModal] Modal element:', modal);
+        if (modal) {
+          const rect = modal.getBoundingClientRect();
+          const styles = window.getComputedStyle(modal);
+          console.log('[WithdrawModal] Modal rect:', rect);
+          console.log('[WithdrawModal] Modal styles:', {
+            display: styles.display,
+            visibility: styles.visibility,
+            opacity: styles.opacity,
+            position: styles.position,
+            zIndex: styles.zIndex,
+            top: styles.top,
+            left: styles.left,
+            width: styles.width,
+            height: styles.height,
+          });
+          console.log('[WithdrawModal] Modal parent:', modal.parentElement);
+        }
+      }, 200);
+    }
+  }, [isOpen, isMounted]);
+
+  console.log('[WithdrawModal] Render:', { vault: !!vault, isOpen, isMounted });
+
+  if (!vault) {
+    return null;
+  }
+  
+  if (!isOpen) {
+    return null;
+  }
+
+  // Don't render on server or if not mounted
+  if (!isMounted) {
+    return null;
+  }
+
+  console.log('[WithdrawModal] Rendering modal content');
 
   const vaultColor = getVaultColor(vault.strategy);
 
@@ -154,12 +205,40 @@ export default function WithdrawModal({
   const userSharesDisplay = parseFloat(formatEther(BigInt(userShares))).toFixed(4);
   const userValueDisplay = parseFloat(userValue).toFixed(2);
 
+  // TEST: Return a super simple modal to verify rendering works
   return (
     <div
+      id="withdraw-modal-overlay"
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 0, 0, 0.95)',
+        zIndex: 999999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+      onClick={onClose}
+    >
+      <div style={{ background: 'white', padding: '40px', borderRadius: '20px' }}>
+        <h2 style={{ color: 'black', fontSize: '24px' }}>WITHDRAW MODAL TEST</h2>
+        <p style={{ color: 'black' }}>If you see this, the modal IS rendering!</p>
+        <button onClick={onClose} style={{ padding: '10px 20px', marginTop: '20px' }}>Close</button>
+      </div>
+    </div>
+  );
+
+  /* ORIGINAL MODAL CODE - TEMPORARILY DISABLED
+  const modalContent = (
+    <div
+      id="withdraw-modal-overlay"
       className="fixed inset-0 z-[99999] flex items-center justify-center"
       style={{
-        background: 'rgba(0, 0, 0, 0.8)',
-        backdropFilter: 'blur(8px)',
+        background: 'rgba(0, 0, 0, 0.85)',
+        backdropFilter: 'blur(12px)',
       }}
       onClick={onClose}
     >
@@ -237,11 +316,12 @@ export default function WithdrawModal({
               </label>
               <button
                 onClick={handleMaxWithdraw}
-                className="text-xs font-medium px-3 py-1 rounded-full transition-all duration-200"
+                className="text-xs font-bold px-4 py-1.5 rounded-full transition-all duration-200 hover:scale-105 active:scale-95"
                 style={{
-                  background: `linear-gradient(135deg, ${vaultColor}30, ${vaultColor}20)`,
-                  border: `1px solid ${vaultColor}50`,
+                  background: `linear-gradient(135deg, ${vaultColor}40, ${vaultColor}30)`,
+                  border: `1px solid ${vaultColor}60`,
                   color: vaultColor,
+                  boxShadow: `0 2px 8px ${vaultColor}20`,
                 }}
               >
                 MAX
@@ -253,7 +333,10 @@ export default function WithdrawModal({
               onChange={(e) => setWithdrawAmount(e.target.value)}
               placeholder="0.0"
               disabled={transactionStatus === 'pending'}
-              className="w-full px-4 py-3 rounded-xl text-lg font-medium text-white bg-white/5 border border-white/10 focus:border-white/30 focus:outline-none transition-all duration-200"
+              className="w-full px-5 py-4 rounded-xl text-xl font-semibold text-white bg-white/5 border border-white/10 focus:border-white/30 focus:bg-white/10 focus:outline-none transition-all duration-200 placeholder:text-white/30"
+              style={{
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+              }}
             />
             <p className="text-xs text-white/50 mt-2">
               Available: {userSharesDisplay} shares
@@ -330,7 +413,7 @@ export default function WithdrawModal({
             <button
               onClick={onClose}
               disabled={transactionStatus === 'pending'}
-              className="flex-1 px-6 py-3 rounded-xl font-medium text-white transition-all duration-200"
+              className="flex-1 px-6 py-4 rounded-xl font-semibold text-white transition-all duration-200 hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 background: 'rgba(255, 255, 255, 0.1)',
                 border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -347,10 +430,12 @@ export default function WithdrawModal({
                 !withdrawAmount ||
                 parseFloat(withdrawAmount) <= 0
               }
-              className="flex-1 px-6 py-3 rounded-xl font-bold text-black transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+              className="flex-1 px-6 py-4 rounded-xl font-bold transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               style={{
                 background: `linear-gradient(135deg, ${vaultColor}, ${vaultColor}DD)`,
-                boxShadow: `0 0 30px ${vaultColor}40`,
+                color: '#000000',
+                boxShadow: `0 0 30px ${vaultColor}40, 0 4px 12px rgba(0, 0, 0, 0.3)`,
+                border: `1px solid ${vaultColor}`,
               }}
             >
               {transactionStatus === 'pending' ? (
@@ -372,4 +457,11 @@ export default function WithdrawModal({
       </div>
     </div>
   );
+
+  console.log('[WithdrawModal] modalContent created:', !!modalContent);
+  console.log('[WithdrawModal] About to return modalContent');
+  
+  // Render modal directly (portal was causing issues)
+  return modalContent;
+  */
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Loader2, ArrowRight, Info, Shield, TrendingUp, Coins, Vault, DollarSign, Percent, CheckCircle2, Zap } from 'lucide-react';
 import { useEnhancedVaultDeposit } from '@/hooks/useEnhancedVaultDeposit';
 import { 
@@ -86,6 +87,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   const [transactionStatus, setTransactionStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
+  
   // Get actual wallet connection
   const { address, isConnected } = useAccount();
   
@@ -93,6 +96,11 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   
   // State for selected deposit token
   const [selectedToken, setSelectedToken] = useState<string>('');
+
+  // Set mounted state for client-side rendering
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Only create deposit mutation if vault has valid data
   const vaultData = vault && vault.address && vault.tokenA && vault.tokenB && vault.strategy ? {
@@ -237,6 +245,11 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
     return null;
   }
 
+  // Don't render on server or if not mounted
+  if (!isMounted) {
+    return null;
+  }
+
   const vaultColor = getVaultColor(vault.strategy);
   const riskLevel = getRiskLevel(vault.apy, vault.strategy);
   const isValidAmount = depositAmount && parseFloat(depositAmount) > 0;
@@ -323,7 +336,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
     }
   };
   
-  return (
+  const modalContent = (
     <>
       <style jsx>{`
         @keyframes modalEnter {
@@ -1396,4 +1409,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
     </div>
     </>
   );
+
+  // Render modal directly (portal was causing issues)
+  return modalContent;
 }

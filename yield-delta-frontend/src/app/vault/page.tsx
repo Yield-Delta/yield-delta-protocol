@@ -151,6 +151,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   };
 
   return (
+    <>
     <div 
       className="min-h-screen bg-background relative vault-page" 
       style={{
@@ -266,10 +267,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 {/* Deposit Button */}
                 <button
                   className="vault-action-button"
-                  onClick={() => {
-                    console.log('[VaultDetail] Deposit button clicked');
-                    setShowDepositModal(true);
-                  }}
+                  onClick={() => setShowDepositModal(true)}
                   style={{
                     background: `linear-gradient(135deg, ${vaultColor}F0, ${vaultColor}DD, ${vaultColor}CC)`,
                     color: '#000000',
@@ -326,7 +324,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   <button
                     className="vault-action-button"
                     onClick={() => {
-                      console.log('[VaultDetail] Withdraw button clicked');
+                      console.log('[VaultDetail] Withdraw clicked');
                       setShowWithdrawModal(true);
                     }}
                     style={{
@@ -1135,26 +1133,26 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
           </Tabs>
         </div> {/* Close unified vault-layout-container */}
       </div>
-
-      {/* Deposit Modal */}
-      <DepositModal
-        vault={vault}
-        isOpen={showDepositModal}
-        onClose={() => setShowDepositModal(false)}
-        onSuccess={handleDepositSuccess}
-      />
-
-      {/* Withdraw Modal */}
-      <WithdrawModal
-        vault={vault}
-        isOpen={showWithdrawModal}
-        onClose={() => setShowWithdrawModal(false)}
-        onSuccess={handleWithdrawSuccess}
-        userShares={position?.shares || '0'}
-        userValue={position ? formatEther(BigInt(position.shareValue)) : '0'}
-      />
-
     </div>
+    
+    {/* Modals rendered outside main container */}
+    <DepositModal
+      vault={vault}
+      isOpen={showDepositModal}
+      onClose={() => setShowDepositModal(false)}
+      onSuccess={handleDepositSuccess}
+    />
+
+    {console.log('[VaultDetail] showWithdrawModal:', showWithdrawModal, 'vault:', vault?.name)}
+    <WithdrawModal
+      vault={vault}
+      isOpen={showWithdrawModal}
+      onClose={() => setShowWithdrawModal(false)}
+      onSuccess={handleWithdrawSuccess}
+      userShares={position?.shares || '0'}
+      userValue={position && position.shareValue ? formatEther(BigInt(position.shareValue)) : '0'}
+    />
+    </>
   );
 }
 
