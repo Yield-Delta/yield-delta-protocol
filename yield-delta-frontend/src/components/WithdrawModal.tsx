@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Loader2, ArrowRight, Info, Shield, TrendingDown, X } from 'lucide-react';
+import { Loader2, ArrowRight, Info, Shield, TrendingDown } from 'lucide-react';
 import { useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits, formatEther } from 'viem';
 import { useAppStore } from '@/stores/appStore';
@@ -60,7 +60,7 @@ export default function WithdrawModal({
   const addNotification = useAppStore((state) => state.addNotification);
 
   // Fetch user's SEI balance for gas fee validation
-  const seiBalance = useTokenBalance('SEI');
+  const _seiBalance = useTokenBalance('SEI');
 
   // Ensure component is mounted (client-side)
   useEffect(() => {

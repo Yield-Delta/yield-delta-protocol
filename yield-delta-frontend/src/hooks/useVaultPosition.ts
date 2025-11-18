@@ -14,6 +14,16 @@ interface VaultPosition {
   lockTimeRemaining: string;
 }
 
+interface ContractData {
+  shares?: bigint;
+  shareValue?: bigint;
+  totalDeposited?: bigint;
+  totalWithdrawn?: bigint;
+  depositTime?: bigint;
+  lockTimeRemaining?: bigint;
+  [key: number]: bigint | undefined;
+}
+
 export function useVaultPosition(vaultAddress: string) {
   const { address: userAddress } = useAccount();
 
@@ -31,36 +41,37 @@ export function useVaultPosition(vaultAddress: string) {
   // Parse the data if available
   // Note: wagmi returns tuple data as an array-like object with both numeric indices and named properties
   // IMPORTANT: We prioritize named properties over indices to avoid confusion
-  const position: VaultPosition | null = data ? {
-    shares: ((data as any).shares ?? (data as any)[0] ?? 0n).toString(),
-    shareValue: ((data as any).shareValue ?? (data as any)[1] ?? 0n).toString(),
-    totalDeposited: ((data as any).totalDeposited ?? (data as any)[2] ?? 0n).toString(),
-    totalWithdrawn: ((data as any).totalWithdrawn ?? (data as any)[3] ?? 0n).toString(),
-    depositTime: ((data as any).depositTime ?? (data as any)[4] ?? 0n).toString(),
-    lockTimeRemaining: ((data as any).lockTimeRemaining ?? (data as any)[5] ?? 0n).toString(),
+  const contractData = data as ContractData | undefined;
+  const position: VaultPosition | null = contractData ? {
+    shares: (contractData.shares ?? contractData[0] ?? 0n).toString(),
+    shareValue: (contractData.shareValue ?? contractData[1] ?? 0n).toString(),
+    totalDeposited: (contractData.totalDeposited ?? contractData[2] ?? 0n).toString(),
+    totalWithdrawn: (contractData.totalWithdrawn ?? contractData[3] ?? 0n).toString(),
+    depositTime: (contractData.depositTime ?? contractData[4] ?? 0n).toString(),
+    lockTimeRemaining: (contractData.lockTimeRemaining ?? contractData[5] ?? 0n).toString(),
   } : null;
 
   // Debug logging
-  if (data) {
+  if (contractData) {
     console.log('[useVaultPosition] ===== CONTRACT DATA =====');
     console.log('[useVaultPosition] Raw contract data:', data);
     console.log('[useVaultPosition] Data type:', typeof data);
     console.log('[useVaultPosition] Is Array?:', Array.isArray(data));
-    console.log('[useVaultPosition] Data keys:', Object.keys(data));
+    console.log('[useVaultPosition] Data keys:', data ? Object.keys(data as object) : []);
     console.log('[useVaultPosition] ===== NUMERIC INDICES =====');
-    console.log('[useVaultPosition] [0] (should be shares):', (data as any)[0]?.toString());
-    console.log('[useVaultPosition] [1] (should be shareValue):', (data as any)[1]?.toString());
-    console.log('[useVaultPosition] [2] (should be totalDeposited):', (data as any)[2]?.toString());
-    console.log('[useVaultPosition] [3] (should be totalWithdrawn):', (data as any)[3]?.toString());
-    console.log('[useVaultPosition] [4] (should be depositTime):', (data as any)[4]?.toString());
-    console.log('[useVaultPosition] [5] (should be lockTimeRemaining):', (data as any)[5]?.toString());
+    console.log('[useVaultPosition] [0] (should be shares):', contractData[0]?.toString());
+    console.log('[useVaultPosition] [1] (should be shareValue):', contractData[1]?.toString());
+    console.log('[useVaultPosition] [2] (should be totalDeposited):', contractData[2]?.toString());
+    console.log('[useVaultPosition] [3] (should be totalWithdrawn):', contractData[3]?.toString());
+    console.log('[useVaultPosition] [4] (should be depositTime):', contractData[4]?.toString());
+    console.log('[useVaultPosition] [5] (should be lockTimeRemaining):', contractData[5]?.toString());
     console.log('[useVaultPosition] ===== NAMED PROPERTIES =====');
-    console.log('[useVaultPosition] .shares:', (data as any).shares?.toString());
-    console.log('[useVaultPosition] .shareValue:', (data as any).shareValue?.toString());
-    console.log('[useVaultPosition] .totalDeposited:', (data as any).totalDeposited?.toString());
-    console.log('[useVaultPosition] .totalWithdrawn:', (data as any).totalWithdrawn?.toString());
-    console.log('[useVaultPosition] .depositTime:', (data as any).depositTime?.toString());
-    console.log('[useVaultPosition] .lockTimeRemaining:', (data as any).lockTimeRemaining?.toString());
+    console.log('[useVaultPosition] .shares:', contractData.shares?.toString());
+    console.log('[useVaultPosition] .shareValue:', contractData.shareValue?.toString());
+    console.log('[useVaultPosition] .totalDeposited:', contractData.totalDeposited?.toString());
+    console.log('[useVaultPosition] .totalWithdrawn:', contractData.totalWithdrawn?.toString());
+    console.log('[useVaultPosition] .depositTime:', contractData.depositTime?.toString());
+    console.log('[useVaultPosition] .lockTimeRemaining:', contractData.lockTimeRemaining?.toString());
 
     if (position) {
       console.log('[useVaultPosition] ===== PARSED POSITION =====');
