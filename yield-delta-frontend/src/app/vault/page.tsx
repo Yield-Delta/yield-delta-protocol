@@ -12,8 +12,11 @@ import gsap from 'gsap';
 import { useVaultStore } from '@/stores/vaultStore';
 import { useVaults } from '@/hooks/useVaults';
 import DepositModal from '@/components/DepositModal';
+import WithdrawModal from '@/components/WithdrawModal';
 import VaultClientWrapper from '@/components/VaultClientWrapper';
 import TokenPairDisplay from '@/components/TokenPairDisplay';
+import { useVaultPosition } from '@/hooks/useVaultPosition';
+import { formatEther } from 'viem';
 
 // Utility functions
 const formatCurrency = (amount: number) => {
@@ -76,10 +79,16 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   
   // State
   const [showDepositModal, setShowDepositModal] = useState(action === 'deposit');
-  
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+
   // Store and API hooks
   const { selectedVault, setSelectedVault, getVaultByAddress } = useVaultStore();
   const { data: vaultsData, isLoading } = useVaults();
+
+  // Get user's position in this vault
+  const { position, hasPosition, isLoading: positionLoading } = useVaultPosition(
+    vaultAddress || ''
+  );
   
   // Get vault data
   const vault = selectedVault || (vaultAddress ? getVaultByAddress(vaultAddress) : null);
@@ -134,6 +143,11 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   const handleDepositSuccess = (txHash: string) => {
     console.log('Deposit successful:', txHash);
     setShowDepositModal(false);
+  };
+
+  const handleWithdrawSuccess = (txHash: string) => {
+    console.log('Withdrawal successful:', txHash);
+    setShowWithdrawModal(false);
   };
 
   return (
@@ -209,19 +223,21 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 }}
               />
 
-              {/* Deposit Button - Enhanced Fixed Positioning with Mobile Optimization */}
-              <div 
-                className="vault-deposit-button-wrapper"
-                style={{ 
-                  position: 'absolute', 
-                  top: '1rem', 
-                  right: '1rem', 
-                  zIndex: 100
+              {/* Action Buttons - Deposit & Withdraw */}
+              <div
+                className="vault-action-buttons-wrapper"
+                style={{
+                  position: 'absolute',
+                  top: '1rem',
+                  right: '1rem',
+                  zIndex: 100,
+                  display: 'flex',
+                  gap: '0.75rem'
                 }}
               >
                 <style jsx>{`
                   @media (max-width: 768px) {
-                    .vault-deposit-button-wrapper {
+                    .vault-action-buttons-wrapper {
                       position: relative !important;
                       top: auto !important;
                       right: auto !important;
@@ -229,26 +245,29 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                       display: flex !important;
                       justify-content: center !important;
                       width: 100% !important;
+                      flex-wrap: wrap !important;
                     }
-                    .vault-deposit-enhanced-v2 {
-                      width: calc(100% - 2rem) !important;
-                      max-width: 280px !important;
+                    .vault-action-button {
+                      flex: 1 !important;
+                      min-width: 140px !important;
+                      max-width: 200px !important;
                       height: 48px !important;
-                      fontSize: 0.9rem !important;
+                      font-size: 0.9rem !important;
                     }
                   }
                   @media (max-width: 480px) {
-                    .vault-deposit-enhanced-v2 {
-                      width: calc(100% - 1rem) !important;
+                    .vault-action-button {
+                      min-width: 120px !important;
                       height: 44px !important;
-                      fontSize: 0.85rem !important;
+                      font-size: 0.85rem !important;
                     }
                   }
                 `}</style>
+                {/* Deposit Button */}
                 <button
-                  className="vault-deposit-enhanced-v2"
+                  className="vault-action-button"
                   onClick={() => {
-                    console.log('[VaultDetail] Enhanced Deposit button clicked');
+                    console.log('[VaultDetail] Deposit button clicked');
                     setShowDepositModal(true);
                   }}
                   style={{
@@ -256,14 +275,14 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                     color: '#000000',
                     border: `2px solid ${vaultColor}`,
                     boxShadow: `
-                      0 8px 32px ${vaultColor}50, 
-                      0 0 40px ${vaultColor}30, 
+                      0 8px 32px ${vaultColor}50,
+                      0 0 40px ${vaultColor}30,
                       0 0 0 1px rgba(255,255,255,0.4) inset,
                       0 4px 16px rgba(0,0,0,0.3)
                     `,
-                    width: '180px',
+                    width: '160px',
                     height: '56px',
-                    fontSize: '1rem',
+                    fontSize: '0.95rem',
                     fontWeight: '900',
                     borderRadius: '16px',
                     textShadow: '0 1px 3px rgba(0,0,0,0.7)',
@@ -283,8 +302,8 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-3px) scale(1.05)';
                     e.currentTarget.style.boxShadow = `
-                      0 12px 48px ${vaultColor}60, 
-                      0 0 60px ${vaultColor}40, 
+                      0 12px 48px ${vaultColor}60,
+                      0 0 60px ${vaultColor}40,
                       0 0 0 1px rgba(255,255,255,0.5) inset,
                       0 6px 24px rgba(0,0,0,0.4)
                     `;
@@ -292,29 +311,75 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = 'translateY(0) scale(1)';
                     e.currentTarget.style.boxShadow = `
-                      0 8px 32px ${vaultColor}50, 
-                      0 0 40px ${vaultColor}30, 
+                      0 8px 32px ${vaultColor}50,
+                      0 0 40px ${vaultColor}30,
                       0 0 0 1px rgba(255,255,255,0.4) inset,
                       0 4px 16px rgba(0,0,0,0.3)
                     `;
                   }}
                 >
-                  <span style={{ position: 'relative', zIndex: 2 }}>Deposit Funds</span>
-                  {/* Button shine effect */}
-                  <div 
-                    style={{
-                      position: 'absolute',
-                      top: '0',
-                      left: '-100%',
-                      width: '100%',
-                      height: '100%',
-                      background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
-                      transition: 'left 0.6s ease',
-                      pointerEvents: 'none'
-                    }}
-                    className="button-shine"
-                  />
+                  <span style={{ position: 'relative', zIndex: 2 }}>Deposit</span>
                 </button>
+
+                {/* Withdraw Button - Only show if user has a position */}
+                {hasPosition && (
+                  <button
+                    className="vault-action-button"
+                    onClick={() => {
+                      console.log('[VaultDetail] Withdraw button clicked');
+                      setShowWithdrawModal(true);
+                    }}
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9))',
+                      color: '#ffffff',
+                      border: '2px solid rgba(239, 68, 68, 0.6)',
+                      boxShadow: `
+                        0 8px 32px rgba(239, 68, 68, 0.4),
+                        0 0 40px rgba(239, 68, 68, 0.2),
+                        0 0 0 1px rgba(255,255,255,0.4) inset,
+                        0 4px 16px rgba(0,0,0,0.3)
+                      `,
+                      width: '160px',
+                      height: '56px',
+                      fontSize: '0.95rem',
+                      fontWeight: '900',
+                      borderRadius: '16px',
+                      textShadow: '0 1px 3px rgba(0,0,0,0.7)',
+                      backdropFilter: 'blur(12px)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                      letterSpacing: '0.5px',
+                      textTransform: 'uppercase',
+                      fontFamily: 'inherit',
+                      outline: 'none',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-3px) scale(1.05)';
+                      e.currentTarget.style.boxShadow = `
+                        0 12px 48px rgba(239, 68, 68, 0.5),
+                        0 0 60px rgba(239, 68, 68, 0.3),
+                        0 0 0 1px rgba(255,255,255,0.5) inset,
+                        0 6px 24px rgba(0,0,0,0.4)
+                      `;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                      e.currentTarget.style.boxShadow = `
+                        0 8px 32px rgba(239, 68, 68, 0.4),
+                        0 0 40px rgba(239, 68, 68, 0.2),
+                        0 0 0 1px rgba(255,255,255,0.4) inset,
+                        0 4px 16px rgba(0,0,0,0.3)
+                      `;
+                    }}
+                  >
+                    <span style={{ position: 'relative', zIndex: 2 }}>Withdraw</span>
+                  </button>
+                )}
               </div>
 
               {/* Header Content with Compact Spacing */}
@@ -746,6 +811,76 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
 
             <TabsContent value="overview">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* User Position Card - Only show if user has a position */}
+                {hasPosition && position && (
+                  <Card className="vault-solid-card relative z-10 lg:col-span-2" style={{
+                    background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid rgba(34, 197, 94, 0.3)',
+                    borderRadius: '20px',
+                    boxShadow: '0 20px 40px rgba(34, 197, 94, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1) inset'
+                  }}>
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex items-center gap-3 text-green-400 text-xl font-bold">
+                        <div className="p-2 rounded-lg" style={{
+                          background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.15))',
+                          border: '1px solid rgba(34, 197, 94, 0.4)'
+                        }}>
+                          <Coins className="w-5 h-5 text-green-400" />
+                        </div>
+                        Your Position
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="p-3 rounded-xl" style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <span className="text-muted-foreground text-xs font-medium block mb-1">Shares</span>
+                        <span className="font-bold text-white text-lg">
+                          {parseFloat(formatEther(BigInt(position.shares))).toFixed(4)}
+                        </span>
+                      </div>
+                      <div className="p-3 rounded-xl" style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <span className="text-muted-foreground text-xs font-medium block mb-1">Value</span>
+                        <span className="font-bold text-green-400 text-lg" style={{
+                          textShadow: '0 0 15px rgba(34, 197, 94, 0.4)'
+                        }}>
+                          ${parseFloat(formatEther(BigInt(position.shareValue))).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="p-3 rounded-xl" style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <span className="text-muted-foreground text-xs font-medium block mb-1">Deposited</span>
+                        <span className="font-bold text-white text-lg">
+                          ${parseFloat(formatEther(BigInt(position.totalDeposited))).toFixed(2)}
+                        </span>
+                      </div>
+                      <div className="p-3 rounded-xl" style={{
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <span className="text-muted-foreground text-xs font-medium block mb-1">P&L</span>
+                        <span className={`font-bold text-lg ${
+                          parseFloat(formatEther(BigInt(position.shareValue))) >= parseFloat(formatEther(BigInt(position.totalDeposited)))
+                            ? 'text-green-400'
+                            : 'text-red-400'
+                        }`}>
+                          {(
+                            ((parseFloat(formatEther(BigInt(position.shareValue))) - parseFloat(formatEther(BigInt(position.totalDeposited)))) /
+                            parseFloat(formatEther(BigInt(position.totalDeposited)))) * 100
+                          ).toFixed(2)}%
+                        </span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
                 {/* Performance Metrics - Enhanced */}
                 <Card className="vault-solid-card relative z-10" style={{
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
@@ -1007,6 +1142,16 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
         isOpen={showDepositModal}
         onClose={() => setShowDepositModal(false)}
         onSuccess={handleDepositSuccess}
+      />
+
+      {/* Withdraw Modal */}
+      <WithdrawModal
+        vault={vault}
+        isOpen={showWithdrawModal}
+        onClose={() => setShowWithdrawModal(false)}
+        onSuccess={handleWithdrawSuccess}
+        userShares={position?.shares || '0'}
+        userValue={position ? formatEther(BigInt(position.shareValue)) : '0'}
       />
 
     </div>

@@ -1,8 +1,18 @@
 'use client'
 
 import PerformanceCard from '@/components/PerformanceCard';
+import { useVaultStats } from '@/hooks/useVaultStats';
 
 export default function PerformanceMetrics() {
+    const { totalTVL, averageAPY, activeVaultsCount, isLoading } = useVaultStats();
+
+    // Format TVL for display
+    const formatTVL = (amount: number) => {
+        if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
+        if (amount >= 1000) return `$${(amount / 1000).toFixed(1)}K`;
+        return `$${amount.toFixed(0)}`;
+    };
+
     return (
         <section className="py-12 md:py-16 lg:py-20 relative" style={{ paddingTop: 'clamp(3rem, 6vw, 5rem)', paddingBottom: 'clamp(3rem, 6vw, 5rem)' }}>
             <div className="container mx-auto px-4">
@@ -39,16 +49,16 @@ export default function PerformanceMetrics() {
                     className="flex flex-col md:flex-row md:flex-wrap gap-6 md:gap-8 lg:gap-10 max-w-7xl mx-auto px-4 sm:px-6 justify-center items-center md:items-stretch"
                 >
                     <PerformanceCard
-                        metric="24.5%"
+                        metric={isLoading ? 'Loading...' : `${(averageAPY * 100).toFixed(1)}%`}
                         description="Average APY"
-                        comparison="+12.3% from last month"
+                        comparison="Real-time vault data"
                         color="#00f5d4"
                         positive={true}
                     />
                     <PerformanceCard
-                        metric="$8.3M"
+                        metric={isLoading ? 'Loading...' : formatTVL(totalTVL)}
                         description="Total Value Locked"
-                        comparison="+18% this week"
+                        comparison="Across all vaults"
                         color="#9b5de5"
                         positive={true}
                     />
@@ -74,9 +84,9 @@ export default function PerformanceMetrics() {
                         positive={true}
                     />
                     <PerformanceCard
-                        metric="127"
-                        description="Active Strategies"
-                        comparison="Continuously optimizing"
+                        metric={isLoading ? 'Loading...' : activeVaultsCount.toString()}
+                        description="Active Vaults"
+                        comparison="Live on SEI testnet"
                         color="#ff9800"
                         positive={true}
                     />

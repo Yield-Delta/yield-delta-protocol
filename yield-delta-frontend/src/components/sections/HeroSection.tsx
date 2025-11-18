@@ -9,11 +9,26 @@ import DebugEnv from '@/components/DebugEnv';
 import glassCardStyles from '@/components/GlassCard.module.css';
 import heroStyles from '@/components/Hero.module.css';
 import gsap from 'gsap';
+import { useVaultStats } from '@/hooks/useVaultStats';
 
 export default function HeroSection() {
     const heroTextRef = useRef<HTMLDivElement>(null);
     const ctaRef = useRef<HTMLDivElement>(null);
     const statsRef = useRef<HTMLDivElement>(null);
+
+    // Get real vault statistics
+    const { totalTVL, averageAPY, isLoading } = useVaultStats();
+
+    // Format numbers for display
+    const formatTVL = (amount: number) => {
+        if (amount >= 1000000) return `$${(amount / 1000000).toFixed(1)}M`;
+        if (amount >= 1000) return `$${(amount / 1000).toFixed(1)}K`;
+        return `$${amount.toFixed(0)}`;
+    };
+
+    const formatAPY = (apy: number) => {
+        return `${(apy * 100).toFixed(1)}%`;
+    };
 
     useEffect(() => {
         if (heroTextRef.current) {
@@ -160,8 +175,8 @@ export default function HeroSection() {
                         <div className="hidden md:block">
                             <div className={heroStyles.heroStatsContainer}>
                                 {[
-                                    { value: '$8.3M', label: 'Total TVL' },
-                                    { value: '18.5%', label: 'Avg APY' },
+                                    { value: isLoading ? 'Loading...' : formatTVL(totalTVL), label: 'Total TVL' },
+                                    { value: isLoading ? 'Loading...' : formatAPY(averageAPY), label: 'Avg APY' },
                                     { value: '400ms', label: 'Block Time' },
                                 ].map((stat, i) => (
                                     <Card key={i} className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroStatsCard}`}>
@@ -180,7 +195,7 @@ export default function HeroSection() {
                         <div className="block md:hidden">
                             <Card className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroPrimaryStatsCard} mb-3`}>
                                 <div className={`${heroStyles.heroPrimaryStatsValue} text-primary-glow`}>
-                                    $8.3M
+                                    {isLoading ? 'Loading...' : formatTVL(totalTVL)}
                                 </div>
                                 <div className={`${heroStyles.heroPrimaryStatsLabel} text-primary-glow`}>
                                     Total Value Locked
@@ -190,7 +205,7 @@ export default function HeroSection() {
                             <div className="grid grid-cols-2 gap-3">
                                 <Card className={`${glassCardStyles.heroStatsCard} ${heroStyles.heroSecondaryStatsCard}`}>
                                     <div className={`${heroStyles.heroSecondaryStatsValue} text-primary-glow`}>
-                                        18.5%
+                                        {isLoading ? 'Loading...' : formatAPY(averageAPY)}
                                     </div>
                                     <div className={`${heroStyles.heroSecondaryStatsLabel} text-primary-glow`}>
                                         Avg APY

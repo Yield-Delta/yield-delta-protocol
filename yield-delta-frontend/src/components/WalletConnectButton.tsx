@@ -161,9 +161,10 @@ export function WalletConnectButton() {
 
                 return (
                   <div className="flex items-center gap-2">
+                    {/* Chain Button - Hidden on mobile */}
                     <Button
                       onClick={openChainModal}
-                      className="btn-cyber-secondary"
+                      className="btn-cyber-secondary hidden sm:flex"
                       type="button"
                     >
                       {chain.hasIcon && (
@@ -190,27 +191,45 @@ export function WalletConnectButton() {
                       {chain.name}
                     </Button>
 
+                    {/* Account Button - Responsive truncation */}
                     <Button
                       onClick={openAccountModal}
                       type="button"
-                      className="btn-cyber relative"
+                      className="btn-cyber relative max-w-[160px] sm:max-w-none"
                     >
-                      {account.displayName}
-                      {balance && !balanceLoading
-                        ? ` (${parseFloat(formatEther(balance.value)).toFixed(2)} SEI)`
-                        : balanceLoading
-                        ? ' (Loading...)'
-                        : ' (0.00 SEI)'}
+                      {/* Mobile: Ultra-compact display */}
+                      <span className="sm:hidden">
+                        {account.displayName.substring(0, 4)}...{account.displayName.substring(account.displayName.length - 2)}
+                      </span>
+
+                      {/* Tablet: Compact with balance */}
+                      <span className="hidden sm:inline md:hidden">
+                        {account.displayName}
+                        {balance && !balanceLoading
+                          ? ` (${parseFloat(formatEther(balance.value)).toFixed(1)})`
+                          : ''}
+                      </span>
+
+                      {/* Desktop: Full display */}
+                      <span className="hidden md:inline">
+                        {account.displayName}
+                        {balance && !balanceLoading
+                          ? ` (${parseFloat(formatEther(balance.value)).toFixed(2)} SEI)`
+                          : balanceLoading
+                          ? ' (Loading...)'
+                          : ' (0.00 SEI)'}
+                      </span>
+
                       {/* Connection status indicator */}
                       {isFullyConnected && (
                         <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-background" />
                       )}
                     </Button>
 
-                    {/* Sei Wallet Toggle */}
+                    {/* Sei Wallet Toggle - Hidden on mobile */}
                     <Button
                       onClick={() => setShowSeiModal(true)}
-                      className={isSeiConnected ? "btn-cyber-secondary" : "btn-cyber-outline"}
+                      className={`${isSeiConnected ? "btn-cyber-secondary" : "btn-cyber-outline"} hidden sm:flex`}
                       type="button"
                       title="Connect Sei Cosmos wallet"
                     >
