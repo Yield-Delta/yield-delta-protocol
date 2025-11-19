@@ -151,7 +151,7 @@ export function useVaultDiagnostics(vaultAddress: `0x${string}`) {
 
     console.log('\n' + '='.repeat(80));
     console.log('End of diagnostics\n');
-  }, [supply, assets, vaultAddress, diagnostics.totalSupply, diagnostics.totalAssets, 
+  }, [supply, assets, vaultAddress, sharePrice, diagnostics.totalSupply, diagnostics.totalAssets, 
       diagnostics.sharePrice, diagnostics.vaultInfoSupply, diagnostics.vaultInfoTVL, 
       diagnostics.supplyMismatch, diagnostics.tvlMismatch, diagnostics.sharePriceBelowOne]);
 

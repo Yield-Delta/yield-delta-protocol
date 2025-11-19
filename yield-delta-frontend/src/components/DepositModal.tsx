@@ -113,8 +113,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   
   const depositMutation = useEnhancedVaultDeposit(vaultData);
   
-  // Get real-time share price for accurate deposit preview
-  const { getSharesForAmount, pricePerShare } = useVaultSharePrice(vault?.address || '');
+  // Get real-time share price for accurate deposit preview (available for future use)
+  // const { getSharesForAmount, pricePerShare } = useVaultSharePrice(vault?.address || '');
   
   // Enhanced balance information available through depositMutation.userBalance
   
@@ -1101,7 +1101,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   lineHeight: '1.5',
                   margin: '0 0 12px 0'
                 }}>
-                  <strong>How it works:</strong> Your deposit is managed by the vault's AI strategy to maximize yield. You can withdraw your funds (plus any earnings) at any time after the lock period.
+                  <strong>How it works:</strong> Your deposit is managed by the vault&apos;s AI strategy to maximize yield. You can withdraw your funds (plus any earnings) at any time after the lock period.
                 </p>
                 <p style={{
                   fontSize: '0.875rem',

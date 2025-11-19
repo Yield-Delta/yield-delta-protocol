@@ -69,9 +69,6 @@ export default function WithdrawModal({
   const { address, isConnected } = useAccount();
   const addNotification = useAppStore((state) => state.addNotification);
 
-  // Fetch user's SEI balance for gas fee validation
-  const _seiBalance = useTokenBalance('SEI');
-
   // Get vault state for debugging
   const vaultState = useVaultState(vault?.address || '');
 
@@ -552,7 +549,7 @@ export default function WithdrawModal({
                       ⚠️ Your position has decreased in value
                     </p>
                     <p style={{ lineHeight: '1.5', fontSize: '0.8rem' }}>
-                      This can happen due to market conditions, impermanent loss, or changes in the vault's performance. Your withdrawal amount reflects the current value of your position.
+                      This can happen due to market conditions, impermanent loss, or changes in the vault&apos;s performance. Your withdrawal amount reflects the current value of your position.
                     </p>
                   </div>
                 </div>
