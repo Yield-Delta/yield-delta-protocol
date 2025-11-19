@@ -6,7 +6,6 @@ import { Loader2, ArrowRight, Info, Shield, TrendingDown } from 'lucide-react';
 import { useWriteContract, useAccount, useWaitForTransactionReceipt } from 'wagmi';
 import { parseUnits, formatEther } from 'viem';
 import { useAppStore } from '@/stores/appStore';
-import { useTokenBalance } from '@/hooks/useTokenBalance';
 import { useVaultState } from '@/hooks/useVaultState';
 import SEIVault from '@/lib/abis/SEIVault';
 

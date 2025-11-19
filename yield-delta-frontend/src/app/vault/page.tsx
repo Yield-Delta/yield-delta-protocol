@@ -93,7 +93,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   
   // Diagnostic hook to check for contract balance issues causing value loss
   // This runs automatically and logs to console - diagnostics variable available for debugging
-  useVaultDiagnostics(vaultAddress || '');
+  useVaultDiagnostics((vaultAddress || '') as `0x${string}`);
 
   // Debug logging for position
   useEffect(() => {
