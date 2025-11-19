@@ -104,6 +104,11 @@ export default function WithdrawModal({
         message: `Successfully withdrew from ${vault?.name}`,
       });
       onSuccess(hash);
+
+      // Trigger page refresh to update vault position data
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     }
   }, [isConfirmed, hash, vault?.name, addNotification, onSuccess]);
 

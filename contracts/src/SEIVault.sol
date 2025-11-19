@@ -172,6 +172,7 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
         
         // Track customer deposits for statistics
         customerTotalDeposited[recipient] += actualAmount;
+        customerNetDeposited[recipient] += int256(actualAmount); // Track net position
         if (customerDepositTime[recipient] == 0) {
             customerDepositTime[recipient] = block.timestamp;
         }
@@ -234,6 +235,7 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
         
         // Track customer withdrawals for statistics
         customerTotalWithdrawn[owner] += assets;
+        customerNetDeposited[owner] -= int256(assets); // Track net position
         
         // Transfer assets (native SEI or ERC20)
         if (vaultInfo.token0 == address(0)) {
@@ -347,6 +349,7 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
     
     mapping(address => uint256) public customerTotalDeposited;
     mapping(address => uint256) public customerTotalWithdrawn;
+    mapping(address => int256) public customerNetDeposited; // New: tracks net position (deposits - withdrawals)
     mapping(address => uint256) public customerDepositTime;
     uint256 public constant LOCK_PERIOD = 24 hours; // 24-hour lock period
     
@@ -355,8 +358,8 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
      * @param customer The customer address to get stats for
      * @return shares Current shares owned by customer
      * @return shareValue Current value of customer's shares
-     * @return totalDeposited Total amount deposited by customer
-     * @return totalWithdrawn Total amount withdrawn by customer
+     * @return totalDeposited Total amount deposited by customer (cumulative)
+     * @return totalWithdrawn Total amount withdrawn by customer (cumulative)
      * @return depositTime Timestamp of customer's first deposit
      * @return lockTimeRemaining Time remaining in lock period (0 if unlocked)
      */
@@ -369,7 +372,7 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
         uint256 lockTimeRemaining
     ) {
         shares = balanceOf(customer);
-        
+
         // Calculate share value based on current exchange rate
         if (shares > 0) {
             uint256 currentSupply = totalSupply();
@@ -378,11 +381,11 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
         } else {
             shareValue = 0;
         }
-        
+
         totalDeposited = customerTotalDeposited[customer];
         totalWithdrawn = customerTotalWithdrawn[customer];
         depositTime = customerDepositTime[customer];
-        
+
         // Calculate lock time remaining
         if (depositTime > 0) {
             uint256 unlockTime = depositTime + LOCK_PERIOD;
@@ -390,8 +393,17 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
         } else {
             lockTimeRemaining = 0;
         }
-        
+
         return (shares, shareValue, totalDeposited, totalWithdrawn, depositTime, lockTimeRemaining);
+    }
+
+    /**
+     * @dev Get customer net deposited amount (deposits - withdrawals)
+     * @param customer The customer address
+     * @return netDeposited Net amount deposited (can be negative if more withdrawn than deposited)
+     */
+    function getCustomerNetDeposited(address customer) external view returns (int256 netDeposited) {
+        return customerNetDeposited[customer];
     }
 
     // Internal functions

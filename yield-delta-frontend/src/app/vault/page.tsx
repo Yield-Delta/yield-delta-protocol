@@ -876,14 +876,18 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                       }}>
                         <span className="text-muted-foreground text-xs font-medium block mb-1">P&L</span>
                         <span className={`font-bold text-lg ${
-                          parseFloat(formatEther(BigInt(position.shareValue))) >= parseFloat(formatEther(BigInt(position.totalDeposited)))
-                            ? 'text-green-400'
-                            : 'text-red-400'
+                          (() => {
+                            const netInvested = parseFloat(formatEther(BigInt(position.totalDeposited))) - parseFloat(formatEther(BigInt(position.totalWithdrawn)));
+                            const currentValue = parseFloat(formatEther(BigInt(position.shareValue)));
+                            return currentValue >= netInvested ? 'text-green-400' : 'text-red-400';
+                          })()
                         }`}>
-                          {(
-                            ((parseFloat(formatEther(BigInt(position.shareValue))) - parseFloat(formatEther(BigInt(position.totalDeposited)))) /
-                            parseFloat(formatEther(BigInt(position.totalDeposited)))) * 100
-                          ).toFixed(2)}%
+                          {(() => {
+                            const netInvested = parseFloat(formatEther(BigInt(position.totalDeposited))) - parseFloat(formatEther(BigInt(position.totalWithdrawn)));
+                            const currentValue = parseFloat(formatEther(BigInt(position.shareValue)));
+                            const pnlPercentage = netInvested > 0 ? ((currentValue - netInvested) / netInvested) * 100 : 0;
+                            return pnlPercentage.toFixed(2);
+                          })()}%
                         </span>
                       </div>
                     </CardContent>
