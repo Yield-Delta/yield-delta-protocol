@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     // Demo mode is OFF - we only show real, deployed contracts
     const vaults = [
       {
-        address: '0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9', // Native SEI Vault (DEPLOYED Nov 16 2024)
+        address: '0xc64C1466DA9AC786825318C9BE807981D9c744f3', // Native SEI Vault (DEPLOYED Nov 19 2024)
         name: 'Native SEI Vault',
         strategy: 'concentrated_liquidity',
         tokenA: 'SEI',

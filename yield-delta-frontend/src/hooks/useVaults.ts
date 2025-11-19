@@ -286,7 +286,7 @@ export const useDepositToVault = (vaultAddress: string) => {
     // ONLY DEPLOYED VAULTS - SEI Atlantic-2 Testnet (Chain ID 1328)
     // These are the ONLY vaults actually deployed on-chain
     const validTestnetVaults = [
-      '0x6C9575ED46875114004007aCcB5C9F39C2Ac86c9', // Native SEI Vault (DEPLOYED Nov 16 2024)
+      '0xc64C1466DA9AC786825318C9BE807981D9c744f3', // Native SEI Vault (DEPLOYED Nov 19 2024)
       '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // ERC20 USDC Vault (DEPLOYED)
     ]
 
