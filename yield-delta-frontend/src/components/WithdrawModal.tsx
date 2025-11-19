@@ -27,6 +27,7 @@ interface WithdrawModalProps {
   onSuccess: (txHash: string) => void;
   userShares?: string; // User's current shares in the vault
   userValue?: string; // Current value of user's position
+  lockTimeRemaining?: string; // Seconds remaining until unlock (0 = unlocked)
 }
 
 const getVaultColor = (strategy: string) => {
@@ -43,13 +44,30 @@ const getVaultColor = (strategy: string) => {
   return colors[strategy as keyof typeof colors] || '#00f5d4'
 }
 
+const formatLockTimeRemaining = (seconds: number): string => {
+  if (seconds === 0) return 'Unlocked';
+
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m remaining`;
+  } else if (minutes > 0) {
+    return `${minutes}m ${secs}s remaining`;
+  } else {
+    return `${secs}s remaining`;
+  }
+}
+
 export default function WithdrawModal({
   vault,
   isOpen,
   onClose,
   onSuccess,
   userShares = '0',
-  userValue = '0'
+  userValue = '0',
+  lockTimeRemaining = '0'
 }: WithdrawModalProps) {
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [transactionStatus, setTransactionStatus] = useState<'idle' | 'pending' | 'success' | 'error'>('idle');
@@ -115,8 +133,32 @@ export default function WithdrawModal({
   // Handle errors
   useEffect(() => {
     if (isError || isReceiptError) {
+      console.error('[WithdrawModal] ❌ Transaction error detected:', {
+        isError,
+        isReceiptError,
+        error: error,
+        errorMessage: error?.message,
+        errorName: error?.name,
+        errorCause: error?.cause
+      });
+
       setTransactionStatus('error');
-      const errorMsg = error?.message || 'Withdrawal failed. Please try again.';
+
+      let errorMsg = 'Withdrawal failed. Please try again.';
+
+      if (error?.message) {
+        // Parse common error messages
+        if (error.message.includes('user rejected')) {
+          errorMsg = 'Transaction was rejected by user';
+        } else if (error.message.includes('insufficient')) {
+          errorMsg = 'Insufficient balance or shares';
+        } else if (error.message.includes('execution reverted')) {
+          errorMsg = 'Transaction reverted. The contract may have validation issues.';
+        } else {
+          errorMsg = error.message;
+        }
+      }
+
       setErrorMessage(errorMsg);
       addNotification({
         type: 'error',
@@ -153,14 +195,26 @@ export default function WithdrawModal({
       setTransactionStatus('pending');
       setErrorMessage(null);
 
+      console.log('[WithdrawModal] 🚀 Initiating withdrawal transaction:', {
+        vaultAddress: vault.address,
+        shares: sharesInWei.toString(),
+        sharesInEther: withdrawAmount,
+        owner: address,
+        recipient: address,
+        userSharesAvailable: userSharesInWei.toString(),
+        hasEnoughShares: sharesInWei <= userSharesInWei
+      });
+
       writeContract({
         address: vault.address as `0x${string}`,
         abi: SEIVault,
         functionName: 'seiOptimizedWithdraw',
         args: [sharesInWei, address as `0x${string}`, address as `0x${string}`],
       });
+
+      console.log('[WithdrawModal] ✅ writeContract called successfully');
     } catch (err) {
-      console.error('Withdrawal error:', err);
+      console.error('[WithdrawModal] ❌ Withdrawal error:', err);
       setTransactionStatus('error');
       const errorMsg = err instanceof Error ? err.message : 'Unknown error occurred';
       setErrorMessage(errorMsg);
