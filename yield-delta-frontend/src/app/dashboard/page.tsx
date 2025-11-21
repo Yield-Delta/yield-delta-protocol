@@ -122,13 +122,8 @@ const DashboardPage = () => {
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(amount);
+  const formatSEI = (amount: number) => {
+    return `${amount.toFixed(4)} SEI`;
   };
 
   const isLoading = !mounted || vaultsLoading || positionsLoading;
@@ -224,7 +219,7 @@ const DashboardPage = () => {
                 {[
                   {
                     label: 'Total Portfolio Value',
-                    value: formatCurrency(portfolioOverview.totalValue),
+                    value: formatSEI(portfolioOverview.totalValue),
                     change: `${portfolioOverview.pnlPercent >= 0 ? '+' : ''}${portfolioOverview.pnlPercent.toFixed(2)}%`,
                     icon: Wallet,
                     color: 'purple',
@@ -232,7 +227,7 @@ const DashboardPage = () => {
                   },
                   {
                     label: 'Total P&L',
-                    value: formatCurrency(portfolioOverview.totalPnL),
+                    value: formatSEI(portfolioOverview.totalPnL),
                     change: `${portfolioOverview.pnlPercent >= 0 ? '+' : ''}${portfolioOverview.pnlPercent.toFixed(2)}%`,
                     icon: TrendingUp,
                     color: portfolioOverview.totalPnL >= 0 ? 'green' : 'red',
@@ -240,7 +235,7 @@ const DashboardPage = () => {
                   },
                   {
                     label: 'Estimated Daily Yield',
-                    value: formatCurrency(portfolioOverview.dailyYield),
+                    value: formatSEI(portfolioOverview.dailyYield),
                     change: `${portfolioOverview.avgAPY.toFixed(1)}% APY`,
                     icon: DollarSign,
                     color: 'blue',
@@ -256,7 +251,7 @@ const DashboardPage = () => {
                   },
                   {
                     label: 'Total Yield Earned',
-                    value: formatCurrency(portfolioOverview.totalYieldEarned),
+                    value: formatSEI(portfolioOverview.totalYieldEarned),
                     change: 'From all positions',
                     icon: TrendingUp,
                     color: 'pink',
@@ -308,13 +303,13 @@ const DashboardPage = () => {
                         <div className={styles.metric}>
                           <div className={styles.metricLabel}>Value</div>
                           <div className={`${styles.metricValue} ${styles.white}`}>
-                            {formatCurrency(parseFloat(formatEther(BigInt(position.shareValue))))}
+                            {formatSEI(parseFloat(formatEther(BigInt(position.shareValue))))}
                           </div>
                         </div>
                         <div className={styles.metric}>
                           <div className={styles.metricLabel}>P&L</div>
                           <div className={`${styles.metricValue} ${position.pnl >= 0 ? styles.positive : styles.negative}`}>
-                            {position.pnl >= 0 ? '+' : ''}{formatCurrency(position.pnl)} ({position.pnlPercent.toFixed(2)}%)
+                            {position.pnl >= 0 ? '+' : ''}{formatSEI(position.pnl)} ({position.pnlPercent.toFixed(2)}%)
                           </div>
                         </div>
                         <div className={styles.metric}>

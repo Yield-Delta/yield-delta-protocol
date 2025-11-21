@@ -858,7 +858,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                         <span className="font-bold text-green-400 text-lg" style={{
                           textShadow: '0 0 15px rgba(34, 197, 94, 0.4)'
                         }}>
-                          ${parseFloat(formatEther(BigInt(position.shareValue))).toFixed(2)}
+                          {parseFloat(formatEther(BigInt(position.shareValue))).toFixed(4)} SEI
                         </span>
                       </div>
                       <div className="p-3 rounded-xl" style={{
@@ -867,7 +867,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                       }}>
                         <span className="text-muted-foreground text-xs font-medium block mb-1">Deposited</span>
                         <span className="font-bold text-white text-lg">
-                          ${parseFloat(formatEther(BigInt(position.totalDeposited))).toFixed(2)}
+                          {parseFloat(formatEther(BigInt(position.totalDeposited))).toFixed(4)} SEI
                         </span>
                       </div>
                       <div className="p-3 rounded-xl" style={{
