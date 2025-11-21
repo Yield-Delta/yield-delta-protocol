@@ -156,7 +156,13 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
         // Cache values to reduce SLOAD operations (gas optimization for SEI)
         uint256 currentSupply = totalSupply();
         uint256 totalAssetBalance = _getTotalAssetBalance();
-        
+
+        // For native SEI, subtract msg.value since it's already included in balance
+        // This ensures fair share calculation based on pre-deposit balance
+        if (vaultInfo.token0 == address(0) && totalAssetBalance >= msg.value) {
+            totalAssetBalance = totalAssetBalance - msg.value;
+        }
+
         // Calculate shares with optimized logic
         if (currentSupply == 0) {
             shares = actualAmount;
