@@ -31,16 +31,17 @@ export async function GET(request: NextRequest) {
     // ONLY DEPLOYED VAULTS - SEI Atlantic-2 Testnet (Chain ID 1328)
     // CRITICAL: Only return vaults that are actually deployed on-chain
     // Demo mode is OFF - we only show real, deployed contracts
+    // TVL values are placeholders - actual TVL is fetched on-chain via useVaultTVL hook
     const vaults = [
       {
-        address: '0xc64C1466DA9AC786825318C9BE807981D9c744f3', // Native SEI Vault (DEPLOYED Nov 19 2024)
+        address: '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Native SEI Vault (DEPLOYED Nov 21 2025 - Fixed share calculation)
         name: 'Native SEI Vault',
         strategy: 'concentrated_liquidity',
         tokenA: 'SEI',
         tokenB: 'SEI',
         fee: 0.003,
         tickSpacing: 60,
-        tvl: 0, // Real TVL from contract
+        tvl: 0, // Fetched on-chain via useVaultTVL
         apy: 0.150,
         chainId: 1328,
         active: true,
@@ -66,7 +67,7 @@ export async function GET(request: NextRequest) {
         tokenB: 'USDC',
         fee: 0.001,
         tickSpacing: 10,
-        tvl: 750000, // Real TVL from contract
+        tvl: 0, // Fetched on-chain via useVaultTVL
         apy: 0.085,
         chainId: 1328,
         active: true,
@@ -79,8 +80,8 @@ export async function GET(request: NextRequest) {
         position: {
           lowerTick: -100,
           upperTick: 100,
-          liquidity: '750000000000',
-          tokensOwed0: '375000000',
+          liquidity: '0',
+          tokensOwed0: '0',
           tokensOwed1: '0'
         }
       }
