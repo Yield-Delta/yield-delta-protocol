@@ -996,7 +996,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         lineHeight: '1.2'
                       }}>
                         {depositAmount && parseFloat(depositAmount) > 0
-                          ? (parseFloat(depositAmount) * 0.95).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                          ? parseFloat(depositAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                           : '0.00'
                         }
                       </div>
@@ -1007,7 +1007,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         opacity: '0.9'
                       }}>{vault.name} Shares</div>
                     </div>
-                    <div className="text-sm opacity-60 mt-2">Rate: 1 SEI = 0.95 shares</div>
+                    <div className="text-sm opacity-60 mt-2">Rate: 1 SEI = 1 share</div>
                   </div>
 
                 </div>
@@ -1071,7 +1071,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         opacity: '0.6',
                         fontSize: '0.8rem'
                       }}>
-                        ~{(amount * 0.95).toLocaleString()} shares
+                        ~{amount.toLocaleString()} shares
                       </div>
                     </button>
                   ))}

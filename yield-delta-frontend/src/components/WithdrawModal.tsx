@@ -466,8 +466,8 @@ export default function WithdrawModal({
                   <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#ffffff' }}>{userSharesDisplay}</p>
                 </div>
                 <div>
-                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Current Value</p>
-                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: vaultColor }}>${userValueDisplay}</p>
+                  <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Current Value (SEI)</p>
+                  <p style={{ fontSize: '1.125rem', fontWeight: '700', color: vaultColor }}>{userValueDisplay} SEI</p>
                 </div>
               </div>
             </div>
