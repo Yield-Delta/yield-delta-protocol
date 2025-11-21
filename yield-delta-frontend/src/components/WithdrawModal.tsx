@@ -92,9 +92,11 @@ export default function WithdrawModal({
   const { writeContract, data: hash, error, isError } = useWriteContract();
 
   const {
+    data: receipt,
     isLoading: isConfirming,
     isSuccess: isConfirmed,
     isError: isReceiptError,
+    error: receiptError,
   } = useWaitForTransactionReceipt({
     hash,
     confirmations: 2,
@@ -137,30 +139,55 @@ export default function WithdrawModal({
   // Handle errors
   useEffect(() => {
     if (isError || isReceiptError) {
+      // Determine which error to use
+      const activeError = isError ? error : receiptError;
+
       console.error('[WithdrawModal] ❌ Transaction error detected:', {
         isError,
         isReceiptError,
-        error: error,
-        errorMessage: error?.message,
-        errorName: error?.name,
-        errorCause: error?.cause
+        writeContractError: error,
+        receiptError: receiptError,
+        activeErrorMessage: activeError?.message,
+        activeErrorName: activeError?.name,
+        activeErrorCause: activeError?.cause,
+        receipt: receipt,
+        receiptStatus: receipt?.status
       });
 
       setTransactionStatus('error');
 
       let errorMsg = 'Withdrawal failed. Please try again.';
 
-      if (error?.message) {
+      // Check receipt status first - if status is 'reverted', the transaction failed on-chain
+      if (receipt && receipt.status === 'reverted') {
+        errorMsg = 'Transaction reverted on-chain. The withdrawal may have failed due to contract validation (insufficient shares, lock period, etc.)';
+      } else if (activeError?.message) {
+        const errorMessage = activeError.message;
+
         // Parse common error messages
-        if (error.message.includes('user rejected')) {
+        if (errorMessage.includes('user rejected') || errorMessage.includes('User rejected')) {
           errorMsg = 'Transaction was rejected by user';
-        } else if (error.message.includes('insufficient')) {
+        } else if (errorMessage.includes('insufficient')) {
           errorMsg = 'Insufficient balance or shares';
-        } else if (error.message.includes('execution reverted')) {
-          errorMsg = 'Transaction reverted. The contract may have validation issues.';
+        } else if (errorMessage.includes('execution reverted')) {
+          // Try to extract revert reason
+          const revertMatch = errorMessage.match(/reason="([^"]+)"/);
+          if (revertMatch) {
+            errorMsg = `Transaction reverted: ${revertMatch[1]}`;
+          } else {
+            errorMsg = 'Transaction reverted. The contract may have validation issues.';
+          }
+        } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
+          errorMsg = `Transaction confirmation timed out. Check transaction status on block explorer: ${hash?.substring(0, 10)}...`;
+        } else if (errorMessage.includes('TransactionReceiptNotFoundError')) {
+          errorMsg = 'Transaction receipt not found. The transaction may still be pending or failed silently.';
         } else {
-          errorMsg = error.message;
+          // Truncate very long error messages
+          errorMsg = errorMessage.length > 200 ? errorMessage.substring(0, 200) + '...' : errorMessage;
         }
+      } else if (isReceiptError && !activeError) {
+        // Receipt error with no error object - likely a reverted transaction
+        errorMsg = 'Transaction failed. The withdrawal may have been reverted by the contract.';
       }
 
       setErrorMessage(errorMsg);
@@ -170,7 +197,7 @@ export default function WithdrawModal({
         message: errorMsg,
       });
     }
-  }, [isError, isReceiptError, error, addNotification]);
+  }, [isError, isReceiptError, error, receiptError, receipt, hash, addNotification]);
 
   if (!vault || !isOpen || !mounted) return null;
 
