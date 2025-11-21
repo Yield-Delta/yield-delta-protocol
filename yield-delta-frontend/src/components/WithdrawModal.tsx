@@ -44,6 +44,8 @@ const getVaultColor = (strategy: string) => {
   return colors[strategy as keyof typeof colors] || '#00f5d4'
 }
 
+// Utility function for formatting lock time - keeping for potential future use
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const formatLockTimeRemaining = (seconds: number): string => {
   if (seconds === 0) return 'Unlocked';
 
@@ -67,6 +69,7 @@ export default function WithdrawModal({
   onSuccess,
   userShares = '0',
   userValue = '0',
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lockTimeRemaining = '0'
 }: WithdrawModalProps) {
   const [withdrawAmount, setWithdrawAmount] = useState('');
@@ -78,6 +81,7 @@ export default function WithdrawModal({
   const addNotification = useAppStore((state) => state.addNotification);
 
   // Fetch user's SEI balance for gas fee validation
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _seiBalance = useTokenBalance('SEI');
 
   // Ensure component is mounted (client-side)

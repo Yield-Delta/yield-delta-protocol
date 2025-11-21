@@ -8,7 +8,8 @@ export const SEIVaultABI = [
       {"name": "_symbol", "type": "string"},
       {"name": "_owner", "type": "address"},
       {"name": "_aiModel", "type": "address"}
-    ]
+    ],
+    "stateMutability": "nonpayable"
   },
 
   // View Functions
