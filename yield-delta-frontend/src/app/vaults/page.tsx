@@ -15,20 +15,24 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as THREE from 'three';
 import { useSeiMarketData } from '@/hooks/useMarketData';
 import { useVaultStore, VaultData } from '@/stores/vaultStore';
+import { useVaultTVL } from '@/hooks/useVaultTVL';
 import '@/components/StatsCarousel.css';
 // import styles from './page.module.css'; // Commented out as not used
 
 gsap.registerPlugin(ScrollTrigger);
 
 // Utility functions
-const formatCurrency = (amount: number) => {
+const formatSEI = (amount: number) => {
   if (amount >= 1000000) {
-    return `$${(amount / 1000000).toFixed(1)}M`
+    return `${(amount / 1000000).toFixed(1)}M SEI`
   }
   if (amount >= 1000) {
-    return `$${(amount / 1000).toFixed(0)}K`
+    return `${(amount / 1000).toFixed(1)}K SEI`
   }
-  return `$${amount.toFixed(0)}`
+  if (amount >= 1) {
+    return `${amount.toFixed(2)} SEI`
+  }
+  return `${amount.toFixed(4)} SEI`
 }
 
 const getRiskLevel = (apy: number, strategy?: string): 'Low' | 'Medium' | 'High' => {
@@ -112,7 +116,6 @@ export default function VaultsPage() {
     selectedVault,
     setSelectedVault,
     getFilteredVaults,
-    getTotalTVL,
     isLoading: vaultLoading,
     isError: vaultError,
   } = useVaultStore()
@@ -155,8 +158,17 @@ export default function VaultsPage() {
   }, []);
 
   const { data: marketData } = useSeiMarketData();
+
+  // Get vault addresses for TVL fetching
+  const vaultAddresses = React.useMemo(() => {
+    return vaultsData?.map(v => v.address) || [];
+  }, [vaultsData]);
+
+  // Fetch on-chain TVL for all vaults
+  const { tvlMap, isLoading: tvlLoading } = useVaultTVL(vaultAddresses);
+
   // Combine loading states
-  const isLoading = vaultLoading || queryLoading
+  const isLoading = vaultLoading || queryLoading || tvlLoading
   const error = vaultError || queryError
   
   // Get filtered vaults from store - prefer API data over store
@@ -186,9 +198,22 @@ export default function VaultsPage() {
       lastLogRef.current = currentState;
     }
   }, [filteredVaults, selectedVault, depositVault, showDepositModal]);
-  const totalTVL = vaultsData && vaultsData.length > 0 ? 
-    vaultsData.reduce((total, vault) => total + vault.tvl, 0) : 
-    getTotalTVL()
+
+  // Calculate total TVL from on-chain data
+  const totalTVL = React.useMemo(() => {
+    if (tvlMap.size === 0) return 0;
+    let total = 0;
+    tvlMap.forEach((tvl) => {
+      total += tvl;
+    });
+    return total;
+  }, [tvlMap]);
+
+  // Helper to get vault TVL (on-chain if available, else API data)
+  const getVaultTVL = React.useCallback((vault: VaultData) => {
+    const onChainTVL = tvlMap.get(vault.address.toLowerCase());
+    return onChainTVL !== undefined ? onChainTVL : vault.tvl;
+  }, [tvlMap]);
   
   // Handler functions for vault actions
   const handleDeposit = React.useCallback((vault: VaultData) => {
@@ -477,7 +502,7 @@ export default function VaultsPage() {
               }}>
                 <StatsCardGraphic type="tvl" className="w-4 h-4 flex-shrink-0" />
                 <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: '500' }}>TVL</span>
-                <span style={{ fontWeight: 'bold', color: '#00f5d4', fontSize: '13px' }}>{isLoading ? '...' : formatCurrency(totalTVL)}</span>
+                <span style={{ fontWeight: 'bold', color: '#00f5d4', fontSize: '13px' }}>{isLoading ? '...' : formatSEI(totalTVL)}</span>
               </div>
               
               <div style={{ width: '1px', height: '20px', background: 'linear-gradient(to bottom, transparent, rgba(155, 93, 229, 0.4), transparent)', flexShrink: 0 }} />
@@ -550,7 +575,7 @@ export default function VaultsPage() {
               }}>
                 <StatsCardGraphic type="tvl" className="w-4 h-4 flex-shrink-0" />
                 <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: '500' }}>TVL</span>
-                <span style={{ fontWeight: 'bold', color: '#00f5d4', fontSize: '13px' }}>{isLoading ? '...' : formatCurrency(totalTVL)}</span>
+                <span style={{ fontWeight: 'bold', color: '#00f5d4', fontSize: '13px' }}>{isLoading ? '...' : formatSEI(totalTVL)}</span>
               </div>
               
               <div style={{ width: '1px', height: '20px', background: 'linear-gradient(to bottom, transparent, rgba(155, 93, 229, 0.4), transparent)', flexShrink: 0 }} />
@@ -708,7 +733,7 @@ export default function VaultsPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xl font-black text-vault-primary">{formatCurrency(vault.tvl)}</div>
+                        <div className="text-xl font-black text-vault-primary">{formatSEI(getVaultTVL(vault))}</div>
                         <div className="text-sm font-bold text-muted-foreground">TVL</div>
                       </div>
                     </div>
