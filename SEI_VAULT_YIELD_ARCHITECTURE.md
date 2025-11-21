@@ -223,6 +223,215 @@ After fees (1% management + 10% performance):
 
 ---
 
+## Geographic Strategy Routing (US vs Global)
+
+The plugin includes a **GeographicTradingRouter** (`providers/geographic-routing.ts`) that automatically selects the appropriate perpetual trading venue based on user location and regulatory requirements.
+
+### Configuration
+
+```typescript
+interface GeographicConfig {
+  USER_GEOGRAPHY: 'US' | 'EU' | 'ASIA' | 'GLOBAL';
+  PERP_PREFERENCE: 'GEOGRAPHIC' | 'GLOBAL' | 'COINBASE_ONLY' | 'ONCHAIN_ONLY';
+  COINBASE_ADVANCED_API_KEY?: string;
+  COINBASE_ADVANCED_SECRET?: string;
+  COINBASE_ADVANCED_PASSPHRASE?: string;
+}
+```
+
+---
+
+## US Strategy (Regulatory Compliant)
+
+### Primary Perp Provider: **Coinbase Advanced**
+**File**: `providers/coinbase-advanced.ts`
+
+For US-based users, the system automatically routes perpetual trades through Coinbase Advanced Trade API, which is fully regulated and compliant with US securities laws.
+
+#### Features:
+- ✅ Regulated exchange (US compliant)
+- ✅ Perpetual futures contracts
+- ✅ IL protection hedging
+- ✅ API-based execution
+- ✅ Sandbox mode for testing
+
+#### Supported Operations:
+```typescript
+// Open perp position for hedging
+await coinbaseProvider.openPerpPosition({
+  symbol: 'BTC-USD',
+  size: '1000',
+  side: 'short',
+  leverage: 1,
+  slippage: 50
+});
+
+// Get hedge recommendation for LP position
+const hedge = await coinbaseProvider.getHedgeRecommendation(lpPosition);
+// Returns: hedgeRatio, expectedILReduction, symbol, size, action
+```
+
+#### US Strategy Flow:
+1. User deposits to vault
+2. AI allocates to LP positions on SEI DEXes
+3. Geographic router detects US user
+4. Opens hedge positions via **Coinbase Advanced**
+5. Collects LP fees + funding payments
+
+#### Environment Variables (US):
+```bash
+USER_GEOGRAPHY=US
+PERP_PREFERENCE=COINBASE_ONLY
+COINBASE_ADVANCED_API_KEY=your-key
+COINBASE_ADVANCED_SECRET=your-secret
+COINBASE_ADVANCED_PASSPHRASE=your-passphrase
+COINBASE_SANDBOX=false
+```
+
+---
+
+## Global Strategy (Non-US)
+
+### Primary Perp Providers: **On-Chain Perps**
+
+For users outside the US, the system can access global perpetual exchanges and on-chain derivatives.
+
+#### On-Chain Options:
+1. **Vortex Protocol** (SEI native perps)
+2. **DragonSwap Perps** (SEI ecosystem)
+3. Other CEX options: Bybit, Binance (where legally available)
+
+#### Configuration for Global Users:
+```bash
+USER_GEOGRAPHY=GLOBAL  # or EU, ASIA
+PERP_PREFERENCE=GLOBAL
+PERP_PROTOCOL=vortex   # or dragonswap
+VORTEX_TESTNET_CONTRACT=0x...
+VORTEX_MAINNET_CONTRACT=0x...
+```
+
+#### Global Strategy Flow:
+1. User deposits to vault
+2. AI allocates to LP positions
+3. Geographic router detects non-US user
+4. Opens hedge positions via **on-chain perps** (Vortex/DragonSwap)
+5. Full DeFi-native execution
+
+---
+
+## Strategy Comparison by Region
+
+| Feature | US (Coinbase) | Global (On-Chain) |
+|---------|---------------|-------------------|
+| **Regulatory Status** | Fully regulated | Varies by jurisdiction |
+| **Execution** | CEX API | On-chain transactions |
+| **Settlement** | Custodial | Non-custodial |
+| **Available Assets** | BTC, ETH, SOL, etc. | SEI ecosystem tokens |
+| **Funding Rates** | 8-hour | Protocol-specific |
+| **Max Leverage** | Up to 10x | Varies (often higher) |
+| **KYC Required** | Yes (Coinbase account) | No |
+| **Gas Costs** | None (CEX) | SEI gas fees |
+
+---
+
+## Provider Selection Logic
+
+The `GeographicTradingRouter` automatically selects providers:
+
+```typescript
+async getBestPerpProvider(): Promise<PerpProvider> {
+  const geography = this.config.USER_GEOGRAPHY;
+
+  switch (geography) {
+    case 'US':
+      // Prefer Coinbase for regulatory compliance
+      if (this.coinbaseProvider) {
+        return this.createCoinbaseWrapper();
+      }
+      // Fallback to on-chain if Coinbase not available
+      return this.createOnChainWrapper();
+
+    case 'EU':
+    case 'ASIA':
+    case 'GLOBAL':
+      // Can use global exchanges or on-chain
+      return this.createOnChainWrapper();
+  }
+}
+```
+
+---
+
+## Yield Breakdown by Region
+
+### US Users (Coinbase Perps)
+
+| Strategy | Allocation | Expected APR | Notes |
+|----------|------------|--------------|-------|
+| Funding Arbitrage | 35% | 15-25% | SEI LP + Coinbase hedge |
+| Delta Neutral LP | 35% | 10-15% | Coinbase perp hedging |
+| AMM Optimization | 20% | 8-12% | On-chain LP only |
+| YEI Lending | 10% | 3-8% | Base yield |
+| **Total Expected** | **100%** | **12-18%** | Slightly lower due to CEX fees |
+
+### Global Users (On-Chain Perps)
+
+| Strategy | Allocation | Expected APR | Notes |
+|----------|------------|--------------|-------|
+| Funding Arbitrage | 40% | 18-30% | Full DEX/CEX arbitrage |
+| Delta Neutral LP | 30% | 12-20% | On-chain perp hedging |
+| AMM Optimization | 20% | 10-15% | Full optimization |
+| YEI Lending | 10% | 3-8% | Base yield |
+| **Total Expected** | **100%** | **15-22%** | Higher due to more venues |
+
+---
+
+## Implementation Status
+
+### US Strategy (Coinbase):
+- ✅ `CoinbaseAdvancedProvider` implemented
+- ✅ `GeographicTradingRouter` with US detection
+- ✅ Hedge recommendation system
+- ⚠️ Mock implementation - needs real API integration
+- ⚠️ Requires Coinbase Advanced API account
+
+### Global Strategy (On-Chain):
+- ✅ `PerpsAPI` for Vortex/DragonSwap
+- ✅ On-chain transaction building
+- ⚠️ Protocol contract addresses needed
+- ⚠️ Requires testnet/mainnet deployment
+
+---
+
+## Setting Up for US Operations
+
+1. **Create Coinbase Advanced Account**
+   - Sign up at [Coinbase Advanced](https://www.coinbase.com/advanced-trade)
+   - Complete KYC verification
+   - Enable API access
+
+2. **Generate API Credentials**
+   - Create API key with trading permissions
+   - Store securely (never commit to git)
+
+3. **Configure Environment**
+   ```bash
+   # .env
+   USER_GEOGRAPHY=US
+   PERP_PREFERENCE=COINBASE_ONLY
+   COINBASE_ADVANCED_API_KEY=your-api-key
+   COINBASE_ADVANCED_SECRET=your-api-secret
+   COINBASE_ADVANCED_PASSPHRASE=your-passphrase
+   COINBASE_SANDBOX=true  # Use true for testing
+   ```
+
+4. **Test in Sandbox Mode First**
+   - Set `COINBASE_SANDBOX=true`
+   - Validate all operations
+   - Switch to production when ready
+
+---
+
 ## Risks
 
 1. **Smart Contract Risk**: Vault or integrated protocol vulnerabilities
@@ -231,6 +440,9 @@ After fees (1% management + 10% performance):
 4. **Funding Rate Reversal**: Arbitrage positions can become unprofitable
 5. **Oracle Manipulation**: Price feed attacks
 6. **AI Model Risk**: Suboptimal AI decisions
+7. **Regulatory Risk (US)**: CEX regulatory changes could affect Coinbase availability
+8. **Counterparty Risk (US)**: Coinbase custodial risk for hedged positions
+9. **Geographic Misdetection**: User location incorrectly identified
 
 ---
 

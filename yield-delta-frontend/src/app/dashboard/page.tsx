@@ -1,13 +1,13 @@
 "use client"
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import DemoBanner from '@/components/DemoBanner';
 import { TrendingUp, PieChart, DollarSign, Activity, Plus, ArrowRight, Wallet, BarChart3, Settings, Bell, Loader2, Info } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
 import { useVaults } from '@/hooks/useVaults';
-import { useVaultPosition } from '@/hooks/useVaultPosition';
+import { useMultipleVaultPositions } from '@/hooks/useMultipleVaultPositions';
 import { useAccount } from 'wagmi';
 import { formatEther } from 'viem';
 
@@ -24,20 +24,34 @@ interface VaultWithPosition {
 }
 
 const DashboardPage = () => {
+  const [mounted, setMounted] = useState(false);
   const { address: userAddress } = useAccount();
   const { data: vaults, isLoading: vaultsLoading } = useVaults();
 
-  // Get positions for each vault - only for vaults that exist
+  // Handle hydration - only render dynamic content after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Get vault addresses for the multi-position hook
+  const vaultAddresses = useMemo(() => {
+    return vaults?.map(v => v.address) || [];
+  }, [vaults]);
+
+  // Fetch all positions in a single hook call (proper React hook usage)
+  const { positions: rawPositions, isLoading: positionsLoading } = useMultipleVaultPositions(vaultAddresses);
+
+  // Combine vault data with positions
   const vaultPositions = useMemo(() => {
-    if (!vaults || !userAddress) return [];
+    if (!vaults || !userAddress || !mounted) return [];
 
     return vaults
       .map(vault => {
-        // eslint-disable-next-line react-hooks/rules-of-hooks
-        const { position, hasPosition } = useVaultPosition(vault.address);
+        const positionData = rawPositions.find(p => p.address === vault.address);
 
-        if (!hasPosition || !position) return null;
+        if (!positionData?.hasPosition || !positionData.position) return null;
 
+        const position = positionData.position;
         const shareValue = parseFloat(formatEther(BigInt(position.shareValue)));
         const totalDeposited = parseFloat(formatEther(BigInt(position.totalDeposited)));
         const pnl = shareValue - totalDeposited;
@@ -56,7 +70,7 @@ const DashboardPage = () => {
         } as VaultWithPosition;
       })
       .filter((pos): pos is VaultWithPosition => pos !== null);
-  }, [vaults, userAddress]);
+  }, [vaults, userAddress, rawPositions, mounted]);
 
   // Calculate portfolio overview from real positions
   const portfolioOverview = useMemo(() => {
@@ -117,8 +131,8 @@ const DashboardPage = () => {
     }).format(amount);
   };
 
-  const isLoading = vaultsLoading || !userAddress;
-  const hasNoPositions = !isLoading && vaultPositions.length === 0;
+  const isLoading = !mounted || vaultsLoading || positionsLoading;
+  const hasNoPositions = mounted && !vaultsLoading && !positionsLoading && userAddress && vaultPositions.length === 0;
 
   return (
     <div className={styles.dashboardContainer}>
@@ -178,7 +192,7 @@ const DashboardPage = () => {
           )}
 
           {/* No Wallet Connected */}
-          {!userAddress && !vaultsLoading && (
+          {mounted && !userAddress && !vaultsLoading && (
             <div className="text-center py-20">
               <Wallet className="w-16 h-16 text-gray-400 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-white mb-2">Connect Your Wallet</h2>
