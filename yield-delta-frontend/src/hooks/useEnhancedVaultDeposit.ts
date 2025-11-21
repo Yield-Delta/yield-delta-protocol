@@ -249,8 +249,8 @@ export function useEnhancedVaultDeposit(vaultData: {
 
     // Check if vault address is valid for testnet
     const validTestnetVaults = [
-      // NEW FIXED VAULTS - Deployed 2024
-      '0xc64C1466DA9AC786825318C9BE807981D9c744f3', // Native SEI Vault (FIXED - Nov 19 2024)
+      // NEW FIXED VAULTS - Deployed Nov 21 2025
+      '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Native SEI Vault (FIXED - Nov 21 2025 - Fixed share calculation)
       '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // ERC20 USDC Vault (FIXED)
       
       // Legacy vault addresses (for backwards compatibility)
