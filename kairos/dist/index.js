@@ -18144,7 +18144,7 @@ Unable to fetch prices for: ${failedSymbols.map((r) => r.symbol.toUpperCase()).j
         });
       }
     } catch (error) {
-      elizaLogger13.error("Error in price query action:", error);
+      elizaLogger13.error(`Error in price query action: ${error instanceof Error ? error.message : String(error)}`);
       if (callback) {
         callback({
           text: "I encountered an error while fetching cryptocurrency prices. Please try again in a moment.",
@@ -18345,5 +18345,5 @@ export {
   character
 };
 
-//# debugId=B033C68E13439E2364756E2164756E21
+//# debugId=6DCF83D3B8060E6764756E2164756E21
 //# sourceMappingURL=index.js.map
