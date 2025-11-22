@@ -174,8 +174,16 @@ export default function WithdrawModal({
           const revertMatch = errorMessage.match(/reason="([^"]+)"/);
           if (revertMatch) {
             errorMsg = `Transaction reverted: ${revertMatch[1]}`;
+          } else if (errorMessage.includes('locked') || errorMessage.includes('24 hours')) {
+            errorMsg = 'Assets are still locked. Please wait 24 hours after your deposit.';
+          } else if (errorMessage.includes('Insufficient shares')) {
+            errorMsg = 'Insufficient shares to withdraw the requested amount.';
+          } else if (errorMessage.includes('Invalid SEI chain')) {
+            errorMsg = 'Please connect to SEI Testnet (Atlantic-2) to withdraw.';
+          } else if (errorMessage.includes('Insufficient contract balance')) {
+            errorMsg = 'Vault has insufficient balance. Please contact support.';
           } else {
-            errorMsg = 'Transaction reverted. The contract may have validation issues.';
+            errorMsg = 'Transaction reverted. This may be due to: lock period not expired, insufficient shares, or wrong network.';
           }
         } else if (errorMessage.includes('timeout') || errorMessage.includes('timed out')) {
           errorMsg = `Transaction confirmation timed out. Check transaction status on block explorer: ${hash?.substring(0, 10)}...`;
@@ -219,6 +227,15 @@ export default function WithdrawModal({
 
     if (sharesInWei > userSharesInWei) {
       setErrorMessage('Insufficient shares. You cannot withdraw more than you own.');
+      return;
+    }
+
+    // Check lock period before attempting transaction
+    const lockSeconds = parseInt(lockTimeRemaining);
+    if (lockSeconds > 0) {
+      const hours = Math.floor(lockSeconds / 3600);
+      const minutes = Math.floor((lockSeconds % 3600) / 60);
+      setErrorMessage(`Assets are locked for 24 hours after deposit. Time remaining: ${hours}h ${minutes}m`);
       return;
     }
 

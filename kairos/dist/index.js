@@ -14447,11 +14447,7 @@ class SeiOracleProvider {
         SEI: "0x53614f1cb0c031d4af66c04cb9c756234adad0e1cee85303795091499a4084eb",
         USDC: "0xeaa020c61cc479712813461ce153894a96a6c00b21ed0cfc2798d1f9a9e9c94a"
       },
-      chainlinkFeeds: {
-        "BTC/USD": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
-        "ETH/USD": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
-        "SEI/USD": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419"
-      },
+      chainlinkFeeds: {},
       cexApis: {
         binance: "https://fapi.binance.com/fapi/v1",
         bybit: "https://api.bybit.com/v5",
@@ -14532,8 +14528,6 @@ class SeiOracleProvider {
       if (!price)
         price = await this.getPythPrice(symbol);
       if (!price)
-        price = await this.getChainlinkPrice(symbol);
-      if (!price)
         price = await this.getCexPrice(symbol);
       if (price && !isNaN(price.price) && price.price > 0) {
         this.priceCache.set(symbol, price);
@@ -14572,39 +14566,46 @@ class SeiOracleProvider {
       if (!feedId)
         return null;
       const publicClient = createPublicClient({
-        chain: seiChains.devnet,
+        chain: seiChains.mainnet,
         transport: http()
       });
       const result = await publicClient.readContract({
         address: "0x2880aB155794e7179c9eE2e38200202908C17B43",
         abi: [
           {
-            name: "queryPriceFeed",
+            name: "getPriceUnsafe",
             type: "function",
+            stateMutability: "view",
             inputs: [{ name: "id", type: "bytes32" }],
             outputs: [
-              { name: "price", type: "int64" },
-              { name: "conf", type: "uint64" },
-              { name: "expo", type: "int32" },
-              { name: "publishTime", type: "uint256" }
+              {
+                name: "price",
+                type: "tuple",
+                components: [
+                  { name: "price", type: "int64" },
+                  { name: "conf", type: "uint64" },
+                  { name: "expo", type: "int32" },
+                  { name: "publishTime", type: "uint256" }
+                ]
+              }
             ]
           }
         ],
-        functionName: "queryPriceFeed",
+        functionName: "getPriceUnsafe",
         args: [feedId]
       });
-      if (!result || result[0] === BigInt(0)) {
+      if (!result || result.price === BigInt(0)) {
         return null;
       }
-      const price = Number(result[0]) / Math.pow(10, 8);
-      const confidence = Number(result[1]) / Math.pow(10, 8);
-      const timestamp = Number(result[3]) * 1000;
-      if (isNaN(price) || price <= 0) {
+      const priceValue = Number(result.price) * Math.pow(10, result.expo);
+      const confidence = Number(result.conf) * Math.pow(10, result.expo);
+      const timestamp = Number(result.publishTime) * 1000;
+      if (isNaN(priceValue) || priceValue <= 0) {
         return null;
       }
       return {
         symbol,
-        price,
+        price: priceValue,
         timestamp,
         source: "pyth",
         confidence
@@ -14615,50 +14616,7 @@ class SeiOracleProvider {
     }
   }
   async getChainlinkPrice(symbol) {
-    try {
-      const feedAddress = this.config.chainlinkFeeds[`${symbol}/USD`];
-      if (!feedAddress)
-        return null;
-      const publicClient = createPublicClient({
-        chain: seiChains.devnet,
-        transport: http()
-      });
-      const result = await publicClient.readContract({
-        address: feedAddress,
-        abi: [
-          {
-            name: "latestRoundData",
-            type: "function",
-            outputs: [
-              { name: "roundId", type: "uint80" },
-              { name: "answer", type: "int256" },
-              { name: "startedAt", type: "uint256" },
-              { name: "updatedAt", type: "uint256" },
-              { name: "answeredInRound", type: "uint80" }
-            ]
-          }
-        ],
-        functionName: "latestRoundData"
-      });
-      if (!result || result[1] === BigInt(0)) {
-        return null;
-      }
-      const price = Number(result[1]) / 1e8;
-      const timestamp = Number(result[3]) * 1000;
-      if (isNaN(price) || price <= 0) {
-        return null;
-      }
-      return {
-        symbol,
-        price,
-        timestamp,
-        source: "Chainlink",
-        confidence: 0.99
-      };
-    } catch (error) {
-      elizaLogger2.error(`Chainlink price fetch error for ${symbol}: ${error}`);
-      return null;
-    }
+    return null;
   }
   async getCexPrice(symbol) {
     try {
@@ -14939,367 +14897,31 @@ var oracleProvider = {
   }
 };
 
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/transfer.ts
+// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/vault-provider.ts
 import {
-  elizaLogger as elizaLogger3
-} from "@elizaos/core";
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/types/precompiles.ts
-var ADDRESS_PRECOMPILE_ABI = [
-  {
-    inputs: [{ internalType: "string", name: "addr", type: "string" }],
-    name: "getEvmAddr",
-    outputs: [{ internalType: "address", name: "response", type: "address" }],
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [{ internalType: "address", name: "addr", type: "address" }],
-    name: "getSeiAddr",
-    outputs: [{ internalType: "string", name: "response", type: "string" }],
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [{ internalType: "string", name: "v", type: "string" }, { internalType: "string", name: "r", type: "string" }, { internalType: "string", name: "s", type: "string" }, { internalType: "string", name: "customMessage", type: "string" }],
-    name: "associate",
-    outputs: [{ internalType: "string", name: "seiAddr", type: "string" }, { internalType: "address", name: "evmAddr", type: "address" }],
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    inputs: [{ internalType: "string", name: "pubKeyHex", type: "string" }],
-    name: "associatePubKey",
-    outputs: [{ internalType: "string", name: "seiAddr", type: "string" }, { internalType: "address", name: "evmAddr", type: "address" }],
-    stateMutability: "nonpayable",
-    type: "function"
-  }
-];
-var ADDRESS_PRECOMPILE_ADDRESS = "0x0000000000000000000000000000000000001004";
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/types/index.ts
-var SupportedChainList = Object.keys([seiDevnet, seiTestnet, sei]);
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/transfer.ts
-class TransferAction {
-  walletProvider;
-  constructor(walletProvider) {
-    this.walletProvider = walletProvider;
-  }
-  async transfer(params) {
-    const chain = this.walletProvider.getCurrentChain();
-    elizaLogger3.log(`Transferring: ${params.amount} tokens to ${params.toAddress} on ${chain.name}`);
-    let recipientAddress;
-    if (params.toAddress.startsWith("sei")) {
-      const publicClient = this.walletProvider.getEvmPublicClient();
-      try {
-        const evmAddress = await publicClient.readContract({
-          address: ADDRESS_PRECOMPILE_ADDRESS,
-          abi: ADDRESS_PRECOMPILE_ABI,
-          functionName: "getEvmAddr",
-          args: [params.toAddress]
-        });
-        if (!evmAddress || typeof evmAddress !== "string" || !evmAddress.startsWith("0x")) {
-          throw new Error(`ERROR: Recipient does not have valid EVM address. Got: ${evmAddress}`);
-        }
-        elizaLogger3.log(`Translated address ${params.toAddress} to EVM address ${evmAddress}`);
-        recipientAddress = evmAddress;
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-        throw new Error(`Failed to translate SEI address: ${errorMessage}`);
-      }
-    } else {
-      if (!params.toAddress.startsWith("0x") || params.toAddress.length !== 42) {
-        throw new Error(`ERROR: Recipient address must be valid EVM address (0x...). Got: ${params.toAddress}`);
-      }
-      recipientAddress = params.toAddress;
-    }
-    const walletClient = this.walletProvider.getEvmWalletClient();
-    if (!walletClient?.account?.address) {
-      throw new Error("Wallet client account is undefined or invalid");
-    }
-    try {
-      elizaLogger3.log(`Sending transaction from ${walletClient.account.address} to ${recipientAddress}`);
-      const valueInWei = parseEther(params.amount);
-      const transactionRequest = {
-        to: recipientAddress,
-        value: valueInWei,
-        data: params.data || "0x"
-      };
-      const hash2 = await walletClient.sendTransaction(transactionRequest);
-      if (!hash2 || typeof hash2 !== "string") {
-        throw new Error("Invalid transaction hash received");
-      }
-      elizaLogger3.log(`Transaction sent successfully. Hash: ${hash2}`);
-      return {
-        hash: hash2,
-        from: walletClient.account.address,
-        to: params.toAddress,
-        value: parseEther(params.amount).toString(),
-        data: params.data || "0x"
-      };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      elizaLogger3.error(`Transfer failed: ${errorMessage}`);
-      throw new Error(`Transfer failed: ${errorMessage}`);
-    }
-  }
-  validateParams(params) {
-    if (!params.amount || isNaN(Number(params.amount)) || Number(params.amount) <= 0) {
-      throw new Error("Invalid amount: must be a positive number");
-    }
-    if (!params.toAddress || params.toAddress.length === 0) {
-      throw new Error("Invalid recipient address: cannot be empty");
-    }
-    if (params.toAddress.startsWith("sei")) {
-      if (params.toAddress.length !== 43) {
-        throw new Error("Invalid SEI address: must be 43 characters long");
-      }
-    } else if (params.toAddress.startsWith("0x")) {
-      if (params.toAddress.length !== 42) {
-        throw new Error("Invalid EVM address: must be 42 characters long");
-      }
-    } else {
-      throw new Error('Invalid address format: must start with "sei" or "0x"');
-    }
-  }
-  async estimateGas(params) {
-    try {
-      this.validateParams(params);
-      const publicClient = this.walletProvider.getEvmPublicClient();
-      const walletClient = this.walletProvider.getEvmWalletClient();
-      if (!walletClient?.account?.address) {
-        throw new Error("Wallet account not available for gas estimation");
-      }
-      let recipientAddress;
-      if (params.toAddress.startsWith("sei")) {
-        const evmAddress = await publicClient.readContract({
-          address: ADDRESS_PRECOMPILE_ADDRESS,
-          abi: ADDRESS_PRECOMPILE_ABI,
-          functionName: "getEvmAddr",
-          args: [params.toAddress]
-        });
-        recipientAddress = evmAddress;
-      } else {
-        recipientAddress = params.toAddress;
-      }
-      const gasEstimate = await publicClient.estimateGas({
-        account: walletClient.account.address,
-        to: recipientAddress,
-        value: parseEther(params.amount),
-        data: params.data || "0x"
-      });
-      return gasEstimate;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      elizaLogger3.error(`Gas estimation failed: ${errorMessage}`);
-      return BigInt(21000);
-    }
-  }
-}
-var transferAction = {
-  name: "TRANSFER_TOKENS",
-  similes: [
-    "SEND_TOKENS",
-    "TOKEN_TRANSFER",
-    "MOVE_TOKENS",
-    "SEND_SEI",
-    "TRANSFER"
-  ],
-  validate: async (runtime, message) => {
-    try {
-      const privateKey = runtime.getSetting?.("SEI_PRIVATE_KEY");
-      if (!privateKey || !privateKey.startsWith("0x")) {
-        return false;
-      }
-      const text = message?.content?.text?.toLowerCase() || "";
-      if (!text) {
-        return false;
-      }
-      return (text.includes("transfer") || text.includes("send") || text.includes("move")) && (text.includes("sei") || text.includes("token")) && (text.includes("0x") || text.includes("sei1"));
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      elizaLogger3.error(`Transfer validation error: ${errorMessage}`);
-      return false;
-    }
-  },
-  description: "Transfer SEI tokens between addresses on the Sei network",
-  handler: async (runtime, message, state, _options, callback) => {
-    try {
-      elizaLogger3.log("Starting token transfer...");
-      const params = await buildTransferDetails(message, runtime);
-      const walletProvider = await initWalletProvider2(runtime);
-      const action = new TransferAction(walletProvider);
-      action.validateParams(params);
-      const transferResp = await action.transfer(params);
-      if (callback) {
-        const chainName = String(walletProvider.getCurrentChain().name);
-        const hash2 = String(transferResp.hash);
-        const recipient = String(transferResp.to);
-        const amount = String(params.amount);
-        const toAddress = String(params.toAddress);
-        const successMessage = `✅ Successfully transferred ${amount} SEI to ${toAddress}
-
-\uD83D\uDCC4 Transaction Hash: ${hash2}
-\uD83D\uDD17 Chain: ${chainName}`;
-        const response = {
-          text: successMessage,
-          content: {
-            success: true,
-            hash: hash2,
-            amount,
-            recipient,
-            chain: chainName
-          }
-        };
-        callback(response);
-      }
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      elizaLogger3.error(`Error during token transfer: ${errorMessage}`);
-      if (callback) {
-        const errorResponse = {
-          text: `❌ Transfer failed: ${errorMessage}`,
-          content: {
-            error: true,
-            message: errorMessage
-          }
-        };
-        callback(errorResponse);
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: {
-          text: "Transfer 1 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
-        }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "I'll help you transfer 1 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: {
-          text: "Send 5 SEI to sei1abc123def456"
-        }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Transferring 5 SEI to sei1abc123def456"
-        }
-      }
-    ]
-  ]
-};
-function getErrorMessage(error) {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  if (typeof error === "string") {
-    return error;
-  }
-  return "Unknown error occurred";
-}
-function getMessageText(message) {
-  if (!message || !message.content) {
-    throw new Error("Invalid message: missing content");
-  }
-  const text = message.content.text;
-  if (!text || typeof text !== "string") {
-    throw new Error("Invalid message: missing or invalid text content");
-  }
-  return text.trim();
-}
-async function buildTransferDetails(message, runtime) {
-  try {
-    const messageText = getMessageText(message);
-    if (!messageText) {
-      throw new Error("Empty message text");
-    }
-    const params = parseTransferParams(messageText);
-    if (!params) {
-      throw new Error(`Could not parse transfer parameters. Please specify amount and recipient address.
-
-Example: 'Send 100 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e'`);
-    }
-    return params;
-  } catch (error) {
-    const errorMessage = getErrorMessage(error);
-    elizaLogger3.error(`Failed to build transfer details: ${errorMessage}`);
-    throw new Error(`Transfer parameter parsing failed: ${errorMessage}`);
-  }
-}
-function parseTransferParams(text) {
-  if (!text || typeof text !== "string" || !text.trim()) {
-    return null;
-  }
-  const amountMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:SEI|sei)/i);
-  const addressMatch = text.match(/(0x[a-fA-F0-9]{40}|sei1[a-z0-9]{38})/);
-  if (!amountMatch || !addressMatch) {
-    return null;
-  }
-  return {
-    amount: amountMatch[1],
-    toAddress: addressMatch[1]
-  };
-}
-async function initWalletProvider2(runtime) {
-  try {
-    const privateKey = runtime.getSetting("SEI_PRIVATE_KEY");
-    const network = runtime.getSetting("SEI_NETWORK") || "testnet";
-    if (!privateKey) {
-      throw new Error("SEI_PRIVATE_KEY is required");
-    }
-    if (!privateKey.startsWith("0x")) {
-      throw new Error("SEI_PRIVATE_KEY must start with '0x'");
-    }
-    elizaLogger3.debug(`Initializing wallet provider for network: ${network}`);
-    const chainWithName = createChainWithName(network);
-    return new WalletProvider(privateKey, chainWithName);
-  } catch (error) {
-    const errorMessage = getErrorMessage(error);
-    elizaLogger3.error(`Failed to initialize wallet provider: ${errorMessage}`);
-    throw new Error(`Wallet provider initialization failed: ${errorMessage}`);
-  }
-}
-
-class ChainConfigFactory {
-  static configs = new Map([
-    ["mainnet", { name: "sei-mainnet", chain: sei }],
-    ["testnet", { name: "sei-testnet", chain: seiTestnet }],
-    ["atlantic-2", { name: "sei-testnet", chain: seiTestnet }]
-  ]);
-  static create(network) {
-    const config = this.configs.get(network.toLowerCase());
-    if (!config) {
-      throw new Error(`Unsupported network: ${network}. Supported: ${Array.from(this.configs.keys()).join(", ")}`);
-    }
-    return {
-      name: config.name,
-      chain: config.chain
-    };
-  }
-}
-function createChainWithName(network) {
-  return ChainConfigFactory.create(network);
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/dragonswap.ts
-import {
-  elizaLogger as elizaLogger5
+  elizaLogger as elizaLogger4
 } from "@elizaos/core";
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/environment.ts
-import { elizaLogger as elizaLogger4 } from "@elizaos/core";
+import { elizaLogger as elizaLogger3 } from "@elizaos/core";
+var VAULT_CONFIG_KEYS = {
+  SEI: "SEI_VAULT_ADDRESS",
+  USDC: "USDC_VAULT_ADDRESS",
+  "Delta Neutral": "DELTA_NEUTRAL_VAULT_ADDRESS",
+  "Stable Max": "STABLE_MAX_VAULT_ADDRESS",
+  "SEI Hypergrowth": "SEI_HYPERGROWTH_VAULT_ADDRESS",
+  "Blue Chip": "BLUE_CHIP_VAULT_ADDRESS",
+  Hedge: "HEDGE_VAULT_ADDRESS",
+  "Yield Farming": "YIELD_FARMING_VAULT_ADDRESS",
+  Arbitrage: "ARBITRAGE_VAULT_ADDRESS",
+  "Concentrated Liquidity": "CONCENTRATED_LIQUIDITY_VAULT_ADDRESS"
+};
+function getVaultAddress(config, vaultName) {
+  const configKey = VAULT_CONFIG_KEYS[vaultName];
+  if (!configKey)
+    return;
+  return config[configKey];
+}
 var seiChains2 = {
   "sei-mainnet": {
     id: 1329,
@@ -15388,6 +15010,18 @@ async function validateSeiConfig(runtime) {
     const coinbaseSecret = runtime.getSetting("COINBASE_ADVANCED_SECRET");
     const coinbasePassphrase = runtime.getSetting("COINBASE_ADVANCED_PASSPHRASE");
     const coinbaseSandbox = runtime.getSetting("COINBASE_SANDBOX");
+    const vaultFactoryAddress = runtime.getSetting("VAULT_FACTORY_ADDRESS");
+    const customerDashboardAddress = runtime.getSetting("CUSTOMER_DASHBOARD_ADDRESS");
+    const seiVaultAddress = runtime.getSetting("SEI_VAULT_ADDRESS");
+    const usdcVaultAddress = runtime.getSetting("USDC_VAULT_ADDRESS");
+    const deltaNeutralVaultAddress = runtime.getSetting("DELTA_NEUTRAL_VAULT_ADDRESS");
+    const stableMaxVaultAddress = runtime.getSetting("STABLE_MAX_VAULT_ADDRESS");
+    const seiHypergrowthVaultAddress = runtime.getSetting("SEI_HYPERGROWTH_VAULT_ADDRESS");
+    const blueChipVaultAddress = runtime.getSetting("BLUE_CHIP_VAULT_ADDRESS");
+    const hedgeVaultAddress = runtime.getSetting("HEDGE_VAULT_ADDRESS");
+    const yieldFarmingVaultAddress = runtime.getSetting("YIELD_FARMING_VAULT_ADDRESS");
+    const arbitrageVaultAddress = runtime.getSetting("ARBITRAGE_VAULT_ADDRESS");
+    const concentratedLiquidityVaultAddress = runtime.getSetting("CONCENTRATED_LIQUIDITY_VAULT_ADDRESS");
     for (const envVar of requiredEnvVars) {
       const key = envVar;
       if (key === "SEI_RPC_URL" && !rpcUrl) {
@@ -15419,226 +15053,2254 @@ async function validateSeiConfig(runtime) {
       COINBASE_ADVANCED_API_KEY: coinbaseApiKey,
       COINBASE_ADVANCED_SECRET: coinbaseSecret,
       COINBASE_ADVANCED_PASSPHRASE: coinbasePassphrase,
-      COINBASE_SANDBOX: coinbaseSandbox === "true" || coinbaseSandbox === true
+      COINBASE_SANDBOX: coinbaseSandbox === "true" || coinbaseSandbox === true,
+      VAULT_FACTORY_ADDRESS: vaultFactoryAddress,
+      CUSTOMER_DASHBOARD_ADDRESS: customerDashboardAddress,
+      SEI_VAULT_ADDRESS: seiVaultAddress,
+      USDC_VAULT_ADDRESS: usdcVaultAddress,
+      DELTA_NEUTRAL_VAULT_ADDRESS: deltaNeutralVaultAddress,
+      STABLE_MAX_VAULT_ADDRESS: stableMaxVaultAddress,
+      SEI_HYPERGROWTH_VAULT_ADDRESS: seiHypergrowthVaultAddress,
+      BLUE_CHIP_VAULT_ADDRESS: blueChipVaultAddress,
+      HEDGE_VAULT_ADDRESS: hedgeVaultAddress,
+      YIELD_FARMING_VAULT_ADDRESS: yieldFarmingVaultAddress,
+      ARBITRAGE_VAULT_ADDRESS: arbitrageVaultAddress,
+      CONCENTRATED_LIQUIDITY_VAULT_ADDRESS: concentratedLiquidityVaultAddress
     };
-    elizaLogger4.log("SEI configuration validated successfully");
+    elizaLogger3.log("SEI configuration validated successfully");
     return config;
   } catch (error) {
-    elizaLogger4.error(`SEI configuration validation failed: ${error}`);
+    elizaLogger3.error(`SEI configuration validation failed: ${error}`);
     throw error;
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/dragonswap.ts
-var swapRouterAbi = [
+// node_modules/@elizaos/plugin-sei-yield-delta/src/types/vault.ts
+var VAULT_IDENTIFIERS = {
+  sei: "SEI" /* SEI */,
+  "sei vault": "SEI" /* SEI */,
+  main: "SEI" /* SEI */,
+  "main vault": "SEI" /* SEI */,
+  usdc: "USDC" /* USDC */,
+  "usdc vault": "USDC" /* USDC */,
+  stablecoin: "USDC" /* USDC */,
+  "delta neutral": "Delta Neutral" /* DELTA_NEUTRAL */,
+  "delta-neutral": "Delta Neutral" /* DELTA_NEUTRAL */,
+  deltaneutral: "Delta Neutral" /* DELTA_NEUTRAL */,
+  dn: "Delta Neutral" /* DELTA_NEUTRAL */,
+  "stable max": "Stable Max" /* STABLE_MAX */,
+  stablemax: "Stable Max" /* STABLE_MAX */,
+  stable: "Stable Max" /* STABLE_MAX */,
+  "sei hypergrowth": "SEI Hypergrowth" /* SEI_HYPERGROWTH */,
+  hypergrowth: "SEI Hypergrowth" /* SEI_HYPERGROWTH */,
+  "sei growth": "SEI Hypergrowth" /* SEI_HYPERGROWTH */,
+  seihypergrowth: "SEI Hypergrowth" /* SEI_HYPERGROWTH */,
+  "blue chip": "Blue Chip" /* BLUE_CHIP */,
+  bluechip: "Blue Chip" /* BLUE_CHIP */,
+  hedge: "Hedge" /* HEDGE */,
+  hedging: "Hedge" /* HEDGE */,
+  "yield farming": "Yield Farming" /* YIELD_FARMING */,
+  yieldfarming: "Yield Farming" /* YIELD_FARMING */,
+  farming: "Yield Farming" /* YIELD_FARMING */,
+  arbitrage: "Arbitrage" /* ARBITRAGE */,
+  arb: "Arbitrage" /* ARBITRAGE */,
+  "concentrated liquidity": "Concentrated Liquidity" /* CONCENTRATED_LIQUIDITY */,
+  concentratedliquidity: "Concentrated Liquidity" /* CONCENTRATED_LIQUIDITY */,
+  concentrated: "Concentrated Liquidity" /* CONCENTRATED_LIQUIDITY */,
+  cl: "Concentrated Liquidity" /* CONCENTRATED_LIQUIDITY */
+};
+function matchVaultName(input) {
+  const normalized = input.toLowerCase().trim();
+  return VAULT_IDENTIFIERS[normalized] || null;
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/vault-provider.ts
+var STRATEGY_VAULT_ABI = [
   {
+    name: "getVaultInfo",
+    type: "function",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "name", type: "string" },
+          { name: "strategy", type: "string" },
+          { name: "token0", type: "address" },
+          { name: "token1", type: "address" },
+          { name: "poolFee", type: "uint24" },
+          { name: "totalSupply", type: "uint256" },
+          { name: "totalValueLocked", type: "uint256" },
+          { name: "isActive", type: "bool" }
+        ]
+      }
+    ]
+  },
+  {
+    name: "getCurrentPosition",
+    type: "function",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "tickLower", type: "int24" },
+          { name: "tickUpper", type: "int24" },
+          { name: "liquidity", type: "uint128" },
+          { name: "tokensOwed0", type: "uint256" },
+          { name: "tokensOwed1", type: "uint256" },
+          { name: "feeGrowthInside0LastX128", type: "uint256" },
+          { name: "feeGrowthInside1LastX128", type: "uint256" }
+        ]
+      }
+    ]
+  }
+];
+var CUSTOMER_DASHBOARD_ABI = [
+  {
+    name: "getCustomerPortfolio",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "customer", type: "address" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple[]",
+        components: [
+          { name: "vaultAddress", type: "address" },
+          { name: "vaultName", type: "string" },
+          { name: "shareBalance", type: "uint256" },
+          { name: "shareValue", type: "uint256" },
+          { name: "totalDeposited", type: "uint256" },
+          { name: "totalWithdrawn", type: "uint256" },
+          { name: "unrealizedGains", type: "uint256" },
+          { name: "depositTimestamp", type: "uint256" },
+          { name: "lockTimeRemaining", type: "uint256" },
+          { name: "canWithdraw", type: "bool" }
+        ]
+      }
+    ]
+  },
+  {
+    name: "getVaultMetrics",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "vault", type: "address" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "totalValueLocked", type: "uint256" },
+          { name: "totalShares", type: "uint256" },
+          { name: "pricePerShare", type: "uint256" },
+          { name: "apy", type: "uint256" },
+          { name: "totalYieldGenerated", type: "uint256" },
+          { name: "managementFeeRate", type: "uint256" },
+          { name: "performanceFeeRate", type: "uint256" },
+          { name: "withdrawalFeeRate", type: "uint256" }
+        ]
+      }
+    ]
+  },
+  {
+    name: "getYieldHistory",
+    type: "function",
+    stateMutability: "view",
     inputs: [
-      { name: "tokenIn", type: "address" },
-      { name: "tokenOut", type: "address" },
-      { name: "amountIn", type: "uint256" },
-      { name: "amountOutMinimum", type: "uint256" },
-      { name: "recipient", type: "address" },
-      { name: "deadline", type: "uint256" }
+      { name: "vault", type: "address" },
+      { name: "fromTimestamp", type: "uint256" }
     ],
-    name: "exactInputSingle",
-    outputs: [{ name: "amountOut", type: "uint256" }],
-    stateMutability: "payable",
-    type: "function"
+    outputs: [
+      {
+        name: "",
+        type: "tuple[]",
+        components: [
+          { name: "timestamp", type: "uint256" },
+          { name: "totalValue", type: "uint256" },
+          { name: "yieldGenerated", type: "uint256" },
+          { name: "apy", type: "uint256" }
+        ]
+      }
+    ]
+  },
+  {
+    name: "calculateProjectedReturns",
+    type: "function",
+    stateMutability: "view",
+    inputs: [
+      { name: "vault", type: "address" },
+      { name: "depositAmount", type: "uint256" },
+      { name: "daysHeld", type: "uint256" }
+    ],
+    outputs: [
+      { name: "projectedValue", type: "uint256" },
+      { name: "projectedYield", type: "uint256" },
+      { name: "managementFees", type: "uint256" },
+      { name: "withdrawalFees", type: "uint256" }
+    ]
+  },
+  {
+    name: "getOptimalDepositRatio",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "vault", type: "address" }],
+    outputs: [
+      { name: "token0Ratio", type: "uint256" },
+      { name: "token1Ratio", type: "uint256" },
+      { name: "currentPrice", type: "uint256" }
+    ]
+  }
+];
+var VAULT_FACTORY_ABI = [
+  {
+    name: "getAllVaults",
+    type: "function",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "address[]" }]
   }
 ];
 
-class DragonSwapAPI {
-  baseUrl;
-  walletProvider;
-  routerAddress;
-  constructor(walletProvider, isTestnet = false) {
-    this.baseUrl = isTestnet ? "https://api-testnet.dragonswap.app/v1" : "https://api.dragonswap.app/v1";
-    this.walletProvider = walletProvider;
-    this.routerAddress = isTestnet ? "0x1234567890123456789012345678901234567890" : "0x1234567890123456789012345678901234567890";
+class VaultProvider {
+  runtime;
+  config = null;
+  cache = new Map;
+  cacheTTL = 30000;
+  constructor(runtime) {
+    this.runtime = runtime;
   }
-  async getPoolInfo(tokenA, tokenB) {
-    try {
-      const response = await fetch(`${this.baseUrl}/pools/${tokenA}/${tokenB}`);
-      if (!response.ok) {
-        if (false) {}
-        return null;
-      }
-      return await response.json();
-    } catch (error) {
-      elizaLogger5.error(`Failed to get pool info: ${error}`);
-      if (false) {}
-      return null;
+  async getConfig() {
+    if (!this.config) {
+      this.config = await validateSeiConfig(this.runtime);
     }
+    return this.config;
   }
-  async getQuote(tokenIn, tokenOut, amountIn) {
+  getPublicClient() {
+    const network = this.config?.SEI_NETWORK || "sei-mainnet";
+    const chain = seiChains[network] || seiChains["sei-mainnet"];
+    return createPublicClient({
+      chain,
+      transport: http()
+    });
+  }
+  getCacheKey(method, ...args) {
+    return `${method}:${args.join(":")}`;
+  }
+  getFromCache(key) {
+    const entry = this.cache.get(key);
+    if (entry && Date.now() - entry.timestamp < this.cacheTTL) {
+      return entry.data;
+    }
+    return null;
+  }
+  setCache(key, data) {
+    this.cache.set(key, { data, timestamp: Date.now() });
+  }
+  async getCustomerPortfolio(customerAddress) {
+    const cacheKey2 = this.getCacheKey("getCustomerPortfolio", customerAddress);
+    const cached = this.getFromCache(cacheKey2);
+    if (cached)
+      return cached;
     try {
-      const response = await fetch(`${this.baseUrl}/quote`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tokenIn,
-          tokenOut,
-          amountIn
-        })
+      const config = await this.getConfig();
+      const publicClient = this.getPublicClient();
+      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
+        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
+      }
+      const result = await publicClient.readContract({
+        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+        abi: CUSTOMER_DASHBOARD_ABI,
+        functionName: "getCustomerPortfolio",
+        args: [customerAddress]
       });
-      if (!response.ok) {
-        if (false) {}
-        return null;
-      }
-      return await response.json();
+      const formatted = result.map((p) => ({
+        vaultAddress: p.vaultAddress,
+        vaultName: p.vaultName,
+        shareBalance: formatUnits(p.shareBalance, 18),
+        shareValue: formatUnits(p.shareValue, 6),
+        totalDeposited: formatUnits(p.totalDeposited, 6),
+        totalWithdrawn: formatUnits(p.totalWithdrawn, 6),
+        unrealizedGains: formatUnits(p.unrealizedGains, 6),
+        depositTimestamp: Number(p.depositTimestamp),
+        lockTimeRemaining: Number(p.lockTimeRemaining),
+        canWithdraw: p.canWithdraw
+      }));
+      this.setCache(cacheKey2, formatted);
+      return formatted;
     } catch (error) {
-      elizaLogger5.error(`Failed to get quote: ${error}`);
-      if (false) {}
-      return null;
+      elizaLogger4.error(`Failed to get customer portfolio: ${error}`);
+      throw error;
     }
   }
-  async executeSwap(params, quote) {
+  async getVaultMetrics(vaultAddress) {
+    const cacheKey2 = this.getCacheKey("getVaultMetrics", vaultAddress);
+    const cached = this.getFromCache(cacheKey2);
+    if (cached)
+      return cached;
     try {
-      elizaLogger5.log(`Executing swap: ${params.amountIn} ${params.tokenIn} -> ${params.tokenOut}`);
-      const walletClient = this.walletProvider.getEvmWalletClient();
-      if (!walletClient.account) {
-        throw new Error("Wallet not connected");
+      const config = await this.getConfig();
+      const publicClient = this.getPublicClient();
+      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
+        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
       }
-      let swapQuote = quote;
-      if (!swapQuote) {
-        swapQuote = await this.getQuote(params.tokenIn, params.tokenOut, params.amountIn);
-        if (!swapQuote) {
-          throw new Error("Could not get swap quote");
+      const result = await publicClient.readContract({
+        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+        abi: CUSTOMER_DASHBOARD_ABI,
+        functionName: "getVaultMetrics",
+        args: [vaultAddress]
+      });
+      const formatted = {
+        totalValueLocked: formatUnits(result.totalValueLocked, 6),
+        totalShares: formatUnits(result.totalShares, 18),
+        pricePerShare: formatUnits(result.pricePerShare, 18),
+        apy: Number(result.apy) / 100,
+        totalYieldGenerated: formatUnits(result.totalYieldGenerated, 6),
+        managementFeeRate: Number(result.managementFeeRate) / 1e4,
+        performanceFeeRate: Number(result.performanceFeeRate) / 1e4,
+        withdrawalFeeRate: Number(result.withdrawalFeeRate) / 1e4
+      };
+      this.setCache(cacheKey2, formatted);
+      return formatted;
+    } catch (error) {
+      elizaLogger4.error(`Failed to get vault metrics: ${error}`);
+      throw error;
+    }
+  }
+  async getVaultInfo(vaultAddress) {
+    const cacheKey2 = this.getCacheKey("getVaultInfo", vaultAddress);
+    const cached = this.getFromCache(cacheKey2);
+    if (cached)
+      return cached;
+    try {
+      const publicClient = this.getPublicClient();
+      const result = await publicClient.readContract({
+        address: vaultAddress,
+        abi: STRATEGY_VAULT_ABI,
+        functionName: "getVaultInfo"
+      });
+      const formatted = {
+        name: result.name,
+        strategy: result.strategy,
+        token0: result.token0,
+        token1: result.token1,
+        poolFee: Number(result.poolFee),
+        totalSupply: formatUnits(result.totalSupply, 18),
+        totalValueLocked: formatUnits(result.totalValueLocked, 6),
+        isActive: result.isActive
+      };
+      this.setCache(cacheKey2, formatted);
+      return formatted;
+    } catch (error) {
+      elizaLogger4.error(`Failed to get vault info: ${error}`);
+      throw error;
+    }
+  }
+  async getCurrentPosition(vaultAddress) {
+    const cacheKey2 = this.getCacheKey("getCurrentPosition", vaultAddress);
+    const cached = this.getFromCache(cacheKey2);
+    if (cached)
+      return cached;
+    try {
+      const publicClient = this.getPublicClient();
+      const result = await publicClient.readContract({
+        address: vaultAddress,
+        abi: STRATEGY_VAULT_ABI,
+        functionName: "getCurrentPosition"
+      });
+      const position = {
+        tickLower: result.tickLower,
+        tickUpper: result.tickUpper,
+        liquidity: result.liquidity,
+        tokensOwed0: result.tokensOwed0,
+        tokensOwed1: result.tokensOwed1,
+        feeGrowthInside0LastX128: result.feeGrowthInside0LastX128,
+        feeGrowthInside1LastX128: result.feeGrowthInside1LastX128
+      };
+      this.setCache(cacheKey2, position);
+      return position;
+    } catch (error) {
+      elizaLogger4.error(`Failed to get current position: ${error}`);
+      throw error;
+    }
+  }
+  async getYieldHistory(vaultAddress, fromTimestamp) {
+    const cacheKey2 = this.getCacheKey("getYieldHistory", vaultAddress, fromTimestamp);
+    const cached = this.getFromCache(cacheKey2);
+    if (cached)
+      return cached;
+    try {
+      const config = await this.getConfig();
+      const publicClient = this.getPublicClient();
+      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
+        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
+      }
+      const result = await publicClient.readContract({
+        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+        abi: CUSTOMER_DASHBOARD_ABI,
+        functionName: "getYieldHistory",
+        args: [vaultAddress, BigInt(fromTimestamp)]
+      });
+      const formatted = result.map((h) => ({
+        timestamp: Number(h.timestamp),
+        totalValue: formatUnits(h.totalValue, 6),
+        yieldGenerated: formatUnits(h.yieldGenerated, 6),
+        apy: Number(h.apy) / 100
+      }));
+      this.setCache(cacheKey2, formatted);
+      return formatted;
+    } catch (error) {
+      elizaLogger4.error(`Failed to get yield history: ${error}`);
+      throw error;
+    }
+  }
+  async calculateProjectedReturns(vaultAddress, depositAmount, daysHeld) {
+    const cacheKey2 = this.getCacheKey("calculateProjectedReturns", vaultAddress, depositAmount, daysHeld);
+    const cached = this.getFromCache(cacheKey2);
+    if (cached)
+      return cached;
+    try {
+      const config = await this.getConfig();
+      const publicClient = this.getPublicClient();
+      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
+        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
+      }
+      const depositAmountWei = BigInt(Math.floor(depositAmount * 1e6));
+      const result = await publicClient.readContract({
+        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+        abi: CUSTOMER_DASHBOARD_ABI,
+        functionName: "calculateProjectedReturns",
+        args: [vaultAddress, depositAmountWei, BigInt(daysHeld)]
+      });
+      const formatted = {
+        projectedValue: formatUnits(result[0], 6),
+        projectedYield: formatUnits(result[1], 6),
+        managementFees: formatUnits(result[2], 6),
+        withdrawalFees: formatUnits(result[3], 6)
+      };
+      this.setCache(cacheKey2, formatted);
+      return formatted;
+    } catch (error) {
+      elizaLogger4.error(`Failed to calculate projected returns: ${error}`);
+      throw error;
+    }
+  }
+  async getOptimalDepositRatio(vaultAddress) {
+    const cacheKey2 = this.getCacheKey("getOptimalDepositRatio", vaultAddress);
+    const cached = this.getFromCache(cacheKey2);
+    if (cached)
+      return cached;
+    try {
+      const config = await this.getConfig();
+      const publicClient = this.getPublicClient();
+      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
+        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
+      }
+      const result = await publicClient.readContract({
+        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+        abi: CUSTOMER_DASHBOARD_ABI,
+        functionName: "getOptimalDepositRatio",
+        args: [vaultAddress]
+      });
+      const ratio = {
+        token0Ratio: result[0],
+        token1Ratio: result[1],
+        currentPrice: result[2]
+      };
+      this.setCache(cacheKey2, ratio);
+      return ratio;
+    } catch (error) {
+      elizaLogger4.error(`Failed to get optimal deposit ratio: ${error}`);
+      throw error;
+    }
+  }
+  async getAllVaults() {
+    const cacheKey2 = this.getCacheKey("getAllVaults");
+    const cached = this.getFromCache(cacheKey2);
+    if (cached)
+      return cached;
+    try {
+      const config = await this.getConfig();
+      const publicClient = this.getPublicClient();
+      let vaultAddresses = [];
+      if (config.VAULT_FACTORY_ADDRESS) {
+        try {
+          const result = await publicClient.readContract({
+            address: config.VAULT_FACTORY_ADDRESS,
+            abi: VAULT_FACTORY_ABI,
+            functionName: "getAllVaults"
+          });
+          vaultAddresses = result;
+        } catch (e) {
+          elizaLogger4.warn("Could not get vaults from factory, using config addresses");
         }
       }
-      if (parseFloat(swapQuote.amountOut) <= 0) {
-        throw new Error("Invalid quote amount");
+      if (vaultAddresses.length === 0) {
+        for (const [vaultName, configKey] of Object.entries(VAULT_CONFIG_KEYS)) {
+          const address = config[configKey];
+          if (address) {
+            vaultAddresses.push(address);
+          }
+        }
       }
-      const slippageMultiplier = 1 - (params.slippage || 0.5) / 100;
-      const minAmountOut = (parseFloat(swapQuote.amountOut) * slippageMultiplier).toString();
-      if (params.tokenIn !== "SEI" && !this.isNativeToken(params.tokenIn)) {
-        elizaLogger5.log(`Approving token ${params.tokenIn} for swap`);
-        const tokenAddress = this.getTokenAddress(params.tokenIn);
-        await this.approveToken(tokenAddress, params.amountIn);
+      const vaults = [];
+      for (const address of vaultAddresses) {
+        try {
+          const info = await this.getVaultInfo(address);
+          const metrics = await this.getVaultMetrics(address);
+          vaults.push({
+            ...info,
+            address,
+            apy: metrics.apy,
+            riskLevel: this.getRiskLevel(info.name)
+          });
+        } catch (e) {
+          elizaLogger4.warn(`Could not get info for vault ${address}: ${e}`);
+        }
       }
-      const calldata = this.buildSwapCalldata({
-        ...params,
-        minAmountOut
-      });
-      const amountInWei = BigInt(Math.floor(parseFloat(params.amountIn) * 1000000000000000000));
-      const transactionRequest = {
-        to: this.routerAddress,
-        data: calldata,
-        value: params.tokenIn === "SEI" ? amountInWei : BigInt(0)
-      };
-      if (false) {}
-      const txHash = await walletClient.sendTransaction({
-        account: walletClient.account,
-        ...transactionRequest
-      });
-      elizaLogger5.log(`Swap executed: ${txHash}`);
-      return txHash;
+      this.setCache(cacheKey2, vaults);
+      return vaults;
     } catch (error) {
-      elizaLogger5.error(`Failed to execute swap: ${error}`);
-      return null;
+      elizaLogger4.error(`Failed to get all vaults: ${error}`);
+      throw error;
     }
   }
-  getTokenAddress(symbol) {
-    const tokenAddresses = {
-      USDC: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-      USDT: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
-      ETH: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
-      WSEI: "0xE30feDd158A2e3b13e9badaeABaFc5516e95e8C7"
-    };
-    if (!tokenAddresses[symbol]) {
-      throw new Error(`Unsupported token: ${symbol}`);
+  async getVaultAddressByName(vaultName) {
+    const config = await this.getConfig();
+    const address = getVaultAddress(config, vaultName);
+    if (address)
+      return address;
+    const matched = matchVaultName(vaultName);
+    if (matched) {
+      return getVaultAddress(config, matched) || null;
     }
-    return getAddress(tokenAddresses[symbol]);
+    return null;
   }
-  buildSwapCalldata(params) {
-    const deadline = BigInt(Math.floor(Date.now() / 1000) + 1200);
-    const walletAddress = getAddress(this.walletProvider.getEvmWalletClient().account.address);
-    const WSEI_ADDRESS = getAddress("0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc");
-    try {
-      const amountInWei = BigInt(Math.floor(parseFloat(params.amountIn) * 1000000000000000000));
-      const minAmountOutWei = BigInt(Math.floor(parseFloat(params.minAmountOut) * 1000000000000000000));
-      if (params.tokenIn === "SEI") {
-        const tokenOutAddress = this.getTokenAddress(params.tokenOut);
-        return encodeFunctionData({
-          abi: swapRouterAbi,
-          functionName: "exactInputSingle",
-          args: [
-            WSEI_ADDRESS,
-            tokenOutAddress,
-            amountInWei,
-            minAmountOutWei,
-            walletAddress,
-            deadline
-          ]
-        });
-      } else {
-        const tokenInAddress = this.getTokenAddress(params.tokenIn);
-        const tokenOutAddress = params.tokenOut === "SEI" ? WSEI_ADDRESS : this.getTokenAddress(params.tokenOut);
-        return encodeFunctionData({
-          abi: swapRouterAbi,
-          functionName: "exactInputSingle",
-          args: [
-            tokenInAddress,
-            tokenOutAddress,
-            amountInWei,
-            minAmountOutWei,
-            walletAddress,
-            deadline
-          ]
-        });
-      }
-    } catch (error) {
-      elizaLogger5.error(`Failed to encode swap calldata: ${error}`);
-      throw new Error("Failed to build transaction data");
-    }
+  getRiskLevel(vaultName) {
+    const lowerName = vaultName.toLowerCase();
+    if (lowerName.includes("stable"))
+      return "Very Low";
+    if (lowerName.includes("hedge"))
+      return "Low";
+    if (lowerName.includes("delta neutral"))
+      return "Low";
+    if (lowerName.includes("blue chip"))
+      return "Medium";
+    if (lowerName.includes("concentrated"))
+      return "Medium";
+    if (lowerName.includes("yield farming"))
+      return "Medium";
+    if (lowerName.includes("arbitrage"))
+      return "Medium-High";
+    if (lowerName.includes("hypergrowth"))
+      return "High";
+    return "Medium";
   }
-  async approveToken(tokenAddress, amount) {
-    if (false) {}
-    const walletClient = this.walletProvider.getEvmWalletClient();
-    const currentAllowance = await this.checkAllowance(tokenAddress, walletClient.account.address);
-    if (BigInt(currentAllowance) >= BigInt(amount)) {
-      elizaLogger5.log(`Token ${tokenAddress} already approved with sufficient allowance`);
-      return;
-    }
-    const amountWei = BigInt(Math.floor(parseFloat(amount) * 1000000000000000000));
-    const data = encodeFunctionData({
-      abi: erc20Abi,
-      functionName: "approve",
-      args: [this.routerAddress, amountWei]
-    });
-    const txHash = await walletClient.sendTransaction({
-      account: walletClient.account,
-      to: tokenAddress,
-      data,
-      value: BigInt(0)
-    });
-    elizaLogger5.log(`Token approval transaction: ${txHash}`);
-  }
-  async checkAllowance(tokenAddress, ownerAddress) {
-    if (false) {}
-    try {
-      const publicClient = this.walletProvider.getEvmPublicClient();
-      const allowance = await publicClient.readContract({
-        address: tokenAddress,
-        abi: erc20Abi,
-        functionName: "allowance",
-        args: [ownerAddress, this.routerAddress]
-      });
-      return allowance.toString();
-    } catch (error) {
-      elizaLogger5.error(`Failed to check token allowance: ${error}`);
-      return "0";
-    }
-  }
-  isNativeToken(tokenAddress) {
-    const nativeTokens = [
-      "SEI",
-      "0x0000000000000000000000000000000000000000"
-    ];
-    return nativeTokens.includes(tokenAddress.toLowerCase());
+  clearCache() {
+    this.cache.clear();
   }
 }
-function getErrorMessage2(error) {
+var vaultProviderInstance = null;
+var vaultProvider = {
+  name: "vaultProvider",
+  get: async (runtime, message, state) => {
+    if (!vaultProviderInstance) {
+      vaultProviderInstance = new VaultProvider(runtime);
+      elizaLogger4.info("Vault Provider initialized");
+    }
+    if (!message?.content?.text) {
+      return "Vault Provider: Query vault metrics, positions, and portfolio data for Yield Delta vaults on SEI blockchain.";
+    }
+    return null;
+  }
+};
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/portfolio-query.ts
+import {
+  elizaLogger as elizaLogger5
+} from "@elizaos/core";
+var portfolioQueryAction = {
+  name: "PORTFOLIO_QUERY",
+  similes: [
+    "GET_PORTFOLIO",
+    "CHECK_PORTFOLIO",
+    "MY_POSITIONS",
+    "VAULT_POSITIONS",
+    "PORTFOLIO_STATUS"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const portfolioKeywords = [
+      "my portfolio",
+      "my positions",
+      "my balance",
+      "my deposits",
+      "portfolio value",
+      "what do i have",
+      "show my",
+      "my vault",
+      "my gains",
+      "my returns",
+      "can i withdraw",
+      "withdrawal status",
+      "how much have i",
+      "what's my",
+      "whats my"
+    ];
+    return portfolioKeywords.some((keyword) => content.includes(keyword));
+  },
+  description: "Get user's portfolio status across all Yield Delta vaults",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger5.info("Portfolio Query Action triggered");
+      const vaultProvider2 = new VaultProvider(runtime);
+      const walletProvider = new WalletProvider(runtime);
+      const walletAddress = walletProvider.getAddress();
+      if (!walletAddress) {
+        if (callback) {
+          callback({
+            text: "I couldn't find your wallet address. Please make sure your wallet is configured.",
+            content: {
+              error: "No wallet address",
+              action: "PORTFOLIO_QUERY"
+            }
+          });
+        }
+        return;
+      }
+      elizaLogger5.info(`Fetching portfolio for address: ${walletAddress}`);
+      const portfolio = await vaultProvider2.getCustomerPortfolio(walletAddress);
+      if (portfolio.length === 0) {
+        if (callback) {
+          callback({
+            text: "You don't have any positions in Yield Delta vaults yet. Visit our app to deposit into a vault and start earning yield!",
+            content: {
+              text: "No positions found",
+              action: "PORTFOLIO_QUERY",
+              portfolio: []
+            }
+          });
+        }
+        return;
+      }
+      const totalValue = portfolio.reduce((sum, p) => sum + parseFloat(p.shareValue), 0);
+      const totalGains = portfolio.reduce((sum, p) => sum + parseFloat(p.unrealizedGains), 0);
+      let response = `Your Yield Delta Portfolio:
+
+`;
+      response += `Total Value: $${totalValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+
+`;
+      response += `Positions:
+`;
+      for (const position of portfolio) {
+        const shares = parseFloat(position.shareBalance);
+        const value = parseFloat(position.shareValue);
+        const gains = parseFloat(position.unrealizedGains);
+        const gainsSign = gains >= 0 ? "+" : "";
+        const withdrawStatus = position.canWithdraw ? "✓ Can withdraw" : `⏳ ${formatLockTime(position.lockTimeRemaining)} lock remaining`;
+        response += `• ${position.vaultName}: ${formatNumber(shares)} shares ($${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}) ${gainsSign}$${gains.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} gains ${withdrawStatus}
+`;
+      }
+      const totalGainsSign = totalGains >= 0 ? "+" : "";
+      response += `
+Total Unrealized Gains: ${totalGainsSign}$${totalGains.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      elizaLogger5.info(`Portfolio query response generated for ${portfolio.length} positions`);
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "PORTFOLIO_QUERY",
+            portfolio,
+            summary: {
+              totalValue,
+              totalGains,
+              positionCount: portfolio.length
+            }
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger5.error(`Error in portfolio query: ${error instanceof Error ? error.message : String(error)}`);
+      if (callback) {
+        callback({
+          text: "I encountered an error while fetching your portfolio. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "PORTFOLIO_QUERY"
+          }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What's my portfolio value?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Your Yield Delta Portfolio:
+
+Total Value: $5,234.56
+
+Positions:
+• Delta Neutral Vault: 1,000 shares ($2,100.00) +$100.00 gains ✓ Can withdraw
+• Stable Max Vault: 500 shares ($1,534.56) +$34.56 gains ⏳ 2 days lock remaining
+
+Total Unrealized Gains: +$134.56`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Show my positions" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Your Yield Delta Portfolio:
+
+Total Value: $10,000.00
+
+Positions:
+• SEI Hypergrowth: 2,000 shares ($5,000.00) +$500.00 gains ✓ Can withdraw
+• Blue Chip Vault: 1,500 shares ($5,000.00) +$250.00 gains ✓ Can withdraw
+
+Total Unrealized Gains: +$750.00`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Can I withdraw my funds?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Your Yield Delta Portfolio:
+
+Total Value: $3,000.00
+
+Positions:
+• Hedge Vault: 1,000 shares ($3,000.00) +$150.00 gains ✓ Can withdraw
+
+Total Unrealized Gains: +$150.00`
+        }
+      }
+    ]
+  ]
+};
+function formatNumber(num2) {
+  if (num2 >= 1e6) {
+    return (num2 / 1e6).toFixed(2) + "M";
+  } else if (num2 >= 1000) {
+    return (num2 / 1000).toFixed(2) + "K";
+  }
+  return num2.toLocaleString("en-US", { maximumFractionDigits: 2 });
+}
+function formatLockTime(seconds) {
+  if (seconds <= 0)
+    return "0";
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor(seconds % 86400 / 3600);
+  if (days > 0) {
+    return `${days} day${days > 1 ? "s" : ""}`;
+  } else if (hours > 0) {
+    return `${hours} hour${hours > 1 ? "s" : ""}`;
+  } else {
+    const minutes = Math.floor(seconds / 60);
+    return `${minutes} minute${minutes > 1 ? "s" : ""}`;
+  }
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/vault-metrics.ts
+import {
+  elizaLogger as elizaLogger6
+} from "@elizaos/core";
+var vaultMetricsAction = {
+  name: "VAULT_METRICS",
+  similes: [
+    "GET_VAULT_STATS",
+    "VAULT_APY",
+    "VAULT_TVL",
+    "VAULT_PERFORMANCE",
+    "VAULT_INFO"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const metricsKeywords = [
+      "apy of",
+      "apy for",
+      "tvl of",
+      "tvl for",
+      "vault stats",
+      "vault metrics",
+      "vault performance",
+      "fees for",
+      "how is the",
+      "performing",
+      "what are the fees",
+      "management fee",
+      "performance fee"
+    ];
+    const vaultNames = [
+      "delta neutral",
+      "stable max",
+      "hypergrowth",
+      "blue chip",
+      "hedge",
+      "yield farming",
+      "arbitrage",
+      "concentrated",
+      "sei vault",
+      "usdc vault"
+    ];
+    const mentionsVault = vaultNames.some((name) => content.includes(name));
+    const hasKeyword = metricsKeywords.some((keyword) => content.includes(keyword));
+    return hasKeyword || mentionsVault && (content.includes("apy") || content.includes("tvl") || content.includes("fee") || content.includes("stat") || content.includes("metric"));
+  },
+  description: "Get performance metrics for a specific Yield Delta vault",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger6.info("Vault Metrics Action triggered");
+      const vaultProvider2 = new VaultProvider(runtime);
+      const content = message.content?.text || "";
+      const vaultName = extractVaultName(content);
+      if (!vaultName) {
+        if (callback) {
+          callback({
+            text: "I couldn't identify which vault you're asking about. Please specify a vault name like 'Delta Neutral', 'Stable Max', 'SEI Hypergrowth', etc.",
+            content: {
+              error: "No vault identified",
+              action: "VAULT_METRICS"
+            }
+          });
+        }
+        return;
+      }
+      const vaultAddress = await vaultProvider2.getVaultAddressByName(vaultName);
+      if (!vaultAddress) {
+        if (callback) {
+          callback({
+            text: `I couldn't find the address for ${vaultName} vault. Please check the vault name and try again.`,
+            content: {
+              error: "Vault address not found",
+              action: "VAULT_METRICS"
+            }
+          });
+        }
+        return;
+      }
+      const [metrics, info] = await Promise.all([
+        vaultProvider2.getVaultMetrics(vaultAddress),
+        vaultProvider2.getVaultInfo(vaultAddress)
+      ]);
+      let response = `${info.name} Vault Metrics:
+
+`;
+      response += `\uD83D\uDCCA Performance:
+`;
+      response += `• APY: ${metrics.apy.toFixed(2)}%
+`;
+      response += `• Total Yield Generated: $${formatLargeNumber(parseFloat(metrics.totalYieldGenerated))}
+
+`;
+      response += `\uD83D\uDCB0 TVL & Shares:
+`;
+      response += `• Total Value Locked: $${formatLargeNumber(parseFloat(metrics.totalValueLocked))}
+`;
+      response += `• Total Shares: ${formatLargeNumber(parseFloat(metrics.totalShares))}
+`;
+      response += `• Price per Share: $${parseFloat(metrics.pricePerShare).toFixed(4)}
+
+`;
+      response += `\uD83D\uDCB8 Fees:
+`;
+      response += `• Management: ${(metrics.managementFeeRate * 100).toFixed(2)}%
+`;
+      response += `• Performance: ${(metrics.performanceFeeRate * 100).toFixed(2)}%
+`;
+      response += `• Withdrawal: ${(metrics.withdrawalFeeRate * 100).toFixed(2)}%
+
+`;
+      response += `Strategy: ${info.strategy}`;
+      if (!info.isActive) {
+        response += `
+
+⚠️ Note: This vault is currently not accepting new deposits.`;
+      }
+      elizaLogger6.info(`Vault metrics response generated for ${info.name}`);
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "VAULT_METRICS",
+            vaultName: info.name,
+            metrics,
+            info
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger6.error(`Error in vault metrics: ${error instanceof Error ? error.message : String(error)}`);
+      if (callback) {
+        callback({
+          text: "I encountered an error while fetching vault metrics. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "VAULT_METRICS"
+          }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What's the APY of Delta Neutral vault?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Delta Neutral Vault Metrics:
+
+\uD83D\uDCCA Performance:
+• APY: 12.50%
+• Total Yield Generated: $45,230
+
+\uD83D\uDCB0 TVL & Shares:
+• Total Value Locked: $1,234,567
+• Total Shares: 50,000
+• Price per Share: $24.69
+
+\uD83D\uDCB8 Fees:
+• Management: 0.50%
+• Performance: 10.00%
+• Withdrawal: 0.10%
+
+Strategy: Delta-neutral yield farming with IL protection`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Show TVL for Stable Max" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Stable Max Vault Metrics:
+
+\uD83D\uDCCA Performance:
+• APY: 8.20%
+• Total Yield Generated: $28,150
+
+\uD83D\uDCB0 TVL & Shares:
+• Total Value Locked: $890,000
+• Total Shares: 85,000
+• Price per Share: $10.47
+
+\uD83D\uDCB8 Fees:
+• Management: 0.30%
+• Performance: 5.00%
+• Withdrawal: 0.05%
+
+Strategy: Stablecoin yield optimization`
+        }
+      }
+    ]
+  ]
+};
+function extractVaultName(text) {
+  const lowerText = text.toLowerCase();
+  const vaultPatterns = [
+    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
+    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
+    { pattern: /sei[\s-]?hypergrowth|hypergrowth/i, name: "SEI Hypergrowth" },
+    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
+    { pattern: /hedge|hedging/i, name: "Hedge" },
+    { pattern: /yield[\s-]?farming|farming/i, name: "Yield Farming" },
+    { pattern: /arbitrage|arb\b/i, name: "Arbitrage" },
+    { pattern: /concentrated[\s-]?liquidity|concentrated|\bcl\b/i, name: "Concentrated Liquidity" },
+    { pattern: /\bsei\s+vault\b|\bmain\s+vault\b/i, name: "SEI" },
+    { pattern: /\busdc\s+vault\b|\bstablecoin\s+vault\b/i, name: "USDC" }
+  ];
+  for (const { pattern, name } of vaultPatterns) {
+    if (pattern.test(text)) {
+      return name;
+    }
+  }
+  return null;
+}
+function formatLargeNumber(num2) {
+  if (num2 >= 1e6) {
+    return (num2 / 1e6).toFixed(2) + "M";
+  } else if (num2 >= 1000) {
+    return (num2 / 1000).toFixed(2) + "K";
+  }
+  return num2.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/vault-list.ts
+import {
+  elizaLogger as elizaLogger7
+} from "@elizaos/core";
+var vaultListAction = {
+  name: "VAULT_LIST",
+  similes: [
+    "LIST_VAULTS",
+    "SHOW_VAULTS",
+    "AVAILABLE_VAULTS",
+    "ALL_VAULTS",
+    "VAULT_OPTIONS"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const listKeywords = [
+      "what vaults",
+      "which vaults",
+      "available vaults",
+      "list vaults",
+      "show vaults",
+      "all vaults",
+      "vault options",
+      "what strategies",
+      "which strategies",
+      "what can i invest",
+      "investment options",
+      "show me the vaults",
+      "what are my options"
+    ];
+    return listKeywords.some((keyword) => content.includes(keyword));
+  },
+  description: "List all available Yield Delta vaults with key metrics",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger7.info("Vault List Action triggered");
+      const vaultProvider2 = new VaultProvider(runtime);
+      const vaults = await vaultProvider2.getAllVaults();
+      if (vaults.length === 0) {
+        if (callback) {
+          callback({
+            text: "No vaults are currently available. Please check back later or ensure the vault contracts are properly configured.",
+            content: {
+              error: "No vaults found",
+              action: "VAULT_LIST"
+            }
+          });
+        }
+        return;
+      }
+      let response = `Available Yield Delta Vaults:
+
+`;
+      for (const vault of vaults) {
+        const riskEmoji = getRiskEmoji(vault.riskLevel || "Medium");
+        const tvlFormatted = formatLargeNumber2(parseFloat(vault.totalValueLocked));
+        const apyFormatted = vault.apy ? vault.apy.toFixed(1) : "N/A";
+        response += `${riskEmoji} ${vault.name}
+`;
+        response += `   APY: ${apyFormatted}% | TVL: $${tvlFormatted} | Risk: ${vault.riskLevel || "Medium"}
+`;
+        response += `   Strategy: ${vault.strategy}
+
+`;
+      }
+      response += `Use 'vault metrics [name]' for detailed info on any vault.`;
+      elizaLogger7.info(`Vault list response generated for ${vaults.length} vaults`);
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "VAULT_LIST",
+            vaults,
+            totalVaults: vaults.length
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger7.error(`Error in vault list: ${error instanceof Error ? error.message : String(error)}`);
+      if (callback) {
+        callback({
+          text: "I encountered an error while fetching the vault list. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "VAULT_LIST"
+          }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What vaults are available?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Available Yield Delta Vaults:
+
+\uD83D\uDD35 Delta Neutral Vault
+   APY: 12.5% | TVL: $1.23M | Risk: Low
+   Strategy: Delta-neutral yield with IL protection
+
+\uD83D\uDFE2 Stable Max Vault
+   APY: 8.2% | TVL: $890K | Risk: Very Low
+   Strategy: Stablecoin optimization
+
+\uD83D\uDFE1 SEI Hypergrowth Vault
+   APY: 24.8% | TVL: $456K | Risk: High
+   Strategy: Leveraged SEI exposure
+
+Use 'vault metrics [name]' for detailed info on any vault.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Show all vaults" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Available Yield Delta Vaults:
+
+\uD83D\uDD35 SEI Vault
+   APY: 10.5% | TVL: $2.1M | Risk: Medium
+   Strategy: Core SEI yield optimization
+
+\uD83D\uDFE2 USDC Vault
+   APY: 6.8% | TVL: $1.5M | Risk: Very Low
+   Strategy: Stablecoin yield farming
+
+Use 'vault metrics [name]' for detailed info on any vault.`
+        }
+      }
+    ]
+  ]
+};
+function getRiskEmoji(riskLevel) {
+  switch (riskLevel) {
+    case "Very Low":
+      return "\uD83D\uDFE2";
+    case "Low":
+      return "\uD83D\uDD35";
+    case "Medium":
+      return "\uD83D\uDFE1";
+    case "Medium-High":
+      return "\uD83D\uDFE0";
+    case "High":
+      return "\uD83D\uDD34";
+    default:
+      return "⚪";
+  }
+}
+function formatLargeNumber2(num2) {
+  if (num2 >= 1e6) {
+    return (num2 / 1e6).toFixed(2) + "M";
+  } else if (num2 >= 1000) {
+    return (num2 / 1000).toFixed(2) + "K";
+  }
+  return num2.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/yield-history.ts
+import {
+  elizaLogger as elizaLogger8
+} from "@elizaos/core";
+var yieldHistoryAction = {
+  name: "YIELD_HISTORY",
+  similes: [
+    "HISTORICAL_PERFORMANCE",
+    "PAST_RETURNS",
+    "VAULT_HISTORY",
+    "PERFORMANCE_HISTORY"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const historyKeywords = [
+      "yield history",
+      "historical",
+      "past performance",
+      "how has",
+      "performed",
+      "performance history",
+      "returns history",
+      "past returns"
+    ];
+    return historyKeywords.some((keyword) => content.includes(keyword));
+  },
+  description: "Show historical yield performance for a vault",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger8.info("Yield History Action triggered");
+      const vaultProvider2 = new VaultProvider(runtime);
+      const content = message.content?.text || "";
+      const vaultName = extractVaultName2(content);
+      if (!vaultName) {
+        if (callback) {
+          callback({
+            text: "Please specify which vault's history you want to see. Example: 'Show yield history for Delta Neutral'",
+            content: { error: "No vault specified", action: "YIELD_HISTORY" }
+          });
+        }
+        return;
+      }
+      const vaultAddress = await vaultProvider2.getVaultAddressByName(vaultName);
+      if (!vaultAddress) {
+        if (callback) {
+          callback({
+            text: `I couldn't find the ${vaultName} vault.`,
+            content: { error: "Vault not found", action: "YIELD_HISTORY" }
+          });
+        }
+        return;
+      }
+      const thirtyDaysAgo = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60;
+      const history = await vaultProvider2.getYieldHistory(vaultAddress, thirtyDaysAgo);
+      if (history.length === 0) {
+        if (callback) {
+          callback({
+            text: `No yield history available for ${vaultName} vault yet.`,
+            content: { action: "YIELD_HISTORY" }
+          });
+        }
+        return;
+      }
+      const avgApy = history.reduce((sum, h) => sum + h.apy, 0) / history.length;
+      const totalYield = history.reduce((sum, h) => sum + parseFloat(h.yieldGenerated), 0);
+      const trend = history.length > 1 && history[0].apy > history[history.length - 1].apy ? "↗️ Improving" : "↘️ Declining";
+      let response = `${vaultName} Vault - 30 Day Performance:
+
+`;
+      response += `\uD83D\uDCC8 Summary:
+`;
+      response += `• Average APY: ${avgApy.toFixed(1)}%
+`;
+      response += `• Total Yield: $${totalYield.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+`;
+      response += `• Trend: ${trend}
+
+`;
+      response += `Recent History:
+`;
+      const recentHistory = history.slice(0, 5);
+      for (const entry of recentHistory) {
+        const date = new Date(entry.timestamp * 1000).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        response += `• ${date}: APY ${entry.apy.toFixed(1)}%, Value $${formatLargeNumber3(parseFloat(entry.totalValue))}, Yield $${parseFloat(entry.yieldGenerated).toFixed(2)}
+`;
+      }
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "YIELD_HISTORY",
+            history,
+            summary: { avgApy, totalYield }
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger8.error(`Error in yield history: ${error instanceof Error ? error.message : String(error)}`);
+      if (callback) {
+        callback({
+          text: "I encountered an error fetching yield history. Please try again.",
+          content: { error: error instanceof Error ? error.message : "Unknown error", action: "YIELD_HISTORY" }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Show yield history for Delta Neutral" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Delta Neutral Vault - 30 Day Performance:
+
+\uD83D\uDCC8 Summary:
+• Average APY: 11.8%
+• Total Yield: $12,450
+• Trend: ↗️ Improving
+
+Recent History:
+• Nov 22: APY 12.5%, Value $1.23M, Yield $420
+• Nov 21: APY 12.3%, Value $1.22M, Yield $415`
+        }
+      }
+    ]
+  ]
+};
+function extractVaultName2(text) {
+  const vaultPatterns = [
+    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
+    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
+    { pattern: /sei[\s-]?hypergrowth|hypergrowth/i, name: "SEI Hypergrowth" },
+    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
+    { pattern: /hedge/i, name: "Hedge" },
+    { pattern: /yield[\s-]?farming|farming/i, name: "Yield Farming" },
+    { pattern: /arbitrage/i, name: "Arbitrage" },
+    { pattern: /concentrated/i, name: "Concentrated Liquidity" },
+    { pattern: /\bsei\s+vault\b/i, name: "SEI" },
+    { pattern: /\busdc\s+vault\b/i, name: "USDC" }
+  ];
+  for (const { pattern, name } of vaultPatterns) {
+    if (pattern.test(text))
+      return name;
+  }
+  return null;
+}
+function formatLargeNumber3(num2) {
+  if (num2 >= 1e6)
+    return (num2 / 1e6).toFixed(2) + "M";
+  if (num2 >= 1000)
+    return (num2 / 1000).toFixed(2) + "K";
+  return num2.toFixed(2);
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/projected-returns.ts
+import {
+  elizaLogger as elizaLogger9
+} from "@elizaos/core";
+var projectedReturnsAction = {
+  name: "PROJECTED_RETURNS",
+  similes: [
+    "CALCULATE_RETURNS",
+    "ESTIMATE_YIELD",
+    "PROJECT_EARNINGS",
+    "EXPECTED_RETURNS"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const returnsKeywords = [
+      "what would i earn",
+      "calculate returns",
+      "project returns",
+      "projected returns",
+      "estimate yield",
+      "how much would i make",
+      "expected returns",
+      "if i deposit",
+      "earnings for"
+    ];
+    return returnsKeywords.some((keyword) => content.includes(keyword));
+  },
+  description: "Calculate projected returns for a deposit into a vault",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger9.info("Projected Returns Action triggered");
+      const vaultProvider2 = new VaultProvider(runtime);
+      const content = message.content?.text || "";
+      const params = extractProjectionParams(content);
+      if (!params.vaultName) {
+        if (callback) {
+          callback({
+            text: "Please specify which vault you want to calculate returns for. Example: 'Calculate returns for 1000 SEI in Delta Neutral for 30 days'",
+            content: { error: "No vault specified", action: "PROJECTED_RETURNS" }
+          });
+        }
+        return;
+      }
+      const vaultAddress = await vaultProvider2.getVaultAddressByName(params.vaultName);
+      if (!vaultAddress) {
+        if (callback) {
+          callback({
+            text: `I couldn't find the ${params.vaultName} vault. Please check the vault name.`,
+            content: { error: "Vault not found", action: "PROJECTED_RETURNS" }
+          });
+        }
+        return;
+      }
+      const [projection, metrics] = await Promise.all([
+        vaultProvider2.calculateProjectedReturns(vaultAddress, params.amount, params.days),
+        vaultProvider2.getVaultMetrics(vaultAddress)
+      ]);
+      let response = `Projected Returns for ${params.amount.toLocaleString()} in ${params.vaultName} Vault (${params.days} days):
+
+`;
+      response += `\uD83D\uDCB0 Deposit: $${params.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+
+`;
+      response += `\uD83D\uDCCA Projections (based on current ${metrics.apy.toFixed(1)}% APY):
+`;
+      response += `• Projected Value: $${parseFloat(projection.projectedValue).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+`;
+      response += `• Gross Yield: $${parseFloat(projection.projectedYield).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+`;
+      response += `• Management Fees: -$${parseFloat(projection.managementFees).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+`;
+      const netYield = parseFloat(projection.projectedYield) - parseFloat(projection.managementFees);
+      response += `• Net Yield: $${netYield.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+
+`;
+      response += `\uD83D\uDCE4 On Withdrawal:
+`;
+      response += `• Withdrawal Fee: -$${parseFloat(projection.withdrawalFees).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+`;
+      const finalValue = parseFloat(projection.projectedValue) - parseFloat(projection.withdrawalFees);
+      response += `• Final Value: $${finalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+
+`;
+      response += `⚠️ Note: Projections based on current APY. Actual returns may vary based on market conditions.`;
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "PROJECTED_RETURNS",
+            projection,
+            params
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger9.error(`Error in projected returns: ${error instanceof Error ? error.message : String(error)}`);
+      if (callback) {
+        callback({
+          text: "I encountered an error calculating projected returns. Please try again.",
+          content: { error: error instanceof Error ? error.message : "Unknown error", action: "PROJECTED_RETURNS" }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What would I earn depositing 1000 into Delta Neutral for 30 days?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Projected Returns for 1,000 in Delta Neutral Vault (30 days):
+
+\uD83D\uDCB0 Deposit: $1,000.00
+
+\uD83D\uDCCA Projections (based on current 12.5% APY):
+• Projected Value: $1,010.27
+• Gross Yield: $10.27
+• Management Fees: -$0.41
+• Net Yield: $9.86
+
+\uD83D\uDCE4 On Withdrawal:
+• Withdrawal Fee: -$1.01
+• Final Value: $1,009.26
+
+⚠️ Note: Projections based on current APY. Actual returns may vary based on market conditions.`
+        }
+      }
+    ]
+  ]
+};
+function extractProjectionParams(text) {
+  const vaultPatterns = [
+    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
+    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
+    { pattern: /sei[\s-]?hypergrowth|hypergrowth/i, name: "SEI Hypergrowth" },
+    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
+    { pattern: /hedge/i, name: "Hedge" },
+    { pattern: /yield[\s-]?farming|farming/i, name: "Yield Farming" },
+    { pattern: /arbitrage/i, name: "Arbitrage" },
+    { pattern: /concentrated/i, name: "Concentrated Liquidity" },
+    { pattern: /\bsei\s+vault\b/i, name: "SEI" },
+    { pattern: /\busdc\s+vault\b/i, name: "USDC" }
+  ];
+  let vaultName = null;
+  for (const { pattern, name } of vaultPatterns) {
+    if (pattern.test(text)) {
+      vaultName = name;
+      break;
+    }
+  }
+  const amountMatch = text.match(/(\d+(?:,\d{3})*(?:\.\d+)?)\s*(?:sei|usdc|usd|\$)?/i);
+  const amount = amountMatch ? parseFloat(amountMatch[1].replace(/,/g, "")) : 1000;
+  const daysMatch = text.match(/(\d+)\s*days?/i);
+  const days = daysMatch ? parseInt(daysMatch[1]) : 30;
+  return { vaultName, amount, days };
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/position-details.ts
+import {
+  elizaLogger as elizaLogger10
+} from "@elizaos/core";
+var positionDetailsAction = {
+  name: "POSITION_DETAILS",
+  similes: [
+    "VAULT_POSITION",
+    "LP_POSITION",
+    "TICK_RANGE",
+    "LIQUIDITY_DETAILS"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const positionKeywords = [
+      "position for",
+      "position of",
+      "current position",
+      "tick range",
+      "liquidity details",
+      "lp position",
+      "position info",
+      "show position"
+    ];
+    return positionKeywords.some((keyword) => content.includes(keyword));
+  },
+  description: "Show detailed position information for a vault (tick ranges, liquidity)",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger10.info("Position Details Action triggered");
+      const vaultProvider2 = new VaultProvider(runtime);
+      const content = message.content?.text || "";
+      const vaultName = extractVaultName3(content);
+      if (!vaultName) {
+        if (callback) {
+          callback({
+            text: "Please specify which vault's position you want to see. Example: 'Show position for Delta Neutral'",
+            content: { error: "No vault specified", action: "POSITION_DETAILS" }
+          });
+        }
+        return;
+      }
+      const vaultAddress = await vaultProvider2.getVaultAddressByName(vaultName);
+      if (!vaultAddress) {
+        if (callback) {
+          callback({
+            text: `I couldn't find the ${vaultName} vault.`,
+            content: { error: "Vault not found", action: "POSITION_DETAILS" }
+          });
+        }
+        return;
+      }
+      const [position, info] = await Promise.all([
+        vaultProvider2.getCurrentPosition(vaultAddress),
+        vaultProvider2.getVaultInfo(vaultAddress)
+      ]);
+      const tickToPrice = (tick) => Math.pow(1.0001, tick);
+      const lowerPrice = tickToPrice(position.tickLower);
+      const upperPrice = tickToPrice(position.tickUpper);
+      const midPrice = (lowerPrice + upperPrice) / 2;
+      let response = `${info.name} Vault - Current Position:
+
+`;
+      response += `\uD83D\uDCCD Tick Range:
+`;
+      response += `• Lower: ${position.tickLower} (price: $${lowerPrice.toFixed(4)})
+`;
+      response += `• Upper: ${position.tickUpper} (price: $${upperPrice.toFixed(4)})
+`;
+      response += `• Mid: (price: $${midPrice.toFixed(4)})
+
+`;
+      response += `\uD83D\uDCA7 Liquidity:
+`;
+      response += `• Total Liquidity: ${formatUnits(position.liquidity, 0)}
+`;
+      response += `• Token0 Owed: ${formatUnits(position.tokensOwed0, 18)}
+`;
+      response += `• Token1 Owed: ${formatUnits(position.tokensOwed1, 18)}
+
+`;
+      response += `\uD83D\uDCB0 Uncollected Fees:
+`;
+      response += `• Token0: ${formatUnits(position.tokensOwed0, 18)}
+`;
+      response += `• Token1: ${formatUnits(position.tokensOwed1, 18)}`;
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "POSITION_DETAILS",
+            position,
+            vaultName
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger10.error(`Error in position details: ${error instanceof Error ? error.message : String(error)}`);
+      if (callback) {
+        callback({
+          text: "I encountered an error fetching position details. Please try again.",
+          content: { error: error instanceof Error ? error.message : "Unknown error", action: "POSITION_DETAILS" }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Show position for Delta Neutral" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Delta Neutral Vault - Current Position:
+
+\uD83D\uDCCD Tick Range:
+• Lower: -887220 (price: $0.38)
+• Upper: -886380 (price: $0.52)
+• Mid: (price: $0.45)
+
+\uD83D\uDCA7 Liquidity:
+• Total Liquidity: 1234567890
+• Token0 Owed: 50000
+• Token1 Owed: 22500
+
+\uD83D\uDCB0 Uncollected Fees:
+• Token0: 125.5
+• Token1: 56.2`
+        }
+      }
+    ]
+  ]
+};
+function extractVaultName3(text) {
+  const patterns = [
+    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
+    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
+    { pattern: /hypergrowth/i, name: "SEI Hypergrowth" },
+    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
+    { pattern: /hedge/i, name: "Hedge" },
+    { pattern: /farming/i, name: "Yield Farming" },
+    { pattern: /arbitrage/i, name: "Arbitrage" },
+    { pattern: /concentrated/i, name: "Concentrated Liquidity" },
+    { pattern: /\bsei\s+vault\b/i, name: "SEI" },
+    { pattern: /\busdc\s+vault\b/i, name: "USDC" }
+  ];
+  for (const { pattern, name } of patterns) {
+    if (pattern.test(text))
+      return name;
+  }
+  return null;
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/optimal-deposit.ts
+import {
+  elizaLogger as elizaLogger11
+} from "@elizaos/core";
+var optimalDepositAction = {
+  name: "OPTIMAL_DEPOSIT",
+  similes: [
+    "DEPOSIT_RATIO",
+    "BEST_RATIO",
+    "HOW_TO_DEPOSIT",
+    "DEPOSIT_RECOMMENDATION"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const depositKeywords = [
+      "optimal deposit",
+      "deposit ratio",
+      "best ratio",
+      "how should i deposit",
+      "deposit recommendation",
+      "optimal ratio",
+      "how to deposit"
+    ];
+    return depositKeywords.some((keyword) => content.includes(keyword));
+  },
+  description: "Get optimal deposit ratio for a vault",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger11.info("Optimal Deposit Action triggered");
+      const vaultProvider2 = new VaultProvider(runtime);
+      const content = message.content?.text || "";
+      const vaultName = extractVaultName4(content);
+      if (!vaultName) {
+        if (callback) {
+          callback({
+            text: "Please specify which vault. Example: 'What's the optimal deposit ratio for Delta Neutral?'",
+            content: { error: "No vault specified", action: "OPTIMAL_DEPOSIT" }
+          });
+        }
+        return;
+      }
+      const vaultAddress = await vaultProvider2.getVaultAddressByName(vaultName);
+      if (!vaultAddress) {
+        if (callback) {
+          callback({
+            text: `I couldn't find the ${vaultName} vault.`,
+            content: { error: "Vault not found", action: "OPTIMAL_DEPOSIT" }
+          });
+        }
+        return;
+      }
+      const [ratio, info] = await Promise.all([
+        vaultProvider2.getOptimalDepositRatio(vaultAddress),
+        vaultProvider2.getVaultInfo(vaultAddress)
+      ]);
+      const token0Ratio = Number(ratio.token0Ratio);
+      const token1Ratio = Number(ratio.token1Ratio);
+      const total = token0Ratio + token1Ratio;
+      const token0Pct = (token0Ratio / total * 100).toFixed(0);
+      const token1Pct = (token1Ratio / total * 100).toFixed(0);
+      const currentPrice = Number(formatUnits(ratio.currentPrice, 18));
+      let response = `Optimal Deposit for ${info.name} Vault:
+
+`;
+      response += `\uD83D\uDCCA Current Optimal Ratio:
+`;
+      response += `• Token0: ${token0Pct}%
+`;
+      response += `• Token1: ${token1Pct}%
+
+`;
+      response += `\uD83D\uDCB1 Current Price: ${currentPrice.toFixed(4)}
+
+`;
+      response += `\uD83D\uDCA1 Example Deposits:
+`;
+      const examples = [1000, 5000, 1e4];
+      for (const amount of examples) {
+        const token0Amount = (amount * token0Ratio / total).toFixed(2);
+        const token1Amount = (amount * token1Ratio / total).toFixed(2);
+        response += `• For $${amount.toLocaleString()}: $${token0Amount} Token0 + $${token1Amount} Token1
+`;
+      }
+      response += `
+Depositing at the optimal ratio maximizes your LP position efficiency and minimizes unused tokens.`;
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "OPTIMAL_DEPOSIT",
+            ratio: { token0Pct, token1Pct, currentPrice },
+            vaultName
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger11.error(`Error in optimal deposit: ${error instanceof Error ? error.message : String(error)}`);
+      if (callback) {
+        callback({
+          text: "I encountered an error fetching deposit ratios. Please try again.",
+          content: { error: error instanceof Error ? error.message : "Unknown error", action: "OPTIMAL_DEPOSIT" }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What's the optimal deposit ratio for Delta Neutral?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Optimal Deposit for Delta Neutral Vault:
+
+\uD83D\uDCCA Current Optimal Ratio:
+• Token0: 55%
+• Token1: 45%
+
+\uD83D\uDCB1 Current Price: 0.4500
+
+\uD83D\uDCA1 Example Deposits:
+• For $1,000: $550 Token0 + $450 Token1
+• For $5,000: $2,750 Token0 + $2,250 Token1
+
+Depositing at the optimal ratio maximizes your LP position efficiency.`
+        }
+      }
+    ]
+  ]
+};
+function extractVaultName4(text) {
+  const patterns = [
+    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
+    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
+    { pattern: /hypergrowth/i, name: "SEI Hypergrowth" },
+    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
+    { pattern: /hedge/i, name: "Hedge" },
+    { pattern: /farming/i, name: "Yield Farming" },
+    { pattern: /arbitrage/i, name: "Arbitrage" },
+    { pattern: /concentrated/i, name: "Concentrated Liquidity" },
+    { pattern: /\bsei\s+vault\b/i, name: "SEI" },
+    { pattern: /\busdc\s+vault\b/i, name: "USDC" }
+  ];
+  for (const { pattern, name } of patterns) {
+    if (pattern.test(text))
+      return name;
+  }
+  return null;
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/price-query.ts
+import {
+  elizaLogger as elizaLogger12
+} from "@elizaos/core";
+var priceQueryAction = {
+  name: "PRICE_QUERY",
+  similes: [
+    "GET_PRICE",
+    "CHECK_PRICE",
+    "CRYPTO_PRICE",
+    "TOKEN_PRICE",
+    "MARKET_PRICE"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const priceKeywords = [
+      "price of",
+      "price for",
+      "current price",
+      "how much is",
+      "what is the price",
+      "what's the price",
+      "whats the price",
+      "sei price",
+      "btc price",
+      "eth price",
+      "usdc price",
+      "trading at",
+      "worth",
+      "value of",
+      "quote"
+    ];
+    const hasKeyword = priceKeywords.some((keyword) => content.includes(keyword));
+    const cryptoSymbols = ["sei", "btc", "eth", "usdc", "usdt", "sol", "avax", "atom"];
+    const mentionsSymbol = cryptoSymbols.some((symbol) => content.includes(symbol));
+    const contextWords = ["price", "cost", "worth", "value", "trading", "quote"];
+    const hasContext = contextWords.some((word) => content.includes(word));
+    return hasKeyword || mentionsSymbol && hasContext;
+  },
+  description: "Get real-time cryptocurrency prices from oracle providers",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger12.info("Price Query Action triggered");
+      const oracle = new SeiOracleProvider(runtime);
+      const content = message.content?.text || "";
+      const symbols = extractSymbols(content);
+      if (symbols.length === 0) {
+        if (callback) {
+          callback({
+            text: "I couldn't identify which cryptocurrency you're asking about. Please specify a symbol like SEI, BTC, ETH, or USDC.",
+            content: {
+              text: "I couldn't identify which cryptocurrency you're asking about. Please specify a symbol like SEI, BTC, ETH, or USDC.",
+              action: "PRICE_QUERY",
+              error: "No symbol identified"
+            }
+          });
+        }
+        return;
+      }
+      elizaLogger12.info(`Fetching prices for symbols: ${symbols.join(", ")}`);
+      const priceResults = await Promise.all(symbols.map(async (symbol) => {
+        try {
+          const price = await oracle.getPrice(symbol);
+          return { symbol, price, error: null };
+        } catch (error) {
+          elizaLogger12.error(`Failed to get price for ${symbol}: ${error}`);
+          return { symbol, price: null, error: error instanceof Error ? error.message : "Unknown error" };
+        }
+      }));
+      let response = "";
+      if (priceResults.length === 1) {
+        const result = priceResults[0];
+        if (result.price) {
+          response = `The current price of ${result.symbol.toUpperCase()} is $${result.price.price.toFixed(4)} (Source: ${result.price.source}, updated ${formatTimestamp(result.price.timestamp)})`;
+        } else {
+          response = `I'm unable to fetch the current price for ${result.symbol.toUpperCase()} at the moment. ${result.error ? `Error: ${result.error}` : "Please try again later."}`;
+        }
+      } else {
+        const successfulPrices = priceResults.filter((r) => r.price !== null);
+        const failedSymbols = priceResults.filter((r) => r.price === null);
+        if (successfulPrices.length > 0) {
+          response = `Here are the current cryptocurrency prices:
+
+`;
+          successfulPrices.forEach((result) => {
+            if (result.price) {
+              response += `${result.symbol.toUpperCase()}: $${result.price.price.toFixed(4)} (${result.price.source})
+`;
+            }
+          });
+          if (failedSymbols.length > 0) {
+            response += `
+Unable to fetch prices for: ${failedSymbols.map((r) => r.symbol.toUpperCase()).join(", ")}`;
+          }
+        } else {
+          response = "I'm unable to fetch cryptocurrency prices at the moment. Please try again later.";
+        }
+      }
+      elizaLogger12.info(`Price query response: ${response}`);
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "PRICE_QUERY",
+            prices: priceResults.filter((r) => r.price !== null).map((r) => ({
+              symbol: r.symbol,
+              price: r.price?.price,
+              source: r.price?.source,
+              timestamp: r.price?.timestamp
+            }))
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger12.error(`Error in price query action: ${error instanceof Error ? error.message : String(error)}`);
+      if (callback) {
+        callback({
+          text: "I encountered an error while fetching cryptocurrency prices. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "PRICE_QUERY"
+          }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What's the current price of SEI?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "The current price of SEI is $0.4520 (Source: mock-price-feed, updated just now)"
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "How much is BTC and ETH trading at?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Here are the current cryptocurrency prices:
+
+BTC: $45000.00 (mock-price-feed)
+ETH: $2500.00 (mock-price-feed)`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What is the price of SEI?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "The current price of SEI is $0.4520 (Source: mock-price-feed, updated just now)"
+        }
+      }
+    ]
+  ]
+};
+function extractSymbols(text) {
+  const normalizedText = text.toUpperCase();
+  const knownSymbols = ["BTC", "ETH", "SEI", "USDC", "USDT", "SOL", "AVAX", "ATOM", "DAI"];
+  const foundSymbols = knownSymbols.filter((symbol) => {
+    const regex = new RegExp(`\\b${symbol}\\b|${symbol}[/\\s,.]`, "i");
+    return regex.test(normalizedText);
+  });
+  return [...new Set(foundSymbols)];
+}
+function formatTimestamp(timestamp) {
+  const now = Date.now();
+  const diff = now - timestamp;
+  if (diff < 60000)
+    return "just now";
+  if (diff < 3600000)
+    return `${Math.floor(diff / 60000)} minutes ago`;
+  if (diff < 86400000)
+    return `${Math.floor(diff / 3600000)} hours ago`;
+  return `${Math.floor(diff / 86400000)} days ago`;
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/transfer.ts
+import {
+  elizaLogger as elizaLogger13
+} from "@elizaos/core";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/types/precompiles.ts
+var ADDRESS_PRECOMPILE_ABI = [
+  {
+    inputs: [{ internalType: "string", name: "addr", type: "string" }],
+    name: "getEvmAddr",
+    outputs: [{ internalType: "address", name: "response", type: "address" }],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [{ internalType: "address", name: "addr", type: "address" }],
+    name: "getSeiAddr",
+    outputs: [{ internalType: "string", name: "response", type: "string" }],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [{ internalType: "string", name: "v", type: "string" }, { internalType: "string", name: "r", type: "string" }, { internalType: "string", name: "s", type: "string" }, { internalType: "string", name: "customMessage", type: "string" }],
+    name: "associate",
+    outputs: [{ internalType: "string", name: "seiAddr", type: "string" }, { internalType: "address", name: "evmAddr", type: "address" }],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [{ internalType: "string", name: "pubKeyHex", type: "string" }],
+    name: "associatePubKey",
+    outputs: [{ internalType: "string", name: "seiAddr", type: "string" }, { internalType: "address", name: "evmAddr", type: "address" }],
+    stateMutability: "nonpayable",
+    type: "function"
+  }
+];
+var ADDRESS_PRECOMPILE_ADDRESS = "0x0000000000000000000000000000000000001004";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/types/index.ts
+var SupportedChainList = Object.keys([seiDevnet, seiTestnet, sei]);
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/transfer.ts
+class TransferAction {
+  walletProvider;
+  constructor(walletProvider) {
+    this.walletProvider = walletProvider;
+  }
+  async transfer(params) {
+    const chain = this.walletProvider.getCurrentChain();
+    elizaLogger13.log(`Transferring: ${params.amount} tokens to ${params.toAddress} on ${chain.name}`);
+    let recipientAddress;
+    if (params.toAddress.startsWith("sei")) {
+      const publicClient = this.walletProvider.getEvmPublicClient();
+      try {
+        const evmAddress = await publicClient.readContract({
+          address: ADDRESS_PRECOMPILE_ADDRESS,
+          abi: ADDRESS_PRECOMPILE_ABI,
+          functionName: "getEvmAddr",
+          args: [params.toAddress]
+        });
+        if (!evmAddress || typeof evmAddress !== "string" || !evmAddress.startsWith("0x")) {
+          throw new Error(`ERROR: Recipient does not have valid EVM address. Got: ${evmAddress}`);
+        }
+        elizaLogger13.log(`Translated address ${params.toAddress} to EVM address ${evmAddress}`);
+        recipientAddress = evmAddress;
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        throw new Error(`Failed to translate SEI address: ${errorMessage}`);
+      }
+    } else {
+      if (!params.toAddress.startsWith("0x") || params.toAddress.length !== 42) {
+        throw new Error(`ERROR: Recipient address must be valid EVM address (0x...). Got: ${params.toAddress}`);
+      }
+      recipientAddress = params.toAddress;
+    }
+    const walletClient = this.walletProvider.getEvmWalletClient();
+    if (!walletClient?.account?.address) {
+      throw new Error("Wallet client account is undefined or invalid");
+    }
+    try {
+      elizaLogger13.log(`Sending transaction from ${walletClient.account.address} to ${recipientAddress}`);
+      const valueInWei = parseEther(params.amount);
+      const transactionRequest = {
+        to: recipientAddress,
+        value: valueInWei,
+        data: params.data || "0x"
+      };
+      const hash2 = await walletClient.sendTransaction(transactionRequest);
+      if (!hash2 || typeof hash2 !== "string") {
+        throw new Error("Invalid transaction hash received");
+      }
+      elizaLogger13.log(`Transaction sent successfully. Hash: ${hash2}`);
+      return {
+        hash: hash2,
+        from: walletClient.account.address,
+        to: params.toAddress,
+        value: parseEther(params.amount).toString(),
+        data: params.data || "0x"
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      elizaLogger13.error(`Transfer failed: ${errorMessage}`);
+      throw new Error(`Transfer failed: ${errorMessage}`);
+    }
+  }
+  validateParams(params) {
+    if (!params.amount || isNaN(Number(params.amount)) || Number(params.amount) <= 0) {
+      throw new Error("Invalid amount: must be a positive number");
+    }
+    if (!params.toAddress || params.toAddress.length === 0) {
+      throw new Error("Invalid recipient address: cannot be empty");
+    }
+    if (params.toAddress.startsWith("sei")) {
+      if (params.toAddress.length !== 43) {
+        throw new Error("Invalid SEI address: must be 43 characters long");
+      }
+    } else if (params.toAddress.startsWith("0x")) {
+      if (params.toAddress.length !== 42) {
+        throw new Error("Invalid EVM address: must be 42 characters long");
+      }
+    } else {
+      throw new Error('Invalid address format: must start with "sei" or "0x"');
+    }
+  }
+  async estimateGas(params) {
+    try {
+      this.validateParams(params);
+      const publicClient = this.walletProvider.getEvmPublicClient();
+      const walletClient = this.walletProvider.getEvmWalletClient();
+      if (!walletClient?.account?.address) {
+        throw new Error("Wallet account not available for gas estimation");
+      }
+      let recipientAddress;
+      if (params.toAddress.startsWith("sei")) {
+        const evmAddress = await publicClient.readContract({
+          address: ADDRESS_PRECOMPILE_ADDRESS,
+          abi: ADDRESS_PRECOMPILE_ABI,
+          functionName: "getEvmAddr",
+          args: [params.toAddress]
+        });
+        recipientAddress = evmAddress;
+      } else {
+        recipientAddress = params.toAddress;
+      }
+      const gasEstimate = await publicClient.estimateGas({
+        account: walletClient.account.address,
+        to: recipientAddress,
+        value: parseEther(params.amount),
+        data: params.data || "0x"
+      });
+      return gasEstimate;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      elizaLogger13.error(`Gas estimation failed: ${errorMessage}`);
+      return BigInt(21000);
+    }
+  }
+}
+var transferAction = {
+  name: "TRANSFER_TOKENS",
+  similes: [
+    "SEND_TOKENS",
+    "TOKEN_TRANSFER",
+    "MOVE_TOKENS",
+    "SEND_SEI",
+    "TRANSFER"
+  ],
+  validate: async (runtime, message) => {
+    try {
+      const privateKey = runtime.getSetting?.("SEI_PRIVATE_KEY");
+      if (!privateKey || !privateKey.startsWith("0x")) {
+        return false;
+      }
+      const text = message?.content?.text?.toLowerCase() || "";
+      if (!text) {
+        return false;
+      }
+      return (text.includes("transfer") || text.includes("send") || text.includes("move")) && (text.includes("sei") || text.includes("token")) && (text.includes("0x") || text.includes("sei1"));
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      elizaLogger13.error(`Transfer validation error: ${errorMessage}`);
+      return false;
+    }
+  },
+  description: "Transfer SEI tokens between addresses on the Sei network",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger13.log("Starting token transfer...");
+      const params = await buildTransferDetails(message, runtime);
+      const walletProvider = await initWalletProvider2(runtime);
+      const action = new TransferAction(walletProvider);
+      action.validateParams(params);
+      const transferResp = await action.transfer(params);
+      if (callback) {
+        const chainName = String(walletProvider.getCurrentChain().name);
+        const hash2 = String(transferResp.hash);
+        const recipient = String(transferResp.to);
+        const amount = String(params.amount);
+        const toAddress = String(params.toAddress);
+        const successMessage = `✅ Successfully transferred ${amount} SEI to ${toAddress}
+
+\uD83D\uDCC4 Transaction Hash: ${hash2}
+\uD83D\uDD17 Chain: ${chainName}`;
+        const response = {
+          text: successMessage,
+          content: {
+            success: true,
+            hash: hash2,
+            amount,
+            recipient,
+            chain: chainName
+          }
+        };
+        callback(response);
+      }
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      elizaLogger13.error(`Error during token transfer: ${errorMessage}`);
+      if (callback) {
+        const errorResponse = {
+          text: `❌ Transfer failed: ${errorMessage}`,
+          content: {
+            error: true,
+            message: errorMessage
+          }
+        };
+        callback(errorResponse);
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: {
+          text: "Transfer 1 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+        }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "I'll help you transfer 1 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: {
+          text: "Send 5 SEI to sei1abc123def456"
+        }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "Transferring 5 SEI to sei1abc123def456"
+        }
+      }
+    ]
+  ]
+};
+function getErrorMessage(error) {
   if (error instanceof Error) {
     return error.message;
   }
@@ -15647,7 +17309,7 @@ function getErrorMessage2(error) {
   }
   return "Unknown error occurred";
 }
-function getMessageText2(message) {
+function getMessageText(message) {
   if (!message || !message.content) {
     throw new Error("Invalid message: missing content");
   }
@@ -15657,1379 +17319,79 @@ function getMessageText2(message) {
   }
   return text.trim();
 }
-async function parseTradeParams(text) {
+async function buildTransferDetails(message, runtime) {
+  try {
+    const messageText = getMessageText(message);
+    if (!messageText) {
+      throw new Error("Empty message text");
+    }
+    const params = parseTransferParams(messageText);
+    if (!params) {
+      throw new Error(`Could not parse transfer parameters. Please specify amount and recipient address.
+
+Example: 'Send 100 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e'`);
+    }
+    return params;
+  } catch (error) {
+    const errorMessage = getErrorMessage(error);
+    elizaLogger13.error(`Failed to build transfer details: ${errorMessage}`);
+    throw new Error(`Transfer parameter parsing failed: ${errorMessage}`);
+  }
+}
+function parseTransferParams(text) {
   if (!text || typeof text !== "string" || !text.trim()) {
     return null;
   }
-  const tokenMatch = text.match(/swap\s+(\d+(?:\.\d+)?)\s+(\w+)\s+for\s+(\w+)/i);
-  if (!tokenMatch) {
+  const amountMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:SEI|sei)/i);
+  const addressMatch = text.match(/(0x[a-fA-F0-9]{40}|sei1[a-z0-9]{38})/);
+  if (!amountMatch || !addressMatch) {
     return null;
   }
-  const slippageMatch = text.match(/(?:slippage|slip)\s+(\d+(?:\.\d+)?)%?/i);
-  const slippage = slippageMatch ? slippageMatch[1] : "0.5";
   return {
-    tokenIn: tokenMatch[2].toUpperCase(),
-    tokenOut: tokenMatch[3].toUpperCase(),
-    amountIn: tokenMatch[1],
-    slippage
+    amount: amountMatch[1],
+    toAddress: addressMatch[1]
   };
 }
-function validateAndConvertTradeParams(tradeParams, quote) {
-  if (!tradeParams.tokenIn || !tradeParams.tokenOut || !tradeParams.amountIn) {
-    throw new Error("Missing required trade parameters");
-  }
-  let slippage;
-  if (tradeParams.slippage) {
-    slippage = parseFloat(tradeParams.slippage);
-    if (isNaN(slippage) || slippage < 0 || slippage > 100) {
-      throw new Error("Invalid slippage value. Must be between 0 and 100");
-    }
-  } else {
-    slippage = 0.5;
-  }
-  return {
-    tokenIn: tradeParams.tokenIn,
-    tokenOut: tradeParams.tokenOut,
-    amountIn: tradeParams.amountIn,
-    minAmountOut: quote.amountOut,
-    slippage
-  };
-}
-var dragonSwapTradeAction = {
-  name: "DRAGONSWAP_TRADE",
-  similes: [
-    "SWAP_ON_DRAGONSWAP",
-    "TRADE_DRAGONSWAP",
-    "EXCHANGE_TOKENS",
-    "SWAP_SEI_TOKENS"
-  ],
-  validate: async (runtime, message) => {
-    try {
-      const config = await validateSeiConfig(runtime);
-      const text = message?.content?.text?.toLowerCase() || "";
-      if (!text) {
-        return false;
-      }
-      return (text.includes("swap") || text.includes("trade") || text.includes("exchange")) && (text.includes("dragonswap") || text.includes("dragon")) && (text.includes("sei") || text.includes("token"));
-    } catch (error) {
-      const errorMessage = getErrorMessage2(error);
-      elizaLogger5.error(`DragonSwap validation error: ${errorMessage}`);
-      return false;
-    }
-  },
-  description: "Execute token swaps on DragonSwap DEX on Sei Network",
-  handler: async (runtime, message, state, _options, callback) => {
-    elizaLogger5.log("Processing DragonSwap trade request");
-    try {
-      const config = await validateSeiConfig(runtime);
-      const networkMapping = {
-        "sei-mainnet": seiChains.mainnet,
-        "sei-testnet": seiChains.testnet,
-        "sei-devnet": seiChains.devnet
-      };
-      const currentNetwork = config.SEI_NETWORK || "sei-testnet";
-      const viemChain = networkMapping[currentNetwork] || seiChains.testnet;
-      const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, { name: currentNetwork, chain: viemChain });
-      const dragonSwap = new DragonSwapAPI(walletProvider, config.SEI_NETWORK !== "sei-mainnet");
-      let messageText;
-      try {
-        messageText = getMessageText2(message);
-      } catch (error) {
-        if (callback) {
-          callback({
-            text: "Invalid message format. Please provide trade details.",
-            error: true
-          });
-        }
-        return;
-      }
-      const tradeParams = await parseTradeParams(messageText);
-      if (!tradeParams) {
-        if (callback) {
-          callback({
-            text: "I couldn't understand the trade parameters. Please specify tokens and amounts. Example: 'Swap 10 SEI for USDC on DragonSwap'",
-            error: true
-          });
-        }
-        return;
-      }
-      const poolInfo = await dragonSwap.getPoolInfo(tradeParams.tokenIn, tradeParams.tokenOut);
-      if (!poolInfo) {
-        if (callback) {
-          callback({
-            text: `No liquidity pool found for ${tradeParams.tokenIn}/${tradeParams.tokenOut} on DragonSwap`,
-            error: true
-          });
-        }
-        return;
-      }
-      const quote = await dragonSwap.getQuote(tradeParams.tokenIn, tradeParams.tokenOut, tradeParams.amountIn);
-      if (!quote) {
-        if (callback) {
-          callback({
-            text: "Could not get price quote for this trade",
-            error: true
-          });
-        }
-        return;
-      }
-      if (true) {
-        const balance = await walletProvider.getWalletBalance();
-        if (!balance) {
-          if (callback) {
-            callback({
-              text: "Failed to retrieve wallet balance. Please try again later.",
-              error: true
-            });
-          }
-          return;
-        }
-        const requiredAmount = parseFloat(tradeParams.amountIn);
-        const availableBalance = parseFloat(balance);
-        if (availableBalance < requiredAmount) {
-          if (callback) {
-            callback({
-              text: `Failed to execute swap: Insufficient balance. Required: ${requiredAmount} ${tradeParams.tokenIn}, Available: ${availableBalance} ${tradeParams.tokenIn}`,
-              error: true
-            });
-          }
-          return;
-        }
-      }
-      const priceImpactPercent = quote.priceImpact * 100;
-      if (priceImpactPercent > 10) {
-        if (callback) {
-          callback({
-            text: `⚠️ High Price Impact Warning: ${priceImpactPercent.toFixed(2)}%
-This trade will significantly impact the token price. Consider reducing the trade size.`
-          });
-        }
-      } else if (priceImpactPercent > 5) {
-        if (callback) {
-          callback({
-            text: `Price Impact: ${priceImpactPercent.toFixed(2)}% - Moderate impact detected.`
-          });
-        }
-      }
-      const dragonSwapParams = validateAndConvertTradeParams(tradeParams, quote);
-      const txHash = await dragonSwap.executeSwap(dragonSwapParams, quote);
-      if (callback) {
-        if (txHash) {
-          const priceImpactPercent2 = quote.priceImpact * 100;
-          callback({
-            text: `✅ Successfully swapped ${tradeParams.amountIn} ${tradeParams.tokenIn} for ~${quote.amountOut} ${tradeParams.tokenOut}
-` + `Transaction: ${txHash}
-` + `Price Impact: ${priceImpactPercent2.toFixed(2)}%`
-          });
-        } else {
-          callback({
-            text: "Failed to execute swap. Please try again later.",
-            error: true
-          });
-        }
-      }
-    } catch (error) {
-      const errorMessage = getErrorMessage2(error);
-      elizaLogger5.error(`DragonSwap trade error: ${errorMessage}`);
-      if (callback) {
-        callback({
-          text: `Error executing trade: ${errorMessage}`,
-          error: true
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Swap 10 SEI for USDC on DragonSwap" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "I'll execute that swap for you on DragonSwap…",
-          action: "DRAGONSWAP_TRADE"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Trade 5 USDC for SEI using DragonSwap with 1% slippage" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Executing USDC to SEI swap with 1% slippage tolerance…",
-          action: "DRAGONSWAP_TRADE"
-        }
-      }
-    ]
-  ]
-};
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/funding-arbitrage.ts
-import {
-  elizaLogger as elizaLogger7
-} from "@elizaos/core";
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/perp-trading.ts
-import {
-  elizaLogger as elizaLogger6
-} from "@elizaos/core";
-class PerpsAPI {
-  baseUrl;
-  walletProvider;
-  contractAddress;
-  oracleProvider;
-  protocol;
-  constructor(walletProvider, oracleProvider2, config) {
-    const isTestnet = config.SEI_NETWORK !== "mainnet";
-    this.protocol = config.PERP_PROTOCOL || "vortex";
-    switch (this.protocol) {
-      case "vortex":
-        this.baseUrl = isTestnet ? "https://api-testnet.vortexprotocol.io/v1" : "https://api.vortexprotocol.io/v1";
-        this.contractAddress = isTestnet ? config.VORTEX_TESTNET_CONTRACT : config.VORTEX_MAINNET_CONTRACT;
-        break;
-      case "dragonswap":
-        this.baseUrl = config.DRAGONSWAP_API_URL || "https://api-testnet.dragonswap.app/v1";
-        this.contractAddress = isTestnet ? config.DRAGONSWAP_PERP_TESTNET : config.DRAGONSWAP_PERP_MAINNET;
-        break;
-      default:
-        throw new Error(`Unsupported perp protocol: ${this.protocol}`);
-    }
-    this.walletProvider = walletProvider;
-    this.oracleProvider = oracleProvider2;
-    if (!this.contractAddress || this.contractAddress === "0x...") {
-      throw new Error(`${this.protocol} contract address not configured. Check your .env file.`);
-    }
-  }
-  async openPosition(params) {
-    try {
-      elizaLogger6.log(`Opening ${params.side} position: ${params.size} USD ${params.symbol} at ${params.leverage}x`);
-      const walletClient = this.walletProvider.getEvmWalletClient();
-      if (!walletClient.account) {
-        throw new Error("Wallet not connected");
-      }
-      const priceData = await this.oracleProvider.getPrice(params.symbol);
-      if (!priceData) {
-        throw new Error(`Could not get price for ${params.symbol}`);
-      }
-      const sizeInTokens = parseFloat(params.size) / priceData.price;
-      const marginRequired = parseFloat(params.size) / params.leverage;
-      const data = this.buildOpenPositionCalldata({
-        ...params,
-        sizeInTokens: sizeInTokens.toString(),
-        marginRequired: marginRequired.toString(),
-        currentPrice: priceData.price.toString()
-      });
-      const txHash = await walletClient.sendTransaction({
-        account: walletClient.account,
-        to: this.contractAddress,
-        data,
-        value: BigInt(0)
-      });
-      elizaLogger6.log(`Position opened: ${txHash}`);
-      return txHash;
-    } catch (error) {
-      elizaLogger6.error(`Failed to open position:: ${error}`);
-      return null;
-    }
-  }
-  async closePosition(symbol, size4) {
-    try {
-      elizaLogger6.log(`Closing position: ${symbol} ${size4 ? `(${size4})` : "(full)"}`);
-      const walletClient = this.walletProvider.getEvmWalletClient();
-      if (!walletClient.account) {
-        throw new Error("Wallet not connected");
-      }
-      const data = this.buildClosePositionCalldata(symbol, size4);
-      const txHash = await walletClient.sendTransaction({
-        account: walletClient.account,
-        to: this.contractAddress,
-        data,
-        value: BigInt(0)
-      });
-      elizaLogger6.log(`Position closed: ${txHash}`);
-      return txHash;
-    } catch (error) {
-      elizaLogger6.error(`Failed to close position:: ${error}`);
-      return null;
-    }
-  }
-  async getPositions(address) {
-    try {
-      const response = await fetch(`${this.baseUrl}/positions/${address}`);
-      if (!response.ok)
-        return [];
-      const data = await response.json();
-      return data.positions || [];
-    } catch (error) {
-      elizaLogger6.error(`Failed to get positions:: ${error}`);
-      return [];
-    }
-  }
-  async getMarketInfo(symbol) {
-    try {
-      const response = await fetch(`${this.baseUrl}/markets/${symbol}`);
-      if (!response.ok)
-        return null;
-      return await response.json();
-    } catch (error) {
-      elizaLogger6.error(`Failed to get market info:: ${error}`);
-      return null;
-    }
-  }
-  buildOpenPositionCalldata(params) {
-    const perpsAbi = [
-      {
-        name: "openPosition",
-        type: "function",
-        inputs: [
-          { name: "market", type: "bytes32" },
-          { name: "sizeDelta", type: "int256" },
-          { name: "acceptablePrice", type: "uint256" },
-          { name: "executionFee", type: "uint256" },
-          { name: "referralCode", type: "bytes32" },
-          { name: "isLong", type: "bool" }
-        ]
-      }
-    ];
-    const marketKey = this.getMarketKey(params.symbol);
-    const sizeDelta = params.side === "long" ? BigInt(params.sizeInTokens) : -BigInt(params.sizeInTokens);
-    const slippageMultiplier = params.side === "long" ? 1 + (params.slippage || 50) / 1e4 : 1 - (params.slippage || 50) / 1e4;
-    const acceptablePrice = BigInt(Math.floor(parseFloat(params.currentPrice) * slippageMultiplier * 1000000000000000000));
-    return encodeFunctionData({
-      abi: perpsAbi,
-      functionName: "openPosition",
-      args: [
-        marketKey,
-        sizeDelta,
-        acceptablePrice,
-        BigInt(0),
-        "0x0000000000000000000000000000000000000000000000000000000000000000",
-        params.side === "long"
-      ]
-    });
-  }
-  buildClosePositionCalldata(symbol, size4) {
-    const perpsAbi = [
-      {
-        name: "closePosition",
-        type: "function",
-        inputs: [
-          { name: "market", type: "bytes32" },
-          { name: "sizeDelta", type: "uint256" },
-          { name: "acceptablePrice", type: "uint256" },
-          { name: "executionFee", type: "uint256" }
-        ]
-      }
-    ];
-    const marketKey = this.getMarketKey(symbol);
-    const sizeDelta = size4 ? BigInt(size4) : BigInt(0);
-    return encodeFunctionData({
-      abi: perpsAbi,
-      functionName: "closePosition",
-      args: [
-        marketKey,
-        sizeDelta,
-        BigInt(0),
-        BigInt(0)
-      ]
-    });
-  }
-  getMarketKey(symbol) {
-    const encoder3 = new TextEncoder;
-    const data = encoder3.encode(symbol);
-    const hex = Array.from(data, (byte) => byte.toString(16).padStart(2, "0")).join("");
-    return `0x${hex.padEnd(64, "0")}`;
-  }
-}
-var perpsTradeAction = {
-  name: "PERPS_TRADE",
-  similes: [
-    "PERPETUAL_TRADE",
-    "LEVERAGE_TRADE",
-    "FUTURES_TRADE",
-    "PERPS"
-  ],
-  validate: async (runtime, message) => {
-    try {
-      if (false) {}
-      await validateSeiConfig(runtime);
-      const text = message.content?.text?.toLowerCase() || "";
-      return (text.includes("open") || text.includes("close") || text.includes("short") || text.includes("long")) && (text.includes("btc") || text.includes("eth") || text.includes("sei") || text.includes("sol") || text.includes("position"));
-    } catch (error) {
-      return false;
-    }
-  },
-  description: "Execute perpetual futures trading with leverage",
-  handler: async (runtime, message, state, _options, callback) => {
-    elizaLogger6.log("Processing perps trading request");
-    try {
-      if (false) {}
-      const config = await validateSeiConfig(runtime);
-      const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, { name: config.SEI_NETWORK || "sei-devnet", chain: seiChains["devnet"] });
-      const text = message.content?.text?.toLowerCase() || "";
-      const params = parsePerpsParams(text);
-      if (!params) {
-        if (callback) {
-          callback({
-            text: "Invalid trading parameters. Use format: 'open long BTC 1000 2x' or 'close BTC position'",
-            error: true
-          });
-        }
-        return;
-      }
-      const result = await executePerpsTradeEngine(params, walletProvider, config);
-      if (result.success) {
-        if (callback) {
-          callback({
-            text: `✅ Perpetual trade executed successfully!
-
-` + `Symbol: ${params.symbol}
-` + `Side: ${params.side}
-` + `Size: $${params.size}
-` + `Leverage: ${params.leverage}x
-` + `Transaction: ${result.txHash || "simulated"}`
-          });
-        }
-      } else {
-        if (callback) {
-          callback({
-            text: `❌ Failed to execute perpetual trade: ${result.error}`,
-            error: true
-          });
-        }
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      elizaLogger6.error(`Error in perps trading:: ${error}`);
-      const errorResponse = {
-        text: `❌ Error executing perpetual trade: ${errorMessage}`,
-        error: true,
-        success: false
-      };
-      if (callback) {
-        callback(errorResponse);
-      }
-      return errorResponse;
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Open long BTC 1000 2x" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Opening long BTC position with $1000 at 2x leverage...",
-          action: "PERPS_TRADE"
-        }
-      }
-    ]
-  ]
-};
-function parsePerpsParams(text) {
-  const openMatch = text.match(/open\s+(long|short)\s+(\w+)\s+(\d+)\s+(\d+)x/);
-  if (openMatch) {
-    return {
-      symbol: openMatch[2].toUpperCase(),
-      size: openMatch[3],
-      side: openMatch[1],
-      leverage: parseInt(openMatch[4]),
-      reduceOnly: false
-    };
-  }
-  const closeMatch = text.match(/close\s+(\w+)/);
-  if (closeMatch) {
-    return {
-      symbol: closeMatch[1].toUpperCase(),
-      size: "0",
-      side: "long",
-      leverage: 1,
-      reduceOnly: true
-    };
-  }
-  return null;
-}
-async function executePerpsTradeEngine(params, walletProvider, config) {
+async function initWalletProvider2(runtime) {
   try {
-    elizaLogger6.log(`Executing perps trade: ${params.side} ${params.symbol} $${params.size} ${params.leverage}x`);
-    const oracleProvider2 = new SeiOracleProvider({});
-    const perpsAPI = new PerpsAPI(walletProvider, oracleProvider2, config);
-    if (params.reduceOnly) {
-      const txHash = await perpsAPI.closePosition(params.symbol, params.size === "0" ? undefined : params.size);
-      if (txHash) {
-        return { success: true, txHash };
-      } else {
-        return { success: false, error: "Failed to close position" };
-      }
-    } else {
-      const txHash = await perpsAPI.openPosition(params);
-      if (txHash) {
-        return { success: true, txHash };
-      } else {
-        return { success: false, error: "Failed to open position" };
-      }
+    const privateKey = runtime.getSetting("SEI_PRIVATE_KEY");
+    const network = runtime.getSetting("SEI_NETWORK") || "testnet";
+    if (!privateKey) {
+      throw new Error("SEI_PRIVATE_KEY is required");
     }
+    if (!privateKey.startsWith("0x")) {
+      throw new Error("SEI_PRIVATE_KEY must start with '0x'");
+    }
+    elizaLogger13.debug(`Initializing wallet provider for network: ${network}`);
+    const chainWithName = createChainWithName(network);
+    return new WalletProvider(privateKey, chainWithName);
   } catch (error) {
+    const errorMessage = getErrorMessage(error);
+    elizaLogger13.error(`Failed to initialize wallet provider: ${errorMessage}`);
+    throw new Error(`Wallet provider initialization failed: ${errorMessage}`);
+  }
+}
+
+class ChainConfigFactory {
+  static configs = new Map([
+    ["mainnet", { name: "sei-mainnet", chain: sei }],
+    ["testnet", { name: "sei-testnet", chain: seiTestnet }],
+    ["atlantic-2", { name: "sei-testnet", chain: seiTestnet }]
+  ]);
+  static create(network) {
+    const config = this.configs.get(network.toLowerCase());
+    if (!config) {
+      throw new Error(`Unsupported network: ${network}. Supported: ${Array.from(this.configs.keys()).join(", ")}`);
+    }
     return {
-      success: false,
-      error: error instanceof Error ? error.message : "Unknown error"
+      name: config.name,
+      chain: config.chain
     };
   }
 }
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/funding-arbitrage.ts
-class FundingArbitrageEngine {
-  walletProvider;
-  oracleProvider;
-  runtime;
-  activePositions = new Map;
-  minFundingRate = 0.1;
-  maxPositionSize = 1e4;
-  riskTolerance = 0.7;
-  constructor(walletProvider, oracleProvider2, runtime) {
-    this.walletProvider = walletProvider;
-    this.oracleProvider = oracleProvider2;
-    this.runtime = runtime;
-  }
-  getActivePositions() {
-    return Array.from(this.activePositions.values()).filter((pos) => pos.status === "active");
-  }
-  getAllPositions() {
-    return Array.from(this.activePositions.values());
-  }
-  async updatePositionPnL() {
-    try {
-      for (const position of this.activePositions.values()) {
-        if (position.status === "active") {
-          const currentPrice = await this.oracleProvider.getPrice(position.symbol);
-          elizaLogger7.log(`Updating P&L for ${position.symbol} position ${position.id}`);
-        }
-      }
-    } catch (error) {
-      elizaLogger7.error(`Error updating position P&L:: ${error}`);
-    }
-  }
-  async scanOpportunities() {
-    try {
-      elizaLogger7.log("Scanning for arbitrage opportunities...");
-      const opportunities = [];
-      const symbols = ["BTC", "ETH", "SOL", "SEI"];
-      for (const symbol of symbols) {
-        try {
-          const fundingRates = await this.getFundingRates(symbol);
-          const opportunity = this.evaluateOpportunity(symbol, fundingRates);
-          if (opportunity && opportunity.expectedReturn > this.minFundingRate) {
-            opportunities.push(opportunity);
-          }
-        } catch (error) {
-          elizaLogger7.error(`Error scanning ${symbol}:: ${error}`);
-        }
-      }
-      return opportunities.sort((a, b) => b.expectedReturn - a.expectedReturn);
-    } catch (error) {
-      elizaLogger7.error(`Error scanning opportunities:: ${error}`);
-      return [];
-    }
-  }
-  async executeArbitrage(symbol) {
-    try {
-      elizaLogger7.log(`Executing arbitrage for ${symbol}...`);
-      const opportunities = await this.scanOpportunities();
-      const opportunity = opportunities.find((opp) => opp.symbol === symbol);
-      if (!opportunity) {
-        elizaLogger7.warn(`No profitable opportunity found for ${symbol}`);
-        return false;
-      }
-      const existingPosition = Array.from(this.activePositions.values()).find((pos) => pos.symbol === symbol && pos.status === "active");
-      if (existingPosition) {
-        elizaLogger7.warn(`Already have an active position for ${symbol}`);
-        return false;
-      }
-      const success = await this.openArbitragePosition(opportunity);
-      return success;
-    } catch (error) {
-      elizaLogger7.error(`Error executing arbitrage for ${symbol}:: ${error}`);
-      return false;
-    }
-  }
-  async getFundingRates(symbol) {
-    try {
-      return [
-        {
-          exchange: "binance",
-          symbol,
-          fundingRate: 0.001,
-          nextFundingTime: Date.now() + 8 * 60 * 60 * 1000,
-          confidence: 0.9
-        },
-        {
-          exchange: "bybit",
-          symbol,
-          fundingRate: -0.002,
-          nextFundingTime: Date.now() + 8 * 60 * 60 * 1000,
-          confidence: 0.85
-        }
-      ];
-    } catch (error) {
-      elizaLogger7.error(`Error fetching funding rates for ${symbol}:: ${error}`);
-      return [];
-    }
-  }
-  evaluateOpportunity(symbol, fundingRates) {
-    try {
-      if (fundingRates.length < 2)
-        return null;
-      const sortedRates = fundingRates.sort((a, b) => b.fundingRate - a.fundingRate);
-      const highestRate = sortedRates[0];
-      const lowestRate = sortedRates[sortedRates.length - 1];
-      const rateDifferential = highestRate.fundingRate - lowestRate.fundingRate;
-      const annualizedReturn = rateDifferential * 365 * 3;
-      if (annualizedReturn < this.minFundingRate)
-        return null;
-      const cexSide = highestRate.fundingRate > 0 ? "short" : "long";
-      const dexSide = cexSide === "long" ? "short" : "long";
-      return {
-        symbol,
-        cexSide,
-        dexSide,
-        cexFundingRate: highestRate.fundingRate,
-        targetExchange: highestRate.exchange,
-        expectedReturn: annualizedReturn,
-        requiredCapital: Math.min(this.maxPositionSize, 5000),
-        risk: Math.min(highestRate.confidence, lowestRate.confidence) > 0.8 ? "low" : Math.min(highestRate.confidence, lowestRate.confidence) > 0.6 ? "medium" : "high",
-        hedgeAction: dexSide === "long" ? "long_dex" : "short_dex",
-        confidence: Math.min(highestRate.confidence, lowestRate.confidence)
-      };
-    } catch (error) {
-      elizaLogger7.error(`Error evaluating opportunity for ${symbol}:: ${error}`);
-      return null;
-    }
-  }
-  async openArbitragePosition(opportunity) {
-    try {
-      const positionId = `arb_${opportunity.symbol}_${Date.now()}`;
-      const position = {
-        id: positionId,
-        symbol: opportunity.symbol,
-        cexSide: opportunity.cexSide,
-        dexSide: opportunity.dexSide,
-        size: opportunity.requiredCapital,
-        entryTime: Date.now(),
-        expectedReturn: opportunity.expectedReturn,
-        status: "active",
-        cexFundingCollected: 0,
-        netPnl: 0
-      };
-      const hedgeSuccess = await this.openHedgePosition(opportunity);
-      if (!hedgeSuccess) {
-        elizaLogger7.error("Failed to open hedge position");
-        return false;
-      }
-      this.activePositions.set(positionId, position);
-      elizaLogger7.log(`Successfully opened arbitrage position: ${positionId}`);
-      return true;
-    } catch (error) {
-      elizaLogger7.error(`Error opening arbitrage position:: ${error}`);
-      return false;
-    }
-  }
-  async openHedgePosition(opportunity) {
-    try {
-      if (opportunity.hedgeAction === "short_dex") {
-        elizaLogger7.log(`Opening short hedge for ${opportunity.symbol} via Perps`);
-        const mockMessage = {
-          content: {
-            text: `open short ${opportunity.symbol} ${opportunity.requiredCapital} 1x`
-          }
-        };
-        try {
-          const mockState = { values: {}, data: {}, text: "" };
-          await perpsTradeAction.handler(this.runtime, mockMessage, mockState, {});
-          elizaLogger7.log(`Successfully opened short position for ${opportunity.symbol}`);
-          return true;
-        } catch (perpsError) {
-          elizaLogger7.error(`Perps execution failed:: ${perpsError}`);
-          return false;
-        }
-      } else {
-        elizaLogger7.log(`Opening long hedge for ${opportunity.symbol} via DragonSwap`);
-        const mockMessage = {
-          content: {
-            text: `swap ${opportunity.requiredCapital} USDC for ${opportunity.symbol}`
-          }
-        };
-        try {
-          const mockState = { values: {}, data: {}, text: "" };
-          await dragonSwapTradeAction.handler(this.runtime, mockMessage, mockState, {});
-          elizaLogger7.log(`Successfully swapped USDC for ${opportunity.symbol}`);
-          return true;
-        } catch (swapError) {
-          elizaLogger7.error(`DragonSwap execution failed:: ${swapError}`);
-          return false;
-        }
-      }
-    } catch (error) {
-      elizaLogger7.error(`Failed to open hedge position:: ${error}`);
-      return false;
-    }
-  }
-  async closeArbitrage(positionId) {
-    try {
-      const position = this.activePositions.get(positionId);
-      if (!position) {
-        elizaLogger7.error(`Position ${positionId} not found`);
-        return false;
-      }
-      position.status = "closing";
-      position.status = "closed";
-      elizaLogger7.log(`Successfully closed arbitrage position: ${positionId}`);
-      return true;
-    } catch (error) {
-      elizaLogger7.error(`Failed to close arbitrage position:: ${error}`);
-      return false;
-    }
-  }
+function createChainWithName(network) {
+  return ChainConfigFactory.create(network);
 }
-async function getOrCreateArbitrageEngine(runtime) {
-  try {
-    const config = await validateSeiConfig(runtime);
-    const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, {
-      name: config.SEI_NETWORK || "sei-devnet",
-      chain: seiChains["devnet"]
-    });
-    const oracleProvider2 = new SeiOracleProvider(runtime);
-    return new FundingArbitrageEngine(walletProvider, oracleProvider2, runtime);
-  } catch (error) {
-    elizaLogger7.error(`Failed to create arbitrage engine:: ${error}`);
-    throw error;
-  }
-}
-var fundingArbitrageAction = {
-  name: "FUNDING_ARBITRAGE",
-  similes: ["ARBITRAGE", "FUNDING_RATE"],
-  validate: async (runtime, message) => {
-    try {
-      await validateSeiConfig(runtime);
-      const text = message?.content?.text?.toLowerCase() || "";
-      return text.includes("arbitrage") || text.includes("funding");
-    } catch {
-      return false;
-    }
-  },
-  description: "Execute funding rate arbitrage strategies",
-  handler: async (runtime, message, state, _options, callback) => {
-    try {
-      const arbitrageEngine = await getOrCreateArbitrageEngine(runtime);
-      const messageText = message?.content?.text?.toLowerCase() || "";
-      if (messageText.includes("status") || messageText.includes("position")) {
-        const activePositions = arbitrageEngine.getActivePositions();
-        if (activePositions.length === 0) {
-          if (callback) {
-            await callback({
-              text: "No active arbitrage positions.",
-              content: {
-                type: "status",
-                hasPositions: false
-              }
-            });
-          }
-          return;
-        }
-        await arbitrageEngine.updatePositionPnL();
-        const positionsText = activePositions.map((pos) => `${pos.symbol} Arbitrage (${pos.id.split("_")[1]})
-` + `   Strategy: ${pos.cexSide.toUpperCase()} CEX + ${pos.dexSide.toUpperCase()} DEX
-` + `   Size: $${pos.size.toLocaleString()}
-` + `   Duration: ${Math.floor((Date.now() - pos.entryTime) / (24 * 60 * 60 * 1000))} days
-` + `   Net PnL: $${pos.netPnl.toFixed(2)}
-` + `   Expected Return: ${(pos.expectedReturn * 100).toFixed(2)}% annual`).join(`
-
-`);
-        if (callback) {
-          await callback({
-            text: `\uD83D\uDCCA Active Arbitrage Positions:
-
-${positionsText}`,
-            content: {
-              type: "positions",
-              positions: activePositions
-            }
-          });
-        }
-      } else if (messageText.includes("scan") || messageText.includes("opportunity")) {
-        if (callback) {
-          await callback({
-            text: "\uD83D\uDD0D Scanning for arbitrage opportunities...",
-            content: { type: "scanning" }
-          });
-        }
-        const opportunities = await arbitrageEngine.scanOpportunities();
-        if (opportunities.length === 0) {
-          if (callback) {
-            await callback({
-              text: "No profitable arbitrage opportunities found at the moment.",
-              content: { type: "scan_result", opportunities: [] }
-            });
-          }
-        } else {
-          const opportunitiesText = opportunities.map((opp) => `\uD83D\uDCB0 ${opp.symbol} Arbitrage
-` + `   Target Exchange: ${opp.targetExchange}
-` + `   Strategy: ${opp.hedgeAction === "short_dex" ? "SHORT DEX + LONG CEX" : "LONG DEX + SHORT CEX"}
-` + `   Expected Return: ${(opp.expectedReturn * 100).toFixed(2)}% annual
-` + `   Required Capital: $${opp.requiredCapital.toLocaleString()}
-` + `   Risk Level: ${opp.risk.toUpperCase()}
-` + `   Confidence: ${(opp.confidence * 100).toFixed(0)}%`).join(`
-
-`);
-          if (callback) {
-            await callback({
-              text: `\uD83D\uDCC8 Found ${opportunities.length} Arbitrage Opportunities:
-
-${opportunitiesText}`,
-              content: {
-                type: "scan_result",
-                opportunities
-              }
-            });
-          }
-        }
-      } else if (messageText.includes("execute")) {
-        const symbolMatch = messageText.match(/execute.*?arbitrage.*?(\w{3,6})/i) || messageText.match(/arbitrage.*?(\w{3,6})/i);
-        const symbol = symbolMatch ? symbolMatch[1].toUpperCase() : null;
-        if (!symbol) {
-          if (callback) {
-            await callback({
-              text: "Please specify a symbol. Example: 'execute arbitrage BTC'",
-              content: { type: "error", message: "Symbol required" }
-            });
-          }
-          return;
-        }
-        if (callback) {
-          await callback({
-            text: `\uD83D\uDE80 Executing arbitrage for ${symbol}...`,
-            content: { type: "executing", symbol }
-          });
-        }
-        const opportunities = await arbitrageEngine.scanOpportunities();
-        const opportunity = opportunities.find((opp) => opp.symbol === symbol);
-        if (!opportunity) {
-          if (callback) {
-            await callback({
-              text: `❌ No profitable arbitrage opportunity found for ${symbol} at the moment.`,
-              content: { type: "execution_result", success: false, symbol, reason: "No opportunity" }
-            });
-          }
-          return;
-        }
-        const success = await arbitrageEngine.executeArbitrage(opportunity.symbol);
-        if (callback) {
-          if (success) {
-            await callback({
-              text: `✅ Successfully initiated ${symbol} arbitrage position!
-` + `Expected Return: ${(opportunity.expectedReturn * 100).toFixed(2)}% annual
-` + `Capital Deployed: $${opportunity.requiredCapital.toLocaleString()}`,
-              content: {
-                type: "execution_result",
-                success: true,
-                symbol,
-                opportunity
-              }
-            });
-          } else {
-            await callback({
-              text: `❌ Failed to execute ${symbol} arbitrage. Check logs for details.`,
-              content: { type: "execution_result", success: false, symbol }
-            });
-          }
-        }
-      } else {
-        if (callback) {
-          await callback({
-            text: `\uD83E\uDD16 Funding Arbitrage Bot Commands:
-
-` + `• 'scan arbitrage opportunities' - Find profitable opportunities
-` + `• 'execute arbitrage [symbol]' - Execute arbitrage for a symbol
-` + `• 'arbitrage status' - Check active positions
-
-` + `Examples:
-` + `• 'scan arbitrage opportunities'
-` + `• 'execute arbitrage BTC'
-` + "• 'arbitrage status'",
-            content: {
-              type: "help",
-              commands: [
-                "scan arbitrage opportunities",
-                "execute arbitrage [symbol]",
-                "arbitrage status"
-              ]
-            }
-          });
-        }
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      elizaLogger7.error(`Funding arbitrage error:: ${errorMessage}`);
-      if (callback) {
-        await callback({
-          text: `❌ Error: ${errorMessage}`,
-          content: {
-            type: "error",
-            error: errorMessage
-          }
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Scan for funding arbitrage opportunities" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Scanning funding rates across exchanges for arbitrage opportunities...",
-          action: "FUNDING_ARBITRAGE"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Execute arbitrage BTC" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Executing BTC funding rate arbitrage strategy...",
-          action: "FUNDING_ARBITRAGE"
-        }
-      }
-    ]
-  ]
-};
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/rebalance.ts
-import {
-  elizaLogger as elizaLogger8
-} from "@elizaos/core";
-class PortfolioRebalancer {
-  walletProvider;
-  oracleProvider;
-  constructor(walletProvider, oracleProvider2) {
-    this.walletProvider = walletProvider;
-    this.oracleProvider = oracleProvider2;
-  }
-  getStrategies() {
-    return [
-      {
-        name: "Conservative DeFi",
-        description: "Low-risk allocation focused on stable yields",
-        allocations: {
-          SEI: 40,
-          USDC: 30,
-          ETH: 20,
-          BTC: 10
-        },
-        rebalanceThreshold: 5,
-        riskLevel: "conservative"
-      },
-      {
-        name: "Balanced Growth",
-        description: "Moderate risk with diversified DeFi exposure",
-        allocations: {
-          SEI: 25,
-          USDC: 25,
-          ETH: 25,
-          BTC: 15,
-          ATOM: 10
-        },
-        rebalanceThreshold: 7.5,
-        riskLevel: "moderate"
-      },
-      {
-        name: "Aggressive DeFi",
-        description: "High-risk, high-reward DeFi strategy",
-        allocations: {
-          SEI: 30,
-          ETH: 25,
-          BTC: 20,
-          ATOM: 15,
-          OSMO: 10
-        },
-        rebalanceThreshold: 10,
-        riskLevel: "aggressive"
-      },
-      {
-        name: "Yield Farming Focus",
-        description: "Optimized for maximum yield opportunities",
-        allocations: {
-          SEI: 35,
-          USDC: 20,
-          ETH: 20,
-          LP_TOKENS: 25
-        },
-        rebalanceThreshold: 8,
-        riskLevel: "moderate"
-      }
-    ];
-  }
-  async analyzePortfolio(walletAddress, strategyName) {
-    try {
-      const strategies = this.getStrategies();
-      const strategy = strategyName ? strategies.find((s) => s.name === strategyName) || strategies[1] : strategies[1];
-      const portfolioBalances = await this.getPortfolioBalances(walletAddress);
-      const totalValue = Object.values(portfolioBalances).reduce((sum, value) => sum + value, 0);
-      elizaLogger8.info(`DEBUG: Portfolio balances for ${walletAddress}:`, portfolioBalances);
-      elizaLogger8.info(`DEBUG: Total portfolio value: ${totalValue}`);
-      if (totalValue === 0) {
-        elizaLogger8.error(`DEBUG: Portfolio analysis failed - no value found for ${walletAddress}`);
-        elizaLogger8.error(`DEBUG: Portfolio balances were:`, portfolioBalances);
-        throw new Error("Portfolio has no value");
-      }
-      const assets = [];
-      const recommendations = [];
-      for (const [symbol, targetPercentage] of Object.entries(strategy.allocations)) {
-        const currentValue = portfolioBalances[symbol] || 0;
-        const currentPercentage = currentValue / totalValue * 100;
-        const deviation = currentPercentage - targetPercentage;
-        let recommended = "hold";
-        let amount = 0;
-        if (Math.abs(deviation) > strategy.rebalanceThreshold) {
-          if (deviation > 0) {
-            recommended = "sell";
-            amount = deviation / 100 * totalValue;
-          } else {
-            recommended = "buy";
-            amount = Math.abs(deviation / 100) * totalValue;
-          }
-          recommendations.push({
-            asset: symbol,
-            action: recommended,
-            amount,
-            reason: `${Math.abs(deviation).toFixed(2)}% deviation from target`,
-            priority: Math.abs(deviation) > strategy.rebalanceThreshold * 2 ? "high" : "medium"
-          });
-        }
-        assets.push({
-          symbol,
-          targetPercentage,
-          currentPercentage,
-          currentValue,
-          deviation,
-          recommended,
-          amount
-        });
-      }
-      const rebalanceNeeded = recommendations.length > 0;
-      return {
-        totalValue,
-        strategy,
-        assets,
-        rebalanceNeeded,
-        recommendations
-      };
-    } catch (error) {
-      elizaLogger8.error(`Portfolio analysis failed:: ${error}`);
-      throw error;
-    }
-  }
-  async executeRebalance(walletAddress, recommendations) {
-    try {
-      const results = [];
-      for (const recommendation of recommendations) {
-        const txHash = await this.executeRecommendation(walletAddress, recommendation);
-        if (txHash) {
-          results.push(txHash);
-          elizaLogger8.info(`Executed ${recommendation.action} for ${recommendation.asset}: ${txHash}`);
-        }
-      }
-      return results;
-    } catch (error) {
-      elizaLogger8.error(`Portfolio rebalance failed:: ${error}`);
-      throw error;
-    }
-  }
-  async executeRecommendation(walletAddress, recommendation) {
-    try {
-      elizaLogger8.info(`Executing ${recommendation.action} of ${recommendation.amount} ${recommendation.asset}`);
-      return `0x${Math.random().toString(16).substring(2, 66)}`;
-    } catch (error) {
-      elizaLogger8.error(`Failed to execute ${recommendation.action} for ${recommendation.asset}:: ${error}`);
-      return null;
-    }
-  }
-  async getAssetBalance(symbol, address) {
-    try {
-      const testBalances = {
-        "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc": {
-          SEI: 1e4,
-          USDC: 1e4,
-          USDT: 5000,
-          ETH: 100,
-          BTC: 5,
-          ATOM: 1000,
-          DAI: 5000
-        },
-        "0x90f79bf6eb2c4f870365e785982e1f101e93b906": {
-          SEI: 5000,
-          USDC: 5000,
-          USDT: 2000,
-          ETH: 25,
-          BTC: 1,
-          ATOM: 500,
-          DAI: 3000
-        },
-        "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65": {
-          SEI: 1e5,
-          USDC: 50000,
-          USDT: 25000,
-          ETH: 500,
-          BTC: 20,
-          ATOM: 1e4,
-          DAI: 30000
-        },
-        "0x2222222222222222222222222222222222222222": {
-          SEI: 1e4,
-          USDC: 1e4,
-          USDT: 5000,
-          ETH: 100,
-          BTC: 5,
-          ATOM: 1000,
-          DAI: 5000
-        },
-        "0x3333333333333333333333333333333333333333": {
-          SEI: 5000,
-          USDC: 5000,
-          USDT: 2000,
-          ETH: 25,
-          BTC: 1,
-          ATOM: 500,
-          DAI: 3000
-        },
-        "0x4444444444444444444444444444444444444444": {
-          SEI: 1e5,
-          USDC: 50000,
-          USDT: 25000,
-          ETH: 500,
-          BTC: 20,
-          ATOM: 1e4,
-          DAI: 30000
-        }
-      };
-      const addressLower = address.toLowerCase();
-      const userBalances = testBalances[addressLower];
-      const tokenBalance = userBalances ? userBalances[symbol] || 0 : 0;
-      elizaLogger8.info(`DEBUG: Original address: ${address}`);
-      elizaLogger8.info(`DEBUG: Lowercase address: ${addressLower}`);
-      elizaLogger8.info(`DEBUG: Available test addresses:`, Object.keys(testBalances));
-      elizaLogger8.info(`DEBUG: Address exists in testBalances:`, addressLower in testBalances);
-      elizaLogger8.info(`DEBUG: Found user balances:`, userBalances);
-      elizaLogger8.info(`DEBUG: Token balance for ${symbol}: ${tokenBalance}`);
-      return tokenBalance;
-    } catch (error) {
-      elizaLogger8.error(`Failed to get balance for ${symbol}:: ${error}`);
-      return 0;
-    }
-  }
-  async getPortfolioBalances(walletAddress) {
-    try {
-      const balances = {};
-      const mockPrices = {
-        SEI: 0.45,
-        USDC: 1,
-        USDT: 1,
-        ETH: 2800,
-        BTC: 68000,
-        ATOM: 9.5,
-        DAI: 1,
-        OSMO: 0.78
-      };
-      const symbols = ["SEI", "USDC", "USDT", "ETH", "BTC", "ATOM", "DAI", "OSMO"];
-      for (const symbol of symbols) {
-        let price = mockPrices[symbol] || 0;
-        try {
-          const priceFeed = await this.oracleProvider.getPrice(symbol);
-          if (priceFeed && priceFeed.price > 0) {
-            price = priceFeed.price;
-          }
-        } catch (error) {
-          elizaLogger8.warn(`Using mock price for ${symbol}: ${price}`);
-        }
-        const balance = await this.getAssetBalance(symbol, walletAddress);
-        balances[symbol] = balance * price;
-        elizaLogger8.info(`Portfolio balance for ${symbol}: ${balance} tokens × $${price} = $${balances[symbol]}`);
-      }
-      return balances;
-    } catch (error) {
-      elizaLogger8.error(`Failed to get portfolio balances:: ${error}`);
-      return {};
-    }
-  }
-}
-var rebalanceEvaluatorAction = {
-  name: "PORTFOLIO_REBALANCE",
-  similes: [
-    "REBALANCE_PORTFOLIO",
-    "PORTFOLIO_ANALYSIS",
-    "ASSET_ALLOCATION",
-    "PORTFOLIO_OPTIMIZATION"
-  ],
-  description: "Analyze and rebalance portfolio based on allocation strategies",
-  validate: async (runtime, message) => {
-    const config = await validateSeiConfig(runtime);
-    return config !== null;
-  },
-  handler: async (runtime, message, state, _options, callback) => {
-    try {
-      elizaLogger8.info("Starting portfolio rebalance analysis");
-      const config = await validateSeiConfig(runtime);
-      const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, { name: config.SEI_NETWORK || "sei-devnet", chain: seiChains["devnet"] });
-      const oracleProvider2 = new SeiOracleProvider(runtime);
-      const rebalancer = new PortfolioRebalancer(walletProvider, oracleProvider2);
-      const text = typeof message.content === "string" ? message.content : message.content?.text || "";
-      const strategyMatch = text.match(/strategy[:\s]+([^,\n]+)/i);
-      const strategyName = strategyMatch ? strategyMatch[1].trim() : undefined;
-      const addressMatch = text.match(/(?:wallet|address)[:\s]+(0x[a-fA-F0-9]{40})/i);
-      const walletAddress = addressMatch ? addressMatch[1] : "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
-      if (callback) {
-        callback({
-          text: `\uD83D\uDD04 Analyzing portfolio for address: ${walletAddress}
-⏳ Fetching balances and calculating allocations...`,
-          content: {
-            action: "portfolio_analysis_started",
-            address: walletAddress,
-            strategy: strategyName
-          }
-        });
-      }
-      const analysis = await rebalancer.analyzePortfolio(walletAddress, strategyName);
-      const autoExecute = text.toLowerCase().includes("execute") || text.toLowerCase().includes("rebalance now");
-      if (analysis.rebalanceNeeded) {
-        const needsRebalancing = analysis.assets.some((asset) => Math.abs(asset.deviation) > analysis.strategy.rebalanceThreshold);
-        if (callback) {
-          callback({
-            text: `\uD83D\uDCCA Portfolio Analysis (${analysis.strategy.name})
-
-` + `\uD83D\uDCB0 Total Value: $${analysis.totalValue.toFixed(2)}
-` + `\uD83C\uDFAF Strategy: ${analysis.strategy.description}
-` + `⚖️ Risk Level: ${analysis.strategy.riskLevel}
-
-` + `\uD83D\uDCC8 Asset Allocations:
-` + analysis.assets.map((asset) => `${asset.symbol}: ${asset.currentPercentage.toFixed(1)}% ` + `(Target: ${asset.targetPercentage}%, ` + `Deviation: ${asset.deviation > 0 ? "+" : ""}${asset.deviation.toFixed(1)}%) ` + `[${asset.recommended.toUpperCase()}${asset.amount ? ` $${asset.amount.toFixed(2)}` : ""}]`).join(`
-`) + `
-
-\uD83D\uDD27 Rebalance Recommendations:
-` + analysis.recommendations.map((rec) => `${rec.priority.toUpperCase()}: ${rec.action.toUpperCase()} $${rec.amount.toFixed(2)} ${rec.asset} - ${rec.reason}`).join(`
-`),
-            content: {
-              action: "portfolio_analysis_complete",
-              analysis,
-              needsRebalancing
-            }
-          });
-        }
-        if (autoExecute) {
-          if (callback) {
-            callback({
-              text: `\uD83D\uDD04 Executing rebalance recommendations...`,
-              content: { action: "rebalance_execution_started" }
-            });
-          }
-          const txHashes = await rebalancer.executeRebalance(walletAddress, analysis.recommendations);
-          if (callback) {
-            callback({
-              text: `✅ Portfolio rebalance complete!
-
-` + `\uD83D\uDCDD Executed ${txHashes.length} transactions:
-` + txHashes.map((hash2, i) => `${i + 1}. ${hash2}`).join(`
-`),
-              content: {
-                action: "rebalance_execution_complete",
-                transactions: txHashes,
-                analysis
-              }
-            });
-          }
-        } else {
-          if (callback) {
-            callback({
-              text: `\uD83D\uDCA1 To execute these recommendations, send: "rebalance portfolio execute"`,
-              content: {
-                action: "rebalance_recommendations_ready",
-                analysis
-              }
-            });
-          }
-        }
-      } else {
-        if (callback) {
-          callback({
-            text: `✅ Portfolio is well-balanced!
-
-` + `\uD83D\uDCCA Current allocations are within target ranges for the ${analysis.strategy.name} strategy.
-` + `\uD83D\uDCB0 Total Value: $${analysis.totalValue.toFixed(2)}
-
-` + `\uD83D\uDCC8 Asset Allocations:
-` + analysis.assets.map((asset) => `${asset.symbol}: ${asset.currentPercentage.toFixed(1)}% ` + `(Target: ${asset.targetPercentage}%, ` + `Deviation: ${asset.deviation > 0 ? "+" : ""}${asset.deviation.toFixed(1)}%)`).join(`
-`),
-            content: {
-              action: "portfolio_balanced",
-              analysis
-            }
-          });
-        }
-      }
-    } catch (error) {
-      elizaLogger8.error(`Portfolio rebalance analysis failed:: ${error}`);
-      if (callback) {
-        callback({
-          text: `❌ Portfolio analysis failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-          content: {
-            action: "rebalance_failed",
-            error: error instanceof Error ? error.message : "Unknown error"
-          }
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Analyze my portfolio allocation" }
-      },
-      {
-        name: "{{user2}}",
-        content: {
-          text: "\uD83D\uDCCA Analyzing your portfolio...",
-          action: "PORTFOLIO_REBALANCE"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Rebalance my portfolio using conservative strategy" }
-      },
-      {
-        name: "{{user2}}",
-        content: {
-          text: "\uD83D\uDD04 Rebalancing portfolio with conservative DeFi strategy...",
-          action: "PORTFOLIO_REBALANCE"
-        }
-      }
-    ]
-  ]
-};
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/yei-finance.ts
 var yeiFinanceAction = {
@@ -17174,599 +17536,6 @@ Ask about specific lending rates, oracle prices, or collateral requirements!`;
   ]
 };
 
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/il-protection.ts
-import {
-  elizaLogger as elizaLogger12
-} from "@elizaos/core";
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/impermanent-loss-protector.ts
-import {
-  elizaLogger as elizaLogger11
-} from "@elizaos/core";
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/geographic-routing.ts
-import {
-  elizaLogger as elizaLogger10
-} from "@elizaos/core";
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/coinbase-advanced.ts
-import { elizaLogger as elizaLogger9 } from "@elizaos/core";
-
-class CoinbaseAdvancedProvider {
-  async openPerpPosition(params) {
-    elizaLogger9.log(`Opening perp position on Coinbase: ${params.symbol}, size: ${params.size}, side: ${params.side}`);
-    return "0x123...abc";
-  }
-  async closePerpPosition(symbol, size4) {
-    elizaLogger9.log(`Closing perp position on Coinbase: ${symbol}, size: ${size4 ?? "full"}`);
-    return "0xclose...abc";
-  }
-  async getPositions() {
-    elizaLogger9.log("Querying open perp positions on Coinbase");
-    return [];
-  }
-  async getHedgeRecommendation(lpPosition) {
-    elizaLogger9.log(`Calculating hedge recommendation for ${lpPosition.baseToken}/${lpPosition.quoteToken}`);
-    return {
-      type: "PERP_HEDGE",
-      provider: "Coinbase Advanced",
-      hedgeRatio: 0.75,
-      expectedILReduction: "~65% IL protection",
-      symbol: `${lpPosition.baseToken}${lpPosition.quoteToken}`,
-      size: (lpPosition.value * 0.75).toFixed(2),
-      action: "short",
-      cost: "$12.50 in fees",
-      txHash: "0x123...abc",
-      reason: `High volatility detected between ${lpPosition.baseToken}/${lpPosition.quoteToken}. Hedge ratio optimized for current market conditions.`
-    };
-  }
-  credentials;
-  baseUrl;
-  constructor(credentials) {
-    this.credentials = credentials;
-    this.baseUrl = credentials.sandbox ? "https://api-public.sandbox.exchange.coinbase.com" : "https://api.exchange.coinbase.com";
-  }
-  async getMarketPrice(symbol) {
-    elizaLogger9.log(`Getting market price for ${symbol}`);
-    return 50000;
-  }
-  calculateHedgeRatio(lpPosition, volatility) {
-    const baseRatio = 0.5;
-    const volatilityAdjustment = Math.min(volatility / 100, 0.5);
-    return Math.min(baseRatio + volatilityAdjustment, 0.9);
-  }
-  async executeILHedge(lpPosition) {
-    return {
-      success: true,
-      orderId: "0x123...abc",
-      message: `Successfully hedged ${lpPosition.baseToken}/${lpPosition.quoteToken} LP position`
-    };
-  }
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/geographic-routing.ts
-class GeographicTradingRouter {
-  config;
-  coinbaseProvider;
-  constructor(config) {
-    this.config = config;
-    if (this.config.COINBASE_ADVANCED_API_KEY && this.config.COINBASE_ADVANCED_SECRET && this.config.COINBASE_ADVANCED_PASSPHRASE) {
-      this.coinbaseProvider = new CoinbaseAdvancedProvider({
-        apiKey: this.config.COINBASE_ADVANCED_API_KEY,
-        apiSecret: this.config.COINBASE_ADVANCED_SECRET,
-        passphrase: this.config.COINBASE_ADVANCED_PASSPHRASE,
-        sandbox: this.config.COINBASE_SANDBOX || false
-      });
-    }
-  }
-  async getBestPerpProvider() {
-    const preference = this.config.PERP_PREFERENCE;
-    const geography = this.config.USER_GEOGRAPHY;
-    elizaLogger10.log(`Selecting perp provider for ${geography} with preference ${preference}`);
-    if (preference === "COINBASE_ONLY") {
-      if (this.coinbaseProvider) {
-        return this.createCoinbaseWrapper();
-      } else {
-        throw new Error("Coinbase credentials not configured");
-      }
-    }
-    if (preference === "ONCHAIN_ONLY") {
-      return this.createOnChainWrapper();
-    }
-    switch (geography) {
-      case "US":
-        if (this.coinbaseProvider && (preference === "GEOGRAPHIC" || preference === "GLOBAL")) {
-          elizaLogger10.log("Using Coinbase Advanced for US user");
-          return this.createCoinbaseWrapper();
-        }
-        elizaLogger10.log("Fallback to on-chain perps for US user");
-        return this.createOnChainWrapper();
-      case "EU":
-        if (preference === "GEOGRAPHIC") {
-          elizaLogger10.log("Using on-chain perps for EU user (geographic preference)");
-          return this.createOnChainWrapper();
-        }
-        return this.createOnChainWrapper();
-      case "ASIA":
-        elizaLogger10.log("Using on-chain perps for ASIA user");
-        return this.createOnChainWrapper();
-      default:
-        if (this.coinbaseProvider && preference === "GEOGRAPHIC") {
-          return this.createCoinbaseWrapper();
-        }
-        return this.createOnChainWrapper();
-    }
-  }
-  createCoinbaseWrapper() {
-    if (!this.coinbaseProvider) {
-      throw new Error("Coinbase provider not initialized");
-    }
-    return {
-      name: "Coinbase Advanced",
-      geographic: true,
-      regulated: true,
-      openPosition: (params) => this.coinbaseProvider.openPerpPosition(params),
-      closePosition: (symbol, size4) => this.coinbaseProvider.closePerpPosition(symbol, size4),
-      getPositions: () => this.coinbaseProvider.getPositions(),
-      getHedgeRecommendation: (lpPosition) => this.coinbaseProvider.getHedgeRecommendation(lpPosition)
-    };
-  }
-  createOnChainWrapper() {
-    return {
-      name: "Sei On-Chain Perps",
-      geographic: false,
-      regulated: false,
-      openPosition: async (params) => {
-        elizaLogger10.log("On-chain perp trading not yet implemented in wrapper");
-        return null;
-      },
-      closePosition: async (symbol, size4) => {
-        elizaLogger10.log("On-chain perp closing not yet implemented in wrapper");
-        return null;
-      },
-      getPositions: async () => {
-        elizaLogger10.log("On-chain position query not yet implemented in wrapper");
-        return [];
-      }
-    };
-  }
-  async executeGeographicHedge(lpPosition) {
-    try {
-      elizaLogger10.log(`Executing geographic hedge for LP position: ${lpPosition.baseToken}/${lpPosition.quoteToken}`);
-      const provider = await this.getBestPerpProvider();
-      if (!provider.getHedgeRecommendation) {
-        throw new Error(`Provider ${provider.name} does not support hedge recommendations`);
-      }
-      const hedgeStrategy = await provider.getHedgeRecommendation(lpPosition);
-      const hedgeParams = {
-        symbol: hedgeStrategy.symbol,
-        size: hedgeStrategy.size,
-        side: hedgeStrategy.action.toLowerCase(),
-        leverage: 1,
-        slippage: 50
-      };
-      const txHash = await provider.openPosition(hedgeParams);
-      if (txHash) {
-        return {
-          success: true,
-          provider: provider.name,
-          txHash,
-          hedgeRatio: parseFloat(hedgeStrategy.size) / lpPosition.value,
-          expectedILReduction: hedgeStrategy.expectedILReduction
-        };
-      } else {
-        return {
-          success: false,
-          provider: provider.name,
-          hedgeRatio: 0,
-          expectedILReduction: "0%",
-          error: "Failed to execute hedge position"
-        };
-      }
-    } catch (error) {
-      elizaLogger10.error(`Geographic hedge execution failed:: ${error}`);
-      return {
-        success: false,
-        provider: "unknown",
-        hedgeRatio: 0,
-        expectedILReduction: "0%",
-        error: error instanceof Error ? error.message : "Unknown error"
-      };
-    }
-  }
-  async getProviderCapabilities() {
-    const provider = await this.getBestPerpProvider();
-    return {
-      name: provider.name,
-      geographic: provider.geographic,
-      regulated: provider.regulated,
-      supportsHedging: !!provider.getHedgeRecommendation,
-      geography: this.config.USER_GEOGRAPHY,
-      preference: this.config.PERP_PREFERENCE
-    };
-  }
-  async getAvailableProviders() {
-    const providers = [];
-    if (this.coinbaseProvider) {
-      providers.push("Coinbase Advanced");
-    }
-    providers.push("Sei On-Chain Perps");
-    return providers;
-  }
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/impermanent-loss-protector.ts
-class ImpermanentLossProtector {
-  geographicRouter;
-  riskCalculator;
-  constructor(config) {
-    this.geographicRouter = new GeographicTradingRouter(config);
-    this.riskCalculator = new BasicILRiskCalculator;
-  }
-  async protectLiquidityPosition(position, strategy) {
-    try {
-      elizaLogger11.log(`Analyzing IL protection for ${position.baseToken}/${position.quoteToken} position`);
-      const ilRisk = await this.riskCalculator.calculateRisk(position);
-      elizaLogger11.log(`IL Risk Assessment: ${ilRisk.riskLevel}, Current IL: ${ilRisk.currentIL.toFixed(2)}%`);
-      const protectionType = this.determineProtectionStrategy(ilRisk, strategy);
-      if (protectionType === "PERP_HEDGE") {
-        return await this.executePerpsHedge(position, ilRisk);
-      } else if (protectionType === "OPTIONS_COLLAR") {
-        return await this.executeOptionsStrategy(position, ilRisk);
-      } else {
-        return this.createRebalanceOnlyStrategy(position, ilRisk);
-      }
-    } catch (error) {
-      elizaLogger11.error(`Failed to protect liquidity position:: ${error}`);
-      throw error;
-    }
-  }
-  determineProtectionStrategy(ilRisk, userStrategy) {
-    if (ilRisk.riskLevel === "LOW") {
-      return "REBALANCE_ONLY";
-    }
-    if (userStrategy === "CONSERVATIVE") {
-      return "REBALANCE_ONLY";
-    } else if (userStrategy === "AGGRESSIVE") {
-      return "PERP_HEDGE";
-    }
-    switch (ilRisk.riskLevel) {
-      case "MEDIUM":
-        return ilRisk.volatility > 0.5 ? "PERP_HEDGE" : "REBALANCE_ONLY";
-      case "HIGH":
-      case "CRITICAL":
-        return "PERP_HEDGE";
-      default:
-        return "REBALANCE_ONLY";
-    }
-  }
-  async executePerpsHedge(position, ilRisk) {
-    try {
-      elizaLogger11.log("Executing perpetual hedge strategy");
-      const hedgeRatio = this.riskCalculator.getOptimalHedgeRatio(ilRisk);
-      const hedgeResult = await this.geographicRouter.executeGeographicHedge(position);
-      if (hedgeResult.success) {
-        return {
-          type: "PERP_HEDGE",
-          provider: hedgeResult.provider,
-          hedgeRatio: hedgeResult.hedgeRatio,
-          expectedILReduction: hedgeResult.expectedILReduction,
-          txHash: hedgeResult.txHash,
-          cost: this.estimateHedgeCost(position, hedgeRatio),
-          reason: `Risk level: ${ilRisk.riskLevel}, Projected IL: ${ilRisk.projectedIL.toFixed(2)}%`
-        };
-      } else {
-        elizaLogger11.log("Hedge failed, falling back to rebalance strategy");
-        return this.createRebalanceOnlyStrategy(position, ilRisk);
-      }
-    } catch (error) {
-      elizaLogger11.error(`Perps hedge execution failed:: ${error}`);
-      return this.createRebalanceOnlyStrategy(position, ilRisk);
-    }
-  }
-  async executeOptionsStrategy(position, ilRisk) {
-    elizaLogger11.log("Options strategy not yet implemented, using perps hedge");
-    return await this.executePerpsHedge(position, ilRisk);
-  }
-  createRebalanceOnlyStrategy(position, ilRisk) {
-    return {
-      type: "REBALANCE_ONLY",
-      provider: "Internal",
-      hedgeRatio: 0,
-      expectedILReduction: "15%",
-      reason: `Low risk (${ilRisk.riskLevel}), rebalancing sufficient`,
-      cost: "0.1%"
-    };
-  }
-  estimateHedgeCost(position, hedgeRatio) {
-    const tradingFees = position.value * hedgeRatio * 0.001;
-    const fundingCosts = position.value * hedgeRatio * 0.0001 * 24;
-    return `$${(tradingFees + fundingCosts).toFixed(2)}`;
-  }
-  async getILAnalysis(position) {
-    return await this.riskCalculator.calculateRisk(position);
-  }
-  async simulateILScenarios(position, priceChanges) {
-    const scenarios = [];
-    for (const priceChange of priceChanges) {
-      const futurePrice = parseFloat(position.baseAmount) * (1 + priceChange);
-      const il = await this.riskCalculator.estimateILAtPrice(position, futurePrice);
-      const hedgedIL = il * 0.2;
-      scenarios.push({
-        priceChange: priceChange * 100,
-        il: il * 100,
-        hedgedIL: hedgedIL * 100
-      });
-    }
-    return scenarios;
-  }
-}
-
-class BasicILRiskCalculator {
-  async calculateRisk(position) {
-    try {
-      const volatility = await this.estimateVolatility(position.baseToken);
-      const correlation = await this.estimateCorrelation(position.baseToken, position.quoteToken);
-      const timeInPosition = 24;
-      const currentIL = this.calculateCurrentIL(position, volatility);
-      const projectedIL = this.projectFutureIL(currentIL, volatility, timeInPosition);
-      const riskLevel = this.assessRiskLevel(projectedIL, volatility);
-      return {
-        volatility,
-        priceCorrelation: correlation,
-        timeInPosition,
-        currentIL,
-        projectedIL,
-        riskLevel
-      };
-    } catch (error) {
-      elizaLogger11.error(`Risk calculation failed:: ${error}`);
-      return {
-        volatility: 0.5,
-        priceCorrelation: 0.3,
-        timeInPosition: 24,
-        currentIL: 5,
-        projectedIL: 10,
-        riskLevel: "MEDIUM"
-      };
-    }
-  }
-  async estimateILAtPrice(position, futurePrice) {
-    const currentPrice = parseFloat(position.baseAmount);
-    const priceRatio = futurePrice / currentPrice;
-    const il = 2 * Math.sqrt(priceRatio) / (1 + priceRatio) - 1;
-    return Math.abs(il);
-  }
-  getOptimalHedgeRatio(riskMetrics) {
-    let baseRatio = 0.3;
-    switch (riskMetrics.riskLevel) {
-      case "LOW":
-        baseRatio = 0.1;
-        break;
-      case "MEDIUM":
-        baseRatio = 0.4;
-        break;
-      case "HIGH":
-        baseRatio = 0.6;
-        break;
-      case "CRITICAL":
-        baseRatio = 0.8;
-        break;
-    }
-    const volatilityAdjustment = Math.min(riskMetrics.volatility * 0.3, 0.2);
-    return Math.min(baseRatio + volatilityAdjustment, 0.9);
-  }
-  async estimateVolatility(token) {
-    const volatilityMap = {
-      BTC: 0.6,
-      ETH: 0.7,
-      SEI: 1.2,
-      USDC: 0.05,
-      USDT: 0.05
-    };
-    return volatilityMap[token] || 0.8;
-  }
-  async estimateCorrelation(token1, token2) {
-    if (token1 === token2)
-      return 1;
-    if (token1 === "USDC" || token1 === "USDT" || (token2 === "USDC" || token2 === "USDT")) {
-      return 0.1;
-    }
-    if ((token1 === "BTC" || token1 === "ETH") && (token2 === "BTC" || token2 === "ETH")) {
-      return 0.7;
-    }
-    return 0.4;
-  }
-  calculateCurrentIL(position, volatility) {
-    return volatility * 10;
-  }
-  projectFutureIL(currentIL, volatility, timeHours) {
-    const timeAdjustment = Math.sqrt(timeHours / 24);
-    return currentIL * (1 + volatility * timeAdjustment);
-  }
-  assessRiskLevel(projectedIL, volatility) {
-    if (projectedIL < 5 && volatility < 0.3)
-      return "LOW";
-    if (projectedIL < 10 && volatility < 0.6)
-      return "MEDIUM";
-    if (projectedIL < 20 && volatility < 1)
-      return "HIGH";
-    return "CRITICAL";
-  }
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/il-protection.ts
-var ilProtectionAction = {
-  name: "IL_PROTECTION",
-  similes: [
-    "HEDGE_IL",
-    "PROTECT_LIQUIDITY",
-    "IMPERMANENT_LOSS_PROTECTION",
-    "HEDGE_LP_POSITION"
-  ],
-  validate: async (runtime, message) => {
-    try {
-      await validateSeiConfig(runtime);
-      const text = message.content?.text?.toLowerCase() || "";
-      return (text.includes("protect") || text.includes("hedge") || text.includes("il")) && (text.includes("liquidity") || text.includes("lp") || text.includes("position") || text.includes("impermanent") || text.includes("loss"));
-    } catch (error) {
-      return false;
-    }
-  },
-  description: "Protect liquidity positions from impermanent loss using geographic-aware perpetual hedging",
-  handler: async (runtime, message, state, _options, callback) => {
-    elizaLogger12.log("Processing IL protection request");
-    try {
-      if (false) {}
-      const config = await validateSeiConfig(runtime);
-      const text = message.content?.text?.toLowerCase() || "";
-      const lpPosition = parseILProtectionParams(text);
-      if (!lpPosition) {
-        if (callback) {
-          callback({
-            text: "Please provide liquidity position details in format: 'protect my ETH/USDC LP worth $1000'",
-            error: true
-          });
-        }
-        return;
-      }
-      const ilProtector = new ImpermanentLossProtector({
-        USER_GEOGRAPHY: config.USER_GEOGRAPHY || "GLOBAL",
-        PERP_PREFERENCE: config.PERP_PREFERENCE || "GEOGRAPHIC",
-        COINBASE_ADVANCED_API_KEY: config.COINBASE_ADVANCED_API_KEY,
-        COINBASE_ADVANCED_SECRET: config.COINBASE_ADVANCED_SECRET,
-        COINBASE_ADVANCED_PASSPHRASE: config.COINBASE_ADVANCED_PASSPHRASE,
-        COINBASE_SANDBOX: config.COINBASE_SANDBOX
-      });
-      const riskAnalysis = await ilProtector.getILAnalysis(lpPosition);
-      if (riskAnalysis.riskLevel === "LOW") {
-        if (callback) {
-          callback({
-            text: `\uD83D\uDCCA **IL Risk Analysis Complete**
-
-` + `**Position**: ${lpPosition.baseToken}/${lpPosition.quoteToken}
-` + `**Value**: $${lpPosition.value.toLocaleString()}
-` + `**Risk Level**: ${riskAnalysis.riskLevel} ✅
-` + `**Current IL**: ${riskAnalysis.currentIL.toFixed(2)}%
-` + `**Projected IL**: ${riskAnalysis.projectedIL.toFixed(2)}%
-
-` + `**Recommendation**: No hedging needed. Risk is low and periodic rebalancing should be sufficient.`
-          });
-        }
-        return;
-      }
-      const protectionStrategy = await ilProtector.protectLiquidityPosition(lpPosition);
-      const scenarios = await ilProtector.simulateILScenarios(lpPosition, [-0.5, -0.25, 0, 0.25, 0.5, 1]);
-      if (callback) {
-        const scenarioText = scenarios.map((s) => `${s.priceChange > 0 ? "+" : ""}${s.priceChange.toFixed(0)}%: ${s.il.toFixed(1)}% IL → ${s.hedgedIL.toFixed(1)}% (hedged)`).join(`
-`);
-        callback({
-          text: `\uD83D\uDEE1️ **Impermanent Loss Protection Activated**
-
-` + `**Position Protected**: ${lpPosition.baseToken}/${lpPosition.quoteToken}
-` + `**Value**: $${lpPosition.value.toLocaleString()}
-` + `**Risk Level**: ${riskAnalysis.riskLevel} ${getRiskEmoji(riskAnalysis.riskLevel)}
-
-` + `**Protection Strategy**: ${protectionStrategy.type}
-` + `**Provider**: ${protectionStrategy.provider}
-` + `**Hedge Ratio**: ${(protectionStrategy.hedgeRatio * 100).toFixed(1)}%
-` + `**Expected IL Reduction**: ${protectionStrategy.expectedILReduction}
-` + `**Estimated Cost**: ${protectionStrategy.cost || "Calculated at execution"}
-` + `${protectionStrategy.txHash ? `**Transaction**: ${protectionStrategy.txHash}` : ""}
-
-` + `**IL Scenarios** (Price Change → Unhedged IL → Hedged IL):
-` + `\`\`\`
-${scenarioText}
-\`\`\`
-
-` + `**Reason**: ${protectionStrategy.reason}`
-        });
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      elizaLogger12.error(`Error in IL protection:: ${error}`);
-      if (callback) {
-        callback({
-          text: `❌ Error setting up IL protection: ${errorMessage}`,
-          error: true
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Protect my ETH/USDC LP position worth $5000" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Analyzing your liquidity position for impermanent loss protection...",
-          action: "IL_PROTECTION"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Hedge my BTC/USDT liquidity against IL" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Setting up impermanent loss hedge for your BTC/USDT position...",
-          action: "IL_PROTECTION"
-        }
-      }
-    ]
-  ]
-};
-function parseILProtectionParams(text) {
-  const lpMatch = text.match(/(?:protect|hedge).*?(\w+)[\/\-](\w+).*?(?:\$|worth\s*\$?)(\d+(?:,\d{3})*(?:\.\d+)?)/i);
-  if (lpMatch) {
-    const baseToken = lpMatch[1].toUpperCase();
-    const quoteToken = lpMatch[2].toUpperCase();
-    const value = parseFloat(lpMatch[3].replace(/,/g, ""));
-    return {
-      baseToken,
-      quoteToken,
-      value,
-      baseAmount: (value / 2).toString(),
-      quoteAmount: (value / 2).toString(),
-      poolAddress: "0x...",
-      protocol: "auto-detected"
-    };
-  }
-  const altMatch = text.match(/(\w+)[\/\-](\w+).*?lp.*?(\d+)/i);
-  if (altMatch) {
-    return {
-      baseToken: altMatch[1].toUpperCase(),
-      quoteToken: altMatch[2].toUpperCase(),
-      value: parseFloat(altMatch[3]),
-      baseAmount: (parseFloat(altMatch[3]) / 2).toString(),
-      quoteAmount: (parseFloat(altMatch[3]) / 2).toString(),
-      poolAddress: "0x...",
-      protocol: "auto-detected"
-    };
-  }
-  return null;
-}
-function getRiskEmoji(riskLevel) {
-  switch (riskLevel) {
-    case "LOW":
-      return "\uD83D\uDFE2";
-    case "MEDIUM":
-      return "\uD83D\uDFE1";
-    case "HIGH":
-      return "\uD83D\uDFE0";
-    case "CRITICAL":
-      return "\uD83D\uDD34";
-    default:
-      return "⚪";
-  }
-}
-
 // node_modules/@elizaos/plugin-sei-yield-delta/src/amm-layer.ts
 class AMMLayerManager {
   clob;
@@ -17839,384 +17608,6 @@ class AMMLayerManager {
       await this.rebalance(symbol, prices[symbol], fee, slippage, threshold);
     }
   }
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/amm-optimize.ts
-var ammOptimizeAction = {
-  name: "AMM_OPTIMIZE",
-  description: "Optimizes concentrated liquidity ranges and rebalances positions using Sei CLOB with AI assistance",
-  validate: async (runtime, message) => {
-    const text = message.content?.text?.toLowerCase() || "";
-    return text.includes("optimize") && (text.includes("lp") || text.includes("amm") || text.includes("liquidity")) || text.includes("lp") && text.includes("optimization") || text.includes("concentrated") && text.includes("liquidity");
-  },
-  async handler(runtime, message, state, options, callback) {
-    try {
-      const aiEngineUrl = runtime.getSetting?.("AI_ENGINE_URL") || "http://localhost:8000";
-      const text = message.content?.text?.toLowerCase() || "";
-      const pairMatch = text.match(/(eth\/usdc|btc\/usdt|sei\/usdc|atom\/sei)/);
-      const defaultPair = pairMatch ? pairMatch[1] : "eth/usdc";
-      const requestBody = {
-        vault_address: "0x1234567890123456789012345678901234567890",
-        current_price: defaultPair.includes("btc") ? 32000 : 2500,
-        volatility: 0.3,
-        volume_24h: 1e6,
-        liquidity: 500000,
-        timeframe: "1d",
-        chain_id: 713715
-      };
-      let aiOptimization = null;
-      try {
-        const response = await fetch(`${aiEngineUrl}/predict/optimal-range`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody)
-        });
-        if (response.ok) {
-          aiOptimization = await response.json();
-        }
-      } catch (aiError) {
-        console.log("AI optimization unavailable, using fallback strategy");
-      }
-      const clob = runtime.seiClobProvider || {
-        placeRangeOrder: async () => ({ success: true, orderId: "mock-order-123" })
-      };
-      const manager = new AMMLayerManager(clob);
-      if (aiOptimization) {
-        const symbol = defaultPair.toUpperCase().replace("/", "/");
-        await manager.initPosition(symbol, aiOptimization.lower_tick, aiOptimization.upper_tick, 1000);
-        await callback({
-          text: `\uD83E\uDD16 AI-optimized AMM position created for ${symbol}
-
-\uD83D\uDCCA **AI Analysis:**
-• Lower Tick: ${aiOptimization.lower_tick}
-• Upper Tick: ${aiOptimization.upper_tick}
-• Confidence: ${(aiOptimization.confidence * 100).toFixed(1)}%
-• Expected APR: ${(aiOptimization.expected_apr * 100).toFixed(1)}%
-
-${aiOptimization.reasoning}`,
-          content: {
-            type: "amm_optimization",
-            optimization: aiOptimization
-          }
-        });
-      } else {
-        await manager.initPosition("ETH/USDC", 1800, 2200, 1000);
-        await manager.initPosition("BTC/USDT", 29000, 31000, 500);
-        await manager.rebalanceAll({ "ETH/USDC": 2500, "BTC/USDT": 32000 }, 2, 0.5, 0.02);
-        const analytics = Object.keys(manager["positions"]).map((symbol) => ({ symbol, ...manager.getAnalytics(symbol) }));
-        await callback({
-          text: `AMM optimization complete. Analytics: ${JSON.stringify(analytics)}`,
-          content: {
-            type: "amm_optimization",
-            analytics
-          }
-        });
-      }
-    } catch (error) {
-      await callback({
-        text: `Error optimizing AMM positions: ${error instanceof Error ? error.message : "Unknown error"}`,
-        content: {
-          type: "error"
-        }
-      });
-    }
-  },
-  examples: [
-    [
-      { name: "{{user1}}", content: { text: "Optimize my LP positions for ETH/USDC and BTC/USDT" } },
-      { name: "{{agentName}}", content: { action: "AMM_OPTIMIZE", text: "AMM optimization complete. Analytics: ..." } }
-    ]
-  ]
-};
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/delta-neutral.ts
-var deltaNeutralAction = {
-  name: "DELTA_NEUTRAL",
-  description: "Execute delta neutral strategy combining LP positions with perpetual hedging",
-  validate: async (runtime, message) => {
-    const text = message.content?.text?.toLowerCase() || "";
-    return text.includes("delta") && text.includes("neutral") || text.includes("market") && text.includes("neutral") || text.includes("delta neutral");
-  },
-  handler: async (runtime, message, state, options, callback) => {
-    try {
-      const text = message.content?.text?.toLowerCase() || "";
-      if (text.includes("info") || text.includes("help") || text.includes("explain")) {
-        await callback({
-          text: `\uD83D\uDD04 **Delta Neutral Strategy Commands:**
-
-• **"execute delta neutral strategy for [PAIR]"** - Start delta neutral position
-• **"delta neutral optimization"** - Get AI-optimized parameters  
-• **"market neutral LP for [PAIR]"** - Create market-neutral liquidity position
-
-**What is Delta Neutral?**
-A delta neutral strategy combines:
-1. **Concentrated LP positions** to earn fees
-2. **Perpetual hedging** to minimize price risk
-3. **AI optimization** for optimal parameters
-
-This strategy profits from volatility and fees while staying market-neutral.`,
-          content: { type: "help" }
-        });
-        return;
-      }
-      const pairMatch = text.match(/(eth\/usdc|btc\/usdt|sei\/usdc|atom\/sei)/);
-      const pair = pairMatch ? pairMatch[1].toUpperCase() : "ETH/USDC";
-      const aiEngineUrl = runtime.getSetting?.("AI_ENGINE_URL") || "http://localhost:8000";
-      const requestBody = {
-        pair,
-        position_size: 1e4,
-        current_price: pair.includes("BTC") ? 32000 : 2500,
-        volatility: 0.25,
-        market_conditions: {
-          funding_rate: 0.01,
-          liquidity_depth: 5000000
-        }
-      };
-      const response = await fetch(`${aiEngineUrl}/predict/delta-neutral-optimization`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody)
-      });
-      if (!response.ok) {
-        throw new Error(`AI optimization failed: ${response.status}`);
-      }
-      const optimization = await response.json();
-      await callback({
-        text: `\uD83C\uDFAF **Delta Neutral Strategy Executed for ${pair}**
-
-\uD83D\uDD04 **Strategy Details:**
-• Hedge Ratio: ${(optimization.hedge_ratio * 100).toFixed(1)}%
-• Market Neutrality: ${(optimization.expected_neutrality * 100).toFixed(1)}%
-• Expected APR: ${(optimization.expected_apr * 100).toFixed(1)}%
-
-\uD83D\uDCB0 **Revenue Breakdown:**
-• LP Fees: $${optimization.revenue_breakdown.lp_fees.toLocaleString()}
-• Funding Rates: $${optimization.revenue_breakdown.funding_rates.toLocaleString()}
-• Volatility Capture: $${optimization.revenue_breakdown.volatility_capture.toLocaleString()}
-
-\uD83D\uDCCA **Position Range:**
-• Lower Price: $${optimization.lower_price.toFixed(2)}
-• Upper Price: $${optimization.upper_price.toFixed(2)}
-
-\uD83E\uDD16 **AI Analysis:**
-${optimization.reasoning}`,
-        content: {
-          type: "delta_neutral_execution",
-          optimization
-        }
-      });
-    } catch (error) {
-      await callback({
-        text: `❌ Error executing delta neutral strategy: ${error instanceof Error ? error.message : "Unknown error"}
-
-\uD83D\uDCA1 **Troubleshooting:**
-• Check if AI engine is running on port 8000
-• Verify network connectivity  
-• Try again with a simpler command like "delta neutral info"`,
-        content: { type: "error" }
-      });
-    }
-  },
-  examples: [
-    [
-      { name: "user", content: { text: "execute delta neutral strategy for ETH/USDC" } },
-      { name: "agent", content: { action: "DELTA_NEUTRAL", text: "Delta Neutral Strategy Executed for ETH/USDC..." } }
-    ],
-    [
-      { name: "user", content: { text: "delta neutral info" } },
-      { name: "agent", content: { action: "DELTA_NEUTRAL", text: "Delta Neutral Strategy Commands..." } }
-    ]
-  ]
-};
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/price-query.ts
-import {
-  elizaLogger as elizaLogger13
-} from "@elizaos/core";
-var priceQueryAction = {
-  name: "PRICE_QUERY",
-  similes: [
-    "GET_PRICE",
-    "CHECK_PRICE",
-    "CRYPTO_PRICE",
-    "TOKEN_PRICE",
-    "MARKET_PRICE"
-  ],
-  validate: async (runtime, message) => {
-    const content = message.content?.text?.toLowerCase() || "";
-    const priceKeywords = [
-      "price of",
-      "price for",
-      "current price",
-      "how much is",
-      "what is the price",
-      "what's the price",
-      "whats the price",
-      "sei price",
-      "btc price",
-      "eth price",
-      "usdc price",
-      "trading at",
-      "worth",
-      "value of",
-      "quote"
-    ];
-    const hasKeyword = priceKeywords.some((keyword) => content.includes(keyword));
-    const cryptoSymbols = ["sei", "btc", "eth", "usdc", "usdt", "sol", "avax", "atom"];
-    const mentionsSymbol = cryptoSymbols.some((symbol) => content.includes(symbol));
-    const contextWords = ["price", "cost", "worth", "value", "trading", "quote"];
-    const hasContext = contextWords.some((word) => content.includes(word));
-    return hasKeyword || mentionsSymbol && hasContext;
-  },
-  description: "Get real-time cryptocurrency prices from oracle providers",
-  handler: async (runtime, message, state, _options, callback) => {
-    try {
-      elizaLogger13.info("Price Query Action triggered");
-      const oracle = new SeiOracleProvider(runtime);
-      const content = message.content?.text || "";
-      const symbols = extractSymbols(content);
-      if (symbols.length === 0) {
-        if (callback) {
-          callback({
-            text: "I couldn't identify which cryptocurrency you're asking about. Please specify a symbol like SEI, BTC, ETH, or USDC.",
-            content: {
-              text: "I couldn't identify which cryptocurrency you're asking about. Please specify a symbol like SEI, BTC, ETH, or USDC.",
-              action: "PRICE_QUERY",
-              error: "No symbol identified"
-            }
-          });
-        }
-        return;
-      }
-      elizaLogger13.info(`Fetching prices for symbols: ${symbols.join(", ")}`);
-      const priceResults = await Promise.all(symbols.map(async (symbol) => {
-        try {
-          const price = await oracle.getPrice(symbol);
-          return { symbol, price, error: null };
-        } catch (error) {
-          elizaLogger13.error(`Failed to get price for ${symbol}: ${error}`);
-          return { symbol, price: null, error: error instanceof Error ? error.message : "Unknown error" };
-        }
-      }));
-      let response = "";
-      if (priceResults.length === 1) {
-        const result = priceResults[0];
-        if (result.price) {
-          response = `The current price of ${result.symbol.toUpperCase()} is $${result.price.price.toFixed(4)} (Source: ${result.price.source}, updated ${formatTimestamp(result.price.timestamp)})`;
-        } else {
-          response = `I'm unable to fetch the current price for ${result.symbol.toUpperCase()} at the moment. ${result.error ? `Error: ${result.error}` : "Please try again later."}`;
-        }
-      } else {
-        const successfulPrices = priceResults.filter((r) => r.price !== null);
-        const failedSymbols = priceResults.filter((r) => r.price === null);
-        if (successfulPrices.length > 0) {
-          response = `Here are the current cryptocurrency prices:
-
-`;
-          successfulPrices.forEach((result) => {
-            if (result.price) {
-              response += `${result.symbol.toUpperCase()}: $${result.price.price.toFixed(4)} (${result.price.source})
-`;
-            }
-          });
-          if (failedSymbols.length > 0) {
-            response += `
-Unable to fetch prices for: ${failedSymbols.map((r) => r.symbol.toUpperCase()).join(", ")}`;
-          }
-        } else {
-          response = "I'm unable to fetch cryptocurrency prices at the moment. Please try again later.";
-        }
-      }
-      elizaLogger13.info(`Price query response: ${response}`);
-      if (callback) {
-        callback({
-          text: response,
-          content: {
-            text: response,
-            action: "PRICE_QUERY",
-            prices: priceResults.filter((r) => r.price !== null).map((r) => ({
-              symbol: r.symbol,
-              price: r.price?.price,
-              source: r.price?.source,
-              timestamp: r.price?.timestamp
-            }))
-          }
-        });
-      }
-    } catch (error) {
-      elizaLogger13.error(`Error in price query action: ${error instanceof Error ? error.message : String(error)}`);
-      if (callback) {
-        callback({
-          text: "I encountered an error while fetching cryptocurrency prices. Please try again in a moment.",
-          content: {
-            error: error instanceof Error ? error.message : "Unknown error",
-            action: "PRICE_QUERY"
-          }
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "What's the current price of SEI?" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "The current price of SEI is $0.4520 (Source: mock-price-feed, updated just now)"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "How much is BTC and ETH trading at?" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: `Here are the current cryptocurrency prices:
-
-BTC: $45000.00 (mock-price-feed)
-ETH: $2500.00 (mock-price-feed)`
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "What is the price of SEI?" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "The current price of SEI is $0.4520 (Source: mock-price-feed, updated just now)"
-        }
-      }
-    ]
-  ]
-};
-function extractSymbols(text) {
-  const normalizedText = text.toUpperCase();
-  const knownSymbols = ["BTC", "ETH", "SEI", "USDC", "USDT", "SOL", "AVAX", "ATOM", "DAI"];
-  const foundSymbols = knownSymbols.filter((symbol) => {
-    const regex = new RegExp(`\\b${symbol}\\b|${symbol}[/\\s,.]`, "i");
-    return regex.test(normalizedText);
-  });
-  return [...new Set(foundSymbols)];
-}
-function formatTimestamp(timestamp) {
-  const now = Date.now();
-  const diff = now - timestamp;
-  if (diff < 60000)
-    return "just now";
-  if (diff < 3600000)
-    return `${Math.floor(diff / 60000)} minutes ago`;
-  if (diff < 86400000)
-    return `${Math.floor(diff / 3600000)} hours ago`;
-  return `${Math.floor(diff / 86400000)} days ago`;
 }
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/evaluators/amm-risk.ts
@@ -18297,22 +17688,1017 @@ class AMMManagerProvider {
 }
 var AMMManagerProvider_Instance = new AMMManagerProvider;
 
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/dragonswap.ts
+import {
+  elizaLogger as elizaLogger14
+} from "@elizaos/core";
+var swapRouterAbi = [
+  {
+    inputs: [
+      { name: "tokenIn", type: "address" },
+      { name: "tokenOut", type: "address" },
+      { name: "amountIn", type: "uint256" },
+      { name: "amountOutMinimum", type: "uint256" },
+      { name: "recipient", type: "address" },
+      { name: "deadline", type: "uint256" }
+    ],
+    name: "exactInputSingle",
+    outputs: [{ name: "amountOut", type: "uint256" }],
+    stateMutability: "payable",
+    type: "function"
+  }
+];
+
+class DragonSwapAPI {
+  baseUrl;
+  walletProvider;
+  routerAddress;
+  constructor(walletProvider, isTestnet = false) {
+    this.baseUrl = isTestnet ? "https://api-testnet.dragonswap.app/v1" : "https://api.dragonswap.app/v1";
+    this.walletProvider = walletProvider;
+    this.routerAddress = isTestnet ? "0x1234567890123456789012345678901234567890" : "0x1234567890123456789012345678901234567890";
+  }
+  async getPoolInfo(tokenA, tokenB) {
+    try {
+      const response = await fetch(`${this.baseUrl}/pools/${tokenA}/${tokenB}`);
+      if (!response.ok) {
+        if (false) {}
+        return null;
+      }
+      return await response.json();
+    } catch (error) {
+      elizaLogger14.error(`Failed to get pool info: ${error}`);
+      if (false) {}
+      return null;
+    }
+  }
+  async getQuote(tokenIn, tokenOut, amountIn) {
+    try {
+      const response = await fetch(`${this.baseUrl}/quote`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tokenIn,
+          tokenOut,
+          amountIn
+        })
+      });
+      if (!response.ok) {
+        if (false) {}
+        return null;
+      }
+      return await response.json();
+    } catch (error) {
+      elizaLogger14.error(`Failed to get quote: ${error}`);
+      if (false) {}
+      return null;
+    }
+  }
+  async executeSwap(params, quote) {
+    try {
+      elizaLogger14.log(`Executing swap: ${params.amountIn} ${params.tokenIn} -> ${params.tokenOut}`);
+      const walletClient = this.walletProvider.getEvmWalletClient();
+      if (!walletClient.account) {
+        throw new Error("Wallet not connected");
+      }
+      let swapQuote = quote;
+      if (!swapQuote) {
+        swapQuote = await this.getQuote(params.tokenIn, params.tokenOut, params.amountIn);
+        if (!swapQuote) {
+          throw new Error("Could not get swap quote");
+        }
+      }
+      if (parseFloat(swapQuote.amountOut) <= 0) {
+        throw new Error("Invalid quote amount");
+      }
+      const slippageMultiplier = 1 - (params.slippage || 0.5) / 100;
+      const minAmountOut = (parseFloat(swapQuote.amountOut) * slippageMultiplier).toString();
+      if (params.tokenIn !== "SEI" && !this.isNativeToken(params.tokenIn)) {
+        elizaLogger14.log(`Approving token ${params.tokenIn} for swap`);
+        const tokenAddress = this.getTokenAddress(params.tokenIn);
+        await this.approveToken(tokenAddress, params.amountIn);
+      }
+      const calldata = this.buildSwapCalldata({
+        ...params,
+        minAmountOut
+      });
+      const amountInWei = BigInt(Math.floor(parseFloat(params.amountIn) * 1000000000000000000));
+      const transactionRequest = {
+        to: this.routerAddress,
+        data: calldata,
+        value: params.tokenIn === "SEI" ? amountInWei : BigInt(0)
+      };
+      if (false) {}
+      const txHash = await walletClient.sendTransaction({
+        account: walletClient.account,
+        ...transactionRequest
+      });
+      elizaLogger14.log(`Swap executed: ${txHash}`);
+      return txHash;
+    } catch (error) {
+      elizaLogger14.error(`Failed to execute swap: ${error}`);
+      return null;
+    }
+  }
+  getTokenAddress(symbol) {
+    const tokenAddresses = {
+      USDC: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      USDT: "0x90F79bf6EB2c4f870365E785982E1f101E93b906",
+      ETH: "0x15d34AAf54267DB7D7c367839AAf71A00a2C6A65",
+      WSEI: "0xE30feDd158A2e3b13e9badaeABaFc5516e95e8C7"
+    };
+    if (!tokenAddresses[symbol]) {
+      throw new Error(`Unsupported token: ${symbol}`);
+    }
+    return getAddress(tokenAddresses[symbol]);
+  }
+  buildSwapCalldata(params) {
+    const deadline = BigInt(Math.floor(Date.now() / 1000) + 1200);
+    const walletAddress = getAddress(this.walletProvider.getEvmWalletClient().account.address);
+    const WSEI_ADDRESS = getAddress("0x9965507D1a55bcC2695C58ba16FB37d819B0A4dc");
+    try {
+      const amountInWei = BigInt(Math.floor(parseFloat(params.amountIn) * 1000000000000000000));
+      const minAmountOutWei = BigInt(Math.floor(parseFloat(params.minAmountOut) * 1000000000000000000));
+      if (params.tokenIn === "SEI") {
+        const tokenOutAddress = this.getTokenAddress(params.tokenOut);
+        return encodeFunctionData({
+          abi: swapRouterAbi,
+          functionName: "exactInputSingle",
+          args: [
+            WSEI_ADDRESS,
+            tokenOutAddress,
+            amountInWei,
+            minAmountOutWei,
+            walletAddress,
+            deadline
+          ]
+        });
+      } else {
+        const tokenInAddress = this.getTokenAddress(params.tokenIn);
+        const tokenOutAddress = params.tokenOut === "SEI" ? WSEI_ADDRESS : this.getTokenAddress(params.tokenOut);
+        return encodeFunctionData({
+          abi: swapRouterAbi,
+          functionName: "exactInputSingle",
+          args: [
+            tokenInAddress,
+            tokenOutAddress,
+            amountInWei,
+            minAmountOutWei,
+            walletAddress,
+            deadline
+          ]
+        });
+      }
+    } catch (error) {
+      elizaLogger14.error(`Failed to encode swap calldata: ${error}`);
+      throw new Error("Failed to build transaction data");
+    }
+  }
+  async approveToken(tokenAddress, amount) {
+    if (false) {}
+    const walletClient = this.walletProvider.getEvmWalletClient();
+    const currentAllowance = await this.checkAllowance(tokenAddress, walletClient.account.address);
+    if (BigInt(currentAllowance) >= BigInt(amount)) {
+      elizaLogger14.log(`Token ${tokenAddress} already approved with sufficient allowance`);
+      return;
+    }
+    const amountWei = BigInt(Math.floor(parseFloat(amount) * 1000000000000000000));
+    const data = encodeFunctionData({
+      abi: erc20Abi,
+      functionName: "approve",
+      args: [this.routerAddress, amountWei]
+    });
+    const txHash = await walletClient.sendTransaction({
+      account: walletClient.account,
+      to: tokenAddress,
+      data,
+      value: BigInt(0)
+    });
+    elizaLogger14.log(`Token approval transaction: ${txHash}`);
+  }
+  async checkAllowance(tokenAddress, ownerAddress) {
+    if (false) {}
+    try {
+      const publicClient = this.walletProvider.getEvmPublicClient();
+      const allowance = await publicClient.readContract({
+        address: tokenAddress,
+        abi: erc20Abi,
+        functionName: "allowance",
+        args: [ownerAddress, this.routerAddress]
+      });
+      return allowance.toString();
+    } catch (error) {
+      elizaLogger14.error(`Failed to check token allowance: ${error}`);
+      return "0";
+    }
+  }
+  isNativeToken(tokenAddress) {
+    const nativeTokens = [
+      "SEI",
+      "0x0000000000000000000000000000000000000000"
+    ];
+    return nativeTokens.includes(tokenAddress.toLowerCase());
+  }
+}
+function getErrorMessage2(error) {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === "string") {
+    return error;
+  }
+  return "Unknown error occurred";
+}
+function getMessageText2(message) {
+  if (!message || !message.content) {
+    throw new Error("Invalid message: missing content");
+  }
+  const text = message.content.text;
+  if (!text || typeof text !== "string") {
+    throw new Error("Invalid message: missing or invalid text content");
+  }
+  return text.trim();
+}
+async function parseTradeParams(text) {
+  if (!text || typeof text !== "string" || !text.trim()) {
+    return null;
+  }
+  const tokenMatch = text.match(/swap\s+(\d+(?:\.\d+)?)\s+(\w+)\s+for\s+(\w+)/i);
+  if (!tokenMatch) {
+    return null;
+  }
+  const slippageMatch = text.match(/(?:slippage|slip)\s+(\d+(?:\.\d+)?)%?/i);
+  const slippage = slippageMatch ? slippageMatch[1] : "0.5";
+  return {
+    tokenIn: tokenMatch[2].toUpperCase(),
+    tokenOut: tokenMatch[3].toUpperCase(),
+    amountIn: tokenMatch[1],
+    slippage
+  };
+}
+function validateAndConvertTradeParams(tradeParams, quote) {
+  if (!tradeParams.tokenIn || !tradeParams.tokenOut || !tradeParams.amountIn) {
+    throw new Error("Missing required trade parameters");
+  }
+  let slippage;
+  if (tradeParams.slippage) {
+    slippage = parseFloat(tradeParams.slippage);
+    if (isNaN(slippage) || slippage < 0 || slippage > 100) {
+      throw new Error("Invalid slippage value. Must be between 0 and 100");
+    }
+  } else {
+    slippage = 0.5;
+  }
+  return {
+    tokenIn: tradeParams.tokenIn,
+    tokenOut: tradeParams.tokenOut,
+    amountIn: tradeParams.amountIn,
+    minAmountOut: quote.amountOut,
+    slippage
+  };
+}
+var dragonSwapTradeAction = {
+  name: "DRAGONSWAP_TRADE",
+  similes: [
+    "SWAP_ON_DRAGONSWAP",
+    "TRADE_DRAGONSWAP",
+    "EXCHANGE_TOKENS",
+    "SWAP_SEI_TOKENS"
+  ],
+  validate: async (runtime, message) => {
+    try {
+      const config = await validateSeiConfig(runtime);
+      const text = message?.content?.text?.toLowerCase() || "";
+      if (!text) {
+        return false;
+      }
+      return (text.includes("swap") || text.includes("trade") || text.includes("exchange")) && (text.includes("dragonswap") || text.includes("dragon")) && (text.includes("sei") || text.includes("token"));
+    } catch (error) {
+      const errorMessage = getErrorMessage2(error);
+      elizaLogger14.error(`DragonSwap validation error: ${errorMessage}`);
+      return false;
+    }
+  },
+  description: "Execute token swaps on DragonSwap DEX on Sei Network",
+  handler: async (runtime, message, state, _options, callback) => {
+    elizaLogger14.log("Processing DragonSwap trade request");
+    try {
+      const config = await validateSeiConfig(runtime);
+      const networkMapping = {
+        "sei-mainnet": seiChains.mainnet,
+        "sei-testnet": seiChains.testnet,
+        "sei-devnet": seiChains.devnet
+      };
+      const currentNetwork = config.SEI_NETWORK || "sei-testnet";
+      const viemChain = networkMapping[currentNetwork] || seiChains.testnet;
+      const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, { name: currentNetwork, chain: viemChain });
+      const dragonSwap = new DragonSwapAPI(walletProvider, config.SEI_NETWORK !== "sei-mainnet");
+      let messageText;
+      try {
+        messageText = getMessageText2(message);
+      } catch (error) {
+        if (callback) {
+          callback({
+            text: "Invalid message format. Please provide trade details.",
+            error: true
+          });
+        }
+        return;
+      }
+      const tradeParams = await parseTradeParams(messageText);
+      if (!tradeParams) {
+        if (callback) {
+          callback({
+            text: "I couldn't understand the trade parameters. Please specify tokens and amounts. Example: 'Swap 10 SEI for USDC on DragonSwap'",
+            error: true
+          });
+        }
+        return;
+      }
+      const poolInfo = await dragonSwap.getPoolInfo(tradeParams.tokenIn, tradeParams.tokenOut);
+      if (!poolInfo) {
+        if (callback) {
+          callback({
+            text: `No liquidity pool found for ${tradeParams.tokenIn}/${tradeParams.tokenOut} on DragonSwap`,
+            error: true
+          });
+        }
+        return;
+      }
+      const quote = await dragonSwap.getQuote(tradeParams.tokenIn, tradeParams.tokenOut, tradeParams.amountIn);
+      if (!quote) {
+        if (callback) {
+          callback({
+            text: "Could not get price quote for this trade",
+            error: true
+          });
+        }
+        return;
+      }
+      if (true) {
+        const balance = await walletProvider.getWalletBalance();
+        if (!balance) {
+          if (callback) {
+            callback({
+              text: "Failed to retrieve wallet balance. Please try again later.",
+              error: true
+            });
+          }
+          return;
+        }
+        const requiredAmount = parseFloat(tradeParams.amountIn);
+        const availableBalance = parseFloat(balance);
+        if (availableBalance < requiredAmount) {
+          if (callback) {
+            callback({
+              text: `Failed to execute swap: Insufficient balance. Required: ${requiredAmount} ${tradeParams.tokenIn}, Available: ${availableBalance} ${tradeParams.tokenIn}`,
+              error: true
+            });
+          }
+          return;
+        }
+      }
+      const priceImpactPercent = quote.priceImpact * 100;
+      if (priceImpactPercent > 10) {
+        if (callback) {
+          callback({
+            text: `⚠️ High Price Impact Warning: ${priceImpactPercent.toFixed(2)}%
+This trade will significantly impact the token price. Consider reducing the trade size.`
+          });
+        }
+      } else if (priceImpactPercent > 5) {
+        if (callback) {
+          callback({
+            text: `Price Impact: ${priceImpactPercent.toFixed(2)}% - Moderate impact detected.`
+          });
+        }
+      }
+      const dragonSwapParams = validateAndConvertTradeParams(tradeParams, quote);
+      const txHash = await dragonSwap.executeSwap(dragonSwapParams, quote);
+      if (callback) {
+        if (txHash) {
+          const priceImpactPercent2 = quote.priceImpact * 100;
+          callback({
+            text: `✅ Successfully swapped ${tradeParams.amountIn} ${tradeParams.tokenIn} for ~${quote.amountOut} ${tradeParams.tokenOut}
+` + `Transaction: ${txHash}
+` + `Price Impact: ${priceImpactPercent2.toFixed(2)}%`
+          });
+        } else {
+          callback({
+            text: "Failed to execute swap. Please try again later.",
+            error: true
+          });
+        }
+      }
+    } catch (error) {
+      const errorMessage = getErrorMessage2(error);
+      elizaLogger14.error(`DragonSwap trade error: ${errorMessage}`);
+      if (callback) {
+        callback({
+          text: `Error executing trade: ${errorMessage}`,
+          error: true
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Swap 10 SEI for USDC on DragonSwap" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "I'll execute that swap for you on DragonSwap…",
+          action: "DRAGONSWAP_TRADE"
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Trade 5 USDC for SEI using DragonSwap with 1% slippage" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "Executing USDC to SEI swap with 1% slippage tolerance…",
+          action: "DRAGONSWAP_TRADE"
+        }
+      }
+    ]
+  ]
+};
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/funding-arbitrage.ts
+import {
+  elizaLogger as elizaLogger16
+} from "@elizaos/core";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/perp-trading.ts
+import {
+  elizaLogger as elizaLogger15
+} from "@elizaos/core";
+class PerpsAPI {
+  baseUrl;
+  walletProvider;
+  contractAddress;
+  oracleProvider;
+  protocol;
+  constructor(walletProvider, oracleProvider2, config) {
+    const isTestnet = config.SEI_NETWORK !== "mainnet";
+    this.protocol = config.PERP_PROTOCOL || "vortex";
+    switch (this.protocol) {
+      case "vortex":
+        this.baseUrl = isTestnet ? "https://api-testnet.vortexprotocol.io/v1" : "https://api.vortexprotocol.io/v1";
+        this.contractAddress = isTestnet ? config.VORTEX_TESTNET_CONTRACT : config.VORTEX_MAINNET_CONTRACT;
+        break;
+      case "dragonswap":
+        this.baseUrl = config.DRAGONSWAP_API_URL || "https://api-testnet.dragonswap.app/v1";
+        this.contractAddress = isTestnet ? config.DRAGONSWAP_PERP_TESTNET : config.DRAGONSWAP_PERP_MAINNET;
+        break;
+      default:
+        throw new Error(`Unsupported perp protocol: ${this.protocol}`);
+    }
+    this.walletProvider = walletProvider;
+    this.oracleProvider = oracleProvider2;
+    if (!this.contractAddress || this.contractAddress === "0x...") {
+      throw new Error(`${this.protocol} contract address not configured. Check your .env file.`);
+    }
+  }
+  async openPosition(params) {
+    try {
+      elizaLogger15.log(`Opening ${params.side} position: ${params.size} USD ${params.symbol} at ${params.leverage}x`);
+      const walletClient = this.walletProvider.getEvmWalletClient();
+      if (!walletClient.account) {
+        throw new Error("Wallet not connected");
+      }
+      const priceData = await this.oracleProvider.getPrice(params.symbol);
+      if (!priceData) {
+        throw new Error(`Could not get price for ${params.symbol}`);
+      }
+      const sizeInTokens = parseFloat(params.size) / priceData.price;
+      const marginRequired = parseFloat(params.size) / params.leverage;
+      const data = this.buildOpenPositionCalldata({
+        ...params,
+        sizeInTokens: sizeInTokens.toString(),
+        marginRequired: marginRequired.toString(),
+        currentPrice: priceData.price.toString()
+      });
+      const txHash = await walletClient.sendTransaction({
+        account: walletClient.account,
+        to: this.contractAddress,
+        data,
+        value: BigInt(0)
+      });
+      elizaLogger15.log(`Position opened: ${txHash}`);
+      return txHash;
+    } catch (error) {
+      elizaLogger15.error(`Failed to open position:: ${error}`);
+      return null;
+    }
+  }
+  async closePosition(symbol, size4) {
+    try {
+      elizaLogger15.log(`Closing position: ${symbol} ${size4 ? `(${size4})` : "(full)"}`);
+      const walletClient = this.walletProvider.getEvmWalletClient();
+      if (!walletClient.account) {
+        throw new Error("Wallet not connected");
+      }
+      const data = this.buildClosePositionCalldata(symbol, size4);
+      const txHash = await walletClient.sendTransaction({
+        account: walletClient.account,
+        to: this.contractAddress,
+        data,
+        value: BigInt(0)
+      });
+      elizaLogger15.log(`Position closed: ${txHash}`);
+      return txHash;
+    } catch (error) {
+      elizaLogger15.error(`Failed to close position:: ${error}`);
+      return null;
+    }
+  }
+  async getPositions(address) {
+    try {
+      const response = await fetch(`${this.baseUrl}/positions/${address}`);
+      if (!response.ok)
+        return [];
+      const data = await response.json();
+      return data.positions || [];
+    } catch (error) {
+      elizaLogger15.error(`Failed to get positions:: ${error}`);
+      return [];
+    }
+  }
+  async getMarketInfo(symbol) {
+    try {
+      const response = await fetch(`${this.baseUrl}/markets/${symbol}`);
+      if (!response.ok)
+        return null;
+      return await response.json();
+    } catch (error) {
+      elizaLogger15.error(`Failed to get market info:: ${error}`);
+      return null;
+    }
+  }
+  buildOpenPositionCalldata(params) {
+    const perpsAbi = [
+      {
+        name: "openPosition",
+        type: "function",
+        inputs: [
+          { name: "market", type: "bytes32" },
+          { name: "sizeDelta", type: "int256" },
+          { name: "acceptablePrice", type: "uint256" },
+          { name: "executionFee", type: "uint256" },
+          { name: "referralCode", type: "bytes32" },
+          { name: "isLong", type: "bool" }
+        ]
+      }
+    ];
+    const marketKey = this.getMarketKey(params.symbol);
+    const sizeDelta = params.side === "long" ? BigInt(params.sizeInTokens) : -BigInt(params.sizeInTokens);
+    const slippageMultiplier = params.side === "long" ? 1 + (params.slippage || 50) / 1e4 : 1 - (params.slippage || 50) / 1e4;
+    const acceptablePrice = BigInt(Math.floor(parseFloat(params.currentPrice) * slippageMultiplier * 1000000000000000000));
+    return encodeFunctionData({
+      abi: perpsAbi,
+      functionName: "openPosition",
+      args: [
+        marketKey,
+        sizeDelta,
+        acceptablePrice,
+        BigInt(0),
+        "0x0000000000000000000000000000000000000000000000000000000000000000",
+        params.side === "long"
+      ]
+    });
+  }
+  buildClosePositionCalldata(symbol, size4) {
+    const perpsAbi = [
+      {
+        name: "closePosition",
+        type: "function",
+        inputs: [
+          { name: "market", type: "bytes32" },
+          { name: "sizeDelta", type: "uint256" },
+          { name: "acceptablePrice", type: "uint256" },
+          { name: "executionFee", type: "uint256" }
+        ]
+      }
+    ];
+    const marketKey = this.getMarketKey(symbol);
+    const sizeDelta = size4 ? BigInt(size4) : BigInt(0);
+    return encodeFunctionData({
+      abi: perpsAbi,
+      functionName: "closePosition",
+      args: [
+        marketKey,
+        sizeDelta,
+        BigInt(0),
+        BigInt(0)
+      ]
+    });
+  }
+  getMarketKey(symbol) {
+    const encoder3 = new TextEncoder;
+    const data = encoder3.encode(symbol);
+    const hex = Array.from(data, (byte) => byte.toString(16).padStart(2, "0")).join("");
+    return `0x${hex.padEnd(64, "0")}`;
+  }
+}
+var perpsTradeAction = {
+  name: "PERPS_TRADE",
+  similes: [
+    "PERPETUAL_TRADE",
+    "LEVERAGE_TRADE",
+    "FUTURES_TRADE",
+    "PERPS"
+  ],
+  validate: async (runtime, message) => {
+    try {
+      if (false) {}
+      await validateSeiConfig(runtime);
+      const text = message.content?.text?.toLowerCase() || "";
+      return (text.includes("open") || text.includes("close") || text.includes("short") || text.includes("long")) && (text.includes("btc") || text.includes("eth") || text.includes("sei") || text.includes("sol") || text.includes("position"));
+    } catch (error) {
+      return false;
+    }
+  },
+  description: "Execute perpetual futures trading with leverage",
+  handler: async (runtime, message, state, _options, callback) => {
+    elizaLogger15.log("Processing perps trading request");
+    try {
+      if (false) {}
+      const config = await validateSeiConfig(runtime);
+      const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, { name: config.SEI_NETWORK || "sei-devnet", chain: seiChains["devnet"] });
+      const text = message.content?.text?.toLowerCase() || "";
+      const params = parsePerpsParams(text);
+      if (!params) {
+        if (callback) {
+          callback({
+            text: "Invalid trading parameters. Use format: 'open long BTC 1000 2x' or 'close BTC position'",
+            error: true
+          });
+        }
+        return;
+      }
+      const result = await executePerpsTradeEngine(params, walletProvider, config);
+      if (result.success) {
+        if (callback) {
+          callback({
+            text: `✅ Perpetual trade executed successfully!
+
+` + `Symbol: ${params.symbol}
+` + `Side: ${params.side}
+` + `Size: $${params.size}
+` + `Leverage: ${params.leverage}x
+` + `Transaction: ${result.txHash || "simulated"}`
+          });
+        }
+      } else {
+        if (callback) {
+          callback({
+            text: `❌ Failed to execute perpetual trade: ${result.error}`,
+            error: true
+          });
+        }
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      elizaLogger15.error(`Error in perps trading:: ${error}`);
+      const errorResponse = {
+        text: `❌ Error executing perpetual trade: ${errorMessage}`,
+        error: true,
+        success: false
+      };
+      if (callback) {
+        callback(errorResponse);
+      }
+      return errorResponse;
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Open long BTC 1000 2x" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "Opening long BTC position with $1000 at 2x leverage...",
+          action: "PERPS_TRADE"
+        }
+      }
+    ]
+  ]
+};
+function parsePerpsParams(text) {
+  const openMatch = text.match(/open\s+(long|short)\s+(\w+)\s+(\d+)\s+(\d+)x/);
+  if (openMatch) {
+    return {
+      symbol: openMatch[2].toUpperCase(),
+      size: openMatch[3],
+      side: openMatch[1],
+      leverage: parseInt(openMatch[4]),
+      reduceOnly: false
+    };
+  }
+  const closeMatch = text.match(/close\s+(\w+)/);
+  if (closeMatch) {
+    return {
+      symbol: closeMatch[1].toUpperCase(),
+      size: "0",
+      side: "long",
+      leverage: 1,
+      reduceOnly: true
+    };
+  }
+  return null;
+}
+async function executePerpsTradeEngine(params, walletProvider, config) {
+  try {
+    elizaLogger15.log(`Executing perps trade: ${params.side} ${params.symbol} $${params.size} ${params.leverage}x`);
+    const oracleProvider2 = new SeiOracleProvider({});
+    const perpsAPI = new PerpsAPI(walletProvider, oracleProvider2, config);
+    if (params.reduceOnly) {
+      const txHash = await perpsAPI.closePosition(params.symbol, params.size === "0" ? undefined : params.size);
+      if (txHash) {
+        return { success: true, txHash };
+      } else {
+        return { success: false, error: "Failed to close position" };
+      }
+    } else {
+      const txHash = await perpsAPI.openPosition(params);
+      if (txHash) {
+        return { success: true, txHash };
+      } else {
+        return { success: false, error: "Failed to open position" };
+      }
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error"
+    };
+  }
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/funding-arbitrage.ts
+class FundingArbitrageEngine {
+  walletProvider;
+  oracleProvider;
+  runtime;
+  activePositions = new Map;
+  minFundingRate = 0.1;
+  maxPositionSize = 1e4;
+  riskTolerance = 0.7;
+  constructor(walletProvider, oracleProvider2, runtime) {
+    this.walletProvider = walletProvider;
+    this.oracleProvider = oracleProvider2;
+    this.runtime = runtime;
+  }
+  getActivePositions() {
+    return Array.from(this.activePositions.values()).filter((pos) => pos.status === "active");
+  }
+  getAllPositions() {
+    return Array.from(this.activePositions.values());
+  }
+  async updatePositionPnL() {
+    try {
+      for (const position of this.activePositions.values()) {
+        if (position.status === "active") {
+          const currentPrice = await this.oracleProvider.getPrice(position.symbol);
+          elizaLogger16.log(`Updating P&L for ${position.symbol} position ${position.id}`);
+        }
+      }
+    } catch (error) {
+      elizaLogger16.error(`Error updating position P&L:: ${error}`);
+    }
+  }
+  async scanOpportunities() {
+    try {
+      elizaLogger16.log("Scanning for arbitrage opportunities...");
+      const opportunities = [];
+      const symbols = ["BTC", "ETH", "SOL", "SEI"];
+      for (const symbol of symbols) {
+        try {
+          const fundingRates = await this.getFundingRates(symbol);
+          const opportunity = this.evaluateOpportunity(symbol, fundingRates);
+          if (opportunity && opportunity.expectedReturn > this.minFundingRate) {
+            opportunities.push(opportunity);
+          }
+        } catch (error) {
+          elizaLogger16.error(`Error scanning ${symbol}:: ${error}`);
+        }
+      }
+      return opportunities.sort((a, b) => b.expectedReturn - a.expectedReturn);
+    } catch (error) {
+      elizaLogger16.error(`Error scanning opportunities:: ${error}`);
+      return [];
+    }
+  }
+  async executeArbitrage(symbol) {
+    try {
+      elizaLogger16.log(`Executing arbitrage for ${symbol}...`);
+      const opportunities = await this.scanOpportunities();
+      const opportunity = opportunities.find((opp) => opp.symbol === symbol);
+      if (!opportunity) {
+        elizaLogger16.warn(`No profitable opportunity found for ${symbol}`);
+        return false;
+      }
+      const existingPosition = Array.from(this.activePositions.values()).find((pos) => pos.symbol === symbol && pos.status === "active");
+      if (existingPosition) {
+        elizaLogger16.warn(`Already have an active position for ${symbol}`);
+        return false;
+      }
+      const success = await this.openArbitragePosition(opportunity);
+      return success;
+    } catch (error) {
+      elizaLogger16.error(`Error executing arbitrage for ${symbol}:: ${error}`);
+      return false;
+    }
+  }
+  async getFundingRates(symbol) {
+    try {
+      return [
+        {
+          exchange: "binance",
+          symbol,
+          fundingRate: 0.001,
+          nextFundingTime: Date.now() + 8 * 60 * 60 * 1000,
+          confidence: 0.9
+        },
+        {
+          exchange: "bybit",
+          symbol,
+          fundingRate: -0.002,
+          nextFundingTime: Date.now() + 8 * 60 * 60 * 1000,
+          confidence: 0.85
+        }
+      ];
+    } catch (error) {
+      elizaLogger16.error(`Error fetching funding rates for ${symbol}:: ${error}`);
+      return [];
+    }
+  }
+  evaluateOpportunity(symbol, fundingRates) {
+    try {
+      if (fundingRates.length < 2)
+        return null;
+      const sortedRates = fundingRates.sort((a, b) => b.fundingRate - a.fundingRate);
+      const highestRate = sortedRates[0];
+      const lowestRate = sortedRates[sortedRates.length - 1];
+      const rateDifferential = highestRate.fundingRate - lowestRate.fundingRate;
+      const annualizedReturn = rateDifferential * 365 * 3;
+      if (annualizedReturn < this.minFundingRate)
+        return null;
+      const cexSide = highestRate.fundingRate > 0 ? "short" : "long";
+      const dexSide = cexSide === "long" ? "short" : "long";
+      return {
+        symbol,
+        cexSide,
+        dexSide,
+        cexFundingRate: highestRate.fundingRate,
+        targetExchange: highestRate.exchange,
+        expectedReturn: annualizedReturn,
+        requiredCapital: Math.min(this.maxPositionSize, 5000),
+        risk: Math.min(highestRate.confidence, lowestRate.confidence) > 0.8 ? "low" : Math.min(highestRate.confidence, lowestRate.confidence) > 0.6 ? "medium" : "high",
+        hedgeAction: dexSide === "long" ? "long_dex" : "short_dex",
+        confidence: Math.min(highestRate.confidence, lowestRate.confidence)
+      };
+    } catch (error) {
+      elizaLogger16.error(`Error evaluating opportunity for ${symbol}:: ${error}`);
+      return null;
+    }
+  }
+  async openArbitragePosition(opportunity) {
+    try {
+      const positionId = `arb_${opportunity.symbol}_${Date.now()}`;
+      const position = {
+        id: positionId,
+        symbol: opportunity.symbol,
+        cexSide: opportunity.cexSide,
+        dexSide: opportunity.dexSide,
+        size: opportunity.requiredCapital,
+        entryTime: Date.now(),
+        expectedReturn: opportunity.expectedReturn,
+        status: "active",
+        cexFundingCollected: 0,
+        netPnl: 0
+      };
+      const hedgeSuccess = await this.openHedgePosition(opportunity);
+      if (!hedgeSuccess) {
+        elizaLogger16.error("Failed to open hedge position");
+        return false;
+      }
+      this.activePositions.set(positionId, position);
+      elizaLogger16.log(`Successfully opened arbitrage position: ${positionId}`);
+      return true;
+    } catch (error) {
+      elizaLogger16.error(`Error opening arbitrage position:: ${error}`);
+      return false;
+    }
+  }
+  async openHedgePosition(opportunity) {
+    try {
+      if (opportunity.hedgeAction === "short_dex") {
+        elizaLogger16.log(`Opening short hedge for ${opportunity.symbol} via Perps`);
+        const mockMessage = {
+          content: {
+            text: `open short ${opportunity.symbol} ${opportunity.requiredCapital} 1x`
+          }
+        };
+        try {
+          const mockState = { values: {}, data: {}, text: "" };
+          await perpsTradeAction.handler(this.runtime, mockMessage, mockState, {});
+          elizaLogger16.log(`Successfully opened short position for ${opportunity.symbol}`);
+          return true;
+        } catch (perpsError) {
+          elizaLogger16.error(`Perps execution failed:: ${perpsError}`);
+          return false;
+        }
+      } else {
+        elizaLogger16.log(`Opening long hedge for ${opportunity.symbol} via DragonSwap`);
+        const mockMessage = {
+          content: {
+            text: `swap ${opportunity.requiredCapital} USDC for ${opportunity.symbol}`
+          }
+        };
+        try {
+          const mockState = { values: {}, data: {}, text: "" };
+          await dragonSwapTradeAction.handler(this.runtime, mockMessage, mockState, {});
+          elizaLogger16.log(`Successfully swapped USDC for ${opportunity.symbol}`);
+          return true;
+        } catch (swapError) {
+          elizaLogger16.error(`DragonSwap execution failed:: ${swapError}`);
+          return false;
+        }
+      }
+    } catch (error) {
+      elizaLogger16.error(`Failed to open hedge position:: ${error}`);
+      return false;
+    }
+  }
+  async closeArbitrage(positionId) {
+    try {
+      const position = this.activePositions.get(positionId);
+      if (!position) {
+        elizaLogger16.error(`Position ${positionId} not found`);
+        return false;
+      }
+      position.status = "closing";
+      position.status = "closed";
+      elizaLogger16.log(`Successfully closed arbitrage position: ${positionId}`);
+      return true;
+    } catch (error) {
+      elizaLogger16.error(`Failed to close arbitrage position:: ${error}`);
+      return false;
+    }
+  }
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/rebalance.ts
+import {
+  elizaLogger as elizaLogger17
+} from "@elizaos/core";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/il-protection.ts
+import {
+  elizaLogger as elizaLogger21
+} from "@elizaos/core";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/impermanent-loss-protector.ts
+import {
+  elizaLogger as elizaLogger20
+} from "@elizaos/core";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/geographic-routing.ts
+import {
+  elizaLogger as elizaLogger19
+} from "@elizaos/core";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/coinbase-advanced.ts
+import { elizaLogger as elizaLogger18 } from "@elizaos/core";
+
 // node_modules/@elizaos/plugin-sei-yield-delta/src/index.ts
 console.log("SEI YIELD-DELTA PLUGIN IS BEING INITIALIZED");
 var seiYieldDeltaPlugin = {
   name: "sei-yield-delta",
-  description: "Advanced DeFi yield optimization and arbitrage strategies for SEI blockchain with IL protection",
+  description: "Vault query interface for Yield Delta protocol on SEI blockchain - check portfolio, vault metrics, APY, and projected returns",
   actions: [
+    portfolioQueryAction,
+    vaultListAction,
+    vaultMetricsAction,
+    projectedReturnsAction,
+    yieldHistoryAction,
+    positionDetailsAction,
+    optimalDepositAction,
     priceQueryAction,
     transferAction,
-    dragonSwapTradeAction,
-    fundingArbitrageAction,
-    perpsTradeAction,
-    rebalanceEvaluatorAction,
-    yeiFinanceAction,
-    ilProtectionAction,
-    ammOptimizeAction,
-    deltaNeutralAction
+    yeiFinanceAction
   ],
   evaluators: [
     ammRiskEvaluator
@@ -18320,6 +18706,7 @@ var seiYieldDeltaPlugin = {
   providers: [
     evmWalletProvider,
     oracleProvider,
+    vaultProvider,
     AMMManagerProvider_Instance
   ]
 };
@@ -18345,5 +18732,5 @@ export {
   character
 };
 
-//# debugId=6DCF83D3B8060E6764756E2164756E21
+//# debugId=0E2C0290FEF362B864756E2164756E21
 //# sourceMappingURL=index.js.map
