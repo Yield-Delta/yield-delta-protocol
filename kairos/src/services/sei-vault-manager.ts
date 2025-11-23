@@ -16,6 +16,7 @@ import { ethers } from 'ethers';
  */
 export class SEIVaultManager extends Service {
   static serviceType = 'vault-manager';
+  private static instance: SEIVaultManager | null = null;
 
   get capabilityDescription(): string {
     return 'Manages SEI vault deposits, allocations, and yield harvesting for automated DeFi strategies';
@@ -47,12 +48,44 @@ export class SEIVaultManager extends Service {
   private readonly HARVEST_INTERVAL = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
   private isStarted: boolean = false;
 
-  async initialize(runtime: IAgentRuntime): Promise<void> {
-    // Base initialization - called first
-    console.log('🔧 SEI Vault Manager base initialization...');
+  // Event polling
+  private lastProcessedBlock: number = 0;
+  private pollingInterval: NodeJS.Timeout | null = null;
+  private readonly POLL_INTERVAL = 10000; // Poll every 10 seconds
+
+  /**
+   * Static start method required by ElizaOS Service pattern
+   */
+  static async start(runtime: IAgentRuntime): Promise<SEIVaultManager> {
+    console.log('🔧 Starting SEI Vault Manager service...');
+
+    // Create new instance
+    const instance = new SEIVaultManager();
+    instance.runtime = runtime;
+
+    // Initialize the service
+    await instance.initializeService(runtime);
+
+    // Store instance for stop method
+    SEIVaultManager.instance = instance;
+
+    return instance;
   }
 
-  async start(runtime: IAgentRuntime): Promise<void> {
+  /**
+   * Static stop method required by ElizaOS Service pattern
+   */
+  static async stop(_runtime: IAgentRuntime): Promise<void> {
+    if (SEIVaultManager.instance) {
+      await SEIVaultManager.instance.stopService();
+      SEIVaultManager.instance = null;
+    }
+  }
+
+  /**
+   * Instance initialization method
+   */
+  private async initializeService(runtime: IAgentRuntime): Promise<void> {
     if (this.isStarted) {
       console.log('⚠️ SEI Vault Manager already started');
       return;
@@ -70,7 +103,14 @@ export class SEIVaultManager extends Service {
     }
 
     // Initialize provider and signer
-    this.provider = new ethers.JsonRpcProvider(rpcUrl);
+    // Use WebSocketProvider if available, otherwise fall back to JsonRpcProvider with polling
+    if (rpcUrl.startsWith('ws://') || rpcUrl.startsWith('wss://')) {
+      this.provider = new ethers.WebSocketProvider(rpcUrl);
+    } else {
+      this.provider = new ethers.JsonRpcProvider(rpcUrl);
+      // Enable polling for HTTP providers
+      this.provider.pollingInterval = 4000; // Poll every 4 seconds
+    }
     this.signer = new ethers.Wallet(privateKey, this.provider);
 
     // Initialize vault contract
@@ -92,8 +132,16 @@ export class SEIVaultManager extends Service {
 
     this.oracleContract = new ethers.Contract(oracleAddress, oracleABI, this.signer);
 
+    // Get current block to start monitoring from
+    const currentBlock = await this.provider.getBlockNumber();
+    this.lastProcessedBlock = currentBlock;
+    console.log(`📦 Starting from block: ${currentBlock}`);
+
     // Start watching for deposit events
     await this.watchDeposits(runtime);
+
+    // Start polling for new events
+    this.startEventPolling(runtime);
 
     console.log('✅ SEI Vault Manager initialized');
     console.log(`📍 Vault: ${vaultAddress}`);
@@ -102,11 +150,20 @@ export class SEIVaultManager extends Service {
     this.isStarted = true;
   }
 
-  async stop(): Promise<void> {
+  /**
+   * Instance stop method
+   */
+  private async stopService(): Promise<void> {
     if (!this.isStarted) {
       return;
     }
     console.log('🛑 Stopping SEI Vault Manager...');
+
+    // Stop polling
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
 
     // Remove all event listeners
     if (this.vaultContract) {
@@ -118,7 +175,81 @@ export class SEIVaultManager extends Service {
   }
 
   /**
+   * Public instance stop method (required by Service abstract class)
+   */
+  async stop(): Promise<void> {
+    await this.stopService();
+  }
+
+  /**
+   * Start polling for new deposit events
+   */
+  private startEventPolling(runtime: IAgentRuntime): void {
+    console.log(`🔄 Starting event polling (every ${this.POLL_INTERVAL/1000}s)...`);
+
+    this.pollingInterval = setInterval(async () => {
+      try {
+        await this.pollForNewEvents(runtime);
+      } catch (error) {
+        console.error('❌ Error polling for events:', error);
+      }
+    }, this.POLL_INTERVAL);
+  }
+
+  /**
+   * Poll for new deposit events since last processed block
+   */
+  private async pollForNewEvents(runtime: IAgentRuntime): Promise<void> {
+    if (!this.vaultContract || !this.provider) {
+      return;
+    }
+
+    try {
+      const currentBlock = await this.provider.getBlockNumber();
+
+      if (currentBlock <= this.lastProcessedBlock) {
+        return; // No new blocks
+      }
+
+      // Query for deposit events in new blocks
+      const filter = this.vaultContract.filters.SEIOptimizedDeposit();
+      const events = await this.vaultContract.queryFilter(
+        filter,
+        this.lastProcessedBlock + 1,
+        currentBlock
+      );
+
+      if (events.length > 0) {
+        console.log(`\n🔔 Found ${events.length} new deposit event(s)!`);
+
+        for (const event of events) {
+          const args = event.args;
+          if (args) {
+            console.log(`\n💰 New deposit detected!`);
+            console.log(`   User: ${args[0]}`);
+            console.log(`   Amount: ${ethers.formatEther(args[1])} SEI`);
+            console.log(`   Shares: ${ethers.formatEther(args[2])}`);
+            console.log(`   Block: ${event.blockNumber}`);
+
+            try {
+              // Allocate deposit to strategies
+              await this.allocateDeposit(runtime, args[1]);
+            } catch (error) {
+              console.error('❌ Failed to allocate deposit:', error);
+            }
+          }
+        }
+      }
+
+      this.lastProcessedBlock = currentBlock;
+    } catch (error) {
+      console.error('❌ Error querying deposit events:', error);
+    }
+  }
+
+  /**
    * Watch for deposit events and automatically allocate to strategies
+   * (Kept for WebSocket providers, but polling is more reliable for HTTP)
    */
   private async watchDeposits(runtime: IAgentRuntime): Promise<void> {
     if (!this.vaultContract) {
@@ -164,6 +295,12 @@ export class SEIVaultManager extends Service {
   async allocateDeposit(runtime: IAgentRuntime, totalAmount: bigint): Promise<void> {
     console.log(`\n📊 Allocating ${ethers.formatEther(totalAmount)} SEI to strategies...`);
 
+    // Debug: Log available actions
+    console.log(`\n🔍 Debug: Checking available actions in runtime...`);
+    console.log(`   Total actions registered: ${runtime.actions.length}`);
+    const actionNames = runtime.actions.map(a => a.name);
+    console.log(`   Available actions: ${actionNames.join(', ')}`);
+
     // Calculate allocations
     const allocations = {
       fundingArbitrage: (totalAmount * BigInt(this.ALLOCATIONS.fundingArbitrage)) / 100n,
@@ -172,6 +309,7 @@ export class SEIVaultManager extends Service {
       yeiLending: (totalAmount * BigInt(this.ALLOCATIONS.yeiLending)) / 100n,
     };
 
+    console.log(`\n📋 Allocation Plan:`);
     console.log(`   💹 Funding Arbitrage: ${ethers.formatEther(allocations.fundingArbitrage)} SEI (${this.ALLOCATIONS.fundingArbitrage}%)`);
     console.log(`   ⚖️ Delta Neutral: ${ethers.formatEther(allocations.deltaNeutral)} SEI (${this.ALLOCATIONS.deltaNeutral}%)`);
     console.log(`   🔄 AMM Optimization: ${ethers.formatEther(allocations.ammOptimization)} SEI (${this.ALLOCATIONS.ammOptimization}%)`);
@@ -199,7 +337,6 @@ export class SEIVaultManager extends Service {
   private async executeFundingArbitrage(runtime: IAgentRuntime, amount: bigint): Promise<void> {
     console.log(`\n💹 Executing Funding Arbitrage with ${ethers.formatEther(amount)} SEI...`);
 
-    // Import the funding arbitrage action from the plugin
     const fundingArbitrageAction = runtime.actions.find(
       (action) => action.name === 'FUNDING_ARBITRAGE'
     );
@@ -209,30 +346,39 @@ export class SEIVaultManager extends Service {
       return;
     }
 
-    // Execute the action with allocation parameter
-    const result = await fundingArbitrageAction.handler(
-      runtime,
-      {
-        userId: 'vault-manager',
-        roomId: 'vault-automation',
-        content: { text: 'execute' },
-      } as any,
-      {
-        values: {},
-        data: {},
-        text: 'execute funding arbitrage',
-      } as any,
-      { allocation: amount, autoExecute: true }
-    );
+    // Create a proper callback function
+    const callback = async (response: any) => {
+      console.log(`   📝 Funding Arbitrage response:`, response.text || response);
+    };
 
-    if (result) {
-      this.positions.fundingArbitrage.push({
-        timestamp: Date.now(),
-        amount: amount,
-        strategy: 'funding-arbitrage',
-        result: result,
-      });
-      console.log('✅ Funding arbitrage position opened');
+    try {
+      const result = await fundingArbitrageAction.handler(
+        runtime,
+        {
+          userId: 'vault-manager',
+          roomId: 'vault-automation',
+          agentId: runtime.agentId,
+          content: { text: `execute funding arbitrage with ${ethers.formatEther(amount)} SEI` },
+        } as any,
+        {
+          values: {},
+          data: {},
+          text: `execute funding arbitrage with ${ethers.formatEther(amount)} SEI`,
+        } as any,
+        callback
+      );
+
+      if (result && result.success !== false) {
+        this.positions.fundingArbitrage.push({
+          timestamp: Date.now(),
+          amount: amount,
+          strategy: 'funding-arbitrage',
+          result: result,
+        });
+        console.log('✅ Funding arbitrage position opened');
+      }
+    } catch (error) {
+      console.warn('⚠️ Funding arbitrage execution failed:', error instanceof Error ? error.message : error);
     }
   }
 
@@ -251,29 +397,39 @@ export class SEIVaultManager extends Service {
       return;
     }
 
-    const result = await deltaNeutralAction.handler(
-      runtime,
-      {
-        userId: 'vault-manager',
-        roomId: 'vault-automation',
-        content: { text: 'execute' },
-      } as any,
-      {
-        values: {},
-        data: {},
-        text: 'execute delta neutral',
-      } as any,
-      { allocation: amount, autoExecute: true }
-    );
+    // Create a proper callback function
+    const callback = async (response: any) => {
+      console.log(`   📝 Delta Neutral response:`, response.text || response);
+    };
 
-    if (result) {
-      this.positions.deltaNeutral.push({
-        timestamp: Date.now(),
-        amount: amount,
-        strategy: 'delta-neutral',
-        result: result,
-      });
-      console.log('✅ Delta neutral position created');
+    try {
+      const result = await deltaNeutralAction.handler(
+        runtime,
+        {
+          userId: 'vault-manager',
+          roomId: 'vault-automation',
+          agentId: runtime.agentId,
+          content: { text: `execute delta neutral with ${ethers.formatEther(amount)} SEI` },
+        } as any,
+        {
+          values: {},
+          data: {},
+          text: `execute delta neutral with ${ethers.formatEther(amount)} SEI`,
+        } as any,
+        callback
+      );
+
+      if (result && result.success !== false) {
+        this.positions.deltaNeutral.push({
+          timestamp: Date.now(),
+          amount: amount,
+          strategy: 'delta-neutral',
+          result: result,
+        });
+        console.log('✅ Delta neutral position created');
+      }
+    } catch (error) {
+      console.warn('⚠️ Delta neutral execution failed:', error instanceof Error ? error.message : error);
     }
   }
 
@@ -292,29 +448,39 @@ export class SEIVaultManager extends Service {
       return;
     }
 
-    const result = await ammOptimizeAction.handler(
-      runtime,
-      {
-        userId: 'vault-manager',
-        roomId: 'vault-automation',
-        content: { text: 'execute' },
-      } as any,
-      {
-        values: {},
-        data: {},
-        text: 'execute amm optimization',
-      } as any,
-      { allocation: amount, autoExecute: true }
-    );
+    // Create a proper callback function
+    const callback = async (response: any) => {
+      console.log(`   📝 AMM Optimize response:`, response.text || response);
+    };
 
-    if (result) {
-      this.positions.ammOptimization.push({
-        timestamp: Date.now(),
-        amount: amount,
-        strategy: 'amm-optimization',
-        result: result,
-      });
-      console.log('✅ AMM optimization executed');
+    try {
+      const result = await ammOptimizeAction.handler(
+        runtime,
+        {
+          userId: 'vault-manager',
+          roomId: 'vault-automation',
+          agentId: runtime.agentId,
+          content: { text: `execute amm optimization with ${ethers.formatEther(amount)} SEI` },
+        } as any,
+        {
+          values: {},
+          data: {},
+          text: `execute amm optimization with ${ethers.formatEther(amount)} SEI`,
+        } as any,
+        callback
+      );
+
+      if (result && result.success !== false) {
+        this.positions.ammOptimization.push({
+          timestamp: Date.now(),
+          amount: amount,
+          strategy: 'amm-optimization',
+          result: result,
+        });
+        console.log('✅ AMM optimization executed');
+      }
+    } catch (error) {
+      console.warn('⚠️ AMM optimization execution failed:', error instanceof Error ? error.message : error);
     }
   }
 
@@ -325,27 +491,33 @@ export class SEIVaultManager extends Service {
     console.log(`\n🏦 Executing YEI Lending with ${ethers.formatEther(amount)} SEI...`);
 
     const yeiLendingAction = runtime.actions.find(
-      (action) => action.name === 'YEI_LENDING'
+      (action) => action.name === 'YEI_FINANCE'
     );
 
     if (!yeiLendingAction) {
-      console.warn('⚠️ YEI lending action not found in runtime');
+      console.warn('⚠️ YEI finance action not found in runtime');
       return;
     }
+
+    // Create a proper callback function
+    const callback = async (response: any) => {
+      console.log(`   📝 YEI Finance response:`, response.text || response);
+    };
 
     const result = await yeiLendingAction.handler(
       runtime,
       {
         userId: 'vault-manager',
         roomId: 'vault-automation',
-        content: { text: 'execute' },
+        agentId: runtime.agentId,
+        content: { text: `deposit ${ethers.formatEther(amount)} SEI to YEI Finance` },
       } as any,
       {
         values: {},
         data: {},
-        text: 'execute yei lending',
+        text: `deposit ${ethers.formatEther(amount)} SEI to YEI Finance`,
       } as any,
-      { allocation: amount, autoExecute: true }
+      callback
     );
 
     if (result) {

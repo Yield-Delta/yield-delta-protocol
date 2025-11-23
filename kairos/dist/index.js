@@ -21405,11 +21405,639 @@ class FundingArbitrageEngine {
     }
   }
 }
+async function getOrCreateArbitrageEngine(runtime) {
+  try {
+    const config = await validateSeiConfig(runtime);
+    const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, {
+      name: config.SEI_NETWORK || "sei-devnet",
+      chain: seiChains["devnet"]
+    });
+    const oracleProvider2 = new SeiOracleProvider(runtime);
+    return new FundingArbitrageEngine(walletProvider, oracleProvider2, runtime);
+  } catch (error) {
+    elizaLogger16.error(`Failed to create arbitrage engine:: ${error}`);
+    throw error;
+  }
+}
+var fundingArbitrageAction = {
+  name: "FUNDING_ARBITRAGE",
+  similes: ["ARBITRAGE", "FUNDING_RATE"],
+  validate: async (runtime, message) => {
+    try {
+      await validateSeiConfig(runtime);
+      const text = message?.content?.text?.toLowerCase() || "";
+      return text.includes("arbitrage") || text.includes("funding");
+    } catch {
+      return false;
+    }
+  },
+  description: "Execute funding rate arbitrage strategies",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      const arbitrageEngine = await getOrCreateArbitrageEngine(runtime);
+      const messageText = message?.content?.text?.toLowerCase() || "";
+      if (messageText.includes("status") || messageText.includes("position")) {
+        const activePositions = arbitrageEngine.getActivePositions();
+        if (activePositions.length === 0) {
+          if (callback) {
+            await callback({
+              text: "No active arbitrage positions.",
+              content: {
+                type: "status",
+                hasPositions: false
+              }
+            });
+          }
+          return;
+        }
+        await arbitrageEngine.updatePositionPnL();
+        const positionsText = activePositions.map((pos) => `${pos.symbol} Arbitrage (${pos.id.split("_")[1]})
+` + `   Strategy: ${pos.cexSide.toUpperCase()} CEX + ${pos.dexSide.toUpperCase()} DEX
+` + `   Size: $${pos.size.toLocaleString()}
+` + `   Duration: ${Math.floor((Date.now() - pos.entryTime) / (24 * 60 * 60 * 1000))} days
+` + `   Net PnL: $${pos.netPnl.toFixed(2)}
+` + `   Expected Return: ${(pos.expectedReturn * 100).toFixed(2)}% annual`).join(`
+
+`);
+        if (callback) {
+          await callback({
+            text: `\uD83D\uDCCA Active Arbitrage Positions:
+
+${positionsText}`,
+            content: {
+              type: "positions",
+              positions: activePositions
+            }
+          });
+        }
+      } else if (messageText.includes("scan") || messageText.includes("opportunity")) {
+        if (callback) {
+          await callback({
+            text: "\uD83D\uDD0D Scanning for arbitrage opportunities...",
+            content: { type: "scanning" }
+          });
+        }
+        const opportunities = await arbitrageEngine.scanOpportunities();
+        if (opportunities.length === 0) {
+          if (callback) {
+            await callback({
+              text: "No profitable arbitrage opportunities found at the moment.",
+              content: { type: "scan_result", opportunities: [] }
+            });
+          }
+        } else {
+          const opportunitiesText = opportunities.map((opp) => `\uD83D\uDCB0 ${opp.symbol} Arbitrage
+` + `   Target Exchange: ${opp.targetExchange}
+` + `   Strategy: ${opp.hedgeAction === "short_dex" ? "SHORT DEX + LONG CEX" : "LONG DEX + SHORT CEX"}
+` + `   Expected Return: ${(opp.expectedReturn * 100).toFixed(2)}% annual
+` + `   Required Capital: $${opp.requiredCapital.toLocaleString()}
+` + `   Risk Level: ${opp.risk.toUpperCase()}
+` + `   Confidence: ${(opp.confidence * 100).toFixed(0)}%`).join(`
+
+`);
+          if (callback) {
+            await callback({
+              text: `\uD83D\uDCC8 Found ${opportunities.length} Arbitrage Opportunities:
+
+${opportunitiesText}`,
+              content: {
+                type: "scan_result",
+                opportunities
+              }
+            });
+          }
+        }
+      } else if (messageText.includes("execute")) {
+        const symbolMatch = messageText.match(/execute.*?arbitrage.*?(\w{3,6})/i) || messageText.match(/arbitrage.*?(\w{3,6})/i);
+        const symbol = symbolMatch ? symbolMatch[1].toUpperCase() : null;
+        if (!symbol) {
+          if (callback) {
+            await callback({
+              text: "Please specify a symbol. Example: 'execute arbitrage BTC'",
+              content: { type: "error", message: "Symbol required" }
+            });
+          }
+          return;
+        }
+        if (callback) {
+          await callback({
+            text: `\uD83D\uDE80 Executing arbitrage for ${symbol}...`,
+            content: { type: "executing", symbol }
+          });
+        }
+        const opportunities = await arbitrageEngine.scanOpportunities();
+        const opportunity = opportunities.find((opp) => opp.symbol === symbol);
+        if (!opportunity) {
+          if (callback) {
+            await callback({
+              text: `❌ No profitable arbitrage opportunity found for ${symbol} at the moment.`,
+              content: { type: "execution_result", success: false, symbol, reason: "No opportunity" }
+            });
+          }
+          return;
+        }
+        const success = await arbitrageEngine.executeArbitrage(opportunity.symbol);
+        if (callback) {
+          if (success) {
+            await callback({
+              text: `✅ Successfully initiated ${symbol} arbitrage position!
+` + `Expected Return: ${(opportunity.expectedReturn * 100).toFixed(2)}% annual
+` + `Capital Deployed: $${opportunity.requiredCapital.toLocaleString()}`,
+              content: {
+                type: "execution_result",
+                success: true,
+                symbol,
+                opportunity
+              }
+            });
+          } else {
+            await callback({
+              text: `❌ Failed to execute ${symbol} arbitrage. Check logs for details.`,
+              content: { type: "execution_result", success: false, symbol }
+            });
+          }
+        }
+      } else {
+        if (callback) {
+          await callback({
+            text: `\uD83E\uDD16 Funding Arbitrage Bot Commands:
+
+` + `• 'scan arbitrage opportunities' - Find profitable opportunities
+` + `• 'execute arbitrage [symbol]' - Execute arbitrage for a symbol
+` + `• 'arbitrage status' - Check active positions
+
+` + `Examples:
+` + `• 'scan arbitrage opportunities'
+` + `• 'execute arbitrage BTC'
+` + "• 'arbitrage status'",
+            content: {
+              type: "help",
+              commands: [
+                "scan arbitrage opportunities",
+                "execute arbitrage [symbol]",
+                "arbitrage status"
+              ]
+            }
+          });
+        }
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      elizaLogger16.error(`Funding arbitrage error:: ${errorMessage}`);
+      if (callback) {
+        await callback({
+          text: `❌ Error: ${errorMessage}`,
+          content: {
+            type: "error",
+            error: errorMessage
+          }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Scan for funding arbitrage opportunities" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "Scanning funding rates across exchanges for arbitrage opportunities...",
+          action: "FUNDING_ARBITRAGE"
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Execute arbitrage BTC" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "Executing BTC funding rate arbitrage strategy...",
+          action: "FUNDING_ARBITRAGE"
+        }
+      }
+    ]
+  ]
+};
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/rebalance.ts
 import {
   elizaLogger as elizaLogger17
 } from "@elizaos/core";
+class PortfolioRebalancer {
+  walletProvider;
+  oracleProvider;
+  constructor(walletProvider, oracleProvider2) {
+    this.walletProvider = walletProvider;
+    this.oracleProvider = oracleProvider2;
+  }
+  getStrategies() {
+    return [
+      {
+        name: "Conservative DeFi",
+        description: "Low-risk allocation focused on stable yields",
+        allocations: {
+          SEI: 40,
+          USDC: 30,
+          ETH: 20,
+          BTC: 10
+        },
+        rebalanceThreshold: 5,
+        riskLevel: "conservative"
+      },
+      {
+        name: "Balanced Growth",
+        description: "Moderate risk with diversified DeFi exposure",
+        allocations: {
+          SEI: 25,
+          USDC: 25,
+          ETH: 25,
+          BTC: 15,
+          ATOM: 10
+        },
+        rebalanceThreshold: 7.5,
+        riskLevel: "moderate"
+      },
+      {
+        name: "Aggressive DeFi",
+        description: "High-risk, high-reward DeFi strategy",
+        allocations: {
+          SEI: 30,
+          ETH: 25,
+          BTC: 20,
+          ATOM: 15,
+          OSMO: 10
+        },
+        rebalanceThreshold: 10,
+        riskLevel: "aggressive"
+      },
+      {
+        name: "Yield Farming Focus",
+        description: "Optimized for maximum yield opportunities",
+        allocations: {
+          SEI: 35,
+          USDC: 20,
+          ETH: 20,
+          LP_TOKENS: 25
+        },
+        rebalanceThreshold: 8,
+        riskLevel: "moderate"
+      }
+    ];
+  }
+  async analyzePortfolio(walletAddress, strategyName) {
+    try {
+      const strategies = this.getStrategies();
+      const strategy = strategyName ? strategies.find((s) => s.name === strategyName) || strategies[1] : strategies[1];
+      const portfolioBalances = await this.getPortfolioBalances(walletAddress);
+      const totalValue = Object.values(portfolioBalances).reduce((sum, value) => sum + value, 0);
+      elizaLogger17.info(`DEBUG: Portfolio balances for ${walletAddress}:`, portfolioBalances);
+      elizaLogger17.info(`DEBUG: Total portfolio value: ${totalValue}`);
+      if (totalValue === 0) {
+        elizaLogger17.error(`DEBUG: Portfolio analysis failed - no value found for ${walletAddress}`);
+        elizaLogger17.error(`DEBUG: Portfolio balances were:`, portfolioBalances);
+        throw new Error("Portfolio has no value");
+      }
+      const assets = [];
+      const recommendations = [];
+      for (const [symbol, targetPercentage] of Object.entries(strategy.allocations)) {
+        const currentValue = portfolioBalances[symbol] || 0;
+        const currentPercentage = currentValue / totalValue * 100;
+        const deviation = currentPercentage - targetPercentage;
+        let recommended = "hold";
+        let amount = 0;
+        if (Math.abs(deviation) > strategy.rebalanceThreshold) {
+          if (deviation > 0) {
+            recommended = "sell";
+            amount = deviation / 100 * totalValue;
+          } else {
+            recommended = "buy";
+            amount = Math.abs(deviation / 100) * totalValue;
+          }
+          recommendations.push({
+            asset: symbol,
+            action: recommended,
+            amount,
+            reason: `${Math.abs(deviation).toFixed(2)}% deviation from target`,
+            priority: Math.abs(deviation) > strategy.rebalanceThreshold * 2 ? "high" : "medium"
+          });
+        }
+        assets.push({
+          symbol,
+          targetPercentage,
+          currentPercentage,
+          currentValue,
+          deviation,
+          recommended,
+          amount
+        });
+      }
+      const rebalanceNeeded = recommendations.length > 0;
+      return {
+        totalValue,
+        strategy,
+        assets,
+        rebalanceNeeded,
+        recommendations
+      };
+    } catch (error) {
+      elizaLogger17.error(`Portfolio analysis failed:: ${error}`);
+      throw error;
+    }
+  }
+  async executeRebalance(walletAddress, recommendations) {
+    try {
+      const results = [];
+      for (const recommendation of recommendations) {
+        const txHash = await this.executeRecommendation(walletAddress, recommendation);
+        if (txHash) {
+          results.push(txHash);
+          elizaLogger17.info(`Executed ${recommendation.action} for ${recommendation.asset}: ${txHash}`);
+        }
+      }
+      return results;
+    } catch (error) {
+      elizaLogger17.error(`Portfolio rebalance failed:: ${error}`);
+      throw error;
+    }
+  }
+  async executeRecommendation(walletAddress, recommendation) {
+    try {
+      elizaLogger17.info(`Executing ${recommendation.action} of ${recommendation.amount} ${recommendation.asset}`);
+      return `0x${Math.random().toString(16).substring(2, 66)}`;
+    } catch (error) {
+      elizaLogger17.error(`Failed to execute ${recommendation.action} for ${recommendation.asset}:: ${error}`);
+      return null;
+    }
+  }
+  async getAssetBalance(symbol, address) {
+    try {
+      const testBalances = {
+        "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc": {
+          SEI: 1e4,
+          USDC: 1e4,
+          USDT: 5000,
+          ETH: 100,
+          BTC: 5,
+          ATOM: 1000,
+          DAI: 5000
+        },
+        "0x90f79bf6eb2c4f870365e785982e1f101e93b906": {
+          SEI: 5000,
+          USDC: 5000,
+          USDT: 2000,
+          ETH: 25,
+          BTC: 1,
+          ATOM: 500,
+          DAI: 3000
+        },
+        "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65": {
+          SEI: 1e5,
+          USDC: 50000,
+          USDT: 25000,
+          ETH: 500,
+          BTC: 20,
+          ATOM: 1e4,
+          DAI: 30000
+        },
+        "0x2222222222222222222222222222222222222222": {
+          SEI: 1e4,
+          USDC: 1e4,
+          USDT: 5000,
+          ETH: 100,
+          BTC: 5,
+          ATOM: 1000,
+          DAI: 5000
+        },
+        "0x3333333333333333333333333333333333333333": {
+          SEI: 5000,
+          USDC: 5000,
+          USDT: 2000,
+          ETH: 25,
+          BTC: 1,
+          ATOM: 500,
+          DAI: 3000
+        },
+        "0x4444444444444444444444444444444444444444": {
+          SEI: 1e5,
+          USDC: 50000,
+          USDT: 25000,
+          ETH: 500,
+          BTC: 20,
+          ATOM: 1e4,
+          DAI: 30000
+        }
+      };
+      const addressLower = address.toLowerCase();
+      const userBalances = testBalances[addressLower];
+      const tokenBalance = userBalances ? userBalances[symbol] || 0 : 0;
+      elizaLogger17.info(`DEBUG: Original address: ${address}`);
+      elizaLogger17.info(`DEBUG: Lowercase address: ${addressLower}`);
+      elizaLogger17.info(`DEBUG: Available test addresses:`, Object.keys(testBalances));
+      elizaLogger17.info(`DEBUG: Address exists in testBalances:`, addressLower in testBalances);
+      elizaLogger17.info(`DEBUG: Found user balances:`, userBalances);
+      elizaLogger17.info(`DEBUG: Token balance for ${symbol}: ${tokenBalance}`);
+      return tokenBalance;
+    } catch (error) {
+      elizaLogger17.error(`Failed to get balance for ${symbol}:: ${error}`);
+      return 0;
+    }
+  }
+  async getPortfolioBalances(walletAddress) {
+    try {
+      const balances = {};
+      const mockPrices = {
+        SEI: 0.45,
+        USDC: 1,
+        USDT: 1,
+        ETH: 2800,
+        BTC: 68000,
+        ATOM: 9.5,
+        DAI: 1,
+        OSMO: 0.78
+      };
+      const symbols = ["SEI", "USDC", "USDT", "ETH", "BTC", "ATOM", "DAI", "OSMO"];
+      for (const symbol of symbols) {
+        let price = mockPrices[symbol] || 0;
+        try {
+          const priceFeed = await this.oracleProvider.getPrice(symbol);
+          if (priceFeed && priceFeed.price > 0) {
+            price = priceFeed.price;
+          }
+        } catch (error) {
+          elizaLogger17.warn(`Using mock price for ${symbol}: ${price}`);
+        }
+        const balance = await this.getAssetBalance(symbol, walletAddress);
+        balances[symbol] = balance * price;
+        elizaLogger17.info(`Portfolio balance for ${symbol}: ${balance} tokens × $${price} = $${balances[symbol]}`);
+      }
+      return balances;
+    } catch (error) {
+      elizaLogger17.error(`Failed to get portfolio balances:: ${error}`);
+      return {};
+    }
+  }
+}
+var rebalanceEvaluatorAction = {
+  name: "PORTFOLIO_REBALANCE",
+  similes: [
+    "REBALANCE_PORTFOLIO",
+    "PORTFOLIO_ANALYSIS",
+    "ASSET_ALLOCATION",
+    "PORTFOLIO_OPTIMIZATION"
+  ],
+  description: "Analyze and rebalance portfolio based on allocation strategies",
+  validate: async (runtime, message) => {
+    const config = await validateSeiConfig(runtime);
+    return config !== null;
+  },
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger17.info("Starting portfolio rebalance analysis");
+      const config = await validateSeiConfig(runtime);
+      const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, { name: config.SEI_NETWORK || "sei-devnet", chain: seiChains["devnet"] });
+      const oracleProvider2 = new SeiOracleProvider(runtime);
+      const rebalancer = new PortfolioRebalancer(walletProvider, oracleProvider2);
+      const text = typeof message.content === "string" ? message.content : message.content?.text || "";
+      const strategyMatch = text.match(/strategy[:\s]+([^,\n]+)/i);
+      const strategyName = strategyMatch ? strategyMatch[1].trim() : undefined;
+      const addressMatch = text.match(/(?:wallet|address)[:\s]+(0x[a-fA-F0-9]{40})/i);
+      const walletAddress = addressMatch ? addressMatch[1] : "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
+      if (callback) {
+        callback({
+          text: `\uD83D\uDD04 Analyzing portfolio for address: ${walletAddress}
+⏳ Fetching balances and calculating allocations...`,
+          content: {
+            action: "portfolio_analysis_started",
+            address: walletAddress,
+            strategy: strategyName
+          }
+        });
+      }
+      const analysis = await rebalancer.analyzePortfolio(walletAddress, strategyName);
+      const autoExecute = text.toLowerCase().includes("execute") || text.toLowerCase().includes("rebalance now");
+      if (analysis.rebalanceNeeded) {
+        const needsRebalancing = analysis.assets.some((asset) => Math.abs(asset.deviation) > analysis.strategy.rebalanceThreshold);
+        if (callback) {
+          callback({
+            text: `\uD83D\uDCCA Portfolio Analysis (${analysis.strategy.name})
+
+` + `\uD83D\uDCB0 Total Value: $${analysis.totalValue.toFixed(2)}
+` + `\uD83C\uDFAF Strategy: ${analysis.strategy.description}
+` + `⚖️ Risk Level: ${analysis.strategy.riskLevel}
+
+` + `\uD83D\uDCC8 Asset Allocations:
+` + analysis.assets.map((asset) => `${asset.symbol}: ${asset.currentPercentage.toFixed(1)}% ` + `(Target: ${asset.targetPercentage}%, ` + `Deviation: ${asset.deviation > 0 ? "+" : ""}${asset.deviation.toFixed(1)}%) ` + `[${asset.recommended.toUpperCase()}${asset.amount ? ` $${asset.amount.toFixed(2)}` : ""}]`).join(`
+`) + `
+
+\uD83D\uDD27 Rebalance Recommendations:
+` + analysis.recommendations.map((rec) => `${rec.priority.toUpperCase()}: ${rec.action.toUpperCase()} $${rec.amount.toFixed(2)} ${rec.asset} - ${rec.reason}`).join(`
+`),
+            content: {
+              action: "portfolio_analysis_complete",
+              analysis,
+              needsRebalancing
+            }
+          });
+        }
+        if (autoExecute) {
+          if (callback) {
+            callback({
+              text: `\uD83D\uDD04 Executing rebalance recommendations...`,
+              content: { action: "rebalance_execution_started" }
+            });
+          }
+          const txHashes = await rebalancer.executeRebalance(walletAddress, analysis.recommendations);
+          if (callback) {
+            callback({
+              text: `✅ Portfolio rebalance complete!
+
+` + `\uD83D\uDCDD Executed ${txHashes.length} transactions:
+` + txHashes.map((hash2, i) => `${i + 1}. ${hash2}`).join(`
+`),
+              content: {
+                action: "rebalance_execution_complete",
+                transactions: txHashes,
+                analysis
+              }
+            });
+          }
+        } else {
+          if (callback) {
+            callback({
+              text: `\uD83D\uDCA1 To execute these recommendations, send: "rebalance portfolio execute"`,
+              content: {
+                action: "rebalance_recommendations_ready",
+                analysis
+              }
+            });
+          }
+        }
+      } else {
+        if (callback) {
+          callback({
+            text: `✅ Portfolio is well-balanced!
+
+` + `\uD83D\uDCCA Current allocations are within target ranges for the ${analysis.strategy.name} strategy.
+` + `\uD83D\uDCB0 Total Value: $${analysis.totalValue.toFixed(2)}
+
+` + `\uD83D\uDCC8 Asset Allocations:
+` + analysis.assets.map((asset) => `${asset.symbol}: ${asset.currentPercentage.toFixed(1)}% ` + `(Target: ${asset.targetPercentage}%, ` + `Deviation: ${asset.deviation > 0 ? "+" : ""}${asset.deviation.toFixed(1)}%)`).join(`
+`),
+            content: {
+              action: "portfolio_balanced",
+              analysis
+            }
+          });
+        }
+      }
+    } catch (error) {
+      elizaLogger17.error(`Portfolio rebalance analysis failed:: ${error}`);
+      if (callback) {
+        callback({
+          text: `❌ Portfolio analysis failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+          content: {
+            action: "rebalance_failed",
+            error: error instanceof Error ? error.message : "Unknown error"
+          }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Analyze my portfolio allocation" }
+      },
+      {
+        name: "{{user2}}",
+        content: {
+          text: "\uD83D\uDCCA Analyzing your portfolio...",
+          action: "PORTFOLIO_REBALANCE"
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Rebalance my portfolio using conservative strategy" }
+      },
+      {
+        name: "{{user2}}",
+        content: {
+          text: "\uD83D\uDD04 Rebalancing portfolio with conservative DeFi strategy...",
+          action: "PORTFOLIO_REBALANCE"
+        }
+      }
+    ]
+  ]
+};
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/il-protection.ts
 import {
@@ -21429,6 +22057,769 @@ import {
 // node_modules/@elizaos/plugin-sei-yield-delta/src/providers/coinbase-advanced.ts
 import { elizaLogger as elizaLogger18 } from "@elizaos/core";
 
+class CoinbaseAdvancedProvider {
+  async openPerpPosition(params) {
+    elizaLogger18.log(`Opening perp position on Coinbase: ${params.symbol}, size: ${params.size}, side: ${params.side}`);
+    return "0x123...abc";
+  }
+  async closePerpPosition(symbol, size4) {
+    elizaLogger18.log(`Closing perp position on Coinbase: ${symbol}, size: ${size4 ?? "full"}`);
+    return "0xclose...abc";
+  }
+  async getPositions() {
+    elizaLogger18.log("Querying open perp positions on Coinbase");
+    return [];
+  }
+  async getHedgeRecommendation(lpPosition) {
+    elizaLogger18.log(`Calculating hedge recommendation for ${lpPosition.baseToken}/${lpPosition.quoteToken}`);
+    return {
+      type: "PERP_HEDGE",
+      provider: "Coinbase Advanced",
+      hedgeRatio: 0.75,
+      expectedILReduction: "~65% IL protection",
+      symbol: `${lpPosition.baseToken}${lpPosition.quoteToken}`,
+      size: (lpPosition.value * 0.75).toFixed(2),
+      action: "short",
+      cost: "$12.50 in fees",
+      txHash: "0x123...abc",
+      reason: `High volatility detected between ${lpPosition.baseToken}/${lpPosition.quoteToken}. Hedge ratio optimized for current market conditions.`
+    };
+  }
+  credentials;
+  baseUrl;
+  constructor(credentials) {
+    this.credentials = credentials;
+    this.baseUrl = credentials.sandbox ? "https://api-public.sandbox.exchange.coinbase.com" : "https://api.exchange.coinbase.com";
+  }
+  async getMarketPrice(symbol) {
+    elizaLogger18.log(`Getting market price for ${symbol}`);
+    return 50000;
+  }
+  calculateHedgeRatio(lpPosition, volatility) {
+    const baseRatio = 0.5;
+    const volatilityAdjustment = Math.min(volatility / 100, 0.5);
+    return Math.min(baseRatio + volatilityAdjustment, 0.9);
+  }
+  async executeILHedge(lpPosition) {
+    return {
+      success: true,
+      orderId: "0x123...abc",
+      message: `Successfully hedged ${lpPosition.baseToken}/${lpPosition.quoteToken} LP position`
+    };
+  }
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/geographic-routing.ts
+class GeographicTradingRouter {
+  config;
+  coinbaseProvider;
+  constructor(config) {
+    this.config = config;
+    if (this.config.COINBASE_ADVANCED_API_KEY && this.config.COINBASE_ADVANCED_SECRET && this.config.COINBASE_ADVANCED_PASSPHRASE) {
+      this.coinbaseProvider = new CoinbaseAdvancedProvider({
+        apiKey: this.config.COINBASE_ADVANCED_API_KEY,
+        apiSecret: this.config.COINBASE_ADVANCED_SECRET,
+        passphrase: this.config.COINBASE_ADVANCED_PASSPHRASE,
+        sandbox: this.config.COINBASE_SANDBOX || false
+      });
+    }
+  }
+  async getBestPerpProvider() {
+    const preference = this.config.PERP_PREFERENCE;
+    const geography = this.config.USER_GEOGRAPHY;
+    elizaLogger19.log(`Selecting perp provider for ${geography} with preference ${preference}`);
+    if (preference === "COINBASE_ONLY") {
+      if (this.coinbaseProvider) {
+        return this.createCoinbaseWrapper();
+      } else {
+        throw new Error("Coinbase credentials not configured");
+      }
+    }
+    if (preference === "ONCHAIN_ONLY") {
+      return this.createOnChainWrapper();
+    }
+    switch (geography) {
+      case "US":
+        if (this.coinbaseProvider && (preference === "GEOGRAPHIC" || preference === "GLOBAL")) {
+          elizaLogger19.log("Using Coinbase Advanced for US user");
+          return this.createCoinbaseWrapper();
+        }
+        elizaLogger19.log("Fallback to on-chain perps for US user");
+        return this.createOnChainWrapper();
+      case "EU":
+        if (preference === "GEOGRAPHIC") {
+          elizaLogger19.log("Using on-chain perps for EU user (geographic preference)");
+          return this.createOnChainWrapper();
+        }
+        return this.createOnChainWrapper();
+      case "ASIA":
+        elizaLogger19.log("Using on-chain perps for ASIA user");
+        return this.createOnChainWrapper();
+      default:
+        if (this.coinbaseProvider && preference === "GEOGRAPHIC") {
+          return this.createCoinbaseWrapper();
+        }
+        return this.createOnChainWrapper();
+    }
+  }
+  createCoinbaseWrapper() {
+    if (!this.coinbaseProvider) {
+      throw new Error("Coinbase provider not initialized");
+    }
+    return {
+      name: "Coinbase Advanced",
+      geographic: true,
+      regulated: true,
+      openPosition: (params) => this.coinbaseProvider.openPerpPosition(params),
+      closePosition: (symbol, size4) => this.coinbaseProvider.closePerpPosition(symbol, size4),
+      getPositions: () => this.coinbaseProvider.getPositions(),
+      getHedgeRecommendation: (lpPosition) => this.coinbaseProvider.getHedgeRecommendation(lpPosition)
+    };
+  }
+  createOnChainWrapper() {
+    return {
+      name: "Sei On-Chain Perps",
+      geographic: false,
+      regulated: false,
+      openPosition: async (params) => {
+        elizaLogger19.log("On-chain perp trading not yet implemented in wrapper");
+        return null;
+      },
+      closePosition: async (symbol, size4) => {
+        elizaLogger19.log("On-chain perp closing not yet implemented in wrapper");
+        return null;
+      },
+      getPositions: async () => {
+        elizaLogger19.log("On-chain position query not yet implemented in wrapper");
+        return [];
+      }
+    };
+  }
+  async executeGeographicHedge(lpPosition) {
+    try {
+      elizaLogger19.log(`Executing geographic hedge for LP position: ${lpPosition.baseToken}/${lpPosition.quoteToken}`);
+      const provider = await this.getBestPerpProvider();
+      if (!provider.getHedgeRecommendation) {
+        throw new Error(`Provider ${provider.name} does not support hedge recommendations`);
+      }
+      const hedgeStrategy = await provider.getHedgeRecommendation(lpPosition);
+      const hedgeParams = {
+        symbol: hedgeStrategy.symbol,
+        size: hedgeStrategy.size,
+        side: hedgeStrategy.action.toLowerCase(),
+        leverage: 1,
+        slippage: 50
+      };
+      const txHash = await provider.openPosition(hedgeParams);
+      if (txHash) {
+        return {
+          success: true,
+          provider: provider.name,
+          txHash,
+          hedgeRatio: parseFloat(hedgeStrategy.size) / lpPosition.value,
+          expectedILReduction: hedgeStrategy.expectedILReduction
+        };
+      } else {
+        return {
+          success: false,
+          provider: provider.name,
+          hedgeRatio: 0,
+          expectedILReduction: "0%",
+          error: "Failed to execute hedge position"
+        };
+      }
+    } catch (error) {
+      elizaLogger19.error(`Geographic hedge execution failed:: ${error}`);
+      return {
+        success: false,
+        provider: "unknown",
+        hedgeRatio: 0,
+        expectedILReduction: "0%",
+        error: error instanceof Error ? error.message : "Unknown error"
+      };
+    }
+  }
+  async getProviderCapabilities() {
+    const provider = await this.getBestPerpProvider();
+    return {
+      name: provider.name,
+      geographic: provider.geographic,
+      regulated: provider.regulated,
+      supportsHedging: !!provider.getHedgeRecommendation,
+      geography: this.config.USER_GEOGRAPHY,
+      preference: this.config.PERP_PREFERENCE
+    };
+  }
+  async getAvailableProviders() {
+    const providers = [];
+    if (this.coinbaseProvider) {
+      providers.push("Coinbase Advanced");
+    }
+    providers.push("Sei On-Chain Perps");
+    return providers;
+  }
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/impermanent-loss-protector.ts
+class ImpermanentLossProtector {
+  geographicRouter;
+  riskCalculator;
+  constructor(config) {
+    this.geographicRouter = new GeographicTradingRouter(config);
+    this.riskCalculator = new BasicILRiskCalculator;
+  }
+  async protectLiquidityPosition(position, strategy) {
+    try {
+      elizaLogger20.log(`Analyzing IL protection for ${position.baseToken}/${position.quoteToken} position`);
+      const ilRisk = await this.riskCalculator.calculateRisk(position);
+      elizaLogger20.log(`IL Risk Assessment: ${ilRisk.riskLevel}, Current IL: ${ilRisk.currentIL.toFixed(2)}%`);
+      const protectionType = this.determineProtectionStrategy(ilRisk, strategy);
+      if (protectionType === "PERP_HEDGE") {
+        return await this.executePerpsHedge(position, ilRisk);
+      } else if (protectionType === "OPTIONS_COLLAR") {
+        return await this.executeOptionsStrategy(position, ilRisk);
+      } else {
+        return this.createRebalanceOnlyStrategy(position, ilRisk);
+      }
+    } catch (error) {
+      elizaLogger20.error(`Failed to protect liquidity position:: ${error}`);
+      throw error;
+    }
+  }
+  determineProtectionStrategy(ilRisk, userStrategy) {
+    if (ilRisk.riskLevel === "LOW") {
+      return "REBALANCE_ONLY";
+    }
+    if (userStrategy === "CONSERVATIVE") {
+      return "REBALANCE_ONLY";
+    } else if (userStrategy === "AGGRESSIVE") {
+      return "PERP_HEDGE";
+    }
+    switch (ilRisk.riskLevel) {
+      case "MEDIUM":
+        return ilRisk.volatility > 0.5 ? "PERP_HEDGE" : "REBALANCE_ONLY";
+      case "HIGH":
+      case "CRITICAL":
+        return "PERP_HEDGE";
+      default:
+        return "REBALANCE_ONLY";
+    }
+  }
+  async executePerpsHedge(position, ilRisk) {
+    try {
+      elizaLogger20.log("Executing perpetual hedge strategy");
+      const hedgeRatio = this.riskCalculator.getOptimalHedgeRatio(ilRisk);
+      const hedgeResult = await this.geographicRouter.executeGeographicHedge(position);
+      if (hedgeResult.success) {
+        return {
+          type: "PERP_HEDGE",
+          provider: hedgeResult.provider,
+          hedgeRatio: hedgeResult.hedgeRatio,
+          expectedILReduction: hedgeResult.expectedILReduction,
+          txHash: hedgeResult.txHash,
+          cost: this.estimateHedgeCost(position, hedgeRatio),
+          reason: `Risk level: ${ilRisk.riskLevel}, Projected IL: ${ilRisk.projectedIL.toFixed(2)}%`
+        };
+      } else {
+        elizaLogger20.log("Hedge failed, falling back to rebalance strategy");
+        return this.createRebalanceOnlyStrategy(position, ilRisk);
+      }
+    } catch (error) {
+      elizaLogger20.error(`Perps hedge execution failed:: ${error}`);
+      return this.createRebalanceOnlyStrategy(position, ilRisk);
+    }
+  }
+  async executeOptionsStrategy(position, ilRisk) {
+    elizaLogger20.log("Options strategy not yet implemented, using perps hedge");
+    return await this.executePerpsHedge(position, ilRisk);
+  }
+  createRebalanceOnlyStrategy(position, ilRisk) {
+    return {
+      type: "REBALANCE_ONLY",
+      provider: "Internal",
+      hedgeRatio: 0,
+      expectedILReduction: "15%",
+      reason: `Low risk (${ilRisk.riskLevel}), rebalancing sufficient`,
+      cost: "0.1%"
+    };
+  }
+  estimateHedgeCost(position, hedgeRatio) {
+    const tradingFees = position.value * hedgeRatio * 0.001;
+    const fundingCosts = position.value * hedgeRatio * 0.0001 * 24;
+    return `$${(tradingFees + fundingCosts).toFixed(2)}`;
+  }
+  async getILAnalysis(position) {
+    return await this.riskCalculator.calculateRisk(position);
+  }
+  async simulateILScenarios(position, priceChanges) {
+    const scenarios = [];
+    for (const priceChange of priceChanges) {
+      const futurePrice = parseFloat(position.baseAmount) * (1 + priceChange);
+      const il = await this.riskCalculator.estimateILAtPrice(position, futurePrice);
+      const hedgedIL = il * 0.2;
+      scenarios.push({
+        priceChange: priceChange * 100,
+        il: il * 100,
+        hedgedIL: hedgedIL * 100
+      });
+    }
+    return scenarios;
+  }
+}
+
+class BasicILRiskCalculator {
+  async calculateRisk(position) {
+    try {
+      const volatility = await this.estimateVolatility(position.baseToken);
+      const correlation = await this.estimateCorrelation(position.baseToken, position.quoteToken);
+      const timeInPosition = 24;
+      const currentIL = this.calculateCurrentIL(position, volatility);
+      const projectedIL = this.projectFutureIL(currentIL, volatility, timeInPosition);
+      const riskLevel = this.assessRiskLevel(projectedIL, volatility);
+      return {
+        volatility,
+        priceCorrelation: correlation,
+        timeInPosition,
+        currentIL,
+        projectedIL,
+        riskLevel
+      };
+    } catch (error) {
+      elizaLogger20.error(`Risk calculation failed:: ${error}`);
+      return {
+        volatility: 0.5,
+        priceCorrelation: 0.3,
+        timeInPosition: 24,
+        currentIL: 5,
+        projectedIL: 10,
+        riskLevel: "MEDIUM"
+      };
+    }
+  }
+  async estimateILAtPrice(position, futurePrice) {
+    const currentPrice = parseFloat(position.baseAmount);
+    const priceRatio = futurePrice / currentPrice;
+    const il = 2 * Math.sqrt(priceRatio) / (1 + priceRatio) - 1;
+    return Math.abs(il);
+  }
+  getOptimalHedgeRatio(riskMetrics) {
+    let baseRatio = 0.3;
+    switch (riskMetrics.riskLevel) {
+      case "LOW":
+        baseRatio = 0.1;
+        break;
+      case "MEDIUM":
+        baseRatio = 0.4;
+        break;
+      case "HIGH":
+        baseRatio = 0.6;
+        break;
+      case "CRITICAL":
+        baseRatio = 0.8;
+        break;
+    }
+    const volatilityAdjustment = Math.min(riskMetrics.volatility * 0.3, 0.2);
+    return Math.min(baseRatio + volatilityAdjustment, 0.9);
+  }
+  async estimateVolatility(token) {
+    const volatilityMap = {
+      BTC: 0.6,
+      ETH: 0.7,
+      SEI: 1.2,
+      USDC: 0.05,
+      USDT: 0.05
+    };
+    return volatilityMap[token] || 0.8;
+  }
+  async estimateCorrelation(token1, token2) {
+    if (token1 === token2)
+      return 1;
+    if (token1 === "USDC" || token1 === "USDT" || (token2 === "USDC" || token2 === "USDT")) {
+      return 0.1;
+    }
+    if ((token1 === "BTC" || token1 === "ETH") && (token2 === "BTC" || token2 === "ETH")) {
+      return 0.7;
+    }
+    return 0.4;
+  }
+  calculateCurrentIL(position, volatility) {
+    return volatility * 10;
+  }
+  projectFutureIL(currentIL, volatility, timeHours) {
+    const timeAdjustment = Math.sqrt(timeHours / 24);
+    return currentIL * (1 + volatility * timeAdjustment);
+  }
+  assessRiskLevel(projectedIL, volatility) {
+    if (projectedIL < 5 && volatility < 0.3)
+      return "LOW";
+    if (projectedIL < 10 && volatility < 0.6)
+      return "MEDIUM";
+    if (projectedIL < 20 && volatility < 1)
+      return "HIGH";
+    return "CRITICAL";
+  }
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/il-protection.ts
+var ilProtectionAction = {
+  name: "IL_PROTECTION",
+  similes: [
+    "HEDGE_IL",
+    "PROTECT_LIQUIDITY",
+    "IMPERMANENT_LOSS_PROTECTION",
+    "HEDGE_LP_POSITION"
+  ],
+  validate: async (runtime, message) => {
+    try {
+      await validateSeiConfig(runtime);
+      const text = message.content?.text?.toLowerCase() || "";
+      return (text.includes("protect") || text.includes("hedge") || text.includes("il")) && (text.includes("liquidity") || text.includes("lp") || text.includes("position") || text.includes("impermanent") || text.includes("loss"));
+    } catch (error) {
+      return false;
+    }
+  },
+  description: "Protect liquidity positions from impermanent loss using geographic-aware perpetual hedging",
+  handler: async (runtime, message, state, _options, callback) => {
+    elizaLogger21.log("Processing IL protection request");
+    try {
+      if (false) {}
+      const config = await validateSeiConfig(runtime);
+      const text = message.content?.text?.toLowerCase() || "";
+      const lpPosition = parseILProtectionParams(text);
+      if (!lpPosition) {
+        if (callback) {
+          callback({
+            text: "Please provide liquidity position details in format: 'protect my ETH/USDC LP worth $1000'",
+            error: true
+          });
+        }
+        return;
+      }
+      const ilProtector = new ImpermanentLossProtector({
+        USER_GEOGRAPHY: config.USER_GEOGRAPHY || "GLOBAL",
+        PERP_PREFERENCE: config.PERP_PREFERENCE || "GEOGRAPHIC",
+        COINBASE_ADVANCED_API_KEY: config.COINBASE_ADVANCED_API_KEY,
+        COINBASE_ADVANCED_SECRET: config.COINBASE_ADVANCED_SECRET,
+        COINBASE_ADVANCED_PASSPHRASE: config.COINBASE_ADVANCED_PASSPHRASE,
+        COINBASE_SANDBOX: config.COINBASE_SANDBOX
+      });
+      const riskAnalysis = await ilProtector.getILAnalysis(lpPosition);
+      if (riskAnalysis.riskLevel === "LOW") {
+        if (callback) {
+          callback({
+            text: `\uD83D\uDCCA **IL Risk Analysis Complete**
+
+` + `**Position**: ${lpPosition.baseToken}/${lpPosition.quoteToken}
+` + `**Value**: $${lpPosition.value.toLocaleString()}
+` + `**Risk Level**: ${riskAnalysis.riskLevel} ✅
+` + `**Current IL**: ${riskAnalysis.currentIL.toFixed(2)}%
+` + `**Projected IL**: ${riskAnalysis.projectedIL.toFixed(2)}%
+
+` + `**Recommendation**: No hedging needed. Risk is low and periodic rebalancing should be sufficient.`
+          });
+        }
+        return;
+      }
+      const protectionStrategy = await ilProtector.protectLiquidityPosition(lpPosition);
+      const scenarios = await ilProtector.simulateILScenarios(lpPosition, [-0.5, -0.25, 0, 0.25, 0.5, 1]);
+      if (callback) {
+        const scenarioText = scenarios.map((s) => `${s.priceChange > 0 ? "+" : ""}${s.priceChange.toFixed(0)}%: ${s.il.toFixed(1)}% IL → ${s.hedgedIL.toFixed(1)}% (hedged)`).join(`
+`);
+        callback({
+          text: `\uD83D\uDEE1️ **Impermanent Loss Protection Activated**
+
+` + `**Position Protected**: ${lpPosition.baseToken}/${lpPosition.quoteToken}
+` + `**Value**: $${lpPosition.value.toLocaleString()}
+` + `**Risk Level**: ${riskAnalysis.riskLevel} ${getRiskEmoji2(riskAnalysis.riskLevel)}
+
+` + `**Protection Strategy**: ${protectionStrategy.type}
+` + `**Provider**: ${protectionStrategy.provider}
+` + `**Hedge Ratio**: ${(protectionStrategy.hedgeRatio * 100).toFixed(1)}%
+` + `**Expected IL Reduction**: ${protectionStrategy.expectedILReduction}
+` + `**Estimated Cost**: ${protectionStrategy.cost || "Calculated at execution"}
+` + `${protectionStrategy.txHash ? `**Transaction**: ${protectionStrategy.txHash}` : ""}
+
+` + `**IL Scenarios** (Price Change → Unhedged IL → Hedged IL):
+` + `\`\`\`
+${scenarioText}
+\`\`\`
+
+` + `**Reason**: ${protectionStrategy.reason}`
+        });
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      elizaLogger21.error(`Error in IL protection:: ${error}`);
+      if (callback) {
+        callback({
+          text: `❌ Error setting up IL protection: ${errorMessage}`,
+          error: true
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Protect my ETH/USDC LP position worth $5000" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "Analyzing your liquidity position for impermanent loss protection...",
+          action: "IL_PROTECTION"
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Hedge my BTC/USDT liquidity against IL" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "Setting up impermanent loss hedge for your BTC/USDT position...",
+          action: "IL_PROTECTION"
+        }
+      }
+    ]
+  ]
+};
+function parseILProtectionParams(text) {
+  const lpMatch = text.match(/(?:protect|hedge).*?(\w+)[\/\-](\w+).*?(?:\$|worth\s*\$?)(\d+(?:,\d{3})*(?:\.\d+)?)/i);
+  if (lpMatch) {
+    const baseToken = lpMatch[1].toUpperCase();
+    const quoteToken = lpMatch[2].toUpperCase();
+    const value = parseFloat(lpMatch[3].replace(/,/g, ""));
+    return {
+      baseToken,
+      quoteToken,
+      value,
+      baseAmount: (value / 2).toString(),
+      quoteAmount: (value / 2).toString(),
+      poolAddress: "0x...",
+      protocol: "auto-detected"
+    };
+  }
+  const altMatch = text.match(/(\w+)[\/\-](\w+).*?lp.*?(\d+)/i);
+  if (altMatch) {
+    return {
+      baseToken: altMatch[1].toUpperCase(),
+      quoteToken: altMatch[2].toUpperCase(),
+      value: parseFloat(altMatch[3]),
+      baseAmount: (parseFloat(altMatch[3]) / 2).toString(),
+      quoteAmount: (parseFloat(altMatch[3]) / 2).toString(),
+      poolAddress: "0x...",
+      protocol: "auto-detected"
+    };
+  }
+  return null;
+}
+function getRiskEmoji2(riskLevel) {
+  switch (riskLevel) {
+    case "LOW":
+      return "\uD83D\uDFE2";
+    case "MEDIUM":
+      return "\uD83D\uDFE1";
+    case "HIGH":
+      return "\uD83D\uDFE0";
+    case "CRITICAL":
+      return "\uD83D\uDD34";
+    default:
+      return "⚪";
+  }
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/amm-optimize.ts
+var ammOptimizeAction = {
+  name: "AMM_OPTIMIZE",
+  description: "Optimizes concentrated liquidity ranges and rebalances positions using Sei CLOB with AI assistance",
+  validate: async (runtime, message) => {
+    const text = message.content?.text?.toLowerCase() || "";
+    return text.includes("optimize") && (text.includes("lp") || text.includes("amm") || text.includes("liquidity")) || text.includes("lp") && text.includes("optimization") || text.includes("concentrated") && text.includes("liquidity");
+  },
+  async handler(runtime, message, state, options, callback) {
+    try {
+      const aiEngineUrl = runtime.getSetting?.("AI_ENGINE_URL") || "http://localhost:8000";
+      const text = message.content?.text?.toLowerCase() || "";
+      const pairMatch = text.match(/(eth\/usdc|btc\/usdt|sei\/usdc|atom\/sei)/);
+      const defaultPair = pairMatch ? pairMatch[1] : "eth/usdc";
+      const requestBody = {
+        vault_address: "0x1234567890123456789012345678901234567890",
+        current_price: defaultPair.includes("btc") ? 32000 : 2500,
+        volatility: 0.3,
+        volume_24h: 1e6,
+        liquidity: 500000,
+        timeframe: "1d",
+        chain_id: 713715
+      };
+      let aiOptimization = null;
+      try {
+        const response = await fetch(`${aiEngineUrl}/predict/optimal-range`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(requestBody)
+        });
+        if (response.ok) {
+          aiOptimization = await response.json();
+        }
+      } catch (aiError) {
+        console.log("AI optimization unavailable, using fallback strategy");
+      }
+      const clob = runtime.seiClobProvider || {
+        placeRangeOrder: async () => ({ success: true, orderId: "mock-order-123" })
+      };
+      const manager = new AMMLayerManager(clob);
+      if (aiOptimization) {
+        const symbol = defaultPair.toUpperCase().replace("/", "/");
+        await manager.initPosition(symbol, aiOptimization.lower_tick, aiOptimization.upper_tick, 1000);
+        await callback({
+          text: `\uD83E\uDD16 AI-optimized AMM position created for ${symbol}
+
+\uD83D\uDCCA **AI Analysis:**
+• Lower Tick: ${aiOptimization.lower_tick}
+• Upper Tick: ${aiOptimization.upper_tick}
+• Confidence: ${(aiOptimization.confidence * 100).toFixed(1)}%
+• Expected APR: ${(aiOptimization.expected_apr * 100).toFixed(1)}%
+
+${aiOptimization.reasoning}`,
+          content: {
+            type: "amm_optimization",
+            optimization: aiOptimization
+          }
+        });
+      } else {
+        await manager.initPosition("ETH/USDC", 1800, 2200, 1000);
+        await manager.initPosition("BTC/USDT", 29000, 31000, 500);
+        await manager.rebalanceAll({ "ETH/USDC": 2500, "BTC/USDT": 32000 }, 2, 0.5, 0.02);
+        const analytics = Object.keys(manager["positions"]).map((symbol) => ({ symbol, ...manager.getAnalytics(symbol) }));
+        await callback({
+          text: `AMM optimization complete. Analytics: ${JSON.stringify(analytics)}`,
+          content: {
+            type: "amm_optimization",
+            analytics
+          }
+        });
+      }
+    } catch (error) {
+      await callback({
+        text: `Error optimizing AMM positions: ${error instanceof Error ? error.message : "Unknown error"}`,
+        content: {
+          type: "error"
+        }
+      });
+    }
+  },
+  examples: [
+    [
+      { name: "{{user1}}", content: { text: "Optimize my LP positions for ETH/USDC and BTC/USDT" } },
+      { name: "{{agentName}}", content: { action: "AMM_OPTIMIZE", text: "AMM optimization complete. Analytics: ..." } }
+    ]
+  ]
+};
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/delta-neutral.ts
+var deltaNeutralAction = {
+  name: "DELTA_NEUTRAL",
+  description: "Execute delta neutral strategy combining LP positions with perpetual hedging",
+  validate: async (runtime, message) => {
+    const text = message.content?.text?.toLowerCase() || "";
+    return text.includes("delta") && text.includes("neutral") || text.includes("market") && text.includes("neutral") || text.includes("delta neutral");
+  },
+  handler: async (runtime, message, state, options, callback) => {
+    try {
+      const text = message.content?.text?.toLowerCase() || "";
+      if (text.includes("info") || text.includes("help") || text.includes("explain")) {
+        await callback({
+          text: `\uD83D\uDD04 **Delta Neutral Strategy Commands:**
+
+• **"execute delta neutral strategy for [PAIR]"** - Start delta neutral position
+• **"delta neutral optimization"** - Get AI-optimized parameters  
+• **"market neutral LP for [PAIR]"** - Create market-neutral liquidity position
+
+**What is Delta Neutral?**
+A delta neutral strategy combines:
+1. **Concentrated LP positions** to earn fees
+2. **Perpetual hedging** to minimize price risk
+3. **AI optimization** for optimal parameters
+
+This strategy profits from volatility and fees while staying market-neutral.`,
+          content: { type: "help" }
+        });
+        return;
+      }
+      const pairMatch = text.match(/(eth\/usdc|btc\/usdt|sei\/usdc|atom\/sei)/);
+      const pair = pairMatch ? pairMatch[1].toUpperCase() : "ETH/USDC";
+      const aiEngineUrl = runtime.getSetting?.("AI_ENGINE_URL") || "http://localhost:8000";
+      const requestBody = {
+        pair,
+        position_size: 1e4,
+        current_price: pair.includes("BTC") ? 32000 : 2500,
+        volatility: 0.25,
+        market_conditions: {
+          funding_rate: 0.01,
+          liquidity_depth: 5000000
+        }
+      };
+      const response = await fetch(`${aiEngineUrl}/predict/delta-neutral-optimization`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody)
+      });
+      if (!response.ok) {
+        throw new Error(`AI optimization failed: ${response.status}`);
+      }
+      const optimization = await response.json();
+      await callback({
+        text: `\uD83C\uDFAF **Delta Neutral Strategy Executed for ${pair}**
+
+\uD83D\uDD04 **Strategy Details:**
+• Hedge Ratio: ${(optimization.hedge_ratio * 100).toFixed(1)}%
+• Market Neutrality: ${(optimization.expected_neutrality * 100).toFixed(1)}%
+• Expected APR: ${(optimization.expected_apr * 100).toFixed(1)}%
+
+\uD83D\uDCB0 **Revenue Breakdown:**
+• LP Fees: $${optimization.revenue_breakdown.lp_fees.toLocaleString()}
+• Funding Rates: $${optimization.revenue_breakdown.funding_rates.toLocaleString()}
+• Volatility Capture: $${optimization.revenue_breakdown.volatility_capture.toLocaleString()}
+
+\uD83D\uDCCA **Position Range:**
+• Lower Price: $${optimization.lower_price.toFixed(2)}
+• Upper Price: $${optimization.upper_price.toFixed(2)}
+
+\uD83E\uDD16 **AI Analysis:**
+${optimization.reasoning}`,
+        content: {
+          type: "delta_neutral_execution",
+          optimization
+        }
+      });
+    } catch (error) {
+      await callback({
+        text: `❌ Error executing delta neutral strategy: ${error instanceof Error ? error.message : "Unknown error"}
+
+\uD83D\uDCA1 **Troubleshooting:**
+• Check if AI engine is running on port 8000
+• Verify network connectivity  
+• Try again with a simpler command like "delta neutral info"`,
+        content: { type: "error" }
+      });
+    }
+  },
+  examples: [
+    [
+      { name: "user", content: { text: "execute delta neutral strategy for ETH/USDC" } },
+      { name: "agent", content: { action: "DELTA_NEUTRAL", text: "Delta Neutral Strategy Executed for ETH/USDC..." } }
+    ],
+    [
+      { name: "user", content: { text: "delta neutral info" } },
+      { name: "agent", content: { action: "DELTA_NEUTRAL", text: "Delta Neutral Strategy Commands..." } }
+    ]
+  ]
+};
+
 // node_modules/@elizaos/plugin-sei-yield-delta/src/index.ts
 console.log("SEI YIELD-DELTA PLUGIN IS BEING INITIALIZED");
 var seiYieldDeltaPlugin = {
@@ -21444,7 +22835,14 @@ var seiYieldDeltaPlugin = {
     optimalDepositAction,
     priceQueryAction,
     transferAction,
-    yeiFinanceAction
+    yeiFinanceAction,
+    dragonSwapTradeAction,
+    fundingArbitrageAction,
+    perpsTradeAction,
+    rebalanceEvaluatorAction,
+    ilProtectionAction,
+    ammOptimizeAction,
+    deltaNeutralAction
   ],
   evaluators: [
     ammRiskEvaluator
@@ -21457,6 +22855,9 @@ var seiYieldDeltaPlugin = {
   ]
 };
 var src_default = seiYieldDeltaPlugin;
+
+// src/services/sei-vault-manager.ts
+import { Service } from "@elizaos/core";
 
 // node_modules/ethers/lib.esm/ethers.js
 var exports_ethers = {};
@@ -40843,6 +42244,426 @@ var wordlists2 = {
   zh_cn: LangZh.wordlist("cn"),
   zh_tw: LangZh.wordlist("tw")
 };
+// src/services/sei-vault-manager.ts
+class SEIVaultManager extends Service {
+  static serviceType = "vault-manager";
+  static instance = null;
+  get capabilityDescription() {
+    return "Manages SEI vault deposits, allocations, and yield harvesting for automated DeFi strategies";
+  }
+  vaultContract = null;
+  oracleContract = null;
+  provider = null;
+  signer = null;
+  ALLOCATIONS = {
+    fundingArbitrage: 40,
+    deltaNeutral: 30,
+    ammOptimization: 20,
+    yeiLending: 10
+  };
+  positions = {
+    fundingArbitrage: [],
+    deltaNeutral: [],
+    ammOptimization: [],
+    yeiLending: []
+  };
+  lastHarvestTime = 0;
+  HARVEST_INTERVAL = 8 * 60 * 60 * 1000;
+  isStarted = false;
+  lastProcessedBlock = 0;
+  pollingInterval = null;
+  POLL_INTERVAL = 1e4;
+  static async start(runtime) {
+    console.log("\uD83D\uDD27 Starting SEI Vault Manager service...");
+    const instance = new SEIVaultManager;
+    instance.runtime = runtime;
+    await instance.initializeService(runtime);
+    SEIVaultManager.instance = instance;
+    return instance;
+  }
+  static async stop(_runtime) {
+    if (SEIVaultManager.instance) {
+      await SEIVaultManager.instance.stopService();
+      SEIVaultManager.instance = null;
+    }
+  }
+  async initializeService(runtime) {
+    if (this.isStarted) {
+      console.log("⚠️ SEI Vault Manager already started");
+      return;
+    }
+    console.log("\uD83D\uDD27 Initializing SEI Vault Manager...");
+    const vaultAddress = process.env.NATIVE_SEI_VAULT;
+    const oracleAddress = process.env.AI_ORACLE;
+    const rpcUrl = process.env.SEI_RPC_URL;
+    const privateKey = process.env.SEI_PRIVATE_KEY;
+    if (!vaultAddress || !oracleAddress || !rpcUrl || !privateKey) {
+      throw new Error("Missing required environment variables for vault manager");
+    }
+    if (rpcUrl.startsWith("ws://") || rpcUrl.startsWith("wss://")) {
+      this.provider = new exports_ethers.WebSocketProvider(rpcUrl);
+    } else {
+      this.provider = new exports_ethers.JsonRpcProvider(rpcUrl);
+      this.provider.pollingInterval = 4000;
+    }
+    this.signer = new exports_ethers.Wallet(privateKey, this.provider);
+    const vaultABI = [
+      "event SEIOptimizedDeposit(address indexed user, uint256 amount, uint256 shares, uint256 blockTime)",
+      "event Withdrawal(address indexed user, uint256 amount, uint256 shares, uint256 blockTime)",
+      "function totalAssets() view returns (uint256)",
+      "function totalSupply() view returns (uint256)",
+      "function depositYield() payable"
+    ];
+    this.vaultContract = new exports_ethers.Contract(vaultAddress, vaultABI, this.signer);
+    const oracleABI = [
+      "function executeAIRequest(address vault, bytes memory data) external",
+      "function isAIAgent(address agent) view returns (bool)"
+    ];
+    this.oracleContract = new exports_ethers.Contract(oracleAddress, oracleABI, this.signer);
+    const currentBlock = await this.provider.getBlockNumber();
+    this.lastProcessedBlock = currentBlock;
+    console.log(`\uD83D\uDCE6 Starting from block: ${currentBlock}`);
+    await this.watchDeposits(runtime);
+    this.startEventPolling(runtime);
+    console.log("✅ SEI Vault Manager initialized");
+    console.log(`\uD83D\uDCCD Vault: ${vaultAddress}`);
+    console.log(`\uD83D\uDCCD Oracle: ${oracleAddress}`);
+    this.isStarted = true;
+  }
+  async stopService() {
+    if (!this.isStarted) {
+      return;
+    }
+    console.log("\uD83D\uDED1 Stopping SEI Vault Manager...");
+    if (this.pollingInterval) {
+      clearInterval(this.pollingInterval);
+      this.pollingInterval = null;
+    }
+    if (this.vaultContract) {
+      await this.vaultContract.removeAllListeners();
+    }
+    this.isStarted = false;
+    console.log("✅ SEI Vault Manager stopped");
+  }
+  async stop() {
+    await this.stopService();
+  }
+  startEventPolling(runtime) {
+    console.log(`\uD83D\uDD04 Starting event polling (every ${this.POLL_INTERVAL / 1000}s)...`);
+    this.pollingInterval = setInterval(async () => {
+      try {
+        await this.pollForNewEvents(runtime);
+      } catch (error) {
+        console.error("❌ Error polling for events:", error);
+      }
+    }, this.POLL_INTERVAL);
+  }
+  async pollForNewEvents(runtime) {
+    if (!this.vaultContract || !this.provider) {
+      return;
+    }
+    try {
+      const currentBlock = await this.provider.getBlockNumber();
+      if (currentBlock <= this.lastProcessedBlock) {
+        return;
+      }
+      const filter = this.vaultContract.filters.SEIOptimizedDeposit();
+      const events = await this.vaultContract.queryFilter(filter, this.lastProcessedBlock + 1, currentBlock);
+      if (events.length > 0) {
+        console.log(`
+\uD83D\uDD14 Found ${events.length} new deposit event(s)!`);
+        for (const event of events) {
+          const args = event.args;
+          if (args) {
+            console.log(`
+\uD83D\uDCB0 New deposit detected!`);
+            console.log(`   User: ${args[0]}`);
+            console.log(`   Amount: ${exports_ethers.formatEther(args[1])} SEI`);
+            console.log(`   Shares: ${exports_ethers.formatEther(args[2])}`);
+            console.log(`   Block: ${event.blockNumber}`);
+            try {
+              await this.allocateDeposit(runtime, args[1]);
+            } catch (error) {
+              console.error("❌ Failed to allocate deposit:", error);
+            }
+          }
+        }
+      }
+      this.lastProcessedBlock = currentBlock;
+    } catch (error) {
+      console.error("❌ Error querying deposit events:", error);
+    }
+  }
+  async watchDeposits(runtime) {
+    if (!this.vaultContract) {
+      throw new Error("Vault contract not initialized");
+    }
+    console.log("\uD83D\uDC40 Watching for vault deposits...");
+    this.vaultContract.on("SEIOptimizedDeposit", async (user, amount, shares, blockTime) => {
+      console.log(`
+\uD83D\uDCB0 New deposit detected!`);
+      console.log(`   User: ${user}`);
+      console.log(`   Amount: ${exports_ethers.formatEther(amount)} SEI`);
+      console.log(`   Shares: ${exports_ethers.formatEther(shares)}`);
+      try {
+        await this.allocateDeposit(runtime, amount);
+      } catch (error) {
+        console.error("❌ Failed to allocate deposit:", error);
+      }
+    });
+    this.vaultContract.on("Withdrawal", async (user, amount, shares, blockTime) => {
+      console.log(`
+\uD83D\uDCB8 Withdrawal detected!`);
+      console.log(`   User: ${user}`);
+      console.log(`   Amount: ${exports_ethers.formatEther(amount)} SEI`);
+      console.log(`   Shares: ${exports_ethers.formatEther(shares)}`);
+    });
+  }
+  async allocateDeposit(runtime, totalAmount) {
+    console.log(`
+\uD83D\uDCCA Allocating ${exports_ethers.formatEther(totalAmount)} SEI to strategies...`);
+    console.log(`
+\uD83D\uDD0D Debug: Checking available actions in runtime...`);
+    console.log(`   Total actions registered: ${runtime.actions.length}`);
+    const actionNames = runtime.actions.map((a) => a.name);
+    console.log(`   Available actions: ${actionNames.join(", ")}`);
+    const allocations = {
+      fundingArbitrage: totalAmount * BigInt(this.ALLOCATIONS.fundingArbitrage) / 100n,
+      deltaNeutral: totalAmount * BigInt(this.ALLOCATIONS.deltaNeutral) / 100n,
+      ammOptimization: totalAmount * BigInt(this.ALLOCATIONS.ammOptimization) / 100n,
+      yeiLending: totalAmount * BigInt(this.ALLOCATIONS.yeiLending) / 100n
+    };
+    console.log(`
+\uD83D\uDCCB Allocation Plan:`);
+    console.log(`   \uD83D\uDCB9 Funding Arbitrage: ${exports_ethers.formatEther(allocations.fundingArbitrage)} SEI (${this.ALLOCATIONS.fundingArbitrage}%)`);
+    console.log(`   ⚖️ Delta Neutral: ${exports_ethers.formatEther(allocations.deltaNeutral)} SEI (${this.ALLOCATIONS.deltaNeutral}%)`);
+    console.log(`   \uD83D\uDD04 AMM Optimization: ${exports_ethers.formatEther(allocations.ammOptimization)} SEI (${this.ALLOCATIONS.ammOptimization}%)`);
+    console.log(`   \uD83C\uDFE6 YEI Lending: ${exports_ethers.formatEther(allocations.yeiLending)} SEI (${this.ALLOCATIONS.yeiLending}%)`);
+    try {
+      await Promise.all([
+        this.executeFundingArbitrage(runtime, allocations.fundingArbitrage),
+        this.executeDeltaNeutral(runtime, allocations.deltaNeutral),
+        this.executeAMMOptimization(runtime, allocations.ammOptimization),
+        this.executeYEILending(runtime, allocations.yeiLending)
+      ]);
+      console.log("✅ All strategies allocated successfully");
+    } catch (error) {
+      console.error("❌ Error during allocation:", error);
+      throw error;
+    }
+  }
+  async executeFundingArbitrage(runtime, amount) {
+    console.log(`
+\uD83D\uDCB9 Executing Funding Arbitrage with ${exports_ethers.formatEther(amount)} SEI...`);
+    const fundingArbitrageAction2 = runtime.actions.find((action) => action.name === "FUNDING_ARBITRAGE");
+    if (!fundingArbitrageAction2) {
+      console.warn("⚠️ Funding arbitrage action not found in runtime");
+      return;
+    }
+    const callback = async (response) => {
+      console.log(`   \uD83D\uDCDD Funding Arbitrage response:`, response.text || response);
+    };
+    try {
+      const result = await fundingArbitrageAction2.handler(runtime, {
+        userId: "vault-manager",
+        roomId: "vault-automation",
+        agentId: runtime.agentId,
+        content: { text: `execute funding arbitrage with ${exports_ethers.formatEther(amount)} SEI` }
+      }, {
+        values: {},
+        data: {},
+        text: `execute funding arbitrage with ${exports_ethers.formatEther(amount)} SEI`
+      }, callback);
+      if (result && result.success !== false) {
+        this.positions.fundingArbitrage.push({
+          timestamp: Date.now(),
+          amount,
+          strategy: "funding-arbitrage",
+          result
+        });
+        console.log("✅ Funding arbitrage position opened");
+      }
+    } catch (error) {
+      console.warn("⚠️ Funding arbitrage execution failed:", error instanceof Error ? error.message : error);
+    }
+  }
+  async executeDeltaNeutral(runtime, amount) {
+    console.log(`
+⚖️ Executing Delta Neutral with ${exports_ethers.formatEther(amount)} SEI...`);
+    const deltaNeutralAction2 = runtime.actions.find((action) => action.name === "DELTA_NEUTRAL");
+    if (!deltaNeutralAction2) {
+      console.warn("⚠️ Delta neutral action not found in runtime");
+      return;
+    }
+    const callback = async (response) => {
+      console.log(`   \uD83D\uDCDD Delta Neutral response:`, response.text || response);
+    };
+    try {
+      const result = await deltaNeutralAction2.handler(runtime, {
+        userId: "vault-manager",
+        roomId: "vault-automation",
+        agentId: runtime.agentId,
+        content: { text: `execute delta neutral with ${exports_ethers.formatEther(amount)} SEI` }
+      }, {
+        values: {},
+        data: {},
+        text: `execute delta neutral with ${exports_ethers.formatEther(amount)} SEI`
+      }, callback);
+      if (result && result.success !== false) {
+        this.positions.deltaNeutral.push({
+          timestamp: Date.now(),
+          amount,
+          strategy: "delta-neutral",
+          result
+        });
+        console.log("✅ Delta neutral position created");
+      }
+    } catch (error) {
+      console.warn("⚠️ Delta neutral execution failed:", error instanceof Error ? error.message : error);
+    }
+  }
+  async executeAMMOptimization(runtime, amount) {
+    console.log(`
+\uD83D\uDD04 Executing AMM Optimization with ${exports_ethers.formatEther(amount)} SEI...`);
+    const ammOptimizeAction2 = runtime.actions.find((action) => action.name === "AMM_OPTIMIZE");
+    if (!ammOptimizeAction2) {
+      console.warn("⚠️ AMM optimization action not found in runtime");
+      return;
+    }
+    const callback = async (response) => {
+      console.log(`   \uD83D\uDCDD AMM Optimize response:`, response.text || response);
+    };
+    try {
+      const result = await ammOptimizeAction2.handler(runtime, {
+        userId: "vault-manager",
+        roomId: "vault-automation",
+        agentId: runtime.agentId,
+        content: { text: `execute amm optimization with ${exports_ethers.formatEther(amount)} SEI` }
+      }, {
+        values: {},
+        data: {},
+        text: `execute amm optimization with ${exports_ethers.formatEther(amount)} SEI`
+      }, callback);
+      if (result && result.success !== false) {
+        this.positions.ammOptimization.push({
+          timestamp: Date.now(),
+          amount,
+          strategy: "amm-optimization",
+          result
+        });
+        console.log("✅ AMM optimization executed");
+      }
+    } catch (error) {
+      console.warn("⚠️ AMM optimization execution failed:", error instanceof Error ? error.message : error);
+    }
+  }
+  async executeYEILending(runtime, amount) {
+    console.log(`
+\uD83C\uDFE6 Executing YEI Lending with ${exports_ethers.formatEther(amount)} SEI...`);
+    const yeiLendingAction = runtime.actions.find((action) => action.name === "YEI_FINANCE");
+    if (!yeiLendingAction) {
+      console.warn("⚠️ YEI finance action not found in runtime");
+      return;
+    }
+    const callback = async (response) => {
+      console.log(`   \uD83D\uDCDD YEI Finance response:`, response.text || response);
+    };
+    const result = await yeiLendingAction.handler(runtime, {
+      userId: "vault-manager",
+      roomId: "vault-automation",
+      agentId: runtime.agentId,
+      content: { text: `deposit ${exports_ethers.formatEther(amount)} SEI to YEI Finance` }
+    }, {
+      values: {},
+      data: {},
+      text: `deposit ${exports_ethers.formatEther(amount)} SEI to YEI Finance`
+    }, callback);
+    if (result) {
+      this.positions.yeiLending.push({
+        timestamp: Date.now(),
+        amount,
+        strategy: "yei-lending",
+        result
+      });
+      console.log("✅ YEI lending deposit successful");
+    }
+  }
+  async harvestYield(runtime) {
+    const now = Date.now();
+    if (now - this.lastHarvestTime < this.HARVEST_INTERVAL) {
+      console.log("⏳ Not time to harvest yet");
+      return 0n;
+    }
+    console.log(`
+\uD83C\uDF3E Harvesting yield from all strategies...`);
+    let totalYield = 0n;
+    try {
+      const fundingYield = this.calculateEstimatedYield("fundingArbitrage", 0.2);
+      const deltaNeutralYield = this.calculateEstimatedYield("deltaNeutral", 0.12);
+      const ammYield = this.calculateEstimatedYield("ammOptimization", 0.1);
+      const yeiYield = this.calculateEstimatedYield("yeiLending", 0.05);
+      totalYield = fundingYield + deltaNeutralYield + ammYield + yeiYield;
+      console.log(`   \uD83D\uDCB9 Funding Arbitrage: ${exports_ethers.formatEther(fundingYield)} SEI`);
+      console.log(`   ⚖️ Delta Neutral: ${exports_ethers.formatEther(deltaNeutralYield)} SEI`);
+      console.log(`   \uD83D\uDD04 AMM Optimization: ${exports_ethers.formatEther(ammYield)} SEI`);
+      console.log(`   \uD83C\uDFE6 YEI Lending: ${exports_ethers.formatEther(yeiYield)} SEI`);
+      console.log(`   \uD83C\uDFAF Total Yield: ${exports_ethers.formatEther(totalYield)} SEI`);
+      if (totalYield > 0n) {
+        await this.depositYieldToVault(totalYield);
+        this.lastHarvestTime = now;
+      }
+      return totalYield;
+    } catch (error) {
+      console.error("❌ Error harvesting yield:", error);
+      return 0n;
+    }
+  }
+  calculateEstimatedYield(strategy, apr) {
+    const positions = this.positions[strategy];
+    let totalYield = 0n;
+    for (const position of positions) {
+      const timeSinceOpen = Date.now() - position.timestamp;
+      const hoursElapsed = timeSinceOpen / (1000 * 60 * 60);
+      const yield8h = position.amount * BigInt(Math.floor(apr * 1e4)) / BigInt(8760 * 1e4);
+      const yieldAccrued = yield8h * BigInt(Math.floor(hoursElapsed / 8));
+      totalYield += yieldAccrued;
+    }
+    return totalYield;
+  }
+  async depositYieldToVault(yieldAmount) {
+    if (!this.vaultContract || !this.signer) {
+      throw new Error("Vault contract not initialized");
+    }
+    console.log(`
+\uD83D\uDCB0 Depositing ${exports_ethers.formatEther(yieldAmount)} SEI yield to vault...`);
+    try {
+      const tx = await this.vaultContract.depositYield({ value: yieldAmount });
+      console.log(`   \uD83D\uDCDD Transaction sent: ${tx.hash}`);
+      const receipt = await tx.wait();
+      console.log(`   ✅ Yield deposited successfully in block ${receipt.blockNumber}`);
+    } catch (error) {
+      console.error("❌ Failed to deposit yield to vault:", error);
+      throw error;
+    }
+  }
+  async getVaultMetrics() {
+    if (!this.vaultContract) {
+      throw new Error("Vault contract not initialized");
+    }
+    const totalAssets = await this.vaultContract.totalAssets();
+    const totalShares = await this.vaultContract.totalSupply();
+    const sharePrice = totalShares > 0n ? totalAssets * exports_ethers.parseEther("1") / totalShares : 0n;
+    const positionCount = this.positions.fundingArbitrage.length + this.positions.deltaNeutral.length + this.positions.ammOptimization.length + this.positions.yeiLending.length;
+    return {
+      totalAssets,
+      totalShares,
+      sharePrice,
+      positionCount
+    };
+  }
+}
+var sei_vault_manager_default = SEIVaultManager;
+
 // src/evaluators/vault-monitor.ts
 var vaultMonitorEvaluator = {
   name: "VAULT_MONITOR",
@@ -41060,7 +42881,7 @@ var vault_monitor_default = vaultMonitorEvaluator;
 var vaultIntegrationPlugin = {
   name: "vault-integration",
   description: "SEI Vault integration for automated yield generation",
-  services: [],
+  services: [sei_vault_manager_default],
   evaluators: [vault_monitor_default, rebalancingEvaluator, healthCheckEvaluator],
   actions: []
 };
@@ -41090,5 +42911,5 @@ export {
   character
 };
 
-//# debugId=E32A4EAE82FFC25764756E2164756E21
+//# debugId=11E8ED2D3897D59764756E2164756E21
 //# sourceMappingURL=index.js.map

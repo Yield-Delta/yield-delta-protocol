@@ -1,5 +1,5 @@
 import { Plugin } from '@elizaos/core';
-// import SEIVaultManager from './services/sei-vault-manager'; // Temporarily disabled
+import SEIVaultManager from './services/sei-vault-manager';
 import vaultMonitorEvaluator, {
   rebalancingEvaluator,
   healthCheckEvaluator,
@@ -20,7 +20,7 @@ import vaultMonitorEvaluator, {
 export const vaultIntegrationPlugin: Plugin = {
   name: 'vault-integration',
   description: 'SEI Vault integration for automated yield generation',
-  services: [], // Temporarily disabled - will use evaluators instead
+  services: [SEIVaultManager],
   evaluators: [vaultMonitorEvaluator, rebalancingEvaluator, healthCheckEvaluator],
   actions: [],
 };
