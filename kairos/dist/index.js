@@ -22680,8 +22680,9 @@ var ammOptimizeAction = {
       if (aiOptimization) {
         const symbol = defaultPair.toUpperCase().replace("/", "/");
         await manager.initPosition(symbol, aiOptimization.lower_tick, aiOptimization.upper_tick, 1000);
-        await callback({
-          text: `\uD83E\uDD16 AI-optimized AMM position created for ${symbol}
+        if (callback && typeof callback === "function") {
+          await callback({
+            text: `\uD83E\uDD16 AI-optimized AMM position created for ${symbol}
 
 \uD83D\uDCCA **AI Analysis:**
 • Lower Tick: ${aiOptimization.lower_tick}
@@ -22690,23 +22691,26 @@ var ammOptimizeAction = {
 • Expected APR: ${(aiOptimization.expected_apr * 100).toFixed(1)}%
 
 ${aiOptimization.reasoning}`,
-          content: {
-            type: "amm_optimization",
-            optimization: aiOptimization
-          }
-        });
+            content: {
+              type: "amm_optimization",
+              optimization: aiOptimization
+            }
+          });
+        }
       } else {
         await manager.initPosition("ETH/USDC", 1800, 2200, 1000);
         await manager.initPosition("BTC/USDT", 29000, 31000, 500);
         await manager.rebalanceAll({ "ETH/USDC": 2500, "BTC/USDT": 32000 }, 2, 0.5, 0.02);
         const analytics = Object.keys(manager["positions"]).map((symbol) => ({ symbol, ...manager.getAnalytics(symbol) }));
-        await callback({
-          text: `AMM optimization complete. Analytics: ${JSON.stringify(analytics)}`,
-          content: {
-            type: "amm_optimization",
-            analytics
-          }
-        });
+        if (callback && typeof callback === "function") {
+          await callback({
+            text: `AMM optimization complete. Analytics: ${JSON.stringify(analytics)}`,
+            content: {
+              type: "amm_optimization",
+              analytics
+            }
+          });
+        }
       }
     } catch (error) {
       const errorMessage = `Error optimizing AMM positions: ${error instanceof Error ? error.message : "Unknown error"}`;
@@ -22745,11 +22749,12 @@ var deltaNeutralAction = {
     try {
       const text = message.content?.text?.toLowerCase() || "";
       if (text.includes("info") || text.includes("help") || text.includes("explain")) {
-        await callback({
-          text: `\uD83D\uDD04 **Delta Neutral Strategy Commands:**
+        if (callback && typeof callback === "function") {
+          await callback({
+            text: `\uD83D\uDD04 **Delta Neutral Strategy Commands:**
 
 • **"execute delta neutral strategy for [PAIR]"** - Start delta neutral position
-• **"delta neutral optimization"** - Get AI-optimized parameters  
+• **"delta neutral optimization"** - Get AI-optimized parameters
 • **"market neutral LP for [PAIR]"** - Create market-neutral liquidity position
 
 **What is Delta Neutral?**
@@ -22759,8 +22764,9 @@ A delta neutral strategy combines:
 3. **AI optimization** for optimal parameters
 
 This strategy profits from volatility and fees while staying market-neutral.`,
-          content: { type: "help" }
-        });
+            content: { type: "help" }
+          });
+        }
         return;
       }
       const pairMatch = text.match(/(eth\/usdc|btc\/usdt|sei\/usdc|atom\/sei)/);
@@ -22785,8 +22791,9 @@ This strategy profits from volatility and fees while staying market-neutral.`,
         throw new Error(`AI optimization failed: ${response.status}`);
       }
       const optimization = await response.json();
-      await callback({
-        text: `\uD83C\uDFAF **Delta Neutral Strategy Executed for ${pair}**
+      if (callback && typeof callback === "function") {
+        await callback({
+          text: `\uD83C\uDFAF **Delta Neutral Strategy Executed for ${pair}**
 
 \uD83D\uDD04 **Strategy Details:**
 • Hedge Ratio: ${(optimization.hedge_ratio * 100).toFixed(1)}%
@@ -22804,11 +22811,12 @@ This strategy profits from volatility and fees while staying market-neutral.`,
 
 \uD83E\uDD16 **AI Analysis:**
 ${optimization.reasoning}`,
-        content: {
-          type: "delta_neutral_execution",
-          optimization
-        }
-      });
+          content: {
+            type: "delta_neutral_execution",
+            optimization
+          }
+        });
+      }
     } catch (error) {
       const errorMessage = `❌ Error executing delta neutral strategy: ${error instanceof Error ? error.message : "Unknown error"}
 
@@ -42932,5 +42940,5 @@ export {
   character
 };
 
-//# debugId=4A54ADB6475EB03B64756E2164756E21
+//# debugId=FFCFB9F90D2CA47264756E2164756E21
 //# sourceMappingURL=index.js.map
