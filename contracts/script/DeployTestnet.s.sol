@@ -39,7 +39,7 @@ contract DeployTestnetScript is Script {
         console.log("Vault Factory deployed at: %s", vaultFactory);
 
         // 3. Deploy SEI Vault (using address(0) for native SEI)
-        seiVault = payable(deploySEIVault(address(0), deployer, deployer));
+        seiVault = payable(deploySEIVault(address(0), deployer, aiOracle));
         console.log("SEI Vault deployed at: %s", seiVault);
 
         // 4. Configure AI Oracle with deployed contracts
@@ -64,13 +64,13 @@ contract DeployTestnetScript is Script {
         return address(factory);
     }
     
-    function deploySEIVault(address asset, address owner, address aiModel) internal returns (address) {
+    function deploySEIVault(address asset, address owner, address aiOracleAddr) internal returns (address) {
         SEIVault vault = new SEIVault(
             asset,
             "SEI Dynamic Liquidity Vault",
             "SEIDLV",
             owner,
-            aiModel
+            aiOracleAddr
         );
         return address(vault);
     }

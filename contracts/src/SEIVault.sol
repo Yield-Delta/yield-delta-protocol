@@ -58,12 +58,12 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
         string memory _name,
         string memory _symbol,
         address _owner,
-        address _aiModel
+        address _aiOracle
     ) ERC20(_name, _symbol) {
         require(block.chainid == SEI_CHAIN_ID, "Invalid SEI chain");
         // Note: _asset can be address(0) for native SEI vaults
         require(_owner != address(0), "Invalid owner");
-        require(_aiModel != address(0), "Invalid AI model");
+        require(_aiOracle != address(0), "Invalid AI Oracle");
 
         vaultInfo = VaultInfo({
             name: _name,
@@ -76,7 +76,8 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
             isActive: true
         });
 
-        aiModel = _aiModel;
+        aiOracle = _aiOracle;
+        aiModel = _aiOracle; // For backwards compatibility
 
         transferOwnership(_owner);
 
@@ -312,11 +313,16 @@ contract SEIVault is ISEIVault, ERC20, Ownable, ReentrancyGuard {
         return isValid;
     }
     
+    function setAIOracle(address _aiOracle) external onlyOwner {
+        require(_aiOracle != address(0), "Invalid AI Oracle address");
+        aiOracle = _aiOracle;
+    }
+
     function setParallelExecution(bool enabled) external onlyOwner {
         parallelExecutionEnabled = enabled;
         emit ParallelExecutionEnabled(enabled);
     }
-    
+
     function optimizeForFinality() external onlyOwner {
         lastFinalityOptimization = block.timestamp;
         emit FinalityOptimized(block.timestamp, 1);
