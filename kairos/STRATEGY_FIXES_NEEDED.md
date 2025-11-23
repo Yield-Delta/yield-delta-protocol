@@ -18,7 +18,7 @@
 
 ### 1. Funding Arbitrage Action
 
-**File:** `node_modules/@elizaos/plugin-sei-yield-delta/src/actions/funding-arbitrage.ts`
+**File:** `/src/actions/funding-arbitrage.ts`
 
 **Error:**
 ```
@@ -33,110 +33,110 @@ Failed to create arbitrage engine: invalid private key, expected hex or 32 bytes
 const privateKey = process.env.SEI_PRIVATE_KEY;
 if (!privateKey) {
   throw new Error('SEI_PRIVATE_KEY not found in environment');
-}
-
-// Ensure proper hex format (add 0x prefix if missing)
-const formattedKey = privateKey.startsWith('0x')
-  ? privateKey
-  : `0x${privateKey}`;
-
-// Use formattedKey when creating wallet/signer
-const wallet = new ethers.Wallet(formattedKey, provider);
-```
-
-**Location to Fix:** Look for where the wallet/signer is created in the `handler` function
-
----
-
-### 2. Delta Neutral Action
-
-**File:** `node_modules/@elizaos/plugin-sei-yield-delta/src/actions/delta-neutral.ts`
-
-**Error:**
-```
-TypeError: callback is not a function
-```
-
-**Issue:** The error handler tries to call `callback()` but it's undefined in the error context.
-
-**Fix Required:**
-```typescript
-// Find all error handlers (catch blocks) and replace:
-
-// OLD (broken):
-catch (error) {
-  await callback({
-    text: `❌ Error executing delta neutral strategy: ${error.message}`,
-    content: { type: "error" }
-  });
-}
-
-// NEW (fixed):
-catch (error) {
-  const errorMessage = `❌ Error executing delta neutral strategy: ${error instanceof Error ? error.message : "Unknown error"}`;
-
-  console.error(errorMessage, error);
-
-  if (callback && typeof callback === 'function') {
-    await callback({
-      text: errorMessage,
-      content: { type: "error" }
-    });
   }
-
-  return {
-    success: false,
-    error: errorMessage
-  };
-}
-```
-
-**Location to Fix:** All `catch` blocks in the action handler
-
----
-
-### 3. AMM Optimization Action
-
-**File:** `node_modules/@elizaos/plugin-sei-yield-delta/src/actions/amm-optimize.ts`
-
-**Error:**
-```
-TypeError: callback is not a function
-```
-
-**Issue:** Same as Delta Neutral - callback becomes undefined in error handlers.
-
-**Fix Required:** Identical to Delta Neutral fix above.
-
-```typescript
-// Find all catch blocks and add callback validation:
-
-catch (error) {
-  const errorMessage = `Error optimizing AMM positions: ${error instanceof Error ? error.message : "Unknown error"}`;
-
-  console.error(errorMessage, error);
-
-  if (callback && typeof callback === 'function') {
-    await callback({
-      text: errorMessage,
-      content: { type: "error" }
-    });
-  }
-
-  return {
-    success: false,
-    error: errorMessage
-  };
-}
-```
-
-**Location to Fix:** All `catch` blocks in the action handler
+  
+  // Ensure proper hex format (add 0x prefix if missing)
+  const formattedKey = privateKey.startsWith('0x')
+    ? privateKey
+      : `0x${privateKey}`;
+      
+      // Use formattedKey when creating wallet/signer
+      const wallet = new ethers.Wallet(formattedKey, provider);
+      ```
+      
+      **Location to Fix:** Look for where the wallet/signer is created in the `handler` function
+      
+      ---
+      
+      ### 2. Delta Neutral Action
+      
+      **File:** `/src/actions/delta-neutral.ts`
+      
+      **Error:**
+      ```
+      TypeError: callback is not a function
+      ```
+      
+      **Issue:** The error handler tries to call `callback()` but it's undefined in the error context.
+      
+      **Fix Required:**
+      ```typescript
+      // Find all error handlers (catch blocks) and replace:
+      
+      // OLD (broken):
+      catch (error) {
+        await callback({
+            text: `❌ Error executing delta neutral strategy: ${error.message}`,
+                content: { type: "error" }
+                  });
+                  }
+                  
+                  // NEW (fixed):
+                  catch (error) {
+                    const errorMessage = `❌ Error executing delta neutral strategy: ${error instanceof Error ? error.message : "Unknown error"}`;
+                    
+                      console.error(errorMessage, error);
+                      
+                        if (callback && typeof callback === 'function') {
+                            await callback({
+                                  text: errorMessage,
+                                        content: { type: "error" }
+                                            });
+                                              }
+                                              
+                                                return {
+                                                    success: false,
+                                                        error: errorMessage
+                                                          };
+                                                          }
+                                                          ```
+                                                          
+                                                          **Location to Fix:** All `catch` blocks in the action handler
+                                                          
+                                                          ---
+                                                          
+                                                          ### 3. AMM Optimization Action
+                                                          
+                                                          **File:** `src/actions/amm-optimize.ts`
+                                                          
+                                                          **Error:**
+                                                          ```
+                                                          TypeError: callback is not a function
+                                                          ```
+                                                          
+                                                          **Issue:** Same as Delta Neutral - callback becomes undefined in error handlers.
+                                                          
+                                                          **Fix Required:** Identical to Delta Neutral fix above.
+                                                          
+                                                          ```typescript
+                                                          // Find all catch blocks and add callback validation:
+                                                          
+                                                          catch (error) {
+                                                            const errorMessage = `Error optimizing AMM positions: ${error instanceof Error ? error.message : "Unknown error"}`;
+                                                            
+                                                              console.error(errorMessage, error);
+                                                              
+                                                                if (callback && typeof callback === 'function') {
+                                                                    await callback({
+                                                                          text: errorMessage,
+                                                                                content: { type: "error" }
+                                                                                    });
+                                                                                      }
+                                                                                      
+                                                                                        return {
+                                                                                            success: false,
+                                                                                                error: errorMessage
+                                                                                                  };
+                                                                                                  }
+                                                                                                  ```
+                                                                                                  
+                                                                                                  **Location to Fix:** All `catch` blocks in the action handler
 
 ---
 
 ### 4. YEI Finance Action ✅
 
-**File:** `node_modules/@elizaos/plugin-sei-yield-delta/src/actions/yei-finance.ts`
+**File:** `src/actions/yei-finance.ts`
 
 **Status:** ✅ **No errors detected - appears to be working correctly!**
 
@@ -146,17 +146,17 @@ catch (error) {
 
 ## 📋 Quick Reference: Files to Edit
 
-1. **`node_modules/@elizaos/plugin-sei-yield-delta/src/actions/funding-arbitrage.ts`**
+1. **`/src/actions/funding-arbitrage.ts`**
    - Fix private key parsing
    - Add 0x prefix handling
    - Validate environment variable exists
 
-2. **`node_modules/@elizaos/plugin-sei-yield-delta/src/actions/delta-neutral.ts`**
+2. **`/src/actions/delta-neutral.ts`**
    - Add callback validation in all catch blocks
    - Ensure error returns proper structure
    - Add console.error fallbacks
 
-3. **`node_modules/@elizaos/plugin-sei-yield-delta/src/actions/amm-optimize.ts`**
+3. **`/src/actions/amm-optimize.ts`**
    - Add callback validation in all catch blocks
    - Ensure error returns proper structure
    - Add console.error fallbacks

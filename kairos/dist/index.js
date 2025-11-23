@@ -21408,7 +21408,12 @@ class FundingArbitrageEngine {
 async function getOrCreateArbitrageEngine(runtime) {
   try {
     const config = await validateSeiConfig(runtime);
-    const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, {
+    const privateKey = config.SEI_PRIVATE_KEY;
+    if (!privateKey) {
+      throw new Error("SEI_PRIVATE_KEY not found in environment");
+    }
+    const formattedKey = privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`;
+    const walletProvider = new WalletProvider(formattedKey, {
       name: config.SEI_NETWORK || "sei-devnet",
       chain: seiChains["devnet"]
     });
@@ -22704,12 +22709,20 @@ ${aiOptimization.reasoning}`,
         });
       }
     } catch (error) {
-      await callback({
-        text: `Error optimizing AMM positions: ${error instanceof Error ? error.message : "Unknown error"}`,
-        content: {
-          type: "error"
-        }
-      });
+      const errorMessage = `Error optimizing AMM positions: ${error instanceof Error ? error.message : "Unknown error"}`;
+      console.error(errorMessage, error);
+      if (callback && typeof callback === "function") {
+        await callback({
+          text: errorMessage,
+          content: {
+            type: "error"
+          }
+        });
+      }
+      return {
+        success: false,
+        error: errorMessage
+      };
     }
   },
   examples: [
@@ -22797,15 +22810,23 @@ ${optimization.reasoning}`,
         }
       });
     } catch (error) {
-      await callback({
-        text: `❌ Error executing delta neutral strategy: ${error instanceof Error ? error.message : "Unknown error"}
+      const errorMessage = `❌ Error executing delta neutral strategy: ${error instanceof Error ? error.message : "Unknown error"}
 
 \uD83D\uDCA1 **Troubleshooting:**
 • Check if AI engine is running on port 8000
-• Verify network connectivity  
-• Try again with a simpler command like "delta neutral info"`,
-        content: { type: "error" }
-      });
+• Verify network connectivity
+• Try again with a simpler command like "delta neutral info"`;
+      console.error(errorMessage, error);
+      if (callback && typeof callback === "function") {
+        await callback({
+          text: errorMessage,
+          content: { type: "error" }
+        });
+      }
+      return {
+        success: false,
+        error: errorMessage
+      };
     }
   },
   examples: [
@@ -42911,5 +42932,5 @@ export {
   character
 };
 
-//# debugId=11E8ED2D3897D59764756E2164756E21
+//# debugId=4A54ADB6475EB03B64756E2164756E21
 //# sourceMappingURL=index.js.map
