@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 
 // Swap request schema matching elizaos_client.py expectations
 const SwapRequestSchema = z.object({

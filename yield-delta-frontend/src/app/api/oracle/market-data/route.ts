@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Use nodejs runtime for viem compatibility
-export const runtime = 'nodejs';
+// Use edge runtime for Cloudflare Pages
+export const runtime = 'edge';
 
 // Pyth price feed IDs
 const PYTH_PRICE_FEEDS: Record<string, string> = {

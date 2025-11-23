@@ -3,8 +3,8 @@ import { z } from 'zod'
 import { createPublicClient, http, formatUnits } from 'viem'
 import { SEIVaultABI } from '@/lib/abis/SEIVault'
 
-// Use nodejs runtime for viem compatibility
-export const runtime = 'nodejs';
+// Use edge runtime for Cloudflare Pages
+export const runtime = 'edge';
 
 // SEI Testnet configuration
 const SEI_TESTNET_RPC = 'https://evm-rpc-testnet.sei-apis.com'
