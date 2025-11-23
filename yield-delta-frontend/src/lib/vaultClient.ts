@@ -3,12 +3,11 @@ import { SEIVaultABI } from './abis/SEIVault'
 
 // SEI Testnet configuration
 const SEI_TESTNET_RPC = 'https://evm-rpc-testnet.sei-apis.com'
-const SEI_CHAIN_ID = 1328
 
-// Deployed vault addresses
+// Deployed vault addresses (Updated Nov 23, 2025)
 export const VAULT_ADDRESSES = {
-  SEI: '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565' as `0x${string}`,
-  USDC: '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0' as `0x${string}`,
+  SEI: '0xD460d6C569631A1BDc6FAF28D47BF376aFDD90D0' as `0x${string}`,
+  USDC: '0xD460d6C569631A1BDc6FAF28D47BF376aFDD90D0' as `0x${string}`,
 }
 
 // Pyth price feed IDs for SEI testnet
@@ -123,11 +122,14 @@ export async function getCustomerStats(
  */
 export async function getCurrentPosition(vaultAddress: `0x${string}`): Promise<Position | null> {
   try {
-    const position = await publicClient.readContract({
+    const result = await publicClient.readContract({
       address: vaultAddress,
       abi: SEIVaultABI,
       functionName: 'getCurrentPosition',
-    }) as [number, number, bigint, bigint, bigint, bigint, bigint]
+    })
+
+    // Contract returns a tuple, convert to Position object
+    const position = result as unknown as [number, number, bigint, bigint, bigint]
 
     return {
       tickLower: position[0],

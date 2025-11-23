@@ -69,7 +69,6 @@ export default function WithdrawModal({
   onSuccess,
   userShares = '0',
   userValue = '0',
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   lockTimeRemaining = '0'
 }: WithdrawModalProps) {
   const [withdrawAmount, setWithdrawAmount] = useState('');

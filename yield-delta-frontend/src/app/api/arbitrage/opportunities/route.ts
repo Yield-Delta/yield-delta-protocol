@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
  *
  * Returns opportunities in the format expected by ai-engine's elizaos_client.py
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('[Arbitrage] Fetching funding rate opportunities')
 
