@@ -9,9 +9,13 @@ import "../src/AIOracle.sol";
 contract DeployTestnetScript is Script {
     // SEI Network Configuration
     uint256 constant SEI_TESTNET_CHAIN_ID = 1328;
-    
+
+    // Real USDC on SEI Atlantic-2 testnet
+    address constant USDC_TESTNET = 0x4fCF1784B31630811181f670Aea7A7bEF803eaED;
+
     // Deployment addresses (will be set during deployment)
     address payable public seiVault;
+    address payable public usdcVault;
     address public vaultFactory;
     address public aiOracle;
     

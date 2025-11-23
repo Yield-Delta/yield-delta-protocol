@@ -32,9 +32,10 @@ export async function GET(request: NextRequest) {
     // CRITICAL: Only return vaults that are actually deployed on-chain
     // Demo mode is OFF - we only show real, deployed contracts
     // TVL values are placeholders - actual TVL is fetched on-chain via useVaultTVL hook
+    // Using existing deployed vaults with funds for testing
     const vaults = [
       {
-        address: '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Native SEI Vault (DEPLOYED Nov 21 2025 - Fixed share calculation)
+        address: '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Native SEI Vault (has 5 SEI)
         name: 'Native SEI Vault',
         strategy: 'concentrated_liquidity',
         tokenA: 'SEI',
@@ -60,8 +61,8 @@ export async function GET(request: NextRequest) {
         }
       },
       {
-        address: '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // ERC20 USDC Vault (DEPLOYED)
-        name: 'USDC Vault',
+        address: '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // USDC Vault (DEPLOYED)
+        name: 'USDC Stable Vault',
         strategy: 'stable_max',
         tokenA: 'USDC',
         tokenB: 'USDC',
@@ -87,8 +88,9 @@ export async function GET(request: NextRequest) {
       }
     ]
 
-    // NOTE: Legacy/demo vaults have been removed as they are not deployed on-chain
-    // Only the 2 vaults above are actually deployed on SEI Atlantic-2 testnet
+    // NOTE: Both vaults above are deployed on SEI Atlantic-2 testnet
+    // SEI Vault currently has 5 SEI deposited for testing
+    // USDC Vault is deployed and ready for testing
 
     // Filter by strategy if provided
     let filteredVaults = vaults

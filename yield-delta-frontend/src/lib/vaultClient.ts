@@ -4,10 +4,10 @@ import { SEIVaultABI } from './abis/SEIVault'
 // SEI Testnet configuration
 const SEI_TESTNET_RPC = 'https://evm-rpc-testnet.sei-apis.com'
 
-// Deployed vault addresses (Updated Nov 23, 2025)
+// Deployed vault addresses - Using existing vaults with funds for testing
 export const VAULT_ADDRESSES = {
-  SEI: '0xD460d6C569631A1BDc6FAF28D47BF376aFDD90D0' as `0x${string}`,
-  USDC: '0xD460d6C569631A1BDc6FAF28D47BF376aFDD90D0' as `0x${string}`,
+  SEI: '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565' as `0x${string}`, // Native SEI Vault (has 5 SEI)
+  USDC: '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0' as `0x${string}`, // USDC Vault
 }
 
 // Pyth price feed IDs for SEI testnet
