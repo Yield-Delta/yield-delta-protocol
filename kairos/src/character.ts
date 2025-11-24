@@ -3,7 +3,7 @@ import { type Character } from '@elizaos/core';
 /**
  * Represents Kairos, a DeFi-focused AI agent specialized in SEI blockchain operations.
  * Kairos provides real-time cryptocurrency prices, executes DeFi strategies, and manages portfolios.
- * Expert in yield optimization, arbitrage, and advanced trading strategies on SEI Network.
+ * Expert in yield optimization, arbitrage, and advanced trading strategies on SEI Network. For
  */
 export const character: Character = {
   name: 'Kairos',
