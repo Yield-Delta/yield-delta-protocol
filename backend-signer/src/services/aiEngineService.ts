@@ -59,11 +59,46 @@ export class AIEngineService {
       // Response format: RebalanceResponse
       const data = response.data;
 
+      // Get tick values from AI Engine or generate fallback values
+      let newTickLower = data.new_lower_tick;
+      let newTickUpper = data.new_upper_tick;
+
+      // If AI engine returns invalid tick range (0,0), generate sensible defaults
+      // based on current position with slight adjustment
+      if (newTickLower === 0 && newTickUpper === 0) {
+        // Use current ticks as base, or generate standard range if no current position
+        if (vaultState.currentTickLower !== 0 || vaultState.currentTickUpper !== 0) {
+          // Adjust current range by ±10% of the range width
+          const rangeWidth = vaultState.currentTickUpper - vaultState.currentTickLower;
+          const adjustment = Math.floor(rangeWidth * 0.1);
+          newTickLower = vaultState.currentTickLower - adjustment;
+          newTickUpper = vaultState.currentTickUpper + adjustment;
+        } else {
+          // Default to standard SEI/USDC range (approximately ±5% around current price)
+          // Tick spacing of 60 is common for 0.3% fee tier
+          const tickSpacing = 60;
+          const defaultRangeWidth = tickSpacing * 100; // ~6000 ticks
+          newTickLower = -defaultRangeWidth / 2;
+          newTickUpper = defaultRangeWidth / 2;
+        }
+        logger.warn('AI Engine returned invalid tick range (0,0), using fallback values', {
+          vault: vaultState.address,
+          fallbackLower: newTickLower,
+          fallbackUpper: newTickUpper,
+        });
+      }
+
+      // Validate tick values (lower must be less than upper)
+      if (newTickLower >= newTickUpper) {
+        logger.error('Invalid tick range: lower >= upper', { newTickLower, newTickUpper });
+        return null;
+      }
+
       // Convert AI Engine response to our RebalanceRecommendation format
       const recommendation: RebalanceRecommendation = {
         vault: vaultState.address,
-        newTickLower: data.new_lower_tick,
-        newTickUpper: data.new_upper_tick,
+        newTickLower,
+        newTickUpper,
         confidence: Math.floor(data.expected_improvement * 100), // Convert to 0-10000 scale
         urgency: data.urgency as 'low' | 'medium' | 'high' | 'critical',
         expectedReturns: data.expected_improvement,

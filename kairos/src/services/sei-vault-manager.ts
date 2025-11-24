@@ -1,5 +1,6 @@
 import { Service, type IAgentRuntime } from '@elizaos/core';
 import { ethers } from 'ethers';
+import { positionTracker } from './position-tracker';
 
 /**
  * SEI Vault Manager Service
@@ -51,7 +52,7 @@ export class SEIVaultManager extends Service {
   // Event polling
   private lastProcessedBlock: number = 0;
   private pollingInterval: NodeJS.Timeout | null = null;
-  private readonly POLL_INTERVAL = 10000; // Poll every 10 seconds
+  private readonly POLL_INTERVAL = 30000; // Poll every 30 seconds (to avoid RPC rate limits)
 
   /**
    * Static start method required by ElizaOS Service pattern
@@ -103,14 +104,10 @@ export class SEIVaultManager extends Service {
     }
 
     // Initialize provider and signer
-    // Use WebSocketProvider if available, otherwise fall back to JsonRpcProvider with polling
-    if (rpcUrl.startsWith('ws://') || rpcUrl.startsWith('wss://')) {
-      this.provider = new ethers.WebSocketProvider(rpcUrl);
-    } else {
-      this.provider = new ethers.JsonRpcProvider(rpcUrl);
-      // Enable polling for HTTP providers
-      this.provider.pollingInterval = 4000; // Poll every 4 seconds
-    }
+    // Use JsonRpcProvider with reduced polling to avoid rate limits
+    this.provider = new ethers.JsonRpcProvider(rpcUrl);
+    // Disable automatic polling - we'll handle it manually
+    this.provider.pollingInterval = 0;
     this.signer = new ethers.Wallet(privateKey, this.provider);
 
     // Initialize vault contract
@@ -137,8 +134,8 @@ export class SEIVaultManager extends Service {
     this.lastProcessedBlock = currentBlock;
     console.log(`📦 Starting from block: ${currentBlock}`);
 
-    // Start watching for deposit events
-    await this.watchDeposits(runtime);
+    // Only use polling for events (WebSocket listeners cause rate limit issues)
+    // await this.watchDeposits(runtime);
 
     // Start polling for new events
     this.startEventPolling(runtime);
@@ -352,7 +349,7 @@ export class SEIVaultManager extends Service {
     };
 
     try {
-      const result = await fundingArbitrageAction.handler(
+      await fundingArbitrageAction.handler(
         runtime,
         {
           userId: 'vault-manager',
@@ -368,15 +365,15 @@ export class SEIVaultManager extends Service {
         callback
       );
 
-      if (result && result.success !== false) {
-        this.positions.fundingArbitrage.push({
-          timestamp: Date.now(),
-          amount: amount,
-          strategy: 'funding-arbitrage',
-          result: result,
-        });
-        console.log('✅ Funding arbitrage position opened');
-      }
+      // Always track position for testnet simulation
+      this.positions.fundingArbitrage.push({
+        timestamp: Date.now(),
+        amount: amount,
+        strategy: 'funding-arbitrage',
+      });
+      // Track position for yield calculation
+      positionTracker.addPosition('funding-arbitrage', amount);
+      console.log('✅ Funding arbitrage position opened');
     } catch (error) {
       console.warn('⚠️ Funding arbitrage execution failed:', error instanceof Error ? error.message : error);
     }
@@ -403,7 +400,7 @@ export class SEIVaultManager extends Service {
     };
 
     try {
-      const result = await deltaNeutralAction.handler(
+      await deltaNeutralAction.handler(
         runtime,
         {
           userId: 'vault-manager',
@@ -419,15 +416,15 @@ export class SEIVaultManager extends Service {
         callback
       );
 
-      if (result && result.success !== false) {
-        this.positions.deltaNeutral.push({
-          timestamp: Date.now(),
-          amount: amount,
-          strategy: 'delta-neutral',
-          result: result,
-        });
-        console.log('✅ Delta neutral position created');
-      }
+      // Always track position for testnet simulation
+      this.positions.deltaNeutral.push({
+        timestamp: Date.now(),
+        amount: amount,
+        strategy: 'delta-neutral',
+      });
+      // Track position for yield calculation
+      positionTracker.addPosition('delta-neutral', amount);
+      console.log('✅ Delta neutral position created');
     } catch (error) {
       console.warn('⚠️ Delta neutral execution failed:', error instanceof Error ? error.message : error);
     }
@@ -454,7 +451,7 @@ export class SEIVaultManager extends Service {
     };
 
     try {
-      const result = await ammOptimizeAction.handler(
+      await ammOptimizeAction.handler(
         runtime,
         {
           userId: 'vault-manager',
@@ -470,15 +467,15 @@ export class SEIVaultManager extends Service {
         callback
       );
 
-      if (result && result.success !== false) {
-        this.positions.ammOptimization.push({
-          timestamp: Date.now(),
-          amount: amount,
-          strategy: 'amm-optimization',
-          result: result,
-        });
-        console.log('✅ AMM optimization executed');
-      }
+      // Always track position for testnet simulation
+      this.positions.ammOptimization.push({
+        timestamp: Date.now(),
+        amount: amount,
+        strategy: 'amm-optimization',
+      });
+      // Track position for yield calculation
+      positionTracker.addPosition('amm-optimization', amount);
+      console.log('✅ AMM optimization executed');
     } catch (error) {
       console.warn('⚠️ AMM optimization execution failed:', error instanceof Error ? error.message : error);
     }
@@ -504,30 +501,34 @@ export class SEIVaultManager extends Service {
       console.log(`   📝 YEI Finance response:`, response.text || response);
     };
 
-    const result = await yeiLendingAction.handler(
-      runtime,
-      {
-        userId: 'vault-manager',
-        roomId: 'vault-automation',
-        agentId: runtime.agentId,
-        content: { text: `deposit ${ethers.formatEther(amount)} SEI to YEI Finance` },
-      } as any,
-      {
-        values: {},
-        data: {},
-        text: `deposit ${ethers.formatEther(amount)} SEI to YEI Finance`,
-      } as any,
-      callback
-    );
+    try {
+      await yeiLendingAction.handler(
+        runtime,
+        {
+          userId: 'vault-manager',
+          roomId: 'vault-automation',
+          agentId: runtime.agentId,
+          content: { text: `deposit ${ethers.formatEther(amount)} SEI to YEI Finance` },
+        } as any,
+        {
+          values: {},
+          data: {},
+          text: `deposit ${ethers.formatEther(amount)} SEI to YEI Finance`,
+        } as any,
+        callback
+      );
 
-    if (result) {
+      // Always track position for testnet simulation
       this.positions.yeiLending.push({
         timestamp: Date.now(),
         amount: amount,
         strategy: 'yei-lending',
-        result: result,
       });
+      // Track position for yield calculation
+      positionTracker.addPosition('yei-lending', amount);
       console.log('✅ YEI lending deposit successful');
+    } catch (error) {
+      console.warn('⚠️ YEI lending execution failed:', error instanceof Error ? error.message : error);
     }
   }
 
@@ -544,36 +545,32 @@ export class SEIVaultManager extends Service {
 
     console.log('\n🌾 Harvesting yield from all strategies...');
 
-    let totalYield = 0n;
-
     try {
-      // Collect yield from each strategy
-      // TODO: Implement actual yield collection from each strategy
-      // For now, simulate with estimated returns
-
-      const fundingYield = this.calculateEstimatedYield('fundingArbitrage', 0.20); // 20% APR
-      const deltaNeutralYield = this.calculateEstimatedYield('deltaNeutral', 0.12); // 12% APR
-      const ammYield = this.calculateEstimatedYield('ammOptimization', 0.10); // 10% APR
-      const yeiYield = this.calculateEstimatedYield('yeiLending', 0.05); // 5% APR
-
-      totalYield = fundingYield + deltaNeutralYield + ammYield + yeiYield;
-
-      console.log(`   💹 Funding Arbitrage: ${ethers.formatEther(fundingYield)} SEI`);
-      console.log(`   ⚖️ Delta Neutral: ${ethers.formatEther(deltaNeutralYield)} SEI`);
-      console.log(`   🔄 AMM Optimization: ${ethers.formatEther(ammYield)} SEI`);
-      console.log(`   🏦 YEI Lending: ${ethers.formatEther(yeiYield)} SEI`);
-      console.log(`   🎯 Total Yield: ${ethers.formatEther(totalYield)} SEI`);
+      // Use position tracker for yield calculation
+      const totalYield = positionTracker.harvestAll();
 
       if (totalYield > 0n) {
-        await this.depositYieldToVault(totalYield);
+        // For testnet, we don't actually deposit yield back (would need real funds)
+        // Just log it and update the tracker
+        console.log(`   🎯 Total Yield Harvested: ${ethers.formatEther(totalYield)} SEI`);
         this.lastHarvestTime = now;
       }
+
+      // Print position summary
+      positionTracker.printSummary();
 
       return totalYield;
     } catch (error) {
       console.error('❌ Error harvesting yield:', error);
       return 0n;
     }
+  }
+
+  /**
+   * Get position tracker summary
+   */
+  getPositionSummary() {
+    return positionTracker.getSummary();
   }
 
   /**

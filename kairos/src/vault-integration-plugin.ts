@@ -4,6 +4,7 @@ import vaultMonitorEvaluator, {
   rebalancingEvaluator,
   healthCheckEvaluator,
 } from './evaluators/vault-monitor';
+import { positionTracker } from './services/position-tracker';
 
 /**
  * Vault Integration Plugin
@@ -23,6 +24,50 @@ export const vaultIntegrationPlugin: Plugin = {
   services: [SEIVaultManager],
   evaluators: [vaultMonitorEvaluator, rebalancingEvaluator, healthCheckEvaluator],
   actions: [],
+  routes: [
+    {
+      name: 'positions',
+      path: '/positions',
+      type: 'GET',
+      handler: async (_req: any, res: any) => {
+        try {
+          const summary = positionTracker.getSummary();
+          res.json({
+            success: true,
+            data: summary,
+            timestamp: new Date().toISOString(),
+          });
+        } catch (error) {
+          res.status(500).json({
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
+        }
+      },
+    },
+    {
+      name: 'harvest',
+      path: '/harvest',
+      type: 'POST',
+      handler: async (_req: any, res: any) => {
+        try {
+          const harvested = positionTracker.harvestAll();
+          const summary = positionTracker.getSummary();
+          res.json({
+            success: true,
+            harvested: harvested.toString(),
+            data: summary,
+            timestamp: new Date().toISOString(),
+          });
+        } catch (error) {
+          res.status(500).json({
+            success: false,
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
+        }
+      },
+    },
+  ],
 };
 
 export default vaultIntegrationPlugin;
