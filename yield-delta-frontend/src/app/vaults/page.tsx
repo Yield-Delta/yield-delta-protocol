@@ -22,18 +22,30 @@ import '@/components/StatsCarousel.css';
 gsap.registerPlugin(ScrollTrigger);
 
 // Utility functions
-const formatSEI = (amount: number) => {
+const formatAmount = (amount: number, token: string = 'SEI') => {
   if (amount >= 1000000) {
-    return `${(amount / 1000000).toFixed(1)}M SEI`
+    return `${(amount / 1000000).toFixed(1)}M ${token}`
   }
   if (amount >= 1000) {
-    return `${(amount / 1000).toFixed(1)}K SEI`
+    return `${(amount / 1000).toFixed(1)}K ${token}`
   }
   if (amount >= 1) {
-    return `${amount.toFixed(2)} SEI`
+    return `${amount.toFixed(2)} ${token}`
   }
-  return `${amount.toFixed(4)} SEI`
+  return `${amount.toFixed(4)} ${token}`
 }
+
+// Helper to get the primary token for a vault
+const getVaultToken = (vault: VaultData) => {
+  // For stable_max strategy or USDC vaults, use USDC
+  if (vault.strategy === 'stable_max' || vault.tokenA === 'USDC') {
+    return 'USDC'
+  }
+  return 'SEI'
+}
+
+// Legacy function for backwards compatibility
+const formatSEI = (amount: number) => formatAmount(amount, 'SEI')
 
 const getRiskLevel = (apy: number, strategy?: string): 'Low' | 'Medium' | 'High' => {
   const apyPercentage = apy * 100; // Convert decimal to percentage
@@ -733,7 +745,7 @@ export default function VaultsPage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-xl font-black text-vault-primary">{formatSEI(getVaultTVL(vault))}</div>
+                        <div className="text-xl font-black text-vault-primary">{formatAmount(getVaultTVL(vault), getVaultToken(vault))}</div>
                         <div className="text-sm font-bold text-muted-foreground">TVL</div>
                       </div>
                     </div>
