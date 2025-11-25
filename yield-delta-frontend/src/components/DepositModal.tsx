@@ -235,18 +235,28 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       console.log('[DepositModal] Transaction successful:', depositMutation.hash);
       setTransactionHash(depositMutation.hash);
       setTransactionStatus('success');
-      
-      // Invalidate queries and show success notification
-      depositMutation.invalidateQueries();
+
+      // Show success notification immediately
       onSuccess(depositMutation.hash);
-      
+
       // Reset deposit amount but keep modal open to show success
       setDepositAmount('');
 
-      // CRITICAL: Refetch balance after successful transaction with delay
+      // CRITICAL: Invalidate and refetch ALL relevant data after successful transaction
+      // Wait 2 seconds for blockchain state to propagate
       setTimeout(() => {
+        console.log('[DepositModal] Invalidating queries after successful deposit');
+
+        // Invalidate vault queries (list and detail)
+        depositMutation.invalidateQueries();
+
+        // Refetch user balance
         depositMutation.userBalance.refetch();
-      }, 2000); // Wait 2 seconds for blockchain state to update
+
+        // Trigger refetch on the vault page by invalidating query client
+        // This will cause TVL and position hooks to refetch when the page loads
+        console.log('[DepositModal] All queries invalidated - data will refresh on vault page');
+      }, 2000);
 
       // Give user time to see the success message before redirecting
       setTimeout(() => {
@@ -369,12 +379,13 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       setErrorMessage('Please connect your wallet to continue');
       return;
     }
-    
+
     console.log('▶️ [DepositModal] handleDeposit initiated', {
       depositAmount,
       selectedToken,
       isValidAmount,
-      vaultName: vault?.name
+      vaultName: vault?.name,
+      vaultAddress: vault?.address
     });
 
     if (!isValidAmount || !vault || !selectedToken) {
@@ -386,9 +397,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       return;
     }
 
-    // Reset transaction state
-    console.log('🔄 [DepositModal] Resetting transaction state to pending');
-    setTransactionStatus('pending');
+    // Don't manually set transaction status - let the useEffect hooks handle it
+    console.log('🔄 [DepositModal] Initiating deposit, wagmi will manage transaction state');
     setTransactionHash(null);
     setErrorMessage(null);
 
@@ -402,30 +412,34 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       });
 
       if (!validation.isValid) {
+        console.error('❌ [DepositModal] Validation failed:', validation.error);
         throw new Error(validation.error);
       }
 
       // Show warnings if any
       if (validation.warnings && validation.warnings.length > 0) {
-        console.warn('[DepositModal] Deposit warnings:', validation.warnings);
+        console.warn('⚠️ [DepositModal] Deposit warnings:', validation.warnings);
       }
 
-      // Execute the deposit
+      console.log('✅ [DepositModal] Validation passed, calling deposit mutation...');
+
+      // Execute the deposit - this will trigger wagmi's writeContract
       await depositMutation.deposit({
         amount: depositAmount,
         tokenSymbol: selectedToken,
         vaultAddress: vault.address,
         recipient: address
       });
-      
-      console.log('[DepositModal] Transaction initiated, waiting for blockchain confirmation');
+
+      console.log('✅ [DepositModal] deposit() called successfully, wagmi will now handle the transaction');
+      console.log('⏳ [DepositModal] Watch for depositMutation.isPending to become true');
     } catch (error) {
-      console.error('[DepositModal] Deposit initiation error:', error);
-      
+      console.error('❌ [DepositModal] Deposit initiation error:', error);
+
       // Handle immediate errors (validation, wallet issues, etc.)
       if (error instanceof Error) {
         let userFriendlyMessage = error.message;
-        
+
         if (error.message.includes('user rejected transaction')) {
           userFriendlyMessage = 'Transaction was rejected by the user';
         } else if (error.message.includes('insufficient funds')) {
@@ -433,12 +447,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         } else if (error.message.includes('Insufficient balance')) {
           userFriendlyMessage = 'Your wallet balance is too low for this deposit';
         }
-        
+
+        console.error('💥 [DepositModal] Setting error message:', userFriendlyMessage);
         setErrorMessage(userFriendlyMessage);
       } else {
+        console.error('💥 [DepositModal] Unknown error type:', error);
         setErrorMessage('Failed to initiate transaction');
       }
-      
+
       setTransactionStatus('error');
     }
   };

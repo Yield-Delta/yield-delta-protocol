@@ -79,7 +79,8 @@ interface VaultDetailPageProps {
 function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams }: VaultDetailPageProps) {
   const router = useRouter();
   const cardRef = useRef<HTMLDivElement>(null);
-  
+  const hasRefetchedRef = useRef(false);
+
   // State
   const [showDepositModal, setShowDepositModal] = useState(action === 'deposit');
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
@@ -92,12 +93,12 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   const vault = selectedVault || (vaultAddress ? getVaultByAddress(vaultAddress) : null);
 
   // Get user's position in this vault
-  const { position, hasPosition } = useVaultPosition(
+  const { position, hasPosition, refetch: refetchPosition } = useVaultPosition(
     vaultAddress || ''
   );
 
   // Get on-chain TVL for this vault
-  const { tvlMap, isLoading: tvlLoading } = useVaultTVL(
+  const { tvlMap, isLoading: tvlLoading, refetch: refetchTVL } = useVaultTVL(
     vaultAddress ? [vaultAddress] : []
   );
   const onChainTVL = vaultAddress ? (tvlMap.get(vaultAddress.toLowerCase()) || 0) : 0;
@@ -117,6 +118,29 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
       console.log('[VaultPage] ShareValue being passed to modal:', position.shareValue);
     }
   }, [position]);
+
+  // Refetch TVL and position data when vault becomes available (only once per mount)
+  // This ensures fresh data after deposits/withdrawals and on page load
+  useEffect(() => {
+    if (vaultAddress && vault && !hasRefetchedRef.current) {
+      console.log('[VaultPage] Vault ready - refetching TVL and position data for fresh state');
+      hasRefetchedRef.current = true;
+
+      // Small delay to ensure hooks are ready and blockchain state is current
+      const timer = setTimeout(() => {
+        refetchTVL();
+        refetchPosition();
+        console.log('[VaultPage] Triggered initial refetch of TVL and position');
+      }, 300);
+
+      return () => clearTimeout(timer);
+    }
+  }, [vaultAddress, vault, refetchTVL, refetchPosition]);
+
+  // Reset the refetch flag when vault address changes (navigating to different vault)
+  useEffect(() => {
+    hasRefetchedRef.current = false;
+  }, [vaultAddress]);
   
   useEffect(() => {
     if (vaultAddress && !vault && vaultsData) {

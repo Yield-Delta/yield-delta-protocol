@@ -414,7 +414,7 @@ export function useEnhancedVaultDeposit(vaultData: {
   /**
    * Execute vault deposit
    */
-  const deposit = async (params: VaultDepositParams): Promise<string> => {
+  const deposit = async (params: VaultDepositParams): Promise<void> => {
     console.log('🚀 [deposit] Starting deposit process:', {
       params,
       userAddress,
@@ -453,14 +453,14 @@ export function useEnhancedVaultDeposit(vaultData: {
     try {
       // Determine if this is a native SEI vault or ERC20 vault
       const isNativeVault = isNativeSEIVault(vaultData);
-      
+
       console.log('🔍 [deposit] Vault type determination:', {
         isNativeVault,
         tokenIsNative: tokenInfo.isNative,
         vaultData,
         willSendValue: tokenInfo.isNative && isNativeVault
       });
-      
+
       if (tokenInfo.isNative && isNativeVault) {
         // Native SEI deposit to a native SEI vault
         console.log('💰 [deposit] Executing native SEI deposit with msg.value');
@@ -470,7 +470,7 @@ export function useEnhancedVaultDeposit(vaultData: {
           args: [amountInWei.toString(), recipient],
           value: amountInWei.toString()
         });
-        
+
         writeContract({
           address: params.vaultAddress as `0x${string}`,
           abi: SEIVault,
@@ -478,8 +478,8 @@ export function useEnhancedVaultDeposit(vaultData: {
           args: [amountInWei, recipient as `0x${string}`],
           value: amountInWei // Send SEI as value for native deposits
         });
-        
-        console.log('✅ [deposit] Native SEI writeContract called');
+
+        console.log('✅ [deposit] Native SEI writeContract called - transaction will be processed by wagmi');
       } else if (!tokenInfo.isNative && !isNativeVault) {
         // ERC20 token deposit to an ERC20 vault - requires prior approval
         console.log('🏦 [deposit] Executing ERC20 deposit (requires approval)');
@@ -489,7 +489,7 @@ export function useEnhancedVaultDeposit(vaultData: {
           args: [amountInWei.toString(), recipient],
           value: '0'
         });
-        
+
         writeContract({
           address: params.vaultAddress as `0x${string}`,
           abi: SEIVault,
@@ -497,11 +497,11 @@ export function useEnhancedVaultDeposit(vaultData: {
           args: [amountInWei, recipient as `0x${string}`]
           // No value for ERC20 deposits
         });
-        
-        console.log('✅ [deposit] ERC20 writeContract called');
+
+        console.log('✅ [deposit] ERC20 writeContract called - transaction will be processed by wagmi');
       } else {
         // Mismatched vault and token types
-        const errorMsg = isNativeVault 
+        const errorMsg = isNativeVault
           ? 'This vault only accepts native SEI deposits'
           : `This vault only accepts ERC20 tokens, not native SEI`;
         console.error('❌ [deposit] Vault/token type mismatch:', {
@@ -512,18 +512,19 @@ export function useEnhancedVaultDeposit(vaultData: {
         throw new Error(errorMsg);
       }
 
-      console.log('⏳ [deposit] Returning pending status');
-      return 'pending';
+      console.log('⏳ [deposit] writeContract called, wagmi will handle the transaction flow');
+      // Don't return anything - let wagmi's state management handle the rest
+      // The component will track state via isPending, isSuccess, isError, and hash
     } catch (err) {
       console.error('[useEnhancedVaultDeposit] Deposit error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      
+
       addNotification({
         type: 'error',
         title: 'Deposit Failed',
         message: errorMessage
       });
-      
+
       throw err;
     }
   };
@@ -551,24 +552,36 @@ export function useEnhancedVaultDeposit(vaultData: {
     deposit,
     approveToken,
     validateDeposit,
-    
+
     // Deposit info
     getDepositInfo,
-    
+
     // Transaction state
     hash,
     error,
     isPending,
     isSuccess,
     isError,
-    
+
     // Balance info
     userBalance,
-    
-    // Helper to invalidate queries
+
+    // Helper to invalidate queries after successful deposit
     invalidateQueries: () => {
+      console.log('[useEnhancedVaultDeposit] Invalidating vault queries for:', vaultData.address);
+
+      // Invalidate vault detail query (specific vault data)
       queryClient.invalidateQueries({ queryKey: VAULT_QUERY_KEYS.detail(vaultData.address) });
+
+      // Invalidate vault lists query (all vaults data)
       queryClient.invalidateQueries({ queryKey: VAULT_QUERY_KEYS.lists() });
+
+      // Invalidate user positions for this vault (if user address is available)
+      if (userAddress) {
+        queryClient.invalidateQueries({ queryKey: VAULT_QUERY_KEYS.positions(userAddress) });
+      }
+
+      console.log('[useEnhancedVaultDeposit] All vault queries invalidated - TVL and position will auto-refetch');
     }
   };
 }
