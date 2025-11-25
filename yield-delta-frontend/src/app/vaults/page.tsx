@@ -16,6 +16,7 @@ import * as THREE from 'three';
 import { useSeiMarketData } from '@/hooks/useMarketData';
 import { useVaultStore, VaultData } from '@/stores/vaultStore';
 import { useVaultTVL } from '@/hooks/useVaultTVL';
+import { useTotalTVLInUSD } from '@/hooks/useTotalTVLInUSD';
 import '@/components/StatsCarousel.css';
 // import styles from './page.module.css'; // Commented out as not used
 
@@ -178,6 +179,12 @@ export default function VaultsPage() {
 
   // Fetch on-chain TVL for all vaults
   const { tvlMap, isLoading: tvlLoading } = useVaultTVL(vaultAddresses);
+
+  // Calculate total TVL in USD across all vaults
+  const {
+    formattedUSD: totalTVLInUSD,
+    isLoading: tvlUSDLoading
+  } = useTotalTVLInUSD(vaultsData || [], tvlMap);
 
   // Combine loading states
   const isLoading = vaultLoading || queryLoading || tvlLoading
@@ -501,20 +508,20 @@ export default function VaultsPage() {
               }}
             >
               {/* First set */}
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px', 
-                background: 'rgba(0, 0, 0, 0.25)', 
-                borderRadius: '8px', 
-                padding: '6px 12px', 
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'rgba(0, 0, 0, 0.25)',
+                borderRadius: '8px',
+                padding: '6px 12px',
                 border: '1px solid rgba(155, 93, 229, 0.2)',
                 whiteSpace: 'nowrap',
                 flexShrink: 0
               }}>
                 <StatsCardGraphic type="tvl" className="w-4 h-4 flex-shrink-0" />
-                <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: '500' }}>TVL</span>
-                <span style={{ fontWeight: 'bold', color: '#00f5d4', fontSize: '13px' }}>{isLoading ? '...' : formatSEI(totalTVL)}</span>
+                <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: '500' }}>Total TVL</span>
+                <span style={{ fontWeight: 'bold', color: '#00f5d4', fontSize: '13px' }}>{isLoading || tvlUSDLoading ? '...' : totalTVLInUSD}</span>
               </div>
               
               <div style={{ width: '1px', height: '20px', background: 'linear-gradient(to bottom, transparent, rgba(155, 93, 229, 0.4), transparent)', flexShrink: 0 }} />
@@ -573,21 +580,21 @@ export default function VaultsPage() {
 
               {/* Duplicate set for seamless scrolling */}
               <div style={{ width: '1px', height: '20px', background: 'linear-gradient(to bottom, transparent, rgba(155, 93, 229, 0.4), transparent)', flexShrink: 0 }} />
-              
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px', 
-                background: 'rgba(0, 0, 0, 0.25)', 
-                borderRadius: '8px', 
-                padding: '6px 12px', 
+
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'rgba(0, 0, 0, 0.25)',
+                borderRadius: '8px',
+                padding: '6px 12px',
                 border: '1px solid rgba(155, 93, 229, 0.2)',
                 whiteSpace: 'nowrap',
                 flexShrink: 0
               }}>
                 <StatsCardGraphic type="tvl" className="w-4 h-4 flex-shrink-0" />
-                <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: '500' }}>TVL</span>
-                <span style={{ fontWeight: 'bold', color: '#00f5d4', fontSize: '13px' }}>{isLoading ? '...' : formatSEI(totalTVL)}</span>
+                <span style={{ fontSize: '10px', color: 'rgba(255, 255, 255, 0.6)', fontWeight: '500' }}>Total TVL</span>
+                <span style={{ fontWeight: 'bold', color: '#00f5d4', fontSize: '13px' }}>{isLoading || tvlUSDLoading ? '...' : totalTVLInUSD}</span>
               </div>
               
               <div style={{ width: '1px', height: '20px', background: 'linear-gradient(to bottom, transparent, rgba(155, 93, 229, 0.4), transparent)', flexShrink: 0 }} />

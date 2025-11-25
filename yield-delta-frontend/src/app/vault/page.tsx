@@ -17,7 +17,8 @@ import VaultClientWrapper from '@/components/VaultClientWrapper';
 import TokenPairDisplay from '@/components/TokenPairDisplay';
 import { useVaultPosition } from '@/hooks/useVaultPosition';
 import { useVaultTVL } from '@/hooks/useVaultTVL';
-import { formatEther } from 'viem';
+import { formatEther, formatUnits } from 'viem';
+import { getPrimaryDepositToken, getTokenInfo } from '@/utils/tokenUtils';
 
 // Utility functions
 // Commented out unused function
@@ -87,6 +88,9 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   const { selectedVault, setSelectedVault, getVaultByAddress } = useVaultStore();
   const { data: vaultsData, isLoading } = useVaults();
 
+  // Get vault data (needs to be declared before it's used)
+  const vault = selectedVault || (vaultAddress ? getVaultByAddress(vaultAddress) : null);
+
   // Get user's position in this vault
   const { position, hasPosition } = useVaultPosition(
     vaultAddress || ''
@@ -98,6 +102,13 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   );
   const onChainTVL = vaultAddress ? (tvlMap.get(vaultAddress.toLowerCase()) || 0) : 0;
 
+  // Get primary token for the vault to display correct TVL symbol
+  const vaultPrimaryToken = vault ? getPrimaryDepositToken(vault) : null;
+  const tvlTokenSymbol = vaultPrimaryToken?.symbol || 'SEI';
+  const tvlDecimals = vaultPrimaryToken?.decimals || 18;
+
+  // Removed USD conversion for individual vault page - showing native tokens only
+
   // Debug logging for position
   useEffect(() => {
     if (position) {
@@ -106,9 +117,6 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
       console.log('[VaultPage] ShareValue being passed to modal:', position.shareValue);
     }
   }, [position]);
-  
-  // Get vault data
-  const vault = selectedVault || (vaultAddress ? getVaultByAddress(vaultAddress) : null);
   
   useEffect(() => {
     if (vaultAddress && !vault && vaultsData) {
@@ -572,7 +580,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   </div>
                 </div>
                 
-                {/* TVL - More Compact Secondary */}
+                {/* TVL - Native Token Display Only */}
                 <div className="vault-metric-secondary-compact" style={{
                   background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)',
                   border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -590,15 +598,20 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   justifyContent: 'center',
                   alignItems: 'center'
                 }}>
+                  {/* Native Token Amount - Primary Display */}
                   <div style={{
                     fontSize: '1.75rem',
                     fontWeight: '600',
-                    marginBottom: '0.1875rem',
-                    color: '#ffffff',
-                    textShadow: '0 0 12px rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0,0,0,0.4)',
+                    marginBottom: '0.25rem',
+                    color: '#10b981',
+                    textShadow: '0 0 15px rgba(16, 185, 129, 0.4), 0 1px 2px rgba(0,0,0,0.4)',
                     lineHeight: '1.3'
                   }}>
-                    {tvlLoading ? '...' : `${onChainTVL.toFixed(2)} SEI`}
+                    {tvlLoading ? (
+                      '...'
+                    ) : (
+                      `${onChainTVL.toFixed(tvlDecimals === 6 ? 2 : 4)} ${tvlTokenSymbol}`
+                    )}
                   </div>
                   <div style={{
                     fontSize: '0.875rem',
@@ -866,7 +879,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                         <span className="font-bold text-green-400 text-lg" style={{
                           textShadow: '0 0 15px rgba(34, 197, 94, 0.4)'
                         }}>
-                          {parseFloat(formatEther(BigInt(position.shareValue))).toFixed(4)} SEI
+                          {parseFloat(formatUnits(BigInt(position.shareValue), tvlDecimals)).toFixed(tvlDecimals === 6 ? 2 : 4)} {tvlTokenSymbol}
                         </span>
                       </div>
                       <div className="p-3 rounded-xl" style={{
@@ -875,7 +888,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                       }}>
                         <span className="text-muted-foreground text-xs font-medium block mb-1">Deposited</span>
                         <span className="font-bold text-white text-lg">
-                          {parseFloat(formatEther(BigInt(position.totalDeposited))).toFixed(4)} SEI
+                          {parseFloat(formatUnits(BigInt(position.totalDeposited), tvlDecimals)).toFixed(tvlDecimals === 6 ? 2 : 4)} {tvlTokenSymbol}
                         </span>
                       </div>
                       <div className="p-3 rounded-xl" style={{
@@ -885,14 +898,14 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                         <span className="text-muted-foreground text-xs font-medium block mb-1">P&L</span>
                         <span className={`font-bold text-lg ${
                           (() => {
-                            const netInvested = parseFloat(formatEther(BigInt(position.totalDeposited))) - parseFloat(formatEther(BigInt(position.totalWithdrawn)));
-                            const currentValue = parseFloat(formatEther(BigInt(position.shareValue)));
+                            const netInvested = parseFloat(formatUnits(BigInt(position.totalDeposited), tvlDecimals)) - parseFloat(formatUnits(BigInt(position.totalWithdrawn), tvlDecimals));
+                            const currentValue = parseFloat(formatUnits(BigInt(position.shareValue), tvlDecimals));
                             return currentValue >= netInvested ? 'text-green-400' : 'text-red-400';
                           })()
                         }`}>
                           {(() => {
-                            const netInvested = parseFloat(formatEther(BigInt(position.totalDeposited))) - parseFloat(formatEther(BigInt(position.totalWithdrawn)));
-                            const currentValue = parseFloat(formatEther(BigInt(position.shareValue)));
+                            const netInvested = parseFloat(formatUnits(BigInt(position.totalDeposited), tvlDecimals)) - parseFloat(formatUnits(BigInt(position.totalWithdrawn), tvlDecimals));
+                            const currentValue = parseFloat(formatUnits(BigInt(position.shareValue), tvlDecimals));
                             const pnlPercentage = netInvested > 0 ? ((currentValue - netInvested) / netInvested) * 100 : 0;
                             return pnlPercentage.toFixed(2);
                           })()}%
@@ -1120,7 +1133,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                           <div className="flex justify-between">
                             <span className="text-muted-foreground">Avg Trade Size</span>
                             <span className="font-bold text-enhanced-glow text-cyan-400">
-                              {onChainTVL > 0 ? `${avgTradeSize} SEI` : 'N/A'}
+                              {onChainTVL > 0 ? `${avgTradeSize} ${tvlTokenSymbol}` : 'N/A'}
                             </span>
                           </div>
                           <div className="flex justify-between">
@@ -1218,7 +1231,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
         onClose={() => setShowWithdrawModal(false)}
         onSuccess={handleWithdrawSuccess}
         userShares={position?.shares || '0'}
-        userValue={position ? formatEther(BigInt(position.shareValue)) : '0'}
+        userValue={position ? formatUnits(BigInt(position.shareValue), tvlDecimals) : '0'}
       />
 
     </div>

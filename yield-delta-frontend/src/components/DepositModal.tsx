@@ -3,12 +3,29 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Loader2, ArrowRight, Info, Shield, TrendingUp, Coins, Vault, DollarSign, Percent, CheckCircle2, Zap } from 'lucide-react';
 import { useEnhancedVaultDeposit } from '@/hooks/useEnhancedVaultDeposit';
-import { 
-  getTokenRequirementText, 
-  getPrimaryDepositToken
+import {
+  getTokenRequirementText,
+  getPrimaryDepositToken,
+  getTokenInfo
 } from '@/utils/tokenUtils';
 import { useRouter } from 'next/navigation';
-import { useAccount } from 'wagmi';
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useTokenAllowance } from '@/hooks/useTokenBalance';
+import { parseUnits } from 'viem';
+
+// ERC20 ABI for approve function
+const ERC20_ABI = [
+  {
+    name: 'approve',
+    type: 'function',
+    inputs: [
+      { name: 'spender', type: 'address' },
+      { name: 'amount', type: 'uint256' }
+    ],
+    outputs: [{ name: '', type: 'bool' }],
+    stateMutability: 'nonpayable'
+  }
+] as const;
 
 interface VaultData {
   address: string;
@@ -88,11 +105,15 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   // Get actual wallet connection
   const { address, isConnected } = useAccount();
-  
+
   const router = useRouter();
-  
+
   // State for selected deposit token
   const [selectedToken, setSelectedToken] = useState<string>('');
+
+  // Approval state
+  const [needsApproval, setNeedsApproval] = useState(false);
+  const [isApproving, setIsApproving] = useState(false);
 
   // Only create deposit mutation if vault has valid data
   const vaultData = vault && vault.address && vault.tokenA && vault.tokenB && vault.strategy ? {
@@ -111,9 +132,17 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   };
   
   const depositMutation = useEnhancedVaultDeposit(vaultData);
-  
+
+  // Approval contract hooks
+  const { writeContract: writeApproval, data: approvalHash, isPending: isApprovalPending, isSuccess: isApprovalSuccess, isError: isApprovalError, error: approvalError } = useWriteContract();
+
+  // Wait for approval transaction
+  const { isLoading: isApprovalConfirming, isSuccess: isApprovalConfirmed } = useWaitForTransactionReceipt({
+    hash: approvalHash,
+  });
+
   // Enhanced balance information available through depositMutation.userBalance
-  
+
   // Get deposit info and token requirements (after hooks are initialized)
   const depositInfo = vault ? depositMutation.getDepositInfo() : null;
   // Token requirements are included in depositInfo - only call when vault exists and has valid data
@@ -122,14 +151,65 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   
   // Get current user balance for the primary deposit token
   const currentUserBalance = depositInfo ? depositInfo.userBalance : { amount: 0, formatted: '0', isLoading: false };
-  
+
+  // Check allowance for ERC20 tokens
+  const tokenInfo = primaryToken ? getTokenInfo(primaryToken.symbol) : null;
+  const { allowance, refetch: refetchAllowance } = useTokenAllowance(
+    tokenInfo && !tokenInfo.isNative && tokenInfo.address ? tokenInfo.address : '',
+    vault?.address || ''
+  );
+
   // Update selected token when vault changes
   useEffect(() => {
     if (primaryToken && !selectedToken) {
       setSelectedToken(primaryToken.symbol);
     }
   }, [primaryToken, selectedToken]);
-  
+
+  // Check if approval is needed whenever amount or allowance changes
+  useEffect(() => {
+    if (!tokenInfo || tokenInfo.isNative || !depositAmount || parseFloat(depositAmount) <= 0) {
+      setNeedsApproval(false);
+      return;
+    }
+
+    const amountInWei = parseUnits(depositAmount, tokenInfo.decimals);
+    const hasInsufficientAllowance = allowance < amountInWei;
+
+    console.log('[DepositModal] Allowance check:', {
+      depositAmount,
+      amountInWei: amountInWei.toString(),
+      allowance: allowance.toString(),
+      needsApproval: hasInsufficientAllowance,
+      tokenSymbol: tokenInfo.symbol
+    });
+
+    setNeedsApproval(hasInsufficientAllowance);
+  }, [depositAmount, allowance, tokenInfo]);
+
+  // Handle approval confirmation
+  useEffect(() => {
+    if (isApprovalConfirmed && approvalHash) {
+      console.log('[DepositModal] Approval confirmed:', approvalHash);
+      setIsApproving(false);
+      setNeedsApproval(false);
+      // Refetch allowance after approval
+      setTimeout(() => {
+        refetchAllowance();
+      }, 2000);
+    }
+  }, [isApprovalConfirmed, approvalHash, refetchAllowance]);
+
+  // Handle approval errors
+  useEffect(() => {
+    if (isApprovalError && approvalError) {
+      console.error('[DepositModal] Approval failed:', approvalError);
+      setIsApproving(false);
+      setErrorMessage(`Approval failed: ${approvalError.message}`);
+      setTransactionStatus('error');
+    }
+  }, [isApprovalError, approvalError]);
+
   // Define handleClose function early to avoid hoisting issues
   const handleClose = useCallback(() => {
     setDepositAmount('');
@@ -240,6 +320,46 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   const vaultColor = getVaultColor(vault.strategy);
   const riskLevel = getRiskLevel(vault.apy, vault.strategy);
   const isValidAmount = depositAmount && parseFloat(depositAmount) > 0;
+
+  // Handle approval for ERC20 tokens
+  const handleApprove = async () => {
+    if (!isConnected || !address || !tokenInfo || !tokenInfo.address || !vault) {
+      console.error('[DepositModal] Cannot approve: missing requirements');
+      return;
+    }
+
+    if (!depositAmount || parseFloat(depositAmount) <= 0) {
+      console.error('[DepositModal] Invalid deposit amount for approval');
+      return;
+    }
+
+    try {
+      setIsApproving(true);
+      setTransactionStatus('pending');
+      setErrorMessage(null);
+
+      const amountInWei = parseUnits(depositAmount, tokenInfo.decimals);
+
+      console.log('[DepositModal] Approving token:', {
+        tokenAddress: tokenInfo.address,
+        spender: vault.address,
+        amount: amountInWei.toString(),
+        symbol: tokenInfo.symbol
+      });
+
+      writeApproval({
+        address: tokenInfo.address as `0x${string}`,
+        abi: ERC20_ABI,
+        functionName: 'approve',
+        args: [vault.address as `0x${string}`, amountInWei]
+      });
+    } catch (error) {
+      console.error('[DepositModal] Approval error:', error);
+      setIsApproving(false);
+      setErrorMessage(error instanceof Error ? error.message : 'Approval failed');
+      setTransactionStatus('error');
+    }
+  };
 
   // Enhanced handleDeposit function with demo simulation
   const handleDeposit = async () => {
@@ -1091,9 +1211,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
                   <Info style={{ width: '20px', height: '20px', color: '#ffc107' }} />
-                  <span style={{ 
-                    fontSize: '1rem', 
-                    fontWeight: '700', 
+                  <span style={{
+                    fontSize: '1rem',
+                    fontWeight: '700',
                     color: '#ffffff',
                     textShadow: '0 1px 2px rgba(0,0,0,0.3)'
                   }}>Important Notice</span>
@@ -1112,18 +1232,29 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                   lineHeight: '1.5',
                   margin: '0 0 12px 0'
                 }}>
-                  <strong>Your Balance:</strong> {currentUserBalance.amount.toFixed(4)} {primaryToken?.symbol || 'tokens'} 
+                  <strong>Your Balance:</strong> {currentUserBalance.amount.toFixed(4)} {primaryToken?.symbol || 'tokens'}
                   {currentUserBalance.isLoading && ' (Loading...)'}
                 </p>
+                {needsApproval && !isApprovalConfirmed && (
+                  <p style={{
+                    fontSize: '0.875rem',
+                    color: 'rgba(255, 193, 7, 1)',
+                    lineHeight: '1.5',
+                    margin: '0 0 12px 0',
+                    fontWeight: '600'
+                  }}>
+                    <strong>⚠️ Approval Required:</strong> You need to approve the vault contract to spend your {tokenInfo?.symbol} tokens before depositing. Click "Approve {tokenInfo?.symbol}" button below.
+                  </p>
+                )}
                 <p style={{
                   fontSize: '0.8rem',
                   color: 'rgba(255, 255, 255, 0.7)',
                   lineHeight: '1.4',
                   margin: '0'
                 }}>
-                  {primaryToken?.isNative 
-                    ? 'This vault accepts native SEI deposits directly from your wallet.' 
-                    : `This vault requires ${primaryToken?.symbol} tokens. Make sure you have sufficient ${primaryToken?.symbol} balance and approve token spending before depositing.`
+                  {primaryToken?.isNative
+                    ? 'This vault accepts native SEI deposits directly from your wallet.'
+                    : `This vault requires ${primaryToken?.symbol} tokens. ${needsApproval ? 'You will need to approve token spending in a separate transaction before depositing.' : 'Make sure you have sufficient balance.'}`
                   }
                 </p>
               </div>
@@ -1346,52 +1477,96 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
               >
                 {transactionStatus === 'success' ? 'Close' : 'Cancel'}
               </button>
-              <button
-                onClick={transactionStatus === 'success' ? handleClose : handleDeposit}
-                disabled={!isValidAmount || depositMutation.isPending || transactionStatus === 'pending'}
-                style={{
-                  background: `linear-gradient(135deg, ${vaultColor} 0%, ${vaultColor}dd 100%)`,
-                  border: 'none',
-                  color: '#000000',
-                  borderRadius: '16px',
-                  boxShadow: `0 12px 40px ${vaultColor}40, inset 0 1px 0 rgba(255,255,255,0.2)`,
-                  height: '48px',
-                  fontSize: '1rem',
-                  fontWeight: '700',
-                  cursor: 'pointer',
-                  fontFamily: 'inherit',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'scale(1.02)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'scale(1)';
-                }}
-              >
-                {depositMutation.isPending || transactionStatus === 'pending' ? (
-                  <>
-                    <Loader2 style={{ width: '20px', height: '20px' }} className="animate-spin" />
-                    {transactionStatus === 'pending' ? 'Processing...' : 'Deposit Now'}
-                  </>
-                ) : transactionStatus === 'success' ? (
-                  <>
-                    <CheckCircle2 style={{ width: '20px', height: '20px', color: '#22c55e' }} />
-                    Success!
-                  </>
-                ) : transactionStatus === 'error' ? (
-                  <>
-                    <Info style={{ width: '20px', height: '20px', color: '#ef4444' }} />
-                    Error
-                  </>
-                ) : (
-                  'Deposit Now'
-                )}
-              </button>
+              {/* Show Approve button if ERC20 token needs approval */}
+              {needsApproval && !isApprovalConfirmed ? (
+                <button
+                  onClick={handleApprove}
+                  disabled={!isValidAmount || isApproving || isApprovalConfirming}
+                  style={{
+                    background: `linear-gradient(135deg, #f59e0b 0%, #d97706 100%)`,
+                    border: 'none',
+                    color: '#000000',
+                    borderRadius: '16px',
+                    boxShadow: `0 12px 40px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(255,255,255,0.2)`,
+                    height: '48px',
+                    fontSize: '1rem',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  {isApproving || isApprovalConfirming ? (
+                    <>
+                      <Loader2 style={{ width: '20px', height: '20px' }} className="animate-spin" />
+                      {isApprovalConfirming ? 'Confirming...' : 'Approving...'}
+                    </>
+                  ) : (
+                    <>
+                      <Shield style={{ width: '20px', height: '20px' }} />
+                      Approve {tokenInfo?.symbol || 'Token'}
+                    </>
+                  )}
+                </button>
+              ) : (
+                <button
+                  onClick={transactionStatus === 'success' ? handleClose : handleDeposit}
+                  disabled={!isValidAmount || depositMutation.isPending || transactionStatus === 'pending' || (needsApproval && !isApprovalConfirmed)}
+                  style={{
+                    background: `linear-gradient(135deg, ${vaultColor} 0%, ${vaultColor}dd 100%)`,
+                    border: 'none',
+                    color: '#000000',
+                    borderRadius: '16px',
+                    boxShadow: `0 12px 40px ${vaultColor}40, inset 0 1px 0 rgba(255,255,255,0.2)`,
+                    height: '48px',
+                    fontSize: '1rem',
+                    fontWeight: '700',
+                    cursor: 'pointer',
+                    fontFamily: 'inherit',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    opacity: (!isValidAmount || (needsApproval && !isApprovalConfirmed)) ? 0.5 : 1
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
+                >
+                  {depositMutation.isPending || transactionStatus === 'pending' ? (
+                    <>
+                      <Loader2 style={{ width: '20px', height: '20px' }} className="animate-spin" />
+                      {transactionStatus === 'pending' ? 'Processing...' : 'Deposit Now'}
+                    </>
+                  ) : transactionStatus === 'success' ? (
+                    <>
+                      <CheckCircle2 style={{ width: '20px', height: '20px', color: '#22c55e' }} />
+                      Success!
+                    </>
+                  ) : transactionStatus === 'error' ? (
+                    <>
+                      <Info style={{ width: '20px', height: '20px', color: '#ef4444' }} />
+                      Error
+                    </>
+                  ) : (
+                    'Deposit Now'
+                  )}
+                </button>
+              )}
             </div>
           </div>
       </div>
