@@ -211,9 +211,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       }, 2000);
 
       // Final refetch and state update
-      setTimeout(async () => {
+      setTimeout(() => {
         console.log('[DepositModal] Final allowance refetch...');
-        await refetchAllowance();
+        refetchAllowance();
 
         setIsApproving(false);
         setTransactionStatus('idle');
