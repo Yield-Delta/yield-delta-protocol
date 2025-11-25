@@ -141,12 +141,13 @@ function calculateSEIHealth(seiData: MarketDataItem | undefined): SentimentData 
     return getDefaultMetric('SEI Ecosystem Health', 75);
   }
 
-  const priceHealth = seiData.changePercent24h > 0 ? 20 : 10;
+  const changePercent = seiData.changePercent24h ?? 0;
+  const priceHealth = changePercent > 0 ? 20 : 10;
   const liquidityHealth = seiData.liquidityScore || 80;
   const volumeHealth = seiData.volumeUSD24h > 10000000 ? 25 : 15;
 
   const value = Math.min(100, priceHealth + liquidityHealth * 0.3 + volumeHealth);
-  const trend = seiData.changePercent24h > 1 ? 'bullish' : seiData.changePercent24h < -1 ? 'bearish' : 'neutral';
+  const trend = changePercent > 1 ? 'bullish' : changePercent < -1 ? 'bearish' : 'neutral';
 
   return {
     metric: 'SEI Ecosystem Health',
