@@ -134,7 +134,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
   const depositMutation = useEnhancedVaultDeposit(vaultData);
 
   // Approval contract hooks
-  const { writeContract: writeApproval, data: approvalHash, isPending: isApprovalPending, isSuccess: isApprovalSuccess, isError: isApprovalError, error: approvalError } = useWriteContract();
+  const { writeContract: writeApproval, data: approvalHash, isError: isApprovalError, error: approvalError } = useWriteContract();
 
   // Wait for approval transaction
   const { isLoading: isApprovalConfirming, isSuccess: isApprovalConfirmed } = useWaitForTransactionReceipt({
@@ -1243,7 +1243,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     margin: '0 0 12px 0',
                     fontWeight: '600'
                   }}>
-                    <strong>⚠️ Approval Required:</strong> You need to approve the vault contract to spend your {tokenInfo?.symbol} tokens before depositing. Click "Approve {tokenInfo?.symbol}" button below.
+                    <strong>⚠️ Approval Required:</strong> You need to approve the vault contract to spend your {tokenInfo?.symbol} tokens before depositing. Click &ldquo;Approve {tokenInfo?.symbol}&rdquo; button below.
                   </p>
                 )}
                 <p style={{

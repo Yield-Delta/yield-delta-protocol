@@ -45,8 +45,8 @@ const getVaultToken = (vault: VaultData) => {
   return 'SEI'
 }
 
-// Legacy function for backwards compatibility
-const formatSEI = (amount: number) => formatAmount(amount, 'SEI')
+// Legacy function for backwards compatibility (currently unused)
+// const formatSEI = (amount: number) => formatAmount(amount, 'SEI')
 
 const getRiskLevel = (apy: number, strategy?: string): 'Low' | 'Medium' | 'High' => {
   const apyPercentage = apy * 100; // Convert decimal to percentage
@@ -218,15 +218,15 @@ export default function VaultsPage() {
     }
   }, [filteredVaults, selectedVault, depositVault, showDepositModal]);
 
-  // Calculate total TVL from on-chain data
-  const totalTVL = React.useMemo(() => {
-    if (tvlMap.size === 0) return 0;
-    let total = 0;
-    tvlMap.forEach((tvl) => {
-      total += tvl;
-    });
-    return total;
-  }, [tvlMap]);
+  // Calculate total TVL from on-chain data (currently unused, replaced by useTotalTVLInUSD)
+  // const totalTVL = React.useMemo(() => {
+  //   if (tvlMap.size === 0) return 0;
+  //   let total = 0;
+  //   tvlMap.forEach((tvl) => {
+  //     total += tvl;
+  //   });
+  //   return total;
+  // }, [tvlMap]);
 
   // Helper to get vault TVL (on-chain if available, else API data)
   const getVaultTVL = React.useCallback((vault: VaultData) => {

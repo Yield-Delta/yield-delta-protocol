@@ -18,7 +18,7 @@ import TokenPairDisplay from '@/components/TokenPairDisplay';
 import { useVaultPosition } from '@/hooks/useVaultPosition';
 import { useVaultTVL } from '@/hooks/useVaultTVL';
 import { formatEther, formatUnits } from 'viem';
-import { getPrimaryDepositToken, getTokenInfo } from '@/utils/tokenUtils';
+import { getPrimaryDepositToken } from '@/utils/tokenUtils';
 
 // Utility functions
 // Commented out unused function
