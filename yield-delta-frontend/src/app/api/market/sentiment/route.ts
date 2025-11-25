@@ -142,9 +142,10 @@ function calculateSEIHealth(seiData: MarketDataItem | undefined): SentimentData 
   }
 
   const changePercent = seiData.changePercent24h ?? 0;
+  const volumeUSD = seiData.volumeUSD24h ?? 0;
   const priceHealth = changePercent > 0 ? 20 : 10;
   const liquidityHealth = seiData.liquidityScore || 80;
-  const volumeHealth = seiData.volumeUSD24h > 10000000 ? 25 : 15;
+  const volumeHealth = volumeUSD > 10000000 ? 25 : 15;
 
   const value = Math.min(100, priceHealth + liquidityHealth * 0.3 + volumeHealth);
   const trend = changePercent > 1 ? 'bullish' : changePercent < -1 ? 'bearish' : 'neutral';
@@ -154,7 +155,7 @@ function calculateSEIHealth(seiData: MarketDataItem | undefined): SentimentData 
     value: Number(value.toFixed(1)),
     trend,
     confidence: 92,
-    description: `${seiData.liquidityScore >= 90 ? 'Robust' : 'Growing'} ecosystem with $${(seiData.volumeUSD24h / 1000000).toFixed(1)}M daily volume and ${seiData.seiMetrics?.tps || 'high'} TPS capacity`,
+    description: `${seiData.liquidityScore ?? 80 >= 90 ? 'Robust' : 'Growing'} ecosystem with $${(volumeUSD / 1000000).toFixed(1)}M daily volume and ${seiData.seiMetrics?.tps || 'high'} TPS capacity`,
   };
 }
 
