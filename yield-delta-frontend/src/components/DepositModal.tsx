@@ -176,27 +176,55 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
     const amountInWei = parseUnits(depositAmount, tokenInfo.decimals);
     const hasInsufficientAllowance = allowance < amountInWei;
 
-    console.log('[DepositModal] Allowance check:', {
-      depositAmount,
-      amountInWei: amountInWei.toString(),
-      allowance: allowance.toString(),
+    console.log('[DepositModal] 🔍 Allowance check:', {
+      tokenSymbol: tokenInfo.symbol,
+      tokenAddress: tokenInfo.address,
+      tokenDecimals: tokenInfo.decimals,
+      depositAmount: depositAmount,
+      depositAmountInWei: amountInWei.toString(),
+      currentAllowance: allowance.toString(),
+      currentAllowanceFormatted: (Number(allowance) / Math.pow(10, tokenInfo.decimals)).toFixed(tokenInfo.decimals),
       needsApproval: hasInsufficientAllowance,
-      tokenSymbol: tokenInfo.symbol
+      comparison: hasInsufficientAllowance
+        ? `❌ Allowance (${allowance.toString()}) < Amount (${amountInWei.toString()})`
+        : `✅ Allowance (${allowance.toString()}) >= Amount (${amountInWei.toString()})`,
+      vaultAddress: vault?.address,
+      userAddress: address
     });
 
     setNeedsApproval(hasInsufficientAllowance);
-  }, [depositAmount, allowance, tokenInfo]);
+  }, [depositAmount, allowance, tokenInfo, vault?.address, address]);
 
   // Handle approval confirmation
   useEffect(() => {
     if (isApprovalConfirmed && approvalHash) {
-      console.log('[DepositModal] Approval confirmed:', approvalHash);
-      setIsApproving(false);
-      setNeedsApproval(false);
-      // Refetch allowance after approval
+      console.log('[DepositModal] ✅ Approval transaction confirmed:', approvalHash);
+      console.log('[DepositModal] Refetching allowance to verify approval...');
+
+      // Refetch allowance immediately
+      refetchAllowance();
+
+      // Also refetch after a delay to ensure blockchain state is updated
       setTimeout(() => {
+        console.log('[DepositModal] Secondary allowance refetch...');
         refetchAllowance();
       }, 2000);
+
+      // Final refetch and state update
+      setTimeout(async () => {
+        console.log('[DepositModal] Final allowance refetch...');
+        const result = await refetchAllowance();
+        console.log('[DepositModal] Final allowance value:', result?.data?.toString());
+
+        setIsApproving(false);
+        setTransactionStatus('idle');
+
+        // Force needsApproval to false after successful approval
+        // The allowance check useEffect will re-verify this
+        setNeedsApproval(false);
+
+        console.log('[DepositModal] ✅ Approval flow complete, you can now deposit');
+      }, 3000);
     }
   }, [isApprovalConfirmed, approvalHash, refetchAllowance]);
 
@@ -348,21 +376,29 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       setTransactionStatus('pending');
       setErrorMessage(null);
 
-      const amountInWei = parseUnits(depositAmount, tokenInfo.decimals);
+      // Use MAX_UINT256 for unlimited approval (standard practice)
+      const MAX_UINT256 = BigInt("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
 
-      console.log('[DepositModal] Approving token:', {
+      console.log('[DepositModal] Approving token with MAX approval:', {
         tokenAddress: tokenInfo.address,
+        tokenSymbol: tokenInfo.symbol,
+        tokenDecimals: tokenInfo.decimals,
         spender: vault.address,
-        amount: amountInWei.toString(),
-        symbol: tokenInfo.symbol
+        vaultName: vault.name,
+        approvalAmount: 'MAX_UINT256 (unlimited)',
+        depositAmount: depositAmount,
+        depositAmountInWei: parseUnits(depositAmount, tokenInfo.decimals).toString(),
+        currentAllowance: allowance.toString()
       });
 
       writeApproval({
         address: tokenInfo.address as `0x${string}`,
         abi: ERC20_ABI,
         functionName: 'approve',
-        args: [vault.address as `0x${string}`, amountInWei]
+        args: [vault.address as `0x${string}`, MAX_UINT256]
       });
+
+      console.log('[DepositModal] Approval transaction submitted, waiting for confirmation...');
     } catch (error) {
       console.error('[DepositModal] Approval error:', error);
       setIsApproving(false);
@@ -395,6 +431,29 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         selectedToken: !!selectedToken,
       });
       return;
+    }
+
+    // CRITICAL: Check allowance before deposit for ERC20 tokens
+    if (tokenInfo && !tokenInfo.isNative) {
+      const amountInWei = parseUnits(depositAmount, tokenInfo.decimals);
+      console.log('🔍 [DepositModal] Pre-deposit allowance verification:', {
+        tokenSymbol: tokenInfo.symbol,
+        tokenAddress: tokenInfo.address,
+        depositAmountInWei: amountInWei.toString(),
+        currentAllowance: allowance.toString(),
+        hasInsufficientAllowance: allowance < amountInWei,
+        needsApproval: needsApproval
+      });
+
+      if (allowance < amountInWei) {
+        const errorMsg = `Insufficient allowance. Current: ${allowance.toString()}, Required: ${amountInWei.toString()}. Please approve first.`;
+        console.error('❌ [DepositModal] ' + errorMsg);
+        setErrorMessage(errorMsg);
+        setTransactionStatus('error');
+        return;
+      }
+
+      console.log('✅ [DepositModal] Allowance check passed, proceeding with deposit');
     }
 
     // Don't manually set transaction status - let the useEffect hooks handle it
@@ -446,6 +505,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           userFriendlyMessage = 'Insufficient funds for this transaction';
         } else if (error.message.includes('Insufficient balance')) {
           userFriendlyMessage = 'Your wallet balance is too low for this deposit';
+        } else if (error.message.includes('0xfde038e6') || error.message.includes('awaiting_internal_transactions')) {
+          userFriendlyMessage = 'ERC20 transferFrom failed. Please ensure you have approved the vault contract and have sufficient token balance.';
         }
 
         console.error('💥 [DepositModal] Setting error message:', userFriendlyMessage);
