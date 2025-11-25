@@ -23,52 +23,49 @@ const MarketSentimentPage = () => {
   const statsCardsRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const [scene, setScene] = useState<THREE.Scene | null>(null);
+  const [sentimentData, setSentimentData] = useState<SentimentData[]>([]);
+  const [marketStats, setMarketStats] = useState({
+    bullishIndicators: 12,
+    fearIndex: 28,
+    sentimentScore: 76.5,
+    confidenceLevel: 84
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
-  // Mock sentiment data
-  const sentimentData: SentimentData[] = [
-    {
-      metric: 'Overall Market Sentiment',
-      value: 76.5,
-      trend: 'bullish',
-      confidence: 85,
-      description: 'Strong bullish sentiment driven by increased trading volume and positive price action'
-    },
-    {
-      metric: 'SEI Ecosystem Health',
-      value: 82.3,
-      trend: 'bullish',
-      confidence: 92,
-      description: 'Robust ecosystem growth with new protocol integrations and high liquidity'
-    },
-    {
-      metric: 'DeFi Protocol Adoption',
-      value: 69.1,
-      trend: 'bullish',
-      confidence: 78,
-      description: 'Growing adoption of yield farming protocols and liquidity provisioning'
-    },
-    {
-      metric: 'Institutional Interest',
-      value: 45.7,
-      trend: 'neutral',
-      confidence: 65,
-      description: 'Moderate institutional interest with room for growth in coming quarters'
-    },
-    {
-      metric: 'Social Media Buzz',
-      value: 88.4,
-      trend: 'bullish',
-      confidence: 89,
-      description: 'High social media engagement and positive community sentiment'
-    },
-    {
-      metric: 'Developer Activity',
-      value: 91.2,
-      trend: 'bullish',
-      confidence: 95,
-      description: 'Exceptional developer activity with frequent updates and new features'
-    }
-  ];
+  // Fetch sentiment data from API
+  useEffect(() => {
+    const fetchSentimentData = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`/api/market/sentiment?timeframe=${selectedTimeframe}`);
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch sentiment data');
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+          setSentimentData(data.data.sentimentMetrics);
+          setMarketStats(data.data.stats);
+          setLastUpdate(new Date(data.data.lastUpdated));
+        }
+      } catch (error) {
+        console.error('Error fetching sentiment data:', error);
+        // Keep existing data on error
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSentimentData();
+
+    // Refresh every 15 minutes
+    const interval = setInterval(fetchSentimentData, 15 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [selectedTimeframe]);
 
   const getSentimentColor = (trend: string) => {
     switch (trend) {
@@ -289,7 +286,7 @@ const MarketSentimentPage = () => {
                   <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" style={{ boxShadow: '0 0 10px rgba(16, 185, 129, 0.8)' }}></div>
                   <span className="text-green-300 font-semibold">AI Powered</span>
                 </div>
-                <div 
+                <div
                   className="text-center px-4 py-3 rounded-xl"
                   style={{
                     background: 'rgba(139, 92, 246, 0.15)',
@@ -298,7 +295,7 @@ const MarketSentimentPage = () => {
                   }}
                 >
                   <div className="text-sm text-purple-300 font-medium">Confidence</div>
-                  <div className="text-2xl font-bold text-purple-400">84.2%</div>
+                  <div className="text-2xl font-bold text-purple-400">{marketStats.confidenceLevel}%</div>
                 </div>
               </div>
             </div>
@@ -310,10 +307,10 @@ const MarketSentimentPage = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
         <div ref={statsCardsRef} className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {[
-            { label: 'Bullish Indicators', value: '12', change: '+3', icon: TrendingUp, color: 'green' },
-            { label: 'Market Fear Index', value: '28', change: '-5', icon: Brain, color: 'blue' },
-            { label: 'Sentiment Score', value: '76.5', change: '+8.2', icon: Target, color: 'purple' },
-            { label: 'Confidence Level', value: '84%', change: '+12%', icon: Activity, color: 'orange' }
+            { label: 'Bullish Indicators', value: marketStats.bullishIndicators.toString(), change: '+3', icon: TrendingUp, color: 'green' },
+            { label: 'Market Fear Index', value: marketStats.fearIndex.toString(), change: '-5', icon: Brain, color: 'blue' },
+            { label: 'Sentiment Score', value: marketStats.sentimentScore.toFixed(1), change: '+8.2', icon: Target, color: 'purple' },
+            { label: 'Confidence Level', value: `${marketStats.confidenceLevel}%`, change: '+12%', icon: Activity, color: 'orange' }
           ].map((stat, index) => (
             <div 
               key={index} 
@@ -409,7 +406,16 @@ const MarketSentimentPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {sentimentData.map((item, index) => {
+                {isLoading && sentimentData.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="text-center p-12">
+                      <div className="flex flex-col items-center gap-4">
+                        <div className="w-12 h-12 border-4 border-green-400 border-t-transparent rounded-full animate-spin"></div>
+                        <p className="text-gray-300 font-medium">Loading sentiment data...</p>
+                      </div>
+                    </td>
+                  </tr>
+                ) : sentimentData.map((item, index) => {
                   const SentimentIcon = getSentimentIcon(item.trend);
                   return (
                     <tr 
@@ -483,9 +489,9 @@ const MarketSentimentPage = () => {
         >
           <div className="flex items-center justify-center gap-3 mb-3">
             <Clock className="w-5 h-5 text-green-400" style={{ filter: 'drop-shadow(0 0 8px currentColor)' }} />
-            <span className="font-semibold">Last analysis: {new Date().toLocaleTimeString()}</span>
+            <span className="font-semibold">Last analysis: {lastUpdate.toLocaleTimeString()}</span>
           </div>
-          <p className="font-medium">Sentiment analysis updates every 15 minutes • Powered by AI & Machine Learning</p>
+          <p className="font-medium">Sentiment analysis updates every 15 minutes • Powered by Real-Time Market Data & AI</p>
         </div>
       </div>
     </div>
