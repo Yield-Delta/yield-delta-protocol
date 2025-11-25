@@ -485,16 +485,16 @@ export function useEnhancedVaultDeposit(vaultData: {
         console.log('🏦 [deposit] Executing ERC20 deposit (requires approval)');
         console.log('📋 [deposit] Contract call params:', {
           address: params.vaultAddress,
-          functionName: 'seiOptimizedDeposit',
-          args: [amountInWei.toString(), recipient],
+          functionName: 'deposit',
+          args: [amountInWei.toString(), '0', recipient],
           value: '0'
         });
 
         writeContract({
           address: params.vaultAddress as `0x${string}`,
           abi: SEIVault,
-          functionName: 'seiOptimizedDeposit',
-          args: [amountInWei, recipient as `0x${string}`]
+          functionName: 'deposit',
+          args: [amountInWei, BigInt(0), recipient as `0x${string}`]
           // No value for ERC20 deposits
         });
 
