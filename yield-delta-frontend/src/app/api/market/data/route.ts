@@ -237,8 +237,8 @@ async function getCurrentMarketData(symbols: string[]) {
       };
     });
 
-  } catch (error) {
-    console.error('[Market Data] Error fetching from CoinGecko:', error);
+  } catch {
+    console.error('[Market Data] Error fetching from CoinGecko');
     return getFallbackData(symbols);
   }
 }
@@ -265,7 +265,7 @@ async function getSEINetworkMetrics() {
         stakingRatio: 0.6 + Math.random() * 0.15 // 60-75%
       };
     }
-  } catch (error) {
+  } catch {
     console.warn('[Market Data] Could not fetch SEI network metrics, using estimates');
   }
 
