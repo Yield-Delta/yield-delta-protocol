@@ -73,12 +73,12 @@ export function useNativeSEIBalance(): TokenBalance {
 /**
  * Get ERC20 token balance
  */
-export function useERC20Balance(tokenAddress: string): TokenBalance {
+export function useERC20Balance(tokenAddress: string, decimals: number = 18): TokenBalance {
   const { address, isConnected } = useAccount();
 
-  const { 
-    data: balance, 
-    isLoading, 
+  const {
+    data: balance,
+    isLoading,
     error,
     refetch
   } = useReadContract({
@@ -95,12 +95,12 @@ export function useERC20Balance(tokenAddress: string): TokenBalance {
     }
   });
 
-  // Default to 18 decimals, but this should ideally be fetched from token contract
-  const numericBalance = balance ? parseFloat(formatUnits(balance as bigint, 18)) : 0;
+  // Use the correct decimals for the token
+  const numericBalance = balance ? parseFloat(formatUnits(balance as bigint, decimals)) : 0;
 
   return {
     balance: numericBalance,
-    formatted: balance ? formatUnits(balance as bigint, 18) : '0',
+    formatted: balance ? formatUnits(balance as bigint, decimals) : '0',
     isLoading,
     error: error as Error | null,
     refetch
@@ -113,7 +113,7 @@ export function useERC20Balance(tokenAddress: string): TokenBalance {
 export function useTokenBalance(tokenSymbol: string): TokenBalance {
   const tokenInfo = getTokenInfo(tokenSymbol);
   const nativeSEI = useNativeSEIBalance();
-  const erc20Balance = useERC20Balance(tokenInfo?.address || '');
+  const erc20Balance = useERC20Balance(tokenInfo?.address || '', tokenInfo?.decimals || 18);
 
   if (!tokenInfo) {
     return {
