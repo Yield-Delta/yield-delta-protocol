@@ -87,79 +87,20 @@ const COINBASE_PAIRS: Record<string, string> = {
   USDC: 'USDC-USD',
 }
 
-/**
- * Generate JWT for Coinbase Advanced Trade API
- */
-async function generateCoinbaseJWT(method: string, path: string): Promise<string | null> {
-  const keyName = process.env.COINBASE_API_KEY_NAME
-  const privateKey = process.env.COINBASE_API_PRIVATE_KEY
-
-  if (!keyName || !privateKey) {
-    return null // Fall back to public API
-  }
-
-  try {
-    // Dynamic import for crypto operations
-    const crypto = await import('crypto')
-
-    const now = Math.floor(Date.now() / 1000)
-    const payload = {
-      sub: keyName,
-      iss: 'coinbase-cloud',
-      nbf: now,
-      exp: now + 120, // 2 minutes
-      aud: ['retail_rest_api_proxy'],
-      uri: `${method} api.coinbase.com${path}`,
-    }
-
-    // Create JWT header
-    const header = {
-      alg: 'ES256',
-      kid: keyName,
-      nonce: crypto.randomBytes(16).toString('hex'),
-      typ: 'JWT',
-    }
-
-    // Encode header and payload
-    const encodedHeader = Buffer.from(JSON.stringify(header)).toString('base64url')
-    const encodedPayload = Buffer.from(JSON.stringify(payload)).toString('base64url')
-    const message = `${encodedHeader}.${encodedPayload}`
-
-    // Sign with private key
-    const sign = crypto.createSign('SHA256')
-    sign.update(message)
-    const signature = sign.sign(privateKey, 'base64url')
-
-    return `${message}.${signature}`
-  } catch (error) {
-    console.error('Error generating Coinbase JWT:', error)
-    return null
-  }
-}
 
 /**
- * Fetch price from Coinbase API (authenticated or public)
+ * Fetch price from Coinbase public API
  */
 async function fetchCoinbasePrice(asset: string): Promise<{ price: number; volume: number } | null> {
   const pair = COINBASE_PAIRS[asset]
   if (!pair) return null
 
   try {
-    // Try authenticated API first if credentials available
-    const jwt = await generateCoinbaseJWT('GET', `/v2/prices/${pair}/spot`)
-
-    const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    }
-
-    if (jwt) {
-      headers['Authorization'] = `Bearer ${jwt}`
-    }
-
+    // Use only public API endpoints (no JWT)
     const response = await fetch(
       `https://api.coinbase.com/v2/prices/${pair}/spot`,
       {
-        headers,
+        headers: { 'Content-Type': 'application/json' },
         next: { revalidate: 10 }
       }
     )
@@ -188,7 +129,7 @@ async function fetchCoinbasePrice(asset: string): Promise<{ price: number; volum
         // Volume fetch is optional
       }
 
-      console.log(`[Coinbase] ${asset} price: $${price.toFixed(4)} (${jwt ? 'authenticated' : 'public'})`)
+      console.log(`[Coinbase] ${asset} price: $${price.toFixed(4)} (public)`)
       return { price, volume }
     }
 

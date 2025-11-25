@@ -64,17 +64,31 @@ export async function GET(request: NextRequest) {
   }
 }
 
+interface MarketDataItem {
+  symbol: string;
+  changePercent24h?: number;
+  volumeUSD24h?: number;
+  liquidityScore?: number;
+  liquidity?: {
+    totalLocked?: number;
+  };
+  seiMetrics?: {
+    tps: number;
+    blockTime: number;
+    validators: number;
+  };
+  volatility?: number;
+}
+
 /**
  * Calculate sentiment metrics from market data
  */
-function calculateSentimentMetrics(marketData: any[]): SentimentData[] {
+function calculateSentimentMetrics(marketData: MarketDataItem[]): SentimentData[] {
   if (!marketData || marketData.length === 0) {
     return getDefaultSentiment();
   }
 
   const seiData = marketData.find((d) => d.symbol === 'SEI' || d.symbol === 'SEI-USDC');
-  const ethData = marketData.find((d) => d.symbol === 'ETH');
-  const btcData = marketData.find((d) => d.symbol === 'BTC');
 
   // Calculate overall market sentiment
   const avgChange = marketData.reduce((sum, d) => sum + (d.changePercent24h || 0), 0) / marketData.length;
@@ -105,7 +119,7 @@ function calculateSentimentMetrics(marketData: any[]): SentimentData[] {
   ];
 }
 
-function calculateOverallSentiment(avgChange: number, marketData: any[]): SentimentData {
+function calculateOverallSentiment(avgChange: number, marketData: MarketDataItem[]): SentimentData {
   const bullishCount = marketData.filter((d) => (d.changePercent24h || 0) > 0).length;
   const bullishRatio = bullishCount / marketData.length;
 
@@ -122,7 +136,7 @@ function calculateOverallSentiment(avgChange: number, marketData: any[]): Sentim
   };
 }
 
-function calculateSEIHealth(seiData: any): SentimentData {
+function calculateSEIHealth(seiData: MarketDataItem | undefined): SentimentData {
   if (!seiData) {
     return getDefaultMetric('SEI Ecosystem Health', 75);
   }
@@ -143,7 +157,7 @@ function calculateSEIHealth(seiData: any): SentimentData {
   };
 }
 
-function calculateDeFiAdoption(seiData: any): SentimentData {
+function calculateDeFiAdoption(seiData: MarketDataItem | undefined): SentimentData {
   if (!seiData) {
     return getDefaultMetric('DeFi Protocol Adoption', 70);
   }
@@ -163,7 +177,7 @@ function calculateDeFiAdoption(seiData: any): SentimentData {
   };
 }
 
-function calculateInstitutionalInterest(marketData: any[]): SentimentData {
+function calculateInstitutionalInterest(marketData: MarketDataItem[]): SentimentData {
   const totalVolume = marketData.reduce((sum, d) => sum + (d.volumeUSD24h || 0), 0);
   const avgLiquidity = marketData.reduce((sum, d) => sum + (d.liquidityScore || 70), 0) / marketData.length;
 
@@ -179,7 +193,7 @@ function calculateInstitutionalInterest(marketData: any[]): SentimentData {
   };
 }
 
-function calculateSocialBuzz(seiData: any): SentimentData {
+function calculateSocialBuzz(seiData: MarketDataItem | undefined): SentimentData {
   if (!seiData) {
     return getDefaultMetric('Social Media Buzz', 85);
   }
@@ -200,7 +214,7 @@ function calculateSocialBuzz(seiData: any): SentimentData {
   };
 }
 
-function calculateDevActivity(seiData: any): SentimentData {
+function calculateDevActivity(seiData: MarketDataItem | undefined): SentimentData {
   if (!seiData || !seiData.seiMetrics) {
     return getDefaultMetric('Developer Activity', 90);
   }
@@ -220,7 +234,7 @@ function calculateDevActivity(seiData: any): SentimentData {
   };
 }
 
-function calculateMarketStats(marketData: any[]): MarketStats {
+function calculateMarketStats(marketData: MarketDataItem[]): MarketStats {
   if (!marketData || marketData.length === 0) {
     return {
       bullishIndicators: 12,

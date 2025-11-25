@@ -20,15 +20,16 @@ import { useVaultTVL } from '@/hooks/useVaultTVL';
 import { formatEther } from 'viem';
 
 // Utility functions
-const formatCurrency = (amount: number) => {
-  if (amount >= 1000000) {
-    return `$${(amount / 1000000).toFixed(1)}M`
-  }
-  if (amount >= 1000) {
-    return `$${(amount / 1000).toFixed(0)}K`
-  }
-  return `$${amount.toFixed(0)}`
-}
+// Commented out unused function
+// const formatCurrency = (amount: number) => {
+//   if (amount >= 1000000) {
+//     return `$${(amount / 1000000).toFixed(1)}M`
+//   }
+//   if (amount >= 1000) {
+//     return `$${(amount / 1000).toFixed(0)}K`
+//   }
+//   return `$${amount.toFixed(0)}`
+// }
 
 const getRiskLevel = (apy: number, strategy?: string): 'Low' | 'Medium' | 'High' => {
   const apyPercentage = apy * 100; // Convert decimal to percentage
