@@ -485,17 +485,17 @@ export function useEnhancedVaultDeposit(vaultData: {
         console.log('🏦 [deposit] Executing ERC20 deposit (requires approval)');
         console.log('📋 [deposit] Contract call params:', {
           address: params.vaultAddress,
-          functionName: 'deposit',
-          args: [amountInWei.toString(), '0', recipient],
-          value: '0'
+          functionName: 'seiOptimizedDeposit',
+          args: [amountInWei.toString(), recipient],
+          value: '0 (no ETH for ERC20)'
         });
 
         writeContract({
           address: params.vaultAddress as `0x${string}`,
           abi: SEIVault,
-          functionName: 'deposit',
-          args: [amountInWei, BigInt(0), recipient as `0x${string}`]
-          // No value for ERC20 deposits
+          functionName: 'seiOptimizedDeposit',
+          args: [amountInWei, recipient as `0x${string}`]
+          // NO value property for ERC20 deposits - this is critical!
         });
 
         console.log('✅ [deposit] ERC20 writeContract called - transaction will be processed by wagmi');
