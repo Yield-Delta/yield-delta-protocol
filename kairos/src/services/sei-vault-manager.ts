@@ -52,7 +52,9 @@ export class SEIVaultManager extends Service {
   // Event polling
   private lastProcessedBlock: number = 0;
   private pollingInterval: NodeJS.Timeout | null = null;
-  private readonly POLL_INTERVAL = 30000; // Poll every 30 seconds (to avoid RPC rate limits)
+  private readonly POLL_INTERVAL = 10000; // Poll every 10 seconds (QuickNode Build plan: 25 req/s)
+  private retryCount: number = 0;
+  private readonly MAX_RETRIES = 3;
 
   /**
    * Static start method required by ElizaOS Service pattern
@@ -106,8 +108,10 @@ export class SEIVaultManager extends Service {
     // Initialize provider and signer
     // Use JsonRpcProvider with reduced polling to avoid rate limits
     this.provider = new ethers.JsonRpcProvider(rpcUrl);
-    // Disable automatic polling - we'll handle it manually
-    this.provider.pollingInterval = 0;
+    // Disable automatic polling - we'll handle it manually via our custom polling
+    if ('pollingInterval' in this.provider) {
+      (this.provider as any).pollingInterval = 0;
+    }
     this.signer = new ethers.Wallet(privateKey, this.provider);
 
     // Initialize vault contract
@@ -187,8 +191,14 @@ export class SEIVaultManager extends Service {
     this.pollingInterval = setInterval(async () => {
       try {
         await this.pollForNewEvents(runtime);
+        this.retryCount = 0; // Reset on success
       } catch (error) {
         console.error('❌ Error polling for events:', error);
+        this.retryCount++;
+        if (this.retryCount >= this.MAX_RETRIES) {
+          console.warn('⚠️ Max retries reached, will try again in next cycle');
+          this.retryCount = 0;
+        }
       }
     }, this.POLL_INTERVAL);
   }
@@ -203,23 +213,56 @@ export class SEIVaultManager extends Service {
 
     try {
       const currentBlock = await this.provider.getBlockNumber();
+      console.log(`🔍 Polling: current=${currentBlock}, last=${this.lastProcessedBlock}`);
 
       if (currentBlock <= this.lastProcessedBlock) {
         return; // No new blocks
       }
 
-      // Query for deposit events in new blocks
-      const filter = this.vaultContract.filters.SEIOptimizedDeposit();
-      const events = await this.vaultContract.queryFilter(
-        filter,
-        this.lastProcessedBlock + 1,
-        currentBlock
-      );
+      // Calculate block range and chunk if needed
+      const totalBlocks = currentBlock - this.lastProcessedBlock;
+      const MAX_BLOCK_RANGE = 10000; // QuickNode Build plan limit: 10,000 blocks per eth_getLogs call
 
-      if (events.length > 0) {
-        console.log(`\n🔔 Found ${events.length} new deposit event(s)!`);
+      let allEvents: any[] = [];
 
-        for (const event of events) {
+      // If block range is too large, query in chunks
+      if (totalBlocks > MAX_BLOCK_RANGE) {
+        console.log(`📦 Large block range detected (${totalBlocks} blocks), querying in chunks...`);
+
+        let fromBlock = this.lastProcessedBlock + 1;
+        while (fromBlock <= currentBlock) {
+          const toBlock = Math.min(fromBlock + MAX_BLOCK_RANGE - 1, currentBlock);
+
+          console.log(`   🔍 Querying blocks ${fromBlock} to ${toBlock}...`);
+          const filter = this.vaultContract.filters.SEIOptimizedDeposit();
+          const chunkEvents = await this.vaultContract.queryFilter(
+            filter,
+            fromBlock,
+            toBlock
+          );
+
+          allEvents = allEvents.concat(chunkEvents);
+          fromBlock = toBlock + 1;
+
+          // Rate limiting: QuickNode allows 15 req/second, delay 200ms between chunks to stay under limit
+          if (fromBlock <= currentBlock) {
+            await new Promise(resolve => setTimeout(resolve, 200));
+          }
+        }
+      } else {
+        // Normal query for small ranges
+        const filter = this.vaultContract.filters.SEIOptimizedDeposit();
+        allEvents = await this.vaultContract.queryFilter(
+          filter,
+          this.lastProcessedBlock + 1,
+          currentBlock
+        );
+      }
+
+      if (allEvents.length > 0) {
+        console.log(`\n🔔 Found ${allEvents.length} new deposit event(s)!`);
+
+        for (const event of allEvents) {
           const args = event.args;
           if (args) {
             console.log(`\n💰 New deposit detected!`);
@@ -239,8 +282,13 @@ export class SEIVaultManager extends Service {
       }
 
       this.lastProcessedBlock = currentBlock;
-    } catch (error) {
-      console.error('❌ Error querying deposit events:', error);
+    } catch (error: any) {
+      // Silently handle rate limit errors, log others
+      if (!error?.message?.includes('overloaded') &&
+          !error?.message?.includes('rate limit') &&
+          error?.code !== -32000) {
+        console.error('❌ Error querying deposit events:', error);
+      }
     }
   }
 
@@ -346,6 +394,7 @@ export class SEIVaultManager extends Service {
     // Create a proper callback function
     const callback = async (response: any) => {
       console.log(`   📝 Funding Arbitrage response:`, response.text || response);
+      return [];
     };
 
     try {
@@ -362,6 +411,7 @@ export class SEIVaultManager extends Service {
           data: {},
           text: `execute funding arbitrage with ${ethers.formatEther(amount)} SEI`,
         } as any,
+        {}, // options parameter
         callback
       );
 
@@ -397,6 +447,7 @@ export class SEIVaultManager extends Service {
     // Create a proper callback function
     const callback = async (response: any) => {
       console.log(`   📝 Delta Neutral response:`, response.text || response);
+      return [];
     };
 
     try {
@@ -413,6 +464,7 @@ export class SEIVaultManager extends Service {
           data: {},
           text: `execute delta neutral with ${ethers.formatEther(amount)} SEI`,
         } as any,
+        {}, // options parameter
         callback
       );
 
@@ -448,6 +500,7 @@ export class SEIVaultManager extends Service {
     // Create a proper callback function
     const callback = async (response: any) => {
       console.log(`   📝 AMM Optimize response:`, response.text || response);
+      return [];
     };
 
     try {
@@ -464,6 +517,7 @@ export class SEIVaultManager extends Service {
           data: {},
           text: `execute amm optimization with ${ethers.formatEther(amount)} SEI`,
         } as any,
+        {}, // options parameter
         callback
       );
 
@@ -499,6 +553,7 @@ export class SEIVaultManager extends Service {
     // Create a proper callback function
     const callback = async (response: any) => {
       console.log(`   📝 YEI Finance response:`, response.text || response);
+      return [];
     };
 
     try {
@@ -515,6 +570,7 @@ export class SEIVaultManager extends Service {
           data: {},
           text: `deposit ${ethers.formatEther(amount)} SEI to YEI Finance`,
         } as any,
+        {}, // options parameter
         callback
       );
 

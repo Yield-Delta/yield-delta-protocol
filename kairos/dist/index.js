@@ -42523,7 +42523,9 @@ class SEIVaultManager extends Service {
   isStarted = false;
   lastProcessedBlock = 0;
   pollingInterval = null;
-  POLL_INTERVAL = 30000;
+  POLL_INTERVAL = 1e4;
+  retryCount = 0;
+  MAX_RETRIES = 3;
   static async start(runtime) {
     console.log("\uD83D\uDD27 Starting SEI Vault Manager service...");
     const instance = new SEIVaultManager;
@@ -42552,7 +42554,9 @@ class SEIVaultManager extends Service {
       throw new Error("Missing required environment variables for vault manager");
     }
     this.provider = new exports_ethers.JsonRpcProvider(rpcUrl);
-    this.provider.pollingInterval = 0;
+    if ("pollingInterval" in this.provider) {
+      this.provider.pollingInterval = 0;
+    }
     this.signer = new exports_ethers.Wallet(privateKey, this.provider);
     const vaultABI = [
       "event SEIOptimizedDeposit(address indexed user, uint256 amount, uint256 shares, uint256 blockTime)",
@@ -42599,8 +42603,14 @@ class SEIVaultManager extends Service {
     this.pollingInterval = setInterval(async () => {
       try {
         await this.pollForNewEvents(runtime);
+        this.retryCount = 0;
       } catch (error) {
         console.error("❌ Error polling for events:", error);
+        this.retryCount++;
+        if (this.retryCount >= this.MAX_RETRIES) {
+          console.warn("⚠️ Max retries reached, will try again in next cycle");
+          this.retryCount = 0;
+        }
       }
     }, this.POLL_INTERVAL);
   }
@@ -42610,15 +42620,35 @@ class SEIVaultManager extends Service {
     }
     try {
       const currentBlock = await this.provider.getBlockNumber();
+      console.log(`\uD83D\uDD0D Polling: current=${currentBlock}, last=${this.lastProcessedBlock}`);
       if (currentBlock <= this.lastProcessedBlock) {
         return;
       }
-      const filter = this.vaultContract.filters.SEIOptimizedDeposit();
-      const events = await this.vaultContract.queryFilter(filter, this.lastProcessedBlock + 1, currentBlock);
-      if (events.length > 0) {
+      const totalBlocks = currentBlock - this.lastProcessedBlock;
+      const MAX_BLOCK_RANGE = 1e4;
+      let allEvents = [];
+      if (totalBlocks > MAX_BLOCK_RANGE) {
+        console.log(`\uD83D\uDCE6 Large block range detected (${totalBlocks} blocks), querying in chunks...`);
+        let fromBlock = this.lastProcessedBlock + 1;
+        while (fromBlock <= currentBlock) {
+          const toBlock = Math.min(fromBlock + MAX_BLOCK_RANGE - 1, currentBlock);
+          console.log(`   \uD83D\uDD0D Querying blocks ${fromBlock} to ${toBlock}...`);
+          const filter = this.vaultContract.filters.SEIOptimizedDeposit();
+          const chunkEvents = await this.vaultContract.queryFilter(filter, fromBlock, toBlock);
+          allEvents = allEvents.concat(chunkEvents);
+          fromBlock = toBlock + 1;
+          if (fromBlock <= currentBlock) {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+          }
+        }
+      } else {
+        const filter = this.vaultContract.filters.SEIOptimizedDeposit();
+        allEvents = await this.vaultContract.queryFilter(filter, this.lastProcessedBlock + 1, currentBlock);
+      }
+      if (allEvents.length > 0) {
         console.log(`
-\uD83D\uDD14 Found ${events.length} new deposit event(s)!`);
-        for (const event of events) {
+\uD83D\uDD14 Found ${allEvents.length} new deposit event(s)!`);
+        for (const event of allEvents) {
           const args = event.args;
           if (args) {
             console.log(`
@@ -42637,7 +42667,9 @@ class SEIVaultManager extends Service {
       }
       this.lastProcessedBlock = currentBlock;
     } catch (error) {
-      console.error("❌ Error querying deposit events:", error);
+      if (!error?.message?.includes("overloaded") && !error?.message?.includes("rate limit") && error?.code !== -32000) {
+        console.error("❌ Error querying deposit events:", error);
+      }
     }
   }
   async watchDeposits(runtime) {
@@ -42708,6 +42740,7 @@ class SEIVaultManager extends Service {
     }
     const callback = async (response) => {
       console.log(`   \uD83D\uDCDD Funding Arbitrage response:`, response.text || response);
+      return [];
     };
     try {
       await fundingArbitrageAction2.handler(runtime, {
@@ -42719,7 +42752,7 @@ class SEIVaultManager extends Service {
         values: {},
         data: {},
         text: `execute funding arbitrage with ${exports_ethers.formatEther(amount)} SEI`
-      }, callback);
+      }, {}, callback);
       this.positions.fundingArbitrage.push({
         timestamp: Date.now(),
         amount,
@@ -42741,6 +42774,7 @@ class SEIVaultManager extends Service {
     }
     const callback = async (response) => {
       console.log(`   \uD83D\uDCDD Delta Neutral response:`, response.text || response);
+      return [];
     };
     try {
       await deltaNeutralAction2.handler(runtime, {
@@ -42752,7 +42786,7 @@ class SEIVaultManager extends Service {
         values: {},
         data: {},
         text: `execute delta neutral with ${exports_ethers.formatEther(amount)} SEI`
-      }, callback);
+      }, {}, callback);
       this.positions.deltaNeutral.push({
         timestamp: Date.now(),
         amount,
@@ -42774,6 +42808,7 @@ class SEIVaultManager extends Service {
     }
     const callback = async (response) => {
       console.log(`   \uD83D\uDCDD AMM Optimize response:`, response.text || response);
+      return [];
     };
     try {
       await ammOptimizeAction2.handler(runtime, {
@@ -42785,7 +42820,7 @@ class SEIVaultManager extends Service {
         values: {},
         data: {},
         text: `execute amm optimization with ${exports_ethers.formatEther(amount)} SEI`
-      }, callback);
+      }, {}, callback);
       this.positions.ammOptimization.push({
         timestamp: Date.now(),
         amount,
@@ -42807,6 +42842,7 @@ class SEIVaultManager extends Service {
     }
     const callback = async (response) => {
       console.log(`   \uD83D\uDCDD YEI Finance response:`, response.text || response);
+      return [];
     };
     try {
       await yeiLendingAction.handler(runtime, {
@@ -42818,7 +42854,7 @@ class SEIVaultManager extends Service {
         values: {},
         data: {},
         text: `deposit ${exports_ethers.formatEther(amount)} SEI to YEI Finance`
-      }, callback);
+      }, {}, callback);
       this.positions.yeiLending.push({
         timestamp: Date.now(),
         amount,
@@ -43191,5 +43227,5 @@ export {
   character
 };
 
-//# debugId=5FB07DC1BB8DF99564756E2164756E21
+//# debugId=03C5A1EC834DDF9A64756E2164756E21
 //# sourceMappingURL=index.js.map
