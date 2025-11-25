@@ -1007,7 +1007,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                         opacity: '0.9'
                       }}>{vault.name} Shares</div>
                     </div>
-                    <div className="text-sm opacity-60 mt-2">Rate: 1 SEI = 1 share</div>
+                    <div className="text-sm opacity-60 mt-2">
+                      Rate: 1 {primaryToken?.symbol || 'Token'} ≈ 1 share
+                    </div>
                   </div>
 
                 </div>
