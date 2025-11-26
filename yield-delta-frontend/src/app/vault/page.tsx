@@ -204,11 +204,23 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   const handleDepositSuccess = (txHash: string) => {
     console.log('Deposit successful:', txHash);
     setShowDepositModal(false);
+    // Refetch position and TVL data after successful deposit
+    setTimeout(() => {
+      refetchPosition();
+      refetchTVL();
+      console.log('[VaultPage] Refetched position and TVL after deposit');
+    }, 1000); // Small delay to ensure blockchain state is updated
   };
 
   const handleWithdrawSuccess = (txHash: string) => {
     console.log('Withdrawal successful:', txHash);
     setShowWithdrawModal(false);
+    // Refetch position and TVL data after successful withdrawal
+    setTimeout(() => {
+      refetchPosition();
+      refetchTVL();
+      console.log('[VaultPage] Refetched position and TVL after withdrawal');
+    }, 1000); // Small delay to ensure blockchain state is updated
   };
 
   return (
@@ -820,9 +832,14 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                         background: 'rgba(255, 255, 255, 0.05)',
                         border: '1px solid rgba(255, 255, 255, 0.1)'
                       }}>
-                        <span className="text-muted-foreground text-xs font-medium block mb-1">Deposited</span>
+                        <span className="text-muted-foreground text-xs font-medium block mb-1">Net Invested</span>
                         <span className="font-bold text-white text-lg">
-                          {parseFloat(formatUnits(BigInt(position.totalDeposited), tvlDecimals)).toFixed(tvlDecimals === 6 ? 2 : 4)} {tvlTokenSymbol}
+                          {(() => {
+                            const deposited = parseFloat(formatUnits(BigInt(position.totalDeposited), tvlDecimals));
+                            const withdrawn = parseFloat(formatUnits(BigInt(position.totalWithdrawn || '0'), tvlDecimals));
+                            const netInvested = deposited - withdrawn;
+                            return `${netInvested.toFixed(tvlDecimals === 6 ? 2 : 4)} ${tvlTokenSymbol}`;
+                          })()}
                         </span>
                       </div>
                       <div className="p-3 rounded-xl" style={{
