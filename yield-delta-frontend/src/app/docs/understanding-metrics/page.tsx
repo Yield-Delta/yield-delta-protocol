@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function UnderstandingMetricsPage() {
   return (
     <div className="docs-content">
@@ -264,7 +266,7 @@ export default function UnderstandingMetricsPage() {
 
       <ul className="space-y-2 mb-8">
         <li>Check vault metrics weekly to spot trends</li>
-        <li>Use the <a href="/dashboard" className="text-primary hover:text-primary/80">Dashboard</a> to track your portfolio performance</li>
+        <li>Use the <Link href="/dashboard" className="text-primary hover:text-primary/80">Dashboard</Link> to track your portfolio performance</li>
         <li>Leverage <a href="/portfolio/rebalance" className="text-primary hover:text-primary/80">AI Rebalancing</a> for optimization suggestions</li>
         <li>Set up alerts for significant metric changes (coming soon)</li>
       </ul>
