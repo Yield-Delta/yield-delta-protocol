@@ -201,7 +201,7 @@ export function useEnhancedVaultDeposit(vaultData: {
   // Get token requirements for this vault - only if vault data is valid
   const tokenRequirements = hasValidVaultData ? getVaultTokenRequirements(vaultData) : {
     primaryToken: { symbol: 'SEI', name: 'SEI', decimals: 18, isNative: true },
-    secondaryToken: { symbol: 'USDC', name: 'USD Coin', decimals: 6, isNative: false, address: '0x4fCF1784B31630811181f670Aea7A7bEF803eaED' },
+    secondaryToken: { symbol: 'USDC', name: 'USD Coin', decimals: 6, isNative: false, address: '0x647Dc1B1BFb17171326c12A2dcd8464E871F097B' },
     requiresBothTokens: false,
     supportsNativeSEI: true
   };

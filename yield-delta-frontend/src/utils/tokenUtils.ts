@@ -35,7 +35,7 @@ export const SEI_TESTNET_TOKENS: Record<string, TokenInfo> = {
   USDC: {
     symbol: 'USDC',
     name: 'USD Coin',
-    address: '0x4fCF1784B31630811181f670Aea7A7bEF803eaED', // USDC on SEI testnet atlantic-2
+    address: '0x647Dc1B1BFb17171326c12A2dcd8464E871F097B', // USDC address that the deployed vault expects
     decimals: 6,
     isNative: false
   },
