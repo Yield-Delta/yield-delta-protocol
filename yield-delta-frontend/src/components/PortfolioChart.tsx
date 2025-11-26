@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { TrendingUp, Calendar } from 'lucide-react';
+import { TokenPrices } from '@/hooks/useTokenPrices';
 
 interface ChartDataPoint {
   timestamp: number;
@@ -21,7 +22,7 @@ interface PortfolioChartProps {
     apy: number;
     shareValue: string;
   }>;
-  tokenPrices: Record<string, number>;
+  tokenPrices: TokenPrices | Record<string, never>;
   vaults?: Array<{
     address: string;
     tokenA: string;
@@ -137,10 +138,17 @@ const PortfolioChart: React.FC<PortfolioChartProps> = ({ vaultPositions, tokenPr
     };
   }, [chartData]);
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  interface TooltipProps {
+    active?: boolean;
+    payload?: Array<{
+      payload: ChartDataPoint;
+    }>;
+  }
+
+  const CustomTooltip = ({ active, payload }: TooltipProps) => {
     if (!active || !payload || !payload.length) return null;
 
-    const data = payload[0].payload as ChartDataPoint;
+    const data = payload[0].payload;
 
     return (
       <div className="bg-slate-800/95 backdrop-blur-sm border border-slate-700 rounded-lg p-4 shadow-xl">

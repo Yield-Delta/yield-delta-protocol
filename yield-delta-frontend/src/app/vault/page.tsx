@@ -17,7 +17,7 @@ import VaultClientWrapper from '@/components/VaultClientWrapper';
 import TokenPairDisplay from '@/components/TokenPairDisplay';
 import { useVaultPosition } from '@/hooks/useVaultPosition';
 import { useVaultTVL } from '@/hooks/useVaultTVL';
-import { formatEther, formatUnits } from 'viem';
+import { formatUnits } from 'viem';
 import { getPrimaryDepositToken } from '@/utils/tokenUtils';
 
 // Utility functions

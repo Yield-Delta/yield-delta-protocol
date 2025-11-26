@@ -13,7 +13,7 @@ import { useAccount } from 'wagmi';
 import { formatUnits } from 'viem';
 import { getTokenInfo } from '@/utils/tokenUtils';
 import { useTokenPrices, convertToUSD } from '@/hooks/useTokenPrices';
-import { calculateSimulatedYield, formatYield } from '@/utils/simulatedYield';
+import { calculateSimulatedYield } from '@/utils/simulatedYield';
 
 interface VaultWithPosition {
   address: string;
