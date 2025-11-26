@@ -892,7 +892,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                       }}>
                         <span className="text-muted-foreground text-xs font-medium block mb-1">Shares</span>
                         <span className="font-bold text-white text-lg">
-                          {parseFloat(formatEther(BigInt(position.shares))).toFixed(4)}
+                          {parseFloat(formatUnits(BigInt(position.shares), tvlDecimals)).toFixed(tvlDecimals === 6 ? 2 : 4)}
                         </span>
                       </div>
                       <div className="p-3 rounded-xl" style={{
