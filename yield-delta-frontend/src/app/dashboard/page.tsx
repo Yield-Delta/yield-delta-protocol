@@ -148,8 +148,9 @@ const DashboardPage = () => {
     }
   };
 
-  const formatSEI = (amount: number) => {
-    return `${amount.toFixed(4)} SEI`;
+  const formatTokenValue = (amount: number, tokenSymbol: string) => {
+    const decimals = tokenSymbol === 'USDC' || tokenSymbol === 'USDT' || tokenSymbol === 'ATOM' ? 2 : 4;
+    return `${amount.toFixed(decimals)} ${tokenSymbol}`;
   };
 
   const isLoading = !mounted || vaultsLoading || positionsLoading;
@@ -245,7 +246,7 @@ const DashboardPage = () => {
                 {[
                   {
                     label: 'Total Portfolio Value',
-                    value: formatSEI(portfolioOverview.totalValue),
+                    value: `$${portfolioOverview.totalValue.toFixed(2)} USD`,
                     change: `${portfolioOverview.pnlPercent >= 0 ? '+' : ''}${portfolioOverview.pnlPercent.toFixed(2)}%`,
                     icon: Wallet,
                     color: 'purple',
@@ -253,7 +254,7 @@ const DashboardPage = () => {
                   },
                   {
                     label: 'Total P&L',
-                    value: formatSEI(portfolioOverview.totalPnL),
+                    value: `$${portfolioOverview.totalPnL.toFixed(2)} USD`,
                     change: `${portfolioOverview.pnlPercent >= 0 ? '+' : ''}${portfolioOverview.pnlPercent.toFixed(2)}%`,
                     icon: TrendingUp,
                     color: portfolioOverview.totalPnL >= 0 ? 'green' : 'red',
@@ -261,7 +262,7 @@ const DashboardPage = () => {
                   },
                   {
                     label: 'Estimated Daily Yield',
-                    value: formatSEI(portfolioOverview.dailyYield),
+                    value: `$${portfolioOverview.dailyYield.toFixed(2)} USD`,
                     change: `${portfolioOverview.avgAPY.toFixed(1)}% APY`,
                     icon: DollarSign,
                     color: 'blue',
@@ -277,7 +278,7 @@ const DashboardPage = () => {
                   },
                   {
                     label: 'Total Yield Earned',
-                    value: formatSEI(portfolioOverview.totalYieldEarned),
+                    value: `$${portfolioOverview.totalYieldEarned.toFixed(2)} USD`,
                     change: 'From all positions',
                     icon: TrendingUp,
                     color: 'pink',
@@ -315,10 +316,11 @@ const DashboardPage = () => {
                 </div>
                 <div className={styles.positionsContainer}>
                   {vaultPositions.map((position) => {
-                    // Get vault info for correct decimals
+                    // Get vault info for correct decimals and token symbol
                     const vault = vaults?.find(v => v.address === position.address);
                     const tokenInfo = vault ? getTokenInfo(vault.tokenA) : null;
                     const decimals = tokenInfo?.decimals || 18;
+                    const tokenSymbol = tokenInfo?.symbol || 'SEI';
 
                     return (
                     <Link href={`/vault?address=${position.address}`} key={position.address} className={styles.positionCard}>
@@ -335,13 +337,13 @@ const DashboardPage = () => {
                         <div className={styles.metric}>
                           <div className={styles.metricLabel}>Value</div>
                           <div className={`${styles.metricValue} ${styles.white}`}>
-                            {formatSEI(parseFloat(formatUnits(BigInt(position.shareValue), decimals)))}
+                            {formatTokenValue(parseFloat(formatUnits(BigInt(position.shareValue), decimals)), tokenSymbol)}
                           </div>
                         </div>
                         <div className={styles.metric}>
                           <div className={styles.metricLabel}>P&L</div>
                           <div className={`${styles.metricValue} ${position.pnl >= 0 ? styles.positive : styles.negative}`}>
-                            {position.pnl >= 0 ? '+' : ''}{formatSEI(position.pnl)} ({position.pnlPercent.toFixed(2)}%)
+                            {position.pnl >= 0 ? '+' : ''}{formatTokenValue(position.pnl, tokenSymbol)} ({position.pnlPercent.toFixed(2)}%)
                           </div>
                         </div>
                         <div className={styles.metric}>
