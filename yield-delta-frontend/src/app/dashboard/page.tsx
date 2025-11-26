@@ -314,7 +314,13 @@ const DashboardPage = () => {
                   <h2 className={styles.mainCardTitle}>Your Positions</h2>
                 </div>
                 <div className={styles.positionsContainer}>
-                  {vaultPositions.map((position) => (
+                  {vaultPositions.map((position) => {
+                    // Get vault info for correct decimals
+                    const vault = vaults?.find(v => v.address === position.address);
+                    const tokenInfo = vault ? getTokenInfo(vault.tokenA) : null;
+                    const decimals = tokenInfo?.decimals || 18;
+
+                    return (
                     <Link href={`/vault?address=${position.address}`} key={position.address} className={styles.positionCard}>
                       <div className={styles.positionHeader}>
                         <div className={styles.positionInfo}>
@@ -329,7 +335,7 @@ const DashboardPage = () => {
                         <div className={styles.metric}>
                           <div className={styles.metricLabel}>Value</div>
                           <div className={`${styles.metricValue} ${styles.white}`}>
-                            {formatSEI(parseFloat(formatEther(BigInt(position.shareValue))))}
+                            {formatSEI(parseFloat(formatUnits(BigInt(position.shareValue), decimals)))}
                           </div>
                         </div>
                         <div className={styles.metric}>
@@ -345,12 +351,12 @@ const DashboardPage = () => {
                         <div className={styles.metric}>
                           <div className={styles.metricLabel}>Shares</div>
                           <div className={`${styles.metricValue} ${styles.green}`}>
-                            {parseFloat(formatEther(BigInt(position.shares))).toFixed(4)}
+                            {parseFloat(formatUnits(BigInt(position.shares), decimals)).toFixed(decimals === 6 ? 2 : 4)}
                           </div>
                         </div>
                       </div>
                     </Link>
-                  ))}
+                  )})}
                 </div>
                 <div className={styles.sectionDivider}>
                   <Link href="/vaults" className={styles.addPositionButton}>
