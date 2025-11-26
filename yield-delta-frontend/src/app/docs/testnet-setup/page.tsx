@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function TestnetSetupPage() {
   return (
     <div className="docs-content">
@@ -200,7 +202,7 @@ export default function TestnetSetupPage() {
         <p className="mb-4">Now you&apos;re ready to use Yield Delta on testnet:</p>
 
         <ol className="space-y-3 list-decimal list-inside">
-          <li>Visit <a href="/" className="text-primary hover:text-primary/80">Yield Delta</a></li>
+          <li>Visit <Link href="/" className="text-primary hover:text-primary/80">Yield Delta</Link></li>
           <li>Click &quot;Connect Wallet&quot; in the top-right corner</li>
           <li>Select your wallet (Compass, MetaMask, or Fin)</li>
           <li>Approve the connection request</li>
@@ -252,9 +254,9 @@ export default function TestnetSetupPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Track your portfolio performance and analytics
           </p>
-          <a href="/dashboard" className="text-primary hover:text-primary/80 text-sm font-medium">
+          <Link href="/dashboard" className="text-primary hover:text-primary/80 text-sm font-medium">
             Open Dashboard →
-          </a>
+          </Link>
         </div>
       </div>
 
