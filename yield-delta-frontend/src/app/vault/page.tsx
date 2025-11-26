@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import Navigation from '@/components/Navigation';
 import { ArrowLeft, TrendingUp, Activity, Shield, Target, BarChart3, Loader2, Coins } from 'lucide-react';
@@ -747,121 +747,19 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
             <TabsList
               className="vault-tabs-clean"
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(3, 1fr)',
-                width: '100%',
-                maxWidth: '80rem', // Match header card and container width
-                height: '4.5rem',
-                margin: '0 auto',
-                padding: '0.5rem',
-                gap: '0.5rem',
-                borderRadius: '0.75rem',
-                backgroundColor: 'rgba(15, 23, 42, 0.8)',
-                border: 'none',
-                outline: 'none',
-                backdropFilter: 'blur(20px)',
-                boxShadow: 'none',
-                marginTop: '0',
-                marginBottom: '1.5rem',
-                boxSizing: 'border-box'
-              }}
+                '--vault-color': vaultColor,
+                '--vault-color-rgb': vaultColor.replace('#', '').match(/.{1,2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 245, 212'
+              } as React.CSSProperties}
             >
-              <div
-                className="tab-trigger-clean"
-                onClick={() => {
-                  const params = new URLSearchParams(searchParams.toString());
-                  params.set('tab', 'overview');
-                  router.push(`/vault?${params.toString()}`);
-                }}
-                style={{
-                  height: '3.5rem',
-                  fontSize: '1rem',
-                  fontWeight: '700',
-                  padding: '0 1rem',
-                  width: '100%',
-                  flex: '1',
-                  minWidth: '0',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.25s ease',
-                  color: activeTab === 'overview' ? '#000000' : '#ffffff',
-                  backgroundColor: activeTab === 'overview' ? vaultColor : 'rgba(51, 65, 85, 0.5)',
-                  textShadow: activeTab === 'overview' ? '0 1px 2px rgba(0,0,0,0.6)' : `0 0 12px ${vaultColor}70`,
-                  border: activeTab !== 'overview' ? `1px solid ${vaultColor}70` : 'none',
-                  boxShadow: activeTab === 'overview' ? `0 3px 12px ${vaultColor}35` : `0 0 12px ${vaultColor}25`,
-                  letterSpacing: '0.375px',
-                  textTransform: 'uppercase'
-                }}
-              >
+              <TabsTrigger value="overview" className="tab-trigger-clean">
                 Overview
-              </div>
-              <div
-                className="tab-trigger-clean"
-                onClick={() => {
-                  const params = new URLSearchParams(searchParams.toString());
-                  params.set('tab', 'analytics');
-                  router.push(`/vault?${params.toString()}`);
-                }}
-                style={{
-                  height: '3.5rem',
-                  fontSize: '1rem',
-                  fontWeight: '700',
-                  padding: '0 1rem',
-                  width: '100%',
-                  flex: '1',
-                  minWidth: '0',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.25s ease',
-                  color: activeTab === 'analytics' ? '#000000' : '#ffffff',
-                  backgroundColor: activeTab === 'analytics' ? vaultColor : 'rgba(51, 65, 85, 0.5)',
-                  textShadow: activeTab === 'analytics' ? '0 1px 2px rgba(0,0,0,0.6)' : `0 0 12px ${vaultColor}70`,
-                  border: activeTab !== 'analytics' ? `1px solid ${vaultColor}70` : 'none',
-                  boxShadow: activeTab === 'analytics' ? `0 3px 12px ${vaultColor}35` : `0 0 12px ${vaultColor}25`,
-                  letterSpacing: '0.375px',
-                  textTransform: 'uppercase'
-                }}
-              >
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="tab-trigger-clean">
                 Analytics
-              </div>
-              <div
-                className="tab-trigger-clean"
-                onClick={() => {
-                  const params = new URLSearchParams(searchParams.toString());
-                  params.set('tab', 'strategy');
-                  router.push(`/vault?${params.toString()}`);
-                }}
-                style={{
-                  height: '3.5rem',
-                  fontSize: '1rem',
-                  fontWeight: '700',
-                  padding: '0 1rem',
-                  width: '100%',
-                  flex: '1',
-                  minWidth: '0',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.25s ease',
-                  color: activeTab === 'strategy' ? '#000000' : '#ffffff',
-                  backgroundColor: activeTab === 'strategy' ? vaultColor : 'rgba(51, 65, 85, 0.5)',
-                  textShadow: activeTab === 'strategy' ? '0 1px 2px rgba(0,0,0,0.6)' : `0 0 12px ${vaultColor}70`,
-                  border: activeTab !== 'strategy' ? `1px solid ${vaultColor}70` : 'none',
-                  boxShadow: activeTab === 'strategy' ? `0 3px 12px ${vaultColor}35` : `0 0 12px ${vaultColor}25`,
-                  letterSpacing: '0.375px',
-                  textTransform: 'uppercase'
-                }}
-              >
+              </TabsTrigger>
+              <TabsTrigger value="strategy" className="tab-trigger-clean">
                 Strategy
-              </div>
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview">
