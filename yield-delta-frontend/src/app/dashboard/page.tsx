@@ -9,7 +9,8 @@ import styles from './page.module.css';
 import { useVaults } from '@/hooks/useVaults';
 import { useMultipleVaultPositions } from '@/hooks/useMultipleVaultPositions';
 import { useAccount } from 'wagmi';
-import { formatEther } from 'viem';
+import { formatUnits } from 'viem';
+import { getTokenInfo } from '@/utils/tokenUtils';
 
 interface VaultWithPosition {
   address: string;
@@ -52,9 +53,19 @@ const DashboardPage = () => {
         if (!positionData?.hasPosition || !positionData.position) return null;
 
         const position = positionData.position;
-        const shareValue = parseFloat(formatEther(BigInt(position.shareValue)));
-        const totalDeposited = parseFloat(formatEther(BigInt(position.totalDeposited)));
-        const pnl = shareValue - totalDeposited;
+
+        // Get token info to determine correct decimals
+        const tokenInfo = getTokenInfo(vault.tokenA);
+        const decimals = tokenInfo?.decimals || 18;
+
+        // Format values with correct decimals
+        const shareValue = parseFloat(formatUnits(BigInt(position.shareValue), decimals));
+        const totalDeposited = parseFloat(formatUnits(BigInt(position.totalDeposited), decimals));
+        const totalWithdrawn = parseFloat(formatUnits(BigInt(position.totalWithdrawn), decimals));
+
+        // Calculate P&L correctly: (currentValue + withdrawn) - deposited
+        const totalValue = shareValue + totalWithdrawn;
+        const pnl = totalValue - totalDeposited;
         const pnlPercent = totalDeposited > 0 ? (pnl / totalDeposited) * 100 : 0;
 
         return {
@@ -86,15 +97,30 @@ const DashboardPage = () => {
       };
     }
 
+    // Use the pre-calculated pnl from vaultPositions (which already accounts for withdrawals)
+    const totalPnL = vaultPositions.reduce((sum, pos) => sum + pos.pnl, 0);
+
+    // Calculate total value from individual position values
     const totalValue = vaultPositions.reduce((sum, pos) => {
-      return sum + parseFloat(formatEther(BigInt(pos.shareValue)));
+      if (!vaults) return sum;
+      const vault = vaults.find(v => v.address === pos.address);
+      if (!vault) return sum;
+
+      const tokenInfo = getTokenInfo(vault.tokenA);
+      const decimals = tokenInfo?.decimals || 18;
+      return sum + parseFloat(formatUnits(BigInt(pos.shareValue), decimals));
     }, 0);
 
     const totalDeposited = vaultPositions.reduce((sum, pos) => {
-      return sum + parseFloat(formatEther(BigInt(pos.totalDeposited)));
+      if (!vaults) return sum;
+      const vault = vaults.find(v => v.address === pos.address);
+      if (!vault) return sum;
+
+      const tokenInfo = getTokenInfo(vault.tokenA);
+      const decimals = tokenInfo?.decimals || 18;
+      return sum + parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
     }, 0);
 
-    const totalPnL = totalValue - totalDeposited;
     const pnlPercent = totalDeposited > 0 ? (totalPnL / totalDeposited) * 100 : 0;
 
     const avgAPY = vaultPositions.reduce((sum, pos) => sum + pos.apy, 0) / vaultPositions.length;
@@ -109,7 +135,7 @@ const DashboardPage = () => {
       totalYieldEarned: totalPnL > 0 ? totalPnL : 0,
       avgAPY,
     };
-  }, [vaultPositions]);
+  }, [vaultPositions, vaults]);
 
   const getStrategyClass = (strategy: string) => {
     switch (strategy) {
