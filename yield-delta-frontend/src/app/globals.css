@@ -2924,7 +2924,7 @@ html body div.vault-page {
 /* Ensure tabs match header and content width */
 .vault-page .vault-tabs-clean {
   width: 100% !important;
-  max-width: calc(64rem - 2rem) !important; /* Match header card exactly */
+  max-width: 80rem !important; /* Match header card exactly - changed from calc(64rem - 2rem) */
   border: none !important;
   outline: none !important;
   box-sizing: border-box !important;
@@ -2935,13 +2935,13 @@ html body div.vault-page {
 .vault-page .container,
 .vault-page .max-w-5xl,
 .vault-page [class*="max-w"] {
-  max-width: 64rem !important;
+  max-width: 80rem !important; /* Changed from 64rem to match header */
 }
 
 /* NUCLEAR FIX 23: Grid and flexbox layout fixes */
 .vault-page .grid,
 .vault-page .flex {
-  max-width: 64rem;
+  max-width: 80rem; /* Changed from 64rem to match header */
   width: 100%;
   margin-left: auto;
   margin-right: auto;

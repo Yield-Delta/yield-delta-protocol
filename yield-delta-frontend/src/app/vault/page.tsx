@@ -15,6 +15,7 @@ import DepositModal from '@/components/DepositModal';
 import WithdrawModal from '@/components/WithdrawModal';
 import VaultClientWrapper from '@/components/VaultClientWrapper';
 import TokenPairDisplay from '@/components/TokenPairDisplay';
+import PortfolioChart from '@/components/PortfolioChart';
 import { useVaultPosition } from '@/hooks/useVaultPosition';
 import { useVaultTVL } from '@/hooks/useVaultTVL';
 import { formatUnits } from 'viem';
@@ -1071,7 +1072,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
 
             <TabsContent value="analytics">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Chart Placeholder */}
+                {/* Performance Chart */}
                 <Card className="vault-solid-card lg:col-span-2 relative z-10">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-vault-primary">
@@ -1080,12 +1081,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-64 flex items-center justify-center bg-muted/20 rounded-lg">
-                      <div className="text-center">
-                        <Activity className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                        <p className="text-muted-foreground">Interactive chart coming soon</p>
-                      </div>
-                    </div>
+                    <PortfolioChart />
                   </CardContent>
                 </Card>
 
