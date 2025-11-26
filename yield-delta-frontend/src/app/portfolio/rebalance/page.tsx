@@ -12,6 +12,7 @@ import { useMultipleVaultPositions } from '@/hooks/useMultipleVaultPositions';
 import { useAccount } from 'wagmi';
 import { formatUnits } from 'viem';
 import { getTokenInfo } from '@/utils/tokenUtils';
+import { useTokenPrices, convertToUSD } from '@/hooks/useTokenPrices';
 import Link from 'next/link';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -45,6 +46,7 @@ const RebalanceDashboardPage = () => {
   // Real data hooks
   const { address: userAddress } = useAccount();
   const { data: vaults, isLoading: vaultsLoading } = useVaults();
+  const { data: tokenPrices, isLoading: pricesLoading } = useTokenPrices();
 
   // Get vault addresses for positions
   const vaultAddresses = useMemo(() => {
@@ -106,9 +108,9 @@ const RebalanceDashboardPage = () => {
       .filter(pos => pos !== null);
   }, [vaults, userAddress, rawPositions, mounted]);
 
-  // Calculate real portfolio stats
+  // Calculate real portfolio stats in USD
   const portfolioStats = useMemo(() => {
-    if (vaultPositions.length === 0) {
+    if (vaultPositions.length === 0 || !tokenPrices) {
       return {
         totalValue: 0,
         unrealizedPnL: 0,
@@ -118,40 +120,45 @@ const RebalanceDashboardPage = () => {
       };
     }
 
-    // Use pre-calculated pnl values from vaultPositions (already accounts for withdrawals and correct decimals)
-    const totalValue = vaultPositions.reduce((sum, pos) => {
-      if (!vaults) return sum;
+    // Calculate total value and P&L in USD
+    let totalValueUSD = 0;
+    let totalDepositedUSD = 0;
+    let unrealizedPnLUSD = 0;
+
+    vaultPositions.forEach(pos => {
+      if (!vaults) return;
       const vault = vaults.find(v => v.address === pos.address);
-      if (!vault) return sum;
+      if (!vault) return;
 
       const tokenInfo = getTokenInfo(vault.tokenA);
       const decimals = tokenInfo?.decimals || 18;
-      return sum + parseFloat(formatUnits(BigInt(pos.shareValue), decimals));
-    }, 0);
+      const tokenSymbol = tokenInfo?.symbol || 'SEI';
 
-    const totalDeposited = vaultPositions.reduce((sum, pos) => {
-      if (!vaults) return sum;
-      const vault = vaults.find(v => v.address === pos.address);
-      if (!vault) return sum;
+      // Get values in native token
+      const shareValue = parseFloat(formatUnits(BigInt(pos.shareValue), decimals));
+      const totalDeposited = parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
 
-      const tokenInfo = getTokenInfo(vault.tokenA);
-      const decimals = tokenInfo?.decimals || 18;
-      return sum + parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
-    }, 0);
+      // Convert to USD
+      const shareValueUSD = convertToUSD(shareValue, tokenSymbol, tokenPrices);
+      const totalDepositedUSD_pos = convertToUSD(totalDeposited, tokenSymbol, tokenPrices);
+      const pnlUSD = convertToUSD(pos.pnl, tokenSymbol, tokenPrices);
 
-    // Use the sum of pre-calculated P&L values (which already account for withdrawals)
-    const unrealizedPnL = vaultPositions.reduce((sum, pos) => sum + pos.pnl, 0);
-    const dailyChange = totalDeposited > 0 ? (unrealizedPnL / totalDeposited) * 100 : 0;
+      totalValueUSD += shareValueUSD;
+      totalDepositedUSD += totalDepositedUSD_pos;
+      unrealizedPnLUSD += pnlUSD;
+    });
+
+    const dailyChange = totalDepositedUSD > 0 ? (unrealizedPnLUSD / totalDepositedUSD) * 100 : 0;
     const avgAPY = vaultPositions.reduce((sum, pos) => sum + pos.apy, 0) / vaultPositions.length;
 
     return {
-      totalValue,
-      unrealizedPnL,
+      totalValue: totalValueUSD,
+      unrealizedPnL: unrealizedPnLUSD,
       dailyChange,
       avgAPY,
       activePositions: vaultPositions.length,
     };
-  }, [vaultPositions, vaults]);
+  }, [vaultPositions, vaults, tokenPrices]);
 
   // Simulate AI analysis (in production, this would call the actual AI endpoint)
   const handleAnalyze = async () => {
@@ -383,7 +390,7 @@ const RebalanceDashboardPage = () => {
     }
   }, []);
 
-  const isLoading = !mounted || vaultsLoading || positionsLoading;
+  const isLoading = !mounted || vaultsLoading || positionsLoading || pricesLoading;
 
   return (
     <div className="min-h-screen bg-background relative">

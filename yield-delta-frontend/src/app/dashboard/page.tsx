@@ -11,6 +11,7 @@ import { useMultipleVaultPositions } from '@/hooks/useMultipleVaultPositions';
 import { useAccount } from 'wagmi';
 import { formatUnits } from 'viem';
 import { getTokenInfo } from '@/utils/tokenUtils';
+import { useTokenPrices, convertToUSD } from '@/hooks/useTokenPrices';
 
 interface VaultWithPosition {
   address: string;
@@ -28,6 +29,7 @@ const DashboardPage = () => {
   const [mounted, setMounted] = useState(false);
   const { address: userAddress } = useAccount();
   const { data: vaults, isLoading: vaultsLoading } = useVaults();
+  const { data: tokenPrices, isLoading: pricesLoading } = useTokenPrices();
 
   // Handle hydration - only render dynamic content after mount
   useEffect(() => {
@@ -83,9 +85,9 @@ const DashboardPage = () => {
       .filter((pos): pos is VaultWithPosition => pos !== null);
   }, [vaults, userAddress, rawPositions, mounted]);
 
-  // Calculate portfolio overview from real positions
+  // Calculate portfolio overview from real positions in USD
   const portfolioOverview = useMemo(() => {
-    if (vaultPositions.length === 0) {
+    if (vaultPositions.length === 0 || !tokenPrices) {
       return {
         totalValue: 0,
         totalPnL: 0,
@@ -97,45 +99,49 @@ const DashboardPage = () => {
       };
     }
 
-    // Use the pre-calculated pnl from vaultPositions (which already accounts for withdrawals)
-    const totalPnL = vaultPositions.reduce((sum, pos) => sum + pos.pnl, 0);
+    // Calculate total value and P&L in USD
+    let totalValueUSD = 0;
+    let totalDepositedUSD = 0;
+    let totalPnLUSD = 0;
 
-    // Calculate total value from individual position values
-    const totalValue = vaultPositions.reduce((sum, pos) => {
-      if (!vaults) return sum;
+    vaultPositions.forEach(pos => {
+      if (!vaults) return;
       const vault = vaults.find(v => v.address === pos.address);
-      if (!vault) return sum;
+      if (!vault) return;
 
       const tokenInfo = getTokenInfo(vault.tokenA);
       const decimals = tokenInfo?.decimals || 18;
-      return sum + parseFloat(formatUnits(BigInt(pos.shareValue), decimals));
-    }, 0);
+      const tokenSymbol = tokenInfo?.symbol || 'SEI';
 
-    const totalDeposited = vaultPositions.reduce((sum, pos) => {
-      if (!vaults) return sum;
-      const vault = vaults.find(v => v.address === pos.address);
-      if (!vault) return sum;
+      // Get values in native token
+      const shareValue = parseFloat(formatUnits(BigInt(pos.shareValue), decimals));
+      const totalDeposited = parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
 
-      const tokenInfo = getTokenInfo(vault.tokenA);
-      const decimals = tokenInfo?.decimals || 18;
-      return sum + parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
-    }, 0);
+      // Convert to USD
+      const shareValueUSD = convertToUSD(shareValue, tokenSymbol, tokenPrices);
+      const totalDepositedUSD_pos = convertToUSD(totalDeposited, tokenSymbol, tokenPrices);
+      const pnlUSD = convertToUSD(pos.pnl, tokenSymbol, tokenPrices);
 
-    const pnlPercent = totalDeposited > 0 ? (totalPnL / totalDeposited) * 100 : 0;
+      totalValueUSD += shareValueUSD;
+      totalDepositedUSD += totalDepositedUSD_pos;
+      totalPnLUSD += pnlUSD;
+    });
+
+    const pnlPercent = totalDepositedUSD > 0 ? (totalPnLUSD / totalDepositedUSD) * 100 : 0;
 
     const avgAPY = vaultPositions.reduce((sum, pos) => sum + pos.apy, 0) / vaultPositions.length;
-    const dailyYield = (totalValue * avgAPY / 100) / 365;
+    const dailyYield = (totalValueUSD * avgAPY / 100) / 365;
 
     return {
-      totalValue,
-      totalPnL,
+      totalValue: totalValueUSD,
+      totalPnL: totalPnLUSD,
       pnlPercent,
       dailyYield,
       activePositions: vaultPositions.length,
-      totalYieldEarned: totalPnL > 0 ? totalPnL : 0,
+      totalYieldEarned: totalPnLUSD > 0 ? totalPnLUSD : 0,
       avgAPY,
     };
-  }, [vaultPositions, vaults]);
+  }, [vaultPositions, vaults, tokenPrices]);
 
   const getStrategyClass = (strategy: string) => {
     switch (strategy) {
@@ -153,8 +159,8 @@ const DashboardPage = () => {
     return `${amount.toFixed(decimals)} ${tokenSymbol}`;
   };
 
-  const isLoading = !mounted || vaultsLoading || positionsLoading;
-  const hasNoPositions = mounted && !vaultsLoading && !positionsLoading && userAddress && vaultPositions.length === 0;
+  const isLoading = !mounted || vaultsLoading || positionsLoading || pricesLoading;
+  const hasNoPositions = mounted && !vaultsLoading && !positionsLoading && !pricesLoading && userAddress && vaultPositions.length === 0;
 
   return (
     <div className={styles.dashboardContainer}>
