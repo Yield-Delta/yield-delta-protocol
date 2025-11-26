@@ -13,6 +13,7 @@ import { useAccount } from 'wagmi';
 import { formatUnits } from 'viem';
 import { getTokenInfo } from '@/utils/tokenUtils';
 import { useTokenPrices, convertToUSD } from '@/hooks/useTokenPrices';
+import { calculateSimulatedYield } from '@/utils/simulatedYield';
 import Link from 'next/link';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -108,7 +109,7 @@ const RebalanceDashboardPage = () => {
       .filter(pos => pos !== null);
   }, [vaults, userAddress, rawPositions, mounted]);
 
-  // Calculate real portfolio stats in USD
+  // Calculate real portfolio stats in USD with simulated yield
   const portfolioStats = useMemo(() => {
     if (vaultPositions.length === 0 || !tokenPrices) {
       return {
@@ -117,13 +118,15 @@ const RebalanceDashboardPage = () => {
         dailyChange: 0,
         avgAPY: 0,
         activePositions: 0,
+        simulatedYield: 0,
       };
     }
 
-    // Calculate total value and P&L in USD
+    // Calculate total value, P&L, and simulated yield in USD
     let totalValueUSD = 0;
     let totalDepositedUSD = 0;
     let unrealizedPnLUSD = 0;
+    let totalSimulatedYieldUSD = 0;
 
     vaultPositions.forEach(pos => {
       if (!vaults) return;
@@ -138,14 +141,24 @@ const RebalanceDashboardPage = () => {
       const shareValue = parseFloat(formatUnits(BigInt(pos.shareValue), decimals));
       const totalDeposited = parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
 
+      // Calculate simulated yield
+      const simulatedYield = calculateSimulatedYield(
+        totalDeposited,
+        pos.depositTimestamp * 1000,
+        vault.apy,
+      );
+
       // Convert to USD
+      const tokenPrice = tokenPrices[tokenSymbol as keyof typeof tokenPrices] || 0;
       const shareValueUSD = convertToUSD(shareValue, tokenSymbol, tokenPrices);
       const totalDepositedUSD_pos = convertToUSD(totalDeposited, tokenSymbol, tokenPrices);
       const pnlUSD = convertToUSD(pos.pnl, tokenSymbol, tokenPrices);
+      const simulatedYieldUSD = simulatedYield.totalYield * tokenPrice;
 
       totalValueUSD += shareValueUSD;
       totalDepositedUSD += totalDepositedUSD_pos;
       unrealizedPnLUSD += pnlUSD;
+      totalSimulatedYieldUSD += simulatedYieldUSD;
     });
 
     const dailyChange = totalDepositedUSD > 0 ? (unrealizedPnLUSD / totalDepositedUSD) * 100 : 0;
@@ -157,6 +170,7 @@ const RebalanceDashboardPage = () => {
       dailyChange,
       avgAPY,
       activePositions: vaultPositions.length,
+      simulatedYield: totalSimulatedYieldUSD,
     };
   }, [vaultPositions, vaults, tokenPrices]);
 

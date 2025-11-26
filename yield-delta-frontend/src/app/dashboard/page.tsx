@@ -12,6 +12,7 @@ import { useAccount } from 'wagmi';
 import { formatUnits } from 'viem';
 import { getTokenInfo } from '@/utils/tokenUtils';
 import { useTokenPrices, convertToUSD } from '@/hooks/useTokenPrices';
+import { calculateSimulatedYield, formatYield } from '@/utils/simulatedYield';
 
 interface VaultWithPosition {
   address: string;
@@ -85,7 +86,7 @@ const DashboardPage = () => {
       .filter((pos): pos is VaultWithPosition => pos !== null);
   }, [vaults, userAddress, rawPositions, mounted]);
 
-  // Calculate portfolio overview from real positions in USD
+  // Calculate portfolio overview from real positions in USD with simulated yield
   const portfolioOverview = useMemo(() => {
     if (vaultPositions.length === 0 || !tokenPrices) {
       return {
@@ -95,14 +96,17 @@ const DashboardPage = () => {
         dailyYield: 0,
         activePositions: 0,
         totalYieldEarned: 0,
+        totalSimulatedYield: 0,
         avgAPY: 0,
       };
     }
 
-    // Calculate total value and P&L in USD
+    // Calculate total value, P&L, and simulated yield in USD
     let totalValueUSD = 0;
     let totalDepositedUSD = 0;
     let totalPnLUSD = 0;
+    let totalSimulatedYieldUSD = 0;
+    let totalDailyYieldUSD = 0;
 
     vaultPositions.forEach(pos => {
       if (!vaults) return;
@@ -117,28 +121,40 @@ const DashboardPage = () => {
       const shareValue = parseFloat(formatUnits(BigInt(pos.shareValue), decimals));
       const totalDeposited = parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
 
+      // Calculate simulated yield for this position
+      const simulatedYield = calculateSimulatedYield(
+        totalDeposited,
+        pos.depositTimestamp * 1000, // Convert to milliseconds
+        vault.apy, // APY as decimal (e.g., 0.15 for 15%)
+      );
+
       // Convert to USD
+      const tokenPrice = tokenPrices[tokenSymbol as keyof typeof tokenPrices] || 0;
       const shareValueUSD = convertToUSD(shareValue, tokenSymbol, tokenPrices);
       const totalDepositedUSD_pos = convertToUSD(totalDeposited, tokenSymbol, tokenPrices);
       const pnlUSD = convertToUSD(pos.pnl, tokenSymbol, tokenPrices);
+      const simulatedYieldUSD = simulatedYield.totalYield * tokenPrice;
+      const dailyYieldUSD = simulatedYield.dailyYield * tokenPrice;
 
       totalValueUSD += shareValueUSD;
       totalDepositedUSD += totalDepositedUSD_pos;
       totalPnLUSD += pnlUSD;
+      totalSimulatedYieldUSD += simulatedYieldUSD;
+      totalDailyYieldUSD += dailyYieldUSD;
     });
 
     const pnlPercent = totalDepositedUSD > 0 ? (totalPnLUSD / totalDepositedUSD) * 100 : 0;
 
     const avgAPY = vaultPositions.reduce((sum, pos) => sum + pos.apy, 0) / vaultPositions.length;
-    const dailyYield = (totalValueUSD * avgAPY / 100) / 365;
 
     return {
       totalValue: totalValueUSD,
       totalPnL: totalPnLUSD,
       pnlPercent,
-      dailyYield,
+      dailyYield: totalDailyYieldUSD,
       activePositions: vaultPositions.length,
-      totalYieldEarned: totalPnLUSD > 0 ? totalPnLUSD : 0,
+      totalYieldEarned: totalSimulatedYieldUSD,
+      totalSimulatedYield: totalSimulatedYieldUSD,
       avgAPY,
     };
   }, [vaultPositions, vaults, tokenPrices]);
@@ -269,7 +285,7 @@ const DashboardPage = () => {
                   {
                     label: 'Estimated Daily Yield',
                     value: `$${portfolioOverview.dailyYield.toFixed(2)} USD`,
-                    change: `${portfolioOverview.avgAPY.toFixed(1)}% APY`,
+                    change: `${portfolioOverview.avgAPY.toFixed(1)}% APY (Simulated)`,
                     icon: DollarSign,
                     color: 'blue',
                     trend: 'up'
@@ -285,7 +301,7 @@ const DashboardPage = () => {
                   {
                     label: 'Total Yield Earned',
                     value: `$${portfolioOverview.totalYieldEarned.toFixed(2)} USD`,
-                    change: 'From all positions',
+                    change: 'Simulated (Demo)',
                     icon: TrendingUp,
                     color: 'pink',
                     trend: 'up'
