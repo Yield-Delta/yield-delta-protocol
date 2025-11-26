@@ -21,6 +21,7 @@ interface VaultWithPosition {
   shares: string;
   shareValue: string;
   totalDeposited: string;
+  depositTime: string;
   apy: number;
   pnl: number;
   pnlPercent: number;
@@ -78,6 +79,7 @@ const DashboardPage = () => {
           shares: position.shares,
           shareValue: position.shareValue,
           totalDeposited: position.totalDeposited,
+          depositTime: position.depositTime,
           apy: vault.apy * 100,
           pnl,
           pnlPercent,
@@ -122,9 +124,10 @@ const DashboardPage = () => {
       const totalDeposited = parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
 
       // Calculate simulated yield for this position
+      const depositTimestamp = parseInt(pos.depositTime) * 1000; // Convert to milliseconds
       const simulatedYield = calculateSimulatedYield(
         totalDeposited,
-        pos.depositTimestamp * 1000, // Convert to milliseconds
+        depositTimestamp,
         vault.apy, // APY as decimal (e.g., 0.15 for 15%)
       );
 

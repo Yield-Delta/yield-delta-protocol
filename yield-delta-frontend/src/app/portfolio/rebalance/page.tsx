@@ -101,6 +101,7 @@ const RebalanceDashboardPage = () => {
           shares: position.shares,
           shareValue: position.shareValue,
           totalDeposited: position.totalDeposited,
+          depositTime: position.depositTime,
           apy: vault.apy * 100,
           pnl,
           pnlPercent,
@@ -142,9 +143,10 @@ const RebalanceDashboardPage = () => {
       const totalDeposited = parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
 
       // Calculate simulated yield
+      const depositTimestamp = parseInt(pos.depositTime) * 1000; // Convert to milliseconds
       const simulatedYield = calculateSimulatedYield(
         totalDeposited,
-        pos.depositTimestamp * 1000,
+        depositTimestamp,
         vault.apy,
       );
 
