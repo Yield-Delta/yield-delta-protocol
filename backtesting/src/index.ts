@@ -7,6 +7,9 @@ import * as dotenv from 'dotenv';
 import { fetchHistoricalPrices, fetchPoolData } from './data-fetcher';
 import { ConcentratedLiquidityBacktest } from './strategies/concentrated-liquidity';
 import { StableMaxBacktest } from './strategies/stable-max';
+import { DeltaNeutralBacktest } from './strategies/delta-neutral';
+import { YieldFarmingBacktest } from './strategies/yield-farming';
+import { ArbitrageBacktest } from './strategies/arbitrage';
 import { BacktestConfig, BacktestResult } from './types';
 
 dotenv.config();
@@ -119,17 +122,77 @@ async function runBacktests() {
     const smResults = smBacktest.run();
     printResults(smResults);
 
+    // Strategy 3: Delta Neutral
+    const dnConfig: BacktestConfig = {
+      strategy: 'delta-neutral',
+      startDate,
+      endDate,
+      initialCapital: 10000,
+      rebalanceFrequency: 'on-threshold',
+      feeRate: 0.003,
+      gasCosts: 0.50
+    };
+
+    const dnBacktest = new DeltaNeutralBacktest(dnConfig, seiPrices, poolData);
+    const dnResults = dnBacktest.run();
+    printResults(dnResults);
+
+    // Strategy 4: Yield Farming
+    const yfConfig: BacktestConfig = {
+      strategy: 'yield-farming',
+      startDate,
+      endDate,
+      initialCapital: 10000,
+      rebalanceFrequency: 'weekly',
+      feeRate: 0.001,
+      gasCosts: 0.30
+    };
+
+    const yfBacktest = new YieldFarmingBacktest(yfConfig, seiPrices);
+    const yfResults = yfBacktest.run();
+    printResults(yfResults);
+
+    // Strategy 5: Arbitrage
+    const arbConfig: BacktestConfig = {
+      strategy: 'arbitrage',
+      startDate,
+      endDate,
+      initialCapital: 10000,
+      rebalanceFrequency: 'daily',
+      feeRate: 0,
+      gasCosts: 0.25
+    };
+
+    const arbBacktest = new ArbitrageBacktest(arbConfig, seiPrices);
+    const arbResults = arbBacktest.run();
+    printResults(arbResults);
+
+    // Collect all results
+    const allResults = [clResults, smResults, dnResults, yfResults, arbResults];
+
     // Summary comparison
-    console.log('\n📊 STRATEGY COMPARISON');
-    console.log('='.repeat(80));
-    console.log(`Metric                   | Concentrated Liq. | Stable Max`);
-    console.log('-'.repeat(80));
-    console.log(`APY                      | ${clResults.apy.toFixed(2)}%           | ${smResults.apy.toFixed(2)}%`);
-    console.log(`Sharpe Ratio             | ${clResults.sharpeRatio.toFixed(2)}              | ${smResults.sharpeRatio.toFixed(2)}`);
-    console.log(`Max Drawdown             | ${clResults.maxDrawdownPercent.toFixed(2)}%            | ${smResults.maxDrawdownPercent.toFixed(2)}%`);
-    console.log(`Win Rate                 | ${clResults.winRate.toFixed(2)}%           | ${smResults.winRate.toFixed(2)}%`);
-    console.log(`Total Return             | $${clResults.totalReturn.toLocaleString()}         | $${smResults.totalReturn.toLocaleString()}`);
-    console.log('='.repeat(80) + '\n');
+    console.log('\n📊 COMPREHENSIVE STRATEGY COMPARISON');
+    console.log('='.repeat(120));
+    console.log(`Metric           | Conc. Liq. | Stable Max | Delta Neutral | Yield Farm | Arbitrage`);
+    console.log('-'.repeat(120));
+    console.log(`APY              | ${clResults.apy.toFixed(2)}%      | ${smResults.apy.toFixed(2)}%       | ${dnResults.apy.toFixed(2)}%          | ${yfResults.apy.toFixed(2)}%       | ${arbResults.apy.toFixed(2)}%`);
+    console.log(`Sharpe Ratio     | ${clResults.sharpeRatio.toFixed(2)}         | ${smResults.sharpeRatio.toFixed(2)}        | ${dnResults.sharpeRatio.toFixed(2)}             | ${yfResults.sharpeRatio.toFixed(2)}          | ${arbResults.sharpeRatio.toFixed(2)}`);
+    console.log(`Max Drawdown     | ${clResults.maxDrawdownPercent.toFixed(2)}%       | ${smResults.maxDrawdownPercent.toFixed(2)}%        | ${dnResults.maxDrawdownPercent.toFixed(2)}%           | ${yfResults.maxDrawdownPercent.toFixed(2)}%        | ${arbResults.maxDrawdownPercent.toFixed(2)}%`);
+    console.log(`Win Rate         | ${clResults.winRate.toFixed(2)}%      | ${smResults.winRate.toFixed(2)}%       | ${dnResults.winRate.toFixed(2)}%          | ${yfResults.winRate.toFixed(2)}%       | ${arbResults.winRate.toFixed(2)}%`);
+    console.log(`Total Return     | $${clResults.totalReturn.toFixed(0)}      | $${smResults.totalReturn.toFixed(0)}       | $${dnResults.totalReturn.toFixed(0)}          | $${yfResults.totalReturn.toFixed(0)}       | $${arbResults.totalReturn.toFixed(0)}`);
+    console.log('='.repeat(120));
+
+    // Best strategy recommendation
+    const bestAPY = allResults.reduce((best, curr) => curr.apy > best.apy ? curr : best);
+    const bestSharpe = allResults.reduce((best, curr) => curr.sharpeRatio > best.sharpeRatio ? curr : best);
+    const lowestRisk = allResults.reduce((best, curr) => curr.maxDrawdownPercent < best.maxDrawdownPercent ? curr : best);
+
+    console.log('\n🏆 RECOMMENDATIONS');
+    console.log('='.repeat(120));
+    console.log(`Highest APY:          ${bestAPY.strategy} (${bestAPY.apy.toFixed(2)}%)`);
+    console.log(`Best Risk-Adjusted:   ${bestSharpe.strategy} (Sharpe: ${bestSharpe.sharpeRatio.toFixed(2)})`);
+    console.log(`Lowest Risk:          ${lowestRisk.strategy} (Max DD: ${lowestRisk.maxDrawdownPercent.toFixed(2)}%)`);
+    console.log('='.repeat(120) + '\n');
 
   } catch (error) {
     console.error('❌ Error running backtests:', error);

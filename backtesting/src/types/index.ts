@@ -24,7 +24,7 @@ export interface PoolData {
 }
 
 export interface BacktestConfig {
-  strategy: 'concentrated-liquidity' | 'stable-max';
+  strategy: 'concentrated-liquidity' | 'stable-max' | 'delta-neutral' | 'yield-farming' | 'arbitrage';
   startDate: Date;
   endDate: Date;
   initialCapital: number;

@@ -115,6 +115,11 @@ export async function fetchPoolData(
       tvlUSD: parseFloat(day.tvlUSD)
     }));
 
+    if (poolData.length === 0) {
+      console.warn('⚠️  No pool data returned from GraphQL, generating synthetic data');
+      return generateSyntheticPoolData(startTimestamp, endTimestamp);
+    }
+
     console.log(`✓ Fetched ${poolData.length} pool data points`);
     return poolData;
   } catch (error) {

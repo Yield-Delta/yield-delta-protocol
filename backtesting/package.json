@@ -8,6 +8,7 @@
     "backtest:sei": "ts-node src/index.ts --strategy=concentrated-liquidity",
     "backtest:usdc": "ts-node src/index.ts --strategy=stable-max",
     "backtest:report": "ts-node src/generate-report.ts",
+    "test-optimization": "ts-node src/test-optimization.ts",
     "fetch-data": "ts-node src/data-fetcher.ts"
   },
   "dependencies": {

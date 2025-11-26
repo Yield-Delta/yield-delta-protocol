@@ -1,6 +1,6 @@
 /**
- * Concentrated Liquidity Strategy Backtest
- * Simulates the Native SEI Vault strategy
+ * Optimized Concentrated Liquidity Strategy Backtest
+ * Implements tighter price ranges for better capital efficiency
  */
 
 import {
@@ -13,7 +13,7 @@ import {
 } from '../types';
 import { calculateFeesEarned, calculateImpermanentLoss } from '../data-fetcher';
 
-export class ConcentratedLiquidityBacktest {
+export class ConcentratedLiquidityOptimizedBacktest {
   private config: BacktestConfig;
   private priceData: PriceData[];
   private poolData: PoolData[];
@@ -29,10 +29,10 @@ export class ConcentratedLiquidityBacktest {
   }
 
   /**
-   * Run the backtest
+   * Run the backtest with optimized parameters
    */
   public run(): BacktestResult {
-    console.log('\n📊 Running Concentrated Liquidity Strategy Backtest...');
+    console.log('\n📊 Running OPTIMIZED Concentrated Liquidity Strategy Backtest...');
     console.log(`Period: ${this.config.startDate.toDateString()} to ${this.config.endDate.toDateString()}`);
     console.log(`Initial Capital: $${this.config.initialCapital.toLocaleString()}\n`);
 
@@ -44,7 +44,7 @@ export class ConcentratedLiquidityBacktest {
     let numberOfRebalances = 0;
 
     // Initial position setup (50/50 allocation)
-    let position = this.createInitialPosition(
+    let position = this.createOptimizedPosition(
       this.config.initialCapital,
       this.priceData[0].close
     );
@@ -54,9 +54,9 @@ export class ConcentratedLiquidityBacktest {
     // Daily simulation
     for (let i = 0; i < this.priceData.length; i++) {
       const price = this.priceData[i];
-      const pool = this.poolData[Math.min(i, this.poolData.length - 1)]; // Use last pool data if we run out
+      const pool = this.poolData[Math.min(i, this.poolData.length - 1)];
 
-      // Calculate fees earned for the day
+      // Calculate fees earned - same calculation as original, natural benefit from tighter range
       const dailyFees = calculateFeesEarned(
         pool,
         position.liquidity,
@@ -69,7 +69,7 @@ export class ConcentratedLiquidityBacktest {
       const token1Value = position.token1Amount * 1.0; // USDC = $1
       const currentValue = token0Value + token1Value + totalFeesEarned - totalGasSpent;
 
-      // Calculate impermanent loss
+      // Calculate impermanent loss - same as original
       const dailyIL = calculateImpermanentLoss(
         initialPrice,
         price.close,
@@ -124,9 +124,9 @@ export class ConcentratedLiquidityBacktest {
   }
 
   /**
-   * Create initial 50/50 position
+   * Create optimized position with tighter range (±8% instead of ±20%)
    */
-  private createInitialPosition(
+  private createOptimizedPosition(
     capital: number,
     price: number
   ): ConcentratedLiquidityPosition {
@@ -136,9 +136,10 @@ export class ConcentratedLiquidityBacktest {
     const token0Amount = token0Value / price;
     const token1Amount = token1Value / 1.0; // USDC
 
-    // Set price range (±20% from current price)
-    const lowerPrice = price * 0.8;
-    const upperPrice = price * 1.2;
+    // OPTIMIZED: Tighter price range (±8% from current price)
+    const rangeWidth = 0.08; // 8% instead of 20%
+    const lowerPrice = price * (1 - rangeWidth);
+    const upperPrice = price * (1 + rangeWidth);
 
     return {
       lowerTick: this.priceToTick(lowerPrice),
@@ -170,8 +171,8 @@ export class ConcentratedLiquidityBacktest {
     newPrice: number,
     portfolioValue: number
   ): ConcentratedLiquidityPosition {
-    // Close old position and create new one
-    return this.createInitialPosition(portfolioValue, newPrice);
+    // Close old position and create new one with optimized range
+    return this.createOptimizedPosition(portfolioValue, newPrice);
   }
 
   /**
@@ -242,7 +243,7 @@ export class ConcentratedLiquidityBacktest {
     const worstDay = dailyPerformance.find(d => d.dailyReturn === worstDayReturn)!;
 
     return {
-      strategy: 'Concentrated Liquidity',
+      strategy: 'Concentrated Liquidity (Optimized)',
       startDate: this.config.startDate,
       endDate: this.config.endDate,
       initialCapital: this.config.initialCapital,
