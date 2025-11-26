@@ -20,6 +20,7 @@ import { useVaultPosition } from '@/hooks/useVaultPosition';
 import { useVaultTVL } from '@/hooks/useVaultTVL';
 import { formatUnits } from 'viem';
 import { getPrimaryDepositToken } from '@/utils/tokenUtils';
+import { useTokenPrices } from '@/hooks/useTokenPrices';
 
 // Utility functions
 // Commented out unused function
@@ -89,6 +90,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   // Store and API hooks
   const { selectedVault, setSelectedVault, getVaultByAddress } = useVaultStore();
   const { data: vaultsData, isLoading } = useVaults();
+  const { data: tokenPrices } = useTokenPrices();
 
   // Get vault data (needs to be declared before it's used)
   const vault = selectedVault || (vaultAddress ? getVaultByAddress(vaultAddress) : null);
@@ -108,6 +110,15 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
   const vaultPrimaryToken = vault ? getPrimaryDepositToken(vault) : null;
   const tvlTokenSymbol = vaultPrimaryToken?.symbol || 'SEI';
   const tvlDecimals = vaultPrimaryToken?.decimals || 18;
+
+  // Prepare vault positions for PortfolioChart (single vault context)
+  const vaultPositionsForChart = vault && position && hasPosition ? [{
+    address: vault.address,
+    totalDeposited: position.totalDeposited,
+    depositTime: position.depositTime,
+    apy: vault.apy * 100,
+    shareValue: position.shareValue,
+  }] : [];
 
   // Removed USD conversion for individual vault page - showing native tokens only
 
@@ -979,7 +990,11 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <PortfolioChart />
+                    <PortfolioChart
+                      vaultPositions={vaultPositionsForChart}
+                      tokenPrices={tokenPrices || {}}
+                      vaults={vaultsData}
+                    />
                   </CardContent>
                 </Card>
 
