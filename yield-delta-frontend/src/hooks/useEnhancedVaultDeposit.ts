@@ -201,7 +201,7 @@ export function useEnhancedVaultDeposit(vaultData: {
   // Get token requirements for this vault - only if vault data is valid
   const tokenRequirements = hasValidVaultData ? getVaultTokenRequirements(vaultData) : {
     primaryToken: { symbol: 'SEI', name: 'SEI', decimals: 18, isNative: true },
-    secondaryToken: { symbol: 'USDC', name: 'USD Coin', decimals: 6, isNative: false, address: '0x647Dc1B1BFb17171326c12A2dcd8464E871F097B' },
+    secondaryToken: { symbol: 'USDC', name: 'USD Coin', decimals: 6, isNative: false, address: '0x4fCF1784B31630811181f670Aea7A7bEF803eaED' },
     requiresBothTokens: false,
     supportsNativeSEI: true
   };
@@ -251,7 +251,7 @@ export function useEnhancedVaultDeposit(vaultData: {
     const validTestnetVaults = [
       // NEW FIXED VAULTS - Deployed Nov 21 2025
       '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Native SEI Vault (FIXED - Nov 21 2025 - Fixed share calculation)
-      '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // ERC20 USDC Vault (FIXED)
+      '0xbCB883594435D92395fA72D87845f87BE78d202E', // ERC20 USDC Vault (DEPLOYED Nov 26 2024 - correct USDC token)
       
       // Legacy vault addresses (for backwards compatibility)
       '0xf6A791e4773A60083AA29aaCCDc3bA5E900974fE',

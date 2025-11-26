@@ -61,7 +61,7 @@ export async function GET(request: NextRequest) {
         }
       },
       {
-        address: '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // USDC Vault (DEPLOYED)
+        address: '0xbCB883594435D92395fA72D87845f87BE78d202E', // USDC Vault (DEPLOYED Nov 26 2024)
         name: 'USDC Stable Vault',
         strategy: 'stable_max',
         tokenA: 'USDC',
