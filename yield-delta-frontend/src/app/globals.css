@@ -2928,7 +2928,7 @@ html body div.vault-page {
   width: 100% !important;
   max-width: 80rem !important; /* Match header card exactly */
   height: 4.5rem !important;
-  margin: 0 auto 1.5rem auto !important;
+  margin: 2rem auto 1.5rem auto !important; /* Added 2rem top margin for spacing */
   padding: 0.5rem !important;
   gap: 0.5rem !important;
   border-radius: 0.75rem !important;
@@ -2946,7 +2946,7 @@ html body div.vault-page {
   height: 3.5rem !important;
   font-size: 1rem !important;
   font-weight: 700 !important;
-  padding: 0 1rem !important;
+  padding: 0 2rem !important; /* Increased from 1rem to 2rem for wider tabs */
   width: 100% !important;
   flex: 1 !important;
   min-width: 0 !important;
@@ -3004,6 +3004,7 @@ html body div.vault-page {
 @media (max-width: 768px) {
   .vault-page .vault-tabs-clean {
     height: 4rem !important;
+    margin: 1.5rem auto 1.25rem auto !important; /* Reduced top margin for mobile */
     padding: 0.375rem !important;
     gap: 0.375rem !important;
   }
@@ -3011,13 +3012,14 @@ html body div.vault-page {
   .vault-page .tab-trigger-clean {
     height: 3rem !important;
     font-size: 0.9rem !important;
-    padding: 0 0.75rem !important;
+    padding: 0 1.25rem !important; /* Increased from 0.75rem for better spacing */
   }
 }
 
 @media (max-width: 480px) {
   .vault-page .vault-tabs-clean {
     height: 3.5rem !important;
+    margin: 1.25rem auto 1rem auto !important; /* Added top margin for mobile */
     padding: 0.25rem !important;
     gap: 0.25rem !important;
   }
@@ -3025,7 +3027,7 @@ html body div.vault-page {
   .vault-page .tab-trigger-clean {
     height: 2.75rem !important;
     font-size: 0.8rem !important;
-    padding: 0 0.5rem !important;
+    padding: 0 0.75rem !important; /* Increased from 0.5rem for better spacing */
     letter-spacing: 0.25px !important;
   }
 }

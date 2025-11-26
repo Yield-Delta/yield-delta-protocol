@@ -697,7 +697,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                     letterSpacing: '0.5px',
                     opacity: '0.7'
                   }}>
-                    Return
+                    90-Day Return
                   </div>
                 </div>
                 
