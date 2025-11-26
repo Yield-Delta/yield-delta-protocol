@@ -127,7 +127,7 @@
 
     "@elizaos/plugin-ollama": ["@elizaos/plugin-ollama@1.2.4", "", { "dependencies": { "@ai-sdk/ui-utils": "^1.2.8", "@elizaos/core": "^1.0.0", "ai": "^4.3.9", "js-tiktoken": "^1.0.18", "ollama-ai-provider": "^1.2.0", "tsup": "8.4.0" } }, "sha512-UYarYfp8ebA4O+/BQtXWwcpLB5J+t4ThW0xdOcvfze5ZNOU51WMprG5EV8SafbhC/qj2sVFba85IdM+t5C5FEw=="],
 
-    "@elizaos/plugin-sei-yield-delta": ["@elizaos/plugin-sei-yield-delta@github:Yield-Delta/eliza-yield-delta-plugin#e262859", { "dependencies": { "@elizaos/core": "^1.2.12", "dotenv": "^17.2.0", "ethers": "^6.15.0", "node-cache": "5.1.2", "tsup": "8.3.5", "typescript": "^5.8.3", "viem": "2.22.23", "vitest": "^3.2.4", "zod": "^3.25.76" }, "peerDependencies": { "form-data": "4.0.1", "whatwg-url": "7.1.0" } }, "Yield-Delta-eliza-yield-delta-plugin-e262859"],
+    "@elizaos/plugin-sei-yield-delta": ["@elizaos/plugin-sei-yield-delta@github:Yield-Delta/eliza-yield-delta-plugin#ddf7f76", { "dependencies": { "@elizaos/core": "^1.2.12", "dotenv": "^17.2.0", "ethers": "^6.15.0", "node-cache": "5.1.2", "tsup": "8.3.5", "typescript": "^5.8.3", "viem": "2.22.23", "vitest": "^3.2.4", "zod": "^3.25.76" }, "peerDependencies": { "form-data": "4.0.1", "whatwg-url": "7.1.0" } }, "Yield-Delta-eliza-yield-delta-plugin-ddf7f76"],
 
     "@elizaos/plugin-sql": ["@elizaos/plugin-sql@1.5.12", "", { "dependencies": { "@electric-sql/pglite": "^0.3.3", "@elizaos/core": "1.5.12", "dotenv": "^16.4.7", "drizzle-kit": "^0.31.1", "drizzle-orm": "^0.44.2", "pg": "^8.13.3", "uuid": "^11.0.5" } }, "sha512-SQY6FrmVvn9PpgiuR0tM16nc3jSDYRJ0hW8ss8yLGmLquoJ1Z85gVAxEEP9qDPjXVCP7v6Aw4k0GOSA1maiEOw=="],
 
