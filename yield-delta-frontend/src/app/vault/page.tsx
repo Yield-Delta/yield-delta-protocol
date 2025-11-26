@@ -771,16 +771,74 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
               className="vault-tabs-clean"
               style={{
                 '--vault-color': vaultColor,
-                '--vault-color-rgb': vaultColor.replace('#', '').match(/.{1,2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 245, 212'
+                '--vault-color-rgb': vaultColor.replace('#', '').match(/.{1,2}/g)?.map(hex => parseInt(hex, 16)).join(', ') || '0, 245, 212',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(3, 1fr)',
+                width: '100%',
+                maxWidth: '80rem',
+                height: '4.5rem',
+                margin: '2.5rem auto 1.5rem auto',
+                padding: '0.5rem',
+                gap: '0.75rem',
+                borderRadius: '0.75rem',
+                backgroundColor: 'rgba(15, 23, 42, 0.8)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(51, 65, 85, 0.6)',
+                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)'
               } as React.CSSProperties}
             >
-              <TabsTrigger value="overview" className="tab-trigger-clean">
+              <TabsTrigger
+                value="overview"
+                className="tab-trigger-clean"
+                style={{
+                  paddingLeft: '4rem',
+                  paddingRight: '4rem',
+                  height: '3.5rem',
+                  fontSize: '1.05rem',
+                  fontWeight: '700',
+                  width: '100%',
+                  flex: '1',
+                  minWidth: '0',
+                  borderRadius: '0.5rem',
+                  transition: 'all 0.3s ease'
+                }}
+              >
                 Overview
               </TabsTrigger>
-              <TabsTrigger value="analytics" className="tab-trigger-clean">
+              <TabsTrigger
+                value="analytics"
+                className="tab-trigger-clean"
+                style={{
+                  paddingLeft: '4rem',
+                  paddingRight: '4rem',
+                  height: '3.5rem',
+                  fontSize: '1.05rem',
+                  fontWeight: '700',
+                  width: '100%',
+                  flex: '1',
+                  minWidth: '0',
+                  borderRadius: '0.5rem',
+                  transition: 'all 0.3s ease'
+                }}
+              >
                 Analytics
               </TabsTrigger>
-              <TabsTrigger value="strategy" className="tab-trigger-clean">
+              <TabsTrigger
+                value="strategy"
+                className="tab-trigger-clean"
+                style={{
+                  paddingLeft: '4rem',
+                  paddingRight: '4rem',
+                  height: '3.5rem',
+                  fontSize: '1.05rem',
+                  fontWeight: '700',
+                  width: '100%',
+                  flex: '1',
+                  minWidth: '0',
+                  borderRadius: '0.5rem',
+                  transition: 'all 0.3s ease'
+                }}
+              >
                 Strategy
               </TabsTrigger>
             </TabsList>
