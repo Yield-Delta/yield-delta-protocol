@@ -259,7 +259,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
               overflow: 'hidden',
               minHeight: 'clamp(140px, 18vw, 180px)',
               marginBottom: '1.5rem',
-              maxWidth: 'calc(80rem - 2rem)',  // Account for container padding (match vaults page)
+              maxWidth: '80rem',  // Match container and tabs width for perfect alignment
               width: '100%',
               boxSizing: 'border-box',         // Add consistent box model
               margin: '0 auto'
@@ -743,13 +743,13 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
             params.set('tab', value);
             router.push(`/vault?${params.toString()}`);
           }}>
-            <TabsList 
+            <TabsList
               className="vault-tabs-clean"
               style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(3, 1fr)',
                 width: '100%',
-                maxWidth: 'calc(80rem - 2rem)', // Match vaults page width
+                maxWidth: '80rem', // Match header card and container width
                 height: '4.5rem',
                 margin: '0 auto',
                 padding: '0.5rem',

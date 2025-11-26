@@ -40,6 +40,26 @@ export default function DocsHomePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
+          <h3 className="text-lg font-semibold mb-2">🧪 Testnet Setup</h3>
+          <p className="text-muted-foreground mb-4">
+            Configure your wallet for SEI testnet and get started with Yield Delta.
+          </p>
+          <a href="/docs/testnet-setup" className="text-primary hover:text-primary/80 font-medium">
+            Setup Guide →
+          </a>
+        </div>
+
+        <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
+          <h3 className="text-lg font-semibold mb-2">📊 Understanding Metrics</h3>
+          <p className="text-muted-foreground mb-4">
+            Learn about Sharpe Ratio, APY, and other key metrics to evaluate vaults.
+          </p>
+          <a href="/docs/understanding-metrics" className="text-primary hover:text-primary/80 font-medium">
+            Metrics Guide →
+          </a>
+        </div>
+
+        <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
           <h3 className="text-lg font-semibold mb-2">🏗️ For Developers</h3>
           <p className="text-muted-foreground mb-4">
             Build on top of Yield Delta, integrate our APIs, or contribute to the protocol.
@@ -48,7 +68,7 @@ export default function DocsHomePage() {
             Development Guide →
           </a>
         </div>
-        
+
         <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
           <h3 className="text-lg font-semibold mb-2">💰 For Liquidity Providers</h3>
           <p className="text-muted-foreground mb-4">
@@ -114,12 +134,25 @@ export default function DocsHomePage() {
       </div>
 
       <h2 className="text-2xl font-semibold mb-4">Network Information</h2>
-      
+
+      <div className="bg-blue-500/10 border-2 border-blue-500/30 p-6 rounded-lg mb-6">
+        <p className="text-lg font-semibold mb-2">🧪 Currently on SEI Testnet</p>
+        <p className="mb-4">
+          Yield Delta is deployed on <strong>SEI Atlantic-2 Testnet</strong>. You need to configure your wallet to use testnet before connecting.
+        </p>
+        <a href="/docs/testnet-setup" className="text-primary hover:text-primary/80 font-medium">
+          → Follow the Testnet Setup Guide
+        </a>
+      </div>
+
       <ul className="space-y-2 mb-8">
-        <li><strong>Chain ID</strong>: 1328 (SEI Testnet) / 1329 (SEI Mainnet)</li>
-        <li><strong>Native Token</strong>: SEI</li>
+        <li><strong>Network</strong>: SEI Atlantic-2 (Testnet)</li>
+        <li><strong>Chain ID</strong>: 1328</li>
+        <li><strong>Native Token</strong>: SEI (testnet)</li>
         <li><strong>Block Time</strong>: ~400ms</li>
-        <li><strong>Explorer</strong>: <a href="https://seitrace.com" className="text-primary hover:text-primary/80">SeiTrace</a></li>
+        <li><strong>RPC URL</strong>: https://evm-rpc-testnet.sei-apis.com</li>
+        <li><strong>Explorer</strong>: <a href="https://seitrace.com" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">SeiTrace</a></li>
+        <li><strong>Faucet</strong>: <a href="https://atlantic-2.app.sei.io/faucet" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">Get Testnet Tokens</a></li>
       </ul>
 
       <h2 className="text-2xl font-semibold mb-4">Community & Support</h2>
