@@ -3,6 +3,7 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import Navigation from '@/components/Navigation';
 import DemoBanner from '@/components/DemoBanner';
+import PortfolioChart from '@/components/PortfolioChart';
 import { TrendingUp, PieChart, DollarSign, Activity, Plus, ArrowRight, Wallet, BarChart3, Settings, Bell, Loader2, Info } from 'lucide-react';
 import Link from 'next/link';
 import styles from './page.module.css';
@@ -331,6 +332,15 @@ const DashboardPage = () => {
                     <div className={styles.statLabel}>{stat.label}</div>
                   </div>
                 ))}
+              </div>
+
+              {/* Portfolio Performance Chart */}
+              <div className="mb-8">
+                <PortfolioChart
+                  vaultPositions={vaultPositions}
+                  tokenPrices={tokenPrices || {}}
+                  vaults={vaults}
+                />
               </div>
 
               {/* Main Dashboard Content */}
