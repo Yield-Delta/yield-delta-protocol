@@ -922,15 +922,24 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                         <span className="text-muted-foreground text-xs font-medium block mb-1">P&L</span>
                         <span className={`font-bold text-lg ${
                           (() => {
-                            const netInvested = parseFloat(formatUnits(BigInt(position.totalDeposited), tvlDecimals)) - parseFloat(formatUnits(BigInt(position.totalWithdrawn), tvlDecimals));
+                            const totalDeposited = parseFloat(formatUnits(BigInt(position.totalDeposited), tvlDecimals));
+                            const totalWithdrawn = parseFloat(formatUnits(BigInt(position.totalWithdrawn), tvlDecimals));
                             const currentValue = parseFloat(formatUnits(BigInt(position.shareValue), tvlDecimals));
-                            return currentValue >= netInvested ? 'text-green-400' : 'text-red-400';
+                            // P&L = (current value + withdrawn) - deposited
+                            // This properly accounts for withdrawals as realized gains
+                            const totalValue = currentValue + totalWithdrawn;
+                            const pnl = totalValue - totalDeposited;
+                            return pnl >= 0 ? 'text-green-400' : 'text-red-400';
                           })()
                         }`}>
                           {(() => {
-                            const netInvested = parseFloat(formatUnits(BigInt(position.totalDeposited), tvlDecimals)) - parseFloat(formatUnits(BigInt(position.totalWithdrawn), tvlDecimals));
+                            const totalDeposited = parseFloat(formatUnits(BigInt(position.totalDeposited), tvlDecimals));
+                            const totalWithdrawn = parseFloat(formatUnits(BigInt(position.totalWithdrawn), tvlDecimals));
                             const currentValue = parseFloat(formatUnits(BigInt(position.shareValue), tvlDecimals));
-                            const pnlPercentage = netInvested > 0 ? ((currentValue - netInvested) / netInvested) * 100 : 0;
+                            // P&L = (current value + withdrawn) - deposited
+                            const totalValue = currentValue + totalWithdrawn;
+                            const pnl = totalValue - totalDeposited;
+                            const pnlPercentage = totalDeposited > 0 ? (pnl / totalDeposited) * 100 : 0;
                             return pnlPercentage.toFixed(2);
                           })()}%
                         </span>
