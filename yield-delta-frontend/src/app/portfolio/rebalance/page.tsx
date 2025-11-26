@@ -118,15 +118,29 @@ const RebalanceDashboardPage = () => {
       };
     }
 
+    // Use pre-calculated pnl values from vaultPositions (already accounts for withdrawals and correct decimals)
     const totalValue = vaultPositions.reduce((sum, pos) => {
-      return sum + parseFloat(formatEther(BigInt(pos.shareValue)));
+      if (!vaults) return sum;
+      const vault = vaults.find(v => v.address === pos.address);
+      if (!vault) return sum;
+
+      const tokenInfo = getTokenInfo(vault.tokenA);
+      const decimals = tokenInfo?.decimals || 18;
+      return sum + parseFloat(formatUnits(BigInt(pos.shareValue), decimals));
     }, 0);
 
     const totalDeposited = vaultPositions.reduce((sum, pos) => {
-      return sum + parseFloat(formatEther(BigInt(pos.totalDeposited)));
+      if (!vaults) return sum;
+      const vault = vaults.find(v => v.address === pos.address);
+      if (!vault) return sum;
+
+      const tokenInfo = getTokenInfo(vault.tokenA);
+      const decimals = tokenInfo?.decimals || 18;
+      return sum + parseFloat(formatUnits(BigInt(pos.totalDeposited), decimals));
     }, 0);
 
-    const unrealizedPnL = totalValue - totalDeposited;
+    // Use the sum of pre-calculated P&L values (which already account for withdrawals)
+    const unrealizedPnL = vaultPositions.reduce((sum, pos) => sum + pos.pnl, 0);
     const dailyChange = totalDeposited > 0 ? (unrealizedPnL / totalDeposited) * 100 : 0;
     const avgAPY = vaultPositions.reduce((sum, pos) => sum + pos.apy, 0) / vaultPositions.length;
 
@@ -137,7 +151,7 @@ const RebalanceDashboardPage = () => {
       avgAPY,
       activePositions: vaultPositions.length,
     };
-  }, [vaultPositions]);
+  }, [vaultPositions, vaults]);
 
   // Simulate AI analysis (in production, this would call the actual AI endpoint)
   const handleAnalyze = async () => {
