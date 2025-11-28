@@ -15,10 +15,12 @@ interface SentimentData {
   trend: 'bullish' | 'bearish' | 'neutral';
   confidence: number;
   description: string;
+  category: 'fundamental' | 'technical' | 'social';
 }
 
 const MarketSentimentPage = () => {
   const [selectedTimeframe, setSelectedTimeframe] = useState('24h');
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'fundamental' | 'technical' | 'social'>('all');
   const mountRef = useRef<HTMLDivElement>(null);
   const statsCardsRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLDivElement>(null);
@@ -28,7 +30,10 @@ const MarketSentimentPage = () => {
     bullishIndicators: 12,
     fearIndex: 28,
     sentimentScore: 76.5,
-    confidenceLevel: 84
+    confidenceLevel: 84,
+    technicalScore: 52,
+    fundamentalScore: 65,
+    socialScore: 55
   });
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
@@ -82,6 +87,11 @@ const MarketSentimentPage = () => {
       default: return Activity;
     }
   };
+
+  // Filter sentiment data based on selected category
+  const filteredSentimentData = selectedCategory === 'all'
+    ? sentimentData
+    : sentimentData.filter(item => item.category === selectedCategory);
 
   // Three.js Setup for background (similar to market page)
   useEffect(() => {
@@ -305,12 +315,12 @@ const MarketSentimentPage = () => {
 
       {/* Stats Cards */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-16">
-        <div ref={statsCardsRef} className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div ref={statsCardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {[
-            { label: 'Bullish Indicators', value: marketStats.bullishIndicators.toString(), change: '+3', icon: TrendingUp, color: 'green' },
-            { label: 'Market Fear Index', value: marketStats.fearIndex.toString(), change: '-5', icon: Brain, color: 'blue' },
-            { label: 'Sentiment Score', value: marketStats.sentimentScore.toFixed(1), change: '+8.2', icon: Target, color: 'purple' },
-            { label: 'Confidence Level', value: `${marketStats.confidenceLevel}%`, change: '+12%', icon: Activity, color: 'orange' }
+            { label: 'Technical Score', value: marketStats.technicalScore.toFixed(1), change: 'RSI, MACD, MA', icon: Target, color: 'cyan' },
+            { label: 'Fundamental Score', value: marketStats.fundamentalScore.toFixed(1), change: 'TVL, Volume, Network', icon: Brain, color: 'green' },
+            { label: 'Social Score', value: marketStats.socialScore.toFixed(1), change: 'Community Sentiment', icon: Activity, color: 'purple' },
+            { label: 'Overall Sentiment', value: marketStats.sentimentScore.toFixed(1), change: `${marketStats.bullishIndicators} Bullish Signals`, icon: TrendingUp, color: 'orange' }
           ].map((stat, index) => (
             <div 
               key={index} 
@@ -326,11 +336,11 @@ const MarketSentimentPage = () => {
             >
               <div className="flex items-center justify-between mb-6">
                 <stat.icon className={`w-10 h-10 text-${stat.color}-400 group-hover:scale-110 transition-transform duration-300`} style={{ filter: 'drop-shadow(0 0 8px currentColor)' }} />
-                <div 
+                <div
                   className={`text-sm font-bold text-${stat.color}-300 px-3 py-2 rounded-xl`}
                   style={{
-                    background: `rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : stat.color === 'purple' ? '139, 92, 246' : '245, 158, 11'}, 0.2)`,
-                    border: `1px solid rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : stat.color === 'purple' ? '139, 92, 246' : '245, 158, 11'}, 0.3)`,
+                    background: `rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : stat.color === 'purple' ? '139, 92, 246' : stat.color === 'cyan' ? '6, 182, 212' : '245, 158, 11'}, 0.2)`,
+                    border: `1px solid rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : stat.color === 'purple' ? '139, 92, 246' : stat.color === 'cyan' ? '6, 182, 212' : '245, 158, 11'}, 0.3)`,
                     backdropFilter: 'blur(8px)'
                   }}
                 >
@@ -344,7 +354,7 @@ const MarketSentimentPage = () => {
         </div>
 
         {/* Timeframe Selector */}
-        <div className="flex items-center gap-6 mb-12">
+        <div className="flex items-center gap-6 mb-8">
           <span className="text-gray-300 text-lg font-semibold">Analysis Period:</span>
           <div className="flex items-center gap-2">
             {['1h', '24h', '7d', '30d'].map((timeframe) => (
@@ -357,19 +367,57 @@ const MarketSentimentPage = () => {
                     : 'text-gray-400 hover:text-white'
                 }`}
                 style={{
-                  background: selectedTimeframe === timeframe 
+                  background: selectedTimeframe === timeframe
                     ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.8) 0%, rgba(139, 92, 246, 0.8) 100%)'
                     : 'rgba(255, 255, 255, 0.08)',
                   backdropFilter: 'blur(10px)',
-                  border: selectedTimeframe === timeframe 
+                  border: selectedTimeframe === timeframe
                     ? '1px solid rgba(16, 185, 129, 0.5)'
                     : '1px solid rgba(255, 255, 255, 0.1)',
-                  boxShadow: selectedTimeframe === timeframe 
+                  boxShadow: selectedTimeframe === timeframe
                     ? '0 0 20px rgba(16, 185, 129, 0.4)'
                     : '0 4px 15px rgba(0, 0, 0, 0.1)'
                 }}
               >
                 {timeframe}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Category Tabs */}
+        <div className="flex items-center gap-6 mb-12">
+          <span className="text-gray-300 text-lg font-semibold">Analysis Type:</span>
+          <div className="flex items-center gap-2">
+            {[
+              { value: 'all' as const, label: 'All Metrics', icon: Activity },
+              { value: 'technical' as const, label: 'Technical', icon: Target },
+              { value: 'fundamental' as const, label: 'Fundamental', icon: Brain },
+              { value: 'social' as const, label: 'Social', icon: TrendingUp }
+            ].map((category) => (
+              <button
+                key={category.value}
+                onClick={() => setSelectedCategory(category.value)}
+                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
+                  selectedCategory === category.value
+                    ? 'text-white shadow-lg'
+                    : 'text-gray-400 hover:text-white'
+                }`}
+                style={{
+                  background: selectedCategory === category.value
+                    ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.8) 0%, rgba(139, 92, 246, 0.8) 100%)'
+                    : 'rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(10px)',
+                  border: selectedCategory === category.value
+                    ? '1px solid rgba(6, 182, 212, 0.5)'
+                    : '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: selectedCategory === category.value
+                    ? '0 0 20px rgba(6, 182, 212, 0.4)'
+                    : '0 4px 15px rgba(0, 0, 0, 0.1)'
+                }}
+              >
+                <category.icon className="w-4 h-4" />
+                {category.label}
               </button>
             ))}
           </div>
@@ -406,7 +454,7 @@ const MarketSentimentPage = () => {
                 </tr>
               </thead>
               <tbody>
-                {isLoading && sentimentData.length === 0 ? (
+                {isLoading && filteredSentimentData.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="text-center p-12">
                       <div className="flex flex-col items-center gap-4">
@@ -415,7 +463,7 @@ const MarketSentimentPage = () => {
                       </div>
                     </td>
                   </tr>
-                ) : sentimentData.map((item, index) => {
+                ) : filteredSentimentData.map((item, index) => {
                   const SentimentIcon = getSentimentIcon(item.trend);
                   return (
                     <tr 
@@ -478,9 +526,43 @@ const MarketSentimentPage = () => {
           </div>
         </div>
 
+        {/* Methodology Disclaimer */}
+        <div
+          className="mt-12 p-8 rounded-2xl"
+          style={{
+            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(6, 182, 212, 0.3)'
+          }}
+        >
+          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <Eye className="w-5 h-5 text-cyan-400" />
+            Understanding Our Sentiment Analysis
+          </h3>
+          <div className="grid md:grid-cols-3 gap-6 text-gray-300 text-sm">
+            <div>
+              <h4 className="font-semibold text-cyan-400 mb-2">📈 Technical Analysis</h4>
+              <p>Based on price action indicators including RSI (14-period), MACD signals, and moving averages (SMA 50/200). These reflect chart patterns and trading signals, not fundamental value.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-green-400 mb-2">🏗️ Fundamental Analysis</h4>
+              <p>Evaluates ecosystem health through on-chain metrics: TVL, trading volume, network performance (TPS, validators), and DeFi protocol adoption. Measures intrinsic value and growth potential.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-purple-400 mb-2">💬 Social Sentiment</h4>
+              <p>Uses the Crypto Fear & Greed Index from Alternative.me, which analyzes market volatility, momentum, social media trends, surveys, and Bitcoin dominance. Reflects overall market psychology and investor sentiment.</p>
+            </div>
+          </div>
+          <div className="mt-6 pt-6 border-t border-white/10">
+            <p className="text-gray-400 text-xs text-center">
+              ⚠️ <strong>Important:</strong> Sentiment scores are informational tools, not investment advice. Technical indicators may show bearish signals while fundamentals remain strong, or vice versa. Always conduct your own research and consider multiple factors before making investment decisions.
+            </p>
+          </div>
+        </div>
+
         {/* Footer Note */}
-        <div 
-          className="mt-16 text-center text-gray-300 text-sm p-8 rounded-2xl"
+        <div
+          className="mt-8 text-center text-gray-300 text-sm p-8 rounded-2xl"
           style={{
             background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%)',
             backdropFilter: 'blur(10px)',
@@ -492,6 +574,7 @@ const MarketSentimentPage = () => {
             <span className="font-semibold">Last analysis: {lastUpdate.toLocaleTimeString()}</span>
           </div>
           <p className="font-medium">Sentiment analysis updates every 15 minutes • Powered by Real-Time Market Data & AI</p>
+          <p className="text-xs text-gray-400 mt-2">Fear & Greed Index data from <a href="https://alternative.me" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">Alternative.me</a> • Price data from <a href="https://www.coingecko.com" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">CoinGecko</a></p>
         </div>
       </div>
     </div>

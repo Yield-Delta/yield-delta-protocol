@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import Navigation from '@/components/Navigation';
-import { ArrowLeft, TrendingUp, Activity, Shield, Target, BarChart3, Loader2, Coins } from 'lucide-react';
+import { ArrowLeft, TrendingUp, Shield, Target, BarChart3, Loader2, Coins, BookOpen } from 'lucide-react';
 import gsap from 'gsap';
 import { useVaultStore } from '@/stores/vaultStore';
 import { useVaults } from '@/hooks/useVaults';
@@ -791,16 +791,20 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 value="overview"
                 className="tab-trigger-clean"
                 style={{
-                  paddingLeft: '4rem',
-                  paddingRight: '4rem',
+                  paddingLeft: '5rem !important' as any,
+                  paddingRight: '5rem !important' as any,
+                  padding: '0 5rem !important' as any,
                   height: '3.5rem',
-                  fontSize: '1.05rem',
+                  fontSize: '1.1rem',
                   fontWeight: '700',
                   width: '100%',
                   flex: '1',
                   minWidth: '0',
                   borderRadius: '0.5rem',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
                 Overview
@@ -809,16 +813,20 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 value="analytics"
                 className="tab-trigger-clean"
                 style={{
-                  paddingLeft: '4rem',
-                  paddingRight: '4rem',
+                  paddingLeft: '5rem !important' as any,
+                  paddingRight: '5rem !important' as any,
+                  padding: '0 5rem !important' as any,
                   height: '3.5rem',
-                  fontSize: '1.05rem',
+                  fontSize: '1.1rem',
                   fontWeight: '700',
                   width: '100%',
                   flex: '1',
                   minWidth: '0',
                   borderRadius: '0.5rem',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
                 Analytics
@@ -827,16 +835,20 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 value="strategy"
                 className="tab-trigger-clean"
                 style={{
-                  paddingLeft: '4rem',
-                  paddingRight: '4rem',
+                  paddingLeft: '5rem !important' as any,
+                  paddingRight: '5rem !important' as any,
+                  padding: '0 5rem !important' as any,
                   height: '3.5rem',
-                  fontSize: '1.05rem',
+                  fontSize: '1.1rem',
                   fontWeight: '700',
                   width: '100%',
                   flex: '1',
                   minWidth: '0',
                   borderRadius: '0.5rem',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
               >
                 Strategy
