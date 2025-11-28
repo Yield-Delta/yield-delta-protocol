@@ -249,19 +249,12 @@ export function useEnhancedVaultDeposit(vaultData: {
 
     // Check if vault address is valid for testnet
     const validTestnetVaults = [
-      // NEW FIXED VAULTS - Deployed Nov 21 2025
-      '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Native SEI Vault (FIXED - Nov 21 2025 - Fixed share calculation)
-      '0xbCB883594435D92395fA72D87845f87BE78d202E', // ERC20 USDC Vault (DEPLOYED Nov 26 2024 - correct USDC token)
-      
-      // Legacy vault addresses (for backwards compatibility)
-      '0xf6A791e4773A60083AA29aaCCDc3bA5E900974fE',
-      '0x6F4cF61bBf63dCe0094CA1fba25545f8c03cd8E6', 
-      '0x22Fc4c01FAcE783bD47A1eF2B6504213C85906a1',
-      '0xCB15AFA183347934DeEbb0F442263f50021EFC01',
-      '0x34C0aA990D6e0D099325D7491136BA35FBcdFb38',
-      '0x6C0e4d44bcdf6f922637e041FdA4b7c1Fe5667E6',
-      '0x271115bA107A8F883DE36Eaf3a1CC41a4C5E1a56',
-      '0xaE6F27Fdf2D15c067A0Ebc256CE05A317B671B81'
+      // DEPLOYED VAULTS - SEI Atlantic-2 Testnet (Chain ID 1328)
+      '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Concentrated Liquidity Vault (DEPLOYED Nov 21 2025)
+      '0xbCB883594435D92395fA72D87845f87BE78d202E', // Stable Max USDC Vault (DEPLOYED Nov 26 2025)
+      '0xe51b5c4dcf6869e572ecbf21694cfe4d116dddf3', // Delta Neutral Vault (DEPLOYED Nov 28 2025)
+      '0x6b86848a916c31c22bd63fc93959bc2387ac4afb', // Yield Farming Vault (DEPLOYED Nov 28 2025)
+      '0x93816c0d8a71f74e31f7bb76c63e2ee259bddfd2', // Active Trading Vault (DEPLOYED Nov 28 2025)
     ];
 
     const isValidVault = validTestnetVaults.some(addr => 
