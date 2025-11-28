@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 
     // Calculate all sentiment metrics
     const fundamentalMetrics = calculateFundamentalMetrics(marketData.data);
-    const technicalMetrics = calculateTechnicalMetrics(historicalData, timeframe);
+    const technicalMetrics = calculateTechnicalMetrics(historicalData);
     const socialMetrics = calculateSocialMetrics(socialSentiment);
 
     const sentimentMetrics = [...fundamentalMetrics, ...technicalMetrics, ...socialMetrics];
@@ -100,9 +100,6 @@ interface MarketDataItem {
  */
 async function fetchHistoricalPriceData(timeframe: string) {
   try {
-    // Determine number of data points based on timeframe
-    const periods = timeframe === '1h' ? 14 : timeframe === '24h' ? 100 : timeframe === '7d' ? 168 : 720;
-
     // Fetch SEI price history from CoinGecko
     const days = timeframe === '1h' ? 1 : timeframe === '24h' ? 7 : timeframe === '7d' ? 30 : 90;
     const response = await fetch(
@@ -238,10 +235,15 @@ function calculateFundamentalMetrics(marketData: MarketDataItem[]): SentimentDat
   ];
 }
 
+interface PricePoint {
+  timestamp: number;
+  price: number;
+}
+
 /**
  * Calculate technical analysis metrics
  */
-function calculateTechnicalMetrics(priceData: any[], timeframe: string): SentimentData[] {
+function calculateTechnicalMetrics(priceData: PricePoint[]): SentimentData[] {
   if (!priceData || priceData.length < 14) {
     return getDefaultTechnicalSentiment();
   }
@@ -273,10 +275,20 @@ function calculateTechnicalMetrics(priceData: any[], timeframe: string): Sentime
   ];
 }
 
+interface SocialSentimentData {
+  fearGreedIndex: number;
+  fearGreedClassification: string;
+  mentions: number;
+  positiveRatio: number;
+  engagementScore: number;
+  trendingScore: number;
+  trend: string;
+}
+
 /**
  * Calculate social media sentiment metrics
  */
-function calculateSocialMetrics(socialData: any): SentimentData[] {
+function calculateSocialMetrics(socialData: SocialSentimentData): SentimentData[] {
   // Fear & Greed Index from Alternative.me (0-100 scale)
   const fearGreedIndex = socialData.fearGreedIndex || 50;
   const classification = socialData.fearGreedClassification || 'Neutral';

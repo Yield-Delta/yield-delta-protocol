@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import Navigation from '@/components/Navigation';
-import { ArrowLeft, TrendingUp, Shield, Target, BarChart3, Loader2, Coins, BookOpen } from 'lucide-react';
+import { ArrowLeft, TrendingUp, Shield, Target, BarChart3, Loader2, Coins } from 'lucide-react';
 import gsap from 'gsap';
 import { useVaultStore } from '@/stores/vaultStore';
 import { useVaults } from '@/hooks/useVaults';
@@ -791,9 +791,9 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 value="overview"
                 className="tab-trigger-clean"
                 style={{
-                  paddingLeft: '5rem !important' as any,
-                  paddingRight: '5rem !important' as any,
-                  padding: '0 5rem !important' as any,
+                  paddingLeft: '5rem',
+                  paddingRight: '5rem',
+                  padding: '0 5rem',
                   height: '3.5rem',
                   fontSize: '1.1rem',
                   fontWeight: '700',
@@ -813,9 +813,9 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 value="analytics"
                 className="tab-trigger-clean"
                 style={{
-                  paddingLeft: '5rem !important' as any,
-                  paddingRight: '5rem !important' as any,
-                  padding: '0 5rem !important' as any,
+                  paddingLeft: '5rem',
+                  paddingRight: '5rem',
+                  padding: '0 5rem',
                   height: '3.5rem',
                   fontSize: '1.1rem',
                   fontWeight: '700',
@@ -835,9 +835,9 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 value="strategy"
                 className="tab-trigger-clean"
                 style={{
-                  paddingLeft: '5rem !important' as any,
-                  paddingRight: '5rem !important' as any,
-                  padding: '0 5rem !important' as any,
+                  paddingLeft: '5rem',
+                  paddingRight: '5rem',
+                  padding: '0 5rem',
                   height: '3.5rem',
                   fontSize: '1.1rem',
                   fontWeight: '700',
