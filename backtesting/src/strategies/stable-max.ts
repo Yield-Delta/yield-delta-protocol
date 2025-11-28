@@ -33,7 +33,7 @@ export class StableMaxBacktest {
     let position: StableYieldPosition = {
       principal: this.config.initialCapital,
       accruedInterest: 0,
-      effectiveAPY: 0.085, // 8.5% base APY
+      effectiveAPY: 0.035, // 3.5% realistic USDC lending APY (Aave/Compound average)
       daysHeld: 0
     };
 
@@ -49,7 +49,7 @@ export class StableMaxBacktest {
 
       // Add realistic fluctuation (±0.5% APY variation)
       const fluctuation = (Math.sin(i / 30) * 0.005); // Monthly cycles
-      position.effectiveAPY = 0.085 + fluctuation;
+      position.effectiveAPY = 0.035 + fluctuation;
 
       // Current portfolio value
       const currentValue = position.principal + position.accruedInterest;

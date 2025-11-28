@@ -286,8 +286,11 @@ export const useDepositToVault = (vaultAddress: string) => {
     // ONLY DEPLOYED VAULTS - SEI Atlantic-2 Testnet (Chain ID 1328)
     // These are the ONLY vaults actually deployed on-chain
     const validTestnetVaults = [
-      '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Native SEI Vault (DEPLOYED Nov 21 2025 - Fixed share calculation)
-      '0xcF796aEDcC293db74829e77df7c26F482c9dBEC0', // ERC20 USDC Vault (DEPLOYED)
+      '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Native SEI Vault (DEPLOYED Nov 21 2025)
+      '0xbCB883594435D92395fA72D87845f87BE78d202E', // ERC20 USDC Vault (DEPLOYED Nov 26 2024)
+      '0xe51b5c4dcf6869e572ecbf21694cfe4d116dddf3', // Delta Neutral Vault (DEPLOYED Nov 28 2025)
+      '0x6b86848a916c31c22bd63fc93959bc2387ac4afb', // Yield Farming Vault (DEPLOYED Nov 28 2025)
+      '0x93816c0d8a71f74e31f7bb76c63e2ee259bddfd2', // Active Trading Vault (DEPLOYED Nov 28 2025)
     ]
 
     // Legacy/demo vault addresses have been removed - they were never deployed

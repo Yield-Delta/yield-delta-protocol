@@ -33,9 +33,10 @@ export class ArbitrageBacktest {
     let totalGasSpent = 0;
     let numberOfArbitrages = 0;
 
-    // Arbitrage opportunities occur when price spreads > 0.5%
-    const minSpread = 0.005; // 0.5%
-    const avgSpread = 0.01; // 1% average spread when opportunity exists
+    // REALISTIC arbitrage for optimized bot with flash loans
+    const minSpread = 0.002; // 0.2% minimum spread
+    const avgSpread = 0.004; // 0.4% average spread when opportunity exists
+    const failureRate = 0.30; // 30% failure rate (good bot beats competition more often)
 
     // Daily simulation
     for (let i = 0; i < this.priceData.length; i++) {
@@ -47,29 +48,40 @@ export class ArbitrageBacktest {
         ? Math.abs((price.close - this.priceData[i - 1].close) / this.priceData[i - 1].close)
         : 0;
 
-      // Arbitrage opportunities increase with volatility
-      const opportunityProbability = Math.min(0.8, volatility * 100);
+      // Optimized bot finds opportunities 40-60% of days
+      // More opportunities during volatile periods
+      const baseOpportunityRate = 0.40; // 40% base rate
+      const volatilityBonus = Math.min(0.20, volatility * 100); // Up to +20% when volatile
+      const opportunityProbability = baseOpportunityRate + volatilityBonus;
       const hasOpportunity = Math.random() < opportunityProbability;
 
       let dailyProfit = 0;
 
       if (hasOpportunity) {
-        // Execute arbitrage
-        const spread = minSpread + (Math.random() * avgSpread);
-        const arbAmount = portfolioValue * 0.2; // Use 20% of capital per arb
-        const grossProfit = arbAmount * spread;
+        // Some trades fail due to MEV bots, frontrunning, etc.
+        const tradeFails = Math.random() < failureRate;
 
-        // Subtract gas costs and slippage
-        const gasCost = this.config.gasCosts;
-        const slippage = arbAmount * 0.001; // 0.1% slippage
+        if (tradeFails) {
+          // Failed trade - pay gas but get no profit
+          totalGasSpent += this.config.gasCosts;
+        } else {
+          // Successful arbitrage with flash loans (can use more capital)
+          const spread = minSpread + (Math.random() * avgSpread);
+          const arbAmount = portfolioValue * 0.20; // 20% of capital (or flash loan for more)
+          const grossProfit = arbAmount * spread;
 
-        const netProfit = grossProfit - gasCost - slippage;
+          // Subtract gas costs and slippage
+          const gasCost = this.config.gasCosts;
+          const slippage = arbAmount * 0.0015; // 0.15% slippage (optimized routing)
 
-        if (netProfit > 0) {
-          dailyProfit = netProfit;
-          totalFeesEarned += dailyProfit;
-          numberOfArbitrages++;
-          totalGasSpent += gasCost;
+          const netProfit = grossProfit - gasCost - slippage;
+
+          if (netProfit > 0) {
+            dailyProfit = netProfit;
+            totalFeesEarned += dailyProfit;
+            numberOfArbitrages++;
+            totalGasSpent += gasCost;
+          }
         }
       }
 

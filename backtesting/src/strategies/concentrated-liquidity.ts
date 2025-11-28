@@ -40,7 +40,8 @@ export class ConcentratedLiquidityBacktest {
     let portfolioValue = this.config.initialCapital;
     let totalFeesEarned = 0;
     let totalGasSpent = 0;
-    let totalImpermanentLoss = 0;
+    let cumulativeILRealized = 0; // Track total IL realized from all rebalances
+    let currentILUnrealized = 0; // Track current unrealized IL
     let numberOfRebalances = 0;
 
     // Initial position setup (50/50 allocation)
@@ -49,7 +50,8 @@ export class ConcentratedLiquidityBacktest {
       this.priceData[0].close
     );
 
-    const initialPrice = this.priceData[0].close;
+    // Track price at last rebalance for accurate IL calculation
+    let priceAtLastRebalance = this.priceData[0].close;
 
     // Daily simulation
     for (let i = 0; i < this.priceData.length; i++) {
@@ -69,20 +71,31 @@ export class ConcentratedLiquidityBacktest {
       const token1Value = position.token1Amount * 1.0; // USDC = $1
       const currentValue = token0Value + token1Value + totalFeesEarned - totalGasSpent;
 
-      // Calculate impermanent loss
-      const dailyIL = calculateImpermanentLoss(
-        initialPrice,
+      // Calculate impermanent loss from LAST REBALANCE, not initial price
+      // This is key: when you rebalance, you realize the IL and start fresh
+      currentILUnrealized = calculateImpermanentLoss(
+        priceAtLastRebalance,
         price.close,
-        this.config.initialCapital
+        portfolioValue
       );
-      totalImpermanentLoss = dailyIL;
 
       // Check if rebalancing is needed
-      const needsRebalance = this.shouldRebalance(position, price.close);
+      // Rebalance if: (1) price exits range OR (2) IL exceeds threshold
+      const ilThreshold = portfolioValue * 0.02; // 2% IL threshold
+      const needsRebalance = this.shouldRebalance(position, price.close) ||
+                             Math.abs(currentILUnrealized) > ilThreshold;
+
       if (needsRebalance && i > 0) {
+        // When rebalancing, the current unrealized IL becomes realized
+        cumulativeILRealized += currentILUnrealized;
+
         position = this.rebalancePosition(position, price.close, portfolioValue);
         numberOfRebalances++;
         totalGasSpent += this.config.gasCosts;
+
+        // Reset IL tracking after rebalance
+        priceAtLastRebalance = price.close;
+        currentILUnrealized = 0; // Reset unrealized IL after rebalancing
       }
 
       // Calculate daily return
@@ -102,7 +115,7 @@ export class ConcentratedLiquidityBacktest {
         dailyReturn,
         cumulativeReturn,
         feesEarned: dailyFees,
-        impermanentLoss: dailyIL,
+        impermanentLoss: cumulativeILRealized + currentILUnrealized, // Total IL (realized + unrealized)
         gasSpent: needsRebalance ? this.config.gasCosts : 0,
         positions: {
           token0Amount: position.token0Amount,
@@ -114,6 +127,7 @@ export class ConcentratedLiquidityBacktest {
     }
 
     // Calculate final metrics
+    const totalImpermanentLoss = cumulativeILRealized + currentILUnrealized;
     return this.calculateResults(
       dailyPerformance,
       totalFeesEarned,
@@ -136,9 +150,10 @@ export class ConcentratedLiquidityBacktest {
     const token0Amount = token0Value / price;
     const token1Amount = token1Value / 1.0; // USDC
 
-    // Set price range (±20% from current price)
-    const lowerPrice = price * 0.8;
-    const upperPrice = price * 1.2;
+    // Set price range (±10% from current price for tighter IL control)
+    // Tighter ranges = more rebalancing but less IL
+    const lowerPrice = price * 0.9;
+    const upperPrice = price * 1.1;
 
     return {
       lowerTick: this.priceToTick(lowerPrice),
