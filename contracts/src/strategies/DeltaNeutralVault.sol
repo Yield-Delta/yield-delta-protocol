@@ -301,6 +301,49 @@ contract DeltaNeutralVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
         aiOracle = newOracle;
     }
 
+    /**
+     * @dev Get total assets held by the vault (for frontend compatibility)
+     */
+    function totalAssets() external view returns (uint256) {
+        return _calculateTotalValue();
+    }
+
+    /**
+     * @dev Get the underlying asset address (for frontend compatibility)
+     */
+    function asset() external view returns (address) {
+        return vaultInfo.token0;
+    }
+
+    /**
+     * @dev Get customer statistics for a user (for frontend compatibility)
+     */
+    function getCustomerStats(address customer) external view returns (
+        uint256 shares,
+        uint256 shareValue,
+        uint256 totalDeposited,
+        uint256 totalWithdrawn,
+        uint256 depositTime,
+        uint256 lockTimeRemaining
+    ) {
+        shares = balanceOf(customer);
+
+        // Calculate share value
+        uint256 currentSupply = totalSupply();
+        if (currentSupply > 0 && shares > 0) {
+            uint256 totalValue = _calculateTotalValue();
+            shareValue = (shares * totalValue) / currentSupply;
+        } else {
+            shareValue = 0;
+        }
+
+        // For now, return 0 for deposit tracking (can be enhanced later with storage)
+        totalDeposited = 0;
+        totalWithdrawn = 0;
+        depositTime = 0;
+        lockTimeRemaining = 0;
+    }
+
     // Internal functions
     function _executeDeltaNeutralRebalance(AIRebalanceParams calldata params) internal {
         // Market-neutral liquidity provision logic

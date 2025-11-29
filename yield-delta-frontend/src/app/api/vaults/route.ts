@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
         }
       },
       {
-        address: '0x22d5eEfCdBC03D9CFF8111bFE22463B96C730337', // Delta Neutral Vault (REDEPLOYED Nov 29 2025)
+        address: '0x23fc267430326346cbad13f71476591371B81c6E', // Delta Neutral Vault (REDEPLOYED Nov 29 2025 - with analytics)
         name: 'Delta Neutral Vault',
         strategy: 'delta_neutral',
         tokenA: 'SEI',
@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
         }
       },
       {
-        address: '0x3c46EaF03bbF479C0bc51a2c104a46782adBa6e0', // Yield Farming Vault (REDEPLOYED Nov 29 2025)
+        address: '0xFdbf17412d9e364626308DaE2830e208D7D31C66', // Yield Farming Vault (REDEPLOYED Nov 29 2025 - with analytics)
         name: 'Yield Farming Vault',
         strategy: 'yield_farming',
         tokenA: 'SEI',
@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
         }
       },
       {
-        address: '0xdE82F37088f99f675eE22eabF6CfF995716f5365', // Active Trading Vault (REDEPLOYED Nov 29 2025)
+        address: '0x2cD43Af56B92f7491eb0EA9bD9F6C279A5AaED81', // Active Trading Vault (REDEPLOYED Nov 29 2025 - with analytics)
         name: 'Active Trading Vault',
         strategy: 'arbitrage',
         tokenA: 'SEI',
