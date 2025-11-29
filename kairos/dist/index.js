@@ -28,10 +28,10 @@ var __export = (target, all) => {
 var __esm = (fn, res) => () => (fn && (res = fn(fn = 0)), res);
 var __require = /* @__PURE__ */ createRequire(import.meta.url);
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/version.js
+// node_modules/abitype/dist/esm/version.js
 var version = "1.0.8";
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/errors.js
+// node_modules/abitype/dist/esm/errors.js
 var BaseError;
 var init_errors = __esm(() => {
   BaseError = class BaseError extends Error {
@@ -88,7 +88,7 @@ var init_errors = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/regex.js
+// node_modules/abitype/dist/esm/regex.js
 function execTyped(regex, string) {
   const match = regex.exec(string);
   return match?.groups;
@@ -100,7 +100,7 @@ var init_regex = __esm(() => {
   isTupleRegex = /^\(.+?\).*?$/;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/formatAbiParameter.js
+// node_modules/abitype/dist/esm/human-readable/formatAbiParameter.js
 function formatAbiParameter(abiParameter) {
   let type = abiParameter.type;
   if (tupleRegex.test(abiParameter.type) && "components" in abiParameter) {
@@ -131,7 +131,7 @@ var init_formatAbiParameter = __esm(() => {
   tupleRegex = /^tuple(?<array>(\[(\d*)\])*)$/;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/formatAbiParameters.js
+// node_modules/abitype/dist/esm/human-readable/formatAbiParameters.js
 function formatAbiParameters(abiParameters) {
   let params = "";
   const length = abiParameters.length;
@@ -147,7 +147,7 @@ var init_formatAbiParameters = __esm(() => {
   init_formatAbiParameter();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/formatAbiItem.js
+// node_modules/abitype/dist/esm/human-readable/formatAbiItem.js
 function formatAbiItem(abiItem) {
   if (abiItem.type === "function")
     return `function ${abiItem.name}(${formatAbiParameters(abiItem.inputs)})${abiItem.stateMutability && abiItem.stateMutability !== "nonpayable" ? ` ${abiItem.stateMutability}` : ""}${abiItem.outputs?.length ? ` returns (${formatAbiParameters(abiItem.outputs)})` : ""}`;
@@ -165,7 +165,7 @@ var init_formatAbiItem = __esm(() => {
   init_formatAbiParameters();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/runtime/signatures.js
+// node_modules/abitype/dist/esm/human-readable/runtime/signatures.js
 function isErrorSignature(signature) {
   return errorSignatureRegex.test(signature);
 }
@@ -229,7 +229,7 @@ var init_signatures = __esm(() => {
   ]);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/errors/abiItem.js
+// node_modules/abitype/dist/esm/human-readable/errors/abiItem.js
 var UnknownTypeError, UnknownSolidityTypeError;
 var init_abiItem = __esm(() => {
   init_errors();
@@ -263,7 +263,7 @@ var init_abiItem = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/errors/abiParameter.js
+// node_modules/abitype/dist/esm/human-readable/errors/abiParameter.js
 var InvalidParameterError, SolidityProtectedKeywordError, InvalidModifierError, InvalidFunctionModifierError, InvalidAbiTypeParameterError;
 var init_abiParameter = __esm(() => {
   init_errors();
@@ -345,7 +345,7 @@ var init_abiParameter = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/errors/signature.js
+// node_modules/abitype/dist/esm/human-readable/errors/signature.js
 var InvalidSignatureError, UnknownSignatureError, InvalidStructSignatureError;
 var init_signature = __esm(() => {
   init_errors();
@@ -391,7 +391,7 @@ var init_signature = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/errors/struct.js
+// node_modules/abitype/dist/esm/human-readable/errors/struct.js
 var CircularReferenceError;
 var init_struct = __esm(() => {
   init_errors();
@@ -410,7 +410,7 @@ var init_struct = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/errors/splitParameters.js
+// node_modules/abitype/dist/esm/human-readable/errors/splitParameters.js
 var InvalidParenthesisError;
 var init_splitParameters = __esm(() => {
   init_errors();
@@ -432,7 +432,7 @@ var init_splitParameters = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/runtime/cache.js
+// node_modules/abitype/dist/esm/human-readable/runtime/cache.js
 function getParameterCacheKey(param, type, structs) {
   let structKey = "";
   if (structs)
@@ -504,7 +504,7 @@ var init_cache = __esm(() => {
   ]);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/runtime/utils.js
+// node_modules/abitype/dist/esm/human-readable/runtime/utils.js
 function parseSignature(signature, structs = {}) {
   if (isFunctionSignature(signature))
     return parseFunctionSignature(signature, structs);
@@ -711,7 +711,7 @@ var init_utils = __esm(() => {
   protectedKeywordsRegex = /^(?:after|alias|anonymous|apply|auto|byte|calldata|case|catch|constant|copyof|default|defined|error|event|external|false|final|function|immutable|implements|in|indexed|inline|internal|let|mapping|match|memory|mutable|null|of|override|partial|private|promise|public|pure|reference|relocatable|return|returns|sizeof|static|storage|struct|super|supports|switch|this|true|try|typedef|typeof|var|view|virtual)$/;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/runtime/structs.js
+// node_modules/abitype/dist/esm/human-readable/runtime/structs.js
 function parseStructs(signatures) {
   const shallowStructs = {};
   const signaturesLength = signatures.length;
@@ -791,7 +791,7 @@ var init_structs = __esm(() => {
   typeWithoutTupleRegex = /^(?<type>[a-zA-Z$_][a-zA-Z0-9$_]*)(?<array>(?:\[\d*?\])+?)?$/;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/human-readable/parseAbi.js
+// node_modules/abitype/dist/esm/human-readable/parseAbi.js
 function parseAbi(signatures) {
   const structs = parseStructs(signatures);
   const abi = [];
@@ -810,13 +810,13 @@ var init_parseAbi = __esm(() => {
   init_utils();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/abitype/dist/esm/exports/index.js
+// node_modules/abitype/dist/esm/exports/index.js
 var init_exports = __esm(() => {
   init_formatAbiItem();
   init_parseAbi();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/formatAbiItem.js
+// node_modules/viem/_esm/utils/abi/formatAbiItem.js
 function formatAbiItem2(abiItem, { includeName = false } = {}) {
   if (abiItem.type !== "function" && abiItem.type !== "event" && abiItem.type !== "error")
     throw new InvalidDefinitionTypeError(abiItem.type);
@@ -837,7 +837,7 @@ var init_formatAbiItem2 = __esm(() => {
   init_abi();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/data/isHex.js
+// node_modules/viem/_esm/utils/data/isHex.js
 function isHex(value, { strict = true } = {}) {
   if (!value)
     return false;
@@ -846,7 +846,7 @@ function isHex(value, { strict = true } = {}) {
   return strict ? /^0x[0-9a-fA-F]*$/.test(value) : value.startsWith("0x");
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/data/size.js
+// node_modules/viem/_esm/utils/data/size.js
 function size(value) {
   if (isHex(value, { strict: false }))
     return Math.ceil((value.length - 2) / 2);
@@ -854,10 +854,10 @@ function size(value) {
 }
 var init_size = () => {};
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/version.js
+// node_modules/viem/_esm/errors/version.js
 var version2 = "2.22.23";
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/base.js
+// node_modules/viem/_esm/errors/base.js
 function walk(err, fn) {
   if (fn?.(err))
     return err;
@@ -945,7 +945,7 @@ var init_base = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/abi.js
+// node_modules/viem/_esm/errors/abi.js
 var AbiConstructorNotFoundError, AbiConstructorParamsNotFoundError, AbiDecodingDataSizeTooSmallError, AbiDecodingZeroDataError, AbiEncodingArrayLengthMismatchError, AbiEncodingBytesSizeMismatchError, AbiEncodingLengthMismatchError, AbiErrorSignatureNotFoundError, AbiEventSignatureEmptyTopicsError, AbiEventSignatureNotFoundError, AbiEventNotFoundError, AbiFunctionNotFoundError, AbiFunctionOutputsNotFoundError, AbiItemAmbiguityError, BytesSizeMismatchError, DecodeLogDataMismatch, DecodeLogTopicsMismatch, InvalidAbiEncodingTypeError, InvalidAbiDecodingTypeError, InvalidArrayError, InvalidDefinitionTypeError;
 var init_abi = __esm(() => {
   init_formatAbiItem2();
@@ -1233,7 +1233,7 @@ var init_abi = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/data.js
+// node_modules/viem/_esm/errors/data.js
 var SliceOffsetOutOfBoundsError, SizeExceedsPaddingSizeError, InvalidBytesLengthError;
 var init_data = __esm(() => {
   init_base();
@@ -1254,7 +1254,7 @@ var init_data = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/data/pad.js
+// node_modules/viem/_esm/utils/data/pad.js
 function pad(hexOrBytes, { dir, size: size2 = 32 } = {}) {
   if (typeof hexOrBytes === "string")
     return padHex(hexOrBytes, { dir, size: size2 });
@@ -1292,7 +1292,7 @@ var init_pad = __esm(() => {
   init_data();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/encoding.js
+// node_modules/viem/_esm/errors/encoding.js
 var IntegerOutOfRangeError, InvalidBytesBooleanError, InvalidHexBooleanError, SizeOverflowError;
 var init_encoding = __esm(() => {
   init_base();
@@ -1320,7 +1320,7 @@ var init_encoding = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/data/trim.js
+// node_modules/viem/_esm/utils/data/trim.js
 function trim(hexOrBytes, { dir = "left" } = {}) {
   let data = typeof hexOrBytes === "string" ? hexOrBytes.replace("0x", "") : hexOrBytes;
   let sliceLength = 0;
@@ -1339,7 +1339,7 @@ function trim(hexOrBytes, { dir = "left" } = {}) {
   return data;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/encoding/fromHex.js
+// node_modules/viem/_esm/utils/encoding/fromHex.js
 function assertSize(hexOrBytes, { size: size2 }) {
   if (size(hexOrBytes) > size2)
     throw new SizeOverflowError({
@@ -1380,7 +1380,7 @@ var init_fromHex = __esm(() => {
   init_size();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/encoding/toHex.js
+// node_modules/viem/_esm/utils/encoding/toHex.js
 function toHex(value, opts = {}) {
   if (typeof value === "number" || typeof value === "bigint")
     return numberToHex(value, opts);
@@ -1452,7 +1452,7 @@ var init_toHex = __esm(() => {
   encoder = /* @__PURE__ */ new TextEncoder;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/encoding/toBytes.js
+// node_modules/viem/_esm/utils/encoding/toBytes.js
 function toBytes(value, opts = {}) {
   if (typeof value === "number" || typeof value === "bigint")
     return numberToBytes(value, opts);
@@ -1530,7 +1530,7 @@ var init_toBytes = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/hashes/esm/_assert.js
+// node_modules/viem/node_modules/@noble/hashes/esm/_assert.js
 function anumber(n) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error("positive integer expected, got " + n);
@@ -1565,7 +1565,7 @@ function aoutput(out, instance) {
 }
 var init__assert = () => {};
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/hashes/esm/_u64.js
+// node_modules/viem/node_modules/@noble/hashes/esm/_u64.js
 function fromBig(n, le = false) {
   if (le)
     return { h: Number(n & U32_MASK64), l: Number(n >> _32n & U32_MASK64) };
@@ -1586,14 +1586,14 @@ var init__u64 = __esm(() => {
   _32n = /* @__PURE__ */ BigInt(32);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/hashes/esm/cryptoNode.js
+// node_modules/viem/node_modules/@noble/hashes/esm/cryptoNode.js
 import * as nc from "node:crypto";
 var crypto;
 var init_cryptoNode = __esm(() => {
   crypto = nc && typeof nc === "object" && "webcrypto" in nc ? nc.webcrypto : nc && typeof nc === "object" && ("randomBytes" in nc) ? nc : undefined;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/hashes/esm/utils.js
+// node_modules/viem/node_modules/@noble/hashes/esm/utils.js
 function u32(arr) {
   return new Uint32Array(arr.buffer, arr.byteOffset, Math.floor(arr.byteLength / 4));
 }
@@ -1676,7 +1676,7 @@ var init_utils2 = __esm(() => {
   isLE = /* @__PURE__ */ (() => new Uint8Array(new Uint32Array([287454020]).buffer)[0] === 68)();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/hashes/esm/sha3.js
+// node_modules/viem/node_modules/@noble/hashes/esm/sha3.js
 function keccakP(s, rounds = 24) {
   const B = new Uint32Array(5 * 2);
   for (let round = 24 - rounds;round < 24; round++) {
@@ -1863,7 +1863,7 @@ var init_sha3 = __esm(() => {
   shake256 = /* @__PURE__ */ genShake(31, 136, 256 / 8);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/hash/keccak256.js
+// node_modules/viem/_esm/utils/hash/keccak256.js
 function keccak256(value, to_) {
   const to = to_ || "hex";
   const bytes = keccak_256(isHex(value, { strict: false }) ? toBytes(value) : value);
@@ -1877,7 +1877,7 @@ var init_keccak256 = __esm(() => {
   init_toHex();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/hash/hashSignature.js
+// node_modules/viem/_esm/utils/hash/hashSignature.js
 function hashSignature(sig) {
   return hash(sig);
 }
@@ -1887,7 +1887,7 @@ var init_hashSignature = __esm(() => {
   init_keccak256();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/hash/normalizeSignature.js
+// node_modules/viem/_esm/utils/hash/normalizeSignature.js
 function normalizeSignature(signature) {
   let active = true;
   let current = "";
@@ -1934,7 +1934,7 @@ var init_normalizeSignature = __esm(() => {
   init_base();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/hash/toSignature.js
+// node_modules/viem/_esm/utils/hash/toSignature.js
 var toSignature = (def) => {
   const def_ = (() => {
     if (typeof def === "string")
@@ -1948,7 +1948,7 @@ var init_toSignature = __esm(() => {
   init_normalizeSignature();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/hash/toSignatureHash.js
+// node_modules/viem/_esm/utils/hash/toSignatureHash.js
 function toSignatureHash(fn) {
   return hashSignature(toSignature(fn));
 }
@@ -1957,14 +1957,14 @@ var init_toSignatureHash = __esm(() => {
   init_toSignature();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/hash/toEventSelector.js
+// node_modules/viem/_esm/utils/hash/toEventSelector.js
 var toEventSelector;
 var init_toEventSelector = __esm(() => {
   init_toSignatureHash();
   toEventSelector = toSignatureHash;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/address.js
+// node_modules/viem/_esm/errors/address.js
 var InvalidAddressError;
 var init_address = __esm(() => {
   init_base();
@@ -1981,7 +1981,7 @@ var init_address = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/lru.js
+// node_modules/viem/_esm/utils/lru.js
 var LruMap;
 var init_lru = __esm(() => {
   LruMap = class LruMap extends Map {
@@ -2015,7 +2015,7 @@ var init_lru = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/address/getAddress.js
+// node_modules/viem/_esm/utils/address/getAddress.js
 function checksumAddress(address_, chainId) {
   if (checksumAddressCache.has(`${address_}.${chainId}`))
     return checksumAddressCache.get(`${address_}.${chainId}`);
@@ -2049,7 +2049,7 @@ var init_getAddress = __esm(() => {
   checksumAddressCache = /* @__PURE__ */ new LruMap(8192);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/address/isAddress.js
+// node_modules/viem/_esm/utils/address/isAddress.js
 function isAddress(address, options) {
   const { strict = true } = options ?? {};
   const cacheKey = `${address}.${strict}`;
@@ -2075,7 +2075,7 @@ var init_isAddress = __esm(() => {
   isAddressCache = /* @__PURE__ */ new LruMap(8192);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/data/concat.js
+// node_modules/viem/_esm/utils/data/concat.js
 function concat(values) {
   if (typeof values[0] === "string")
     return concatHex(values);
@@ -2098,7 +2098,7 @@ function concatHex(values) {
   return `0x${values.reduce((acc, x) => acc + x.replace("0x", ""), "")}`;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/data/slice.js
+// node_modules/viem/_esm/utils/data/slice.js
 function slice(value, start, end, { strict } = {}) {
   if (isHex(value, { strict: false }))
     return sliceHex(value, start, end, {
@@ -2144,14 +2144,14 @@ var init_slice = __esm(() => {
   init_size();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/regex.js
+// node_modules/viem/_esm/utils/regex.js
 var bytesRegex2, integerRegex2;
 var init_regex2 = __esm(() => {
   bytesRegex2 = /^bytes([1-9]|1[0-9]|2[0-9]|3[0-2])?$/;
   integerRegex2 = /^(u?int)(8|16|24|32|40|48|56|64|72|80|88|96|104|112|120|128|136|144|152|160|168|176|184|192|200|208|216|224|232|240|248|256)?$/;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/encodeAbiParameters.js
+// node_modules/viem/_esm/utils/abi/encodeAbiParameters.js
 function encodeAbiParameters(params, values) {
   if (params.length !== values.length)
     throw new AbiEncodingLengthMismatchError({
@@ -2374,14 +2374,14 @@ var init_encodeAbiParameters = __esm(() => {
   init_regex2();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/hash/toFunctionSelector.js
+// node_modules/viem/_esm/utils/hash/toFunctionSelector.js
 var toFunctionSelector = (fn) => slice(toSignatureHash(fn), 0, 4);
 var init_toFunctionSelector = __esm(() => {
   init_slice();
   init_toSignatureHash();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/getAbiItem.js
+// node_modules/viem/_esm/utils/abi/getAbiItem.js
 function getAbiItem(parameters) {
   const { abi, args = [], name } = parameters;
   const isSelector = isHex(name, { strict: false });
@@ -2498,14 +2498,14 @@ var init_getAbiItem = __esm(() => {
   init_toFunctionSelector();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/utils/parseAccount.js
+// node_modules/viem/_esm/accounts/utils/parseAccount.js
 function parseAccount(account) {
   if (typeof account === "string")
     return { address: account, type: "json-rpc" };
   return account;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/prepareEncodeFunctionData.js
+// node_modules/viem/_esm/utils/abi/prepareEncodeFunctionData.js
 function prepareEncodeFunctionData(parameters) {
   const { abi, args, functionName } = parameters;
   let abiItem = abi[0];
@@ -2534,7 +2534,7 @@ var init_prepareEncodeFunctionData = __esm(() => {
   init_getAbiItem();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/encodeFunctionData.js
+// node_modules/viem/_esm/utils/abi/encodeFunctionData.js
 function encodeFunctionData(parameters) {
   const { args } = parameters;
   const { abi, functionName } = (() => {
@@ -2552,7 +2552,7 @@ var init_encodeFunctionData = __esm(() => {
   init_prepareEncodeFunctionData();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/solidity.js
+// node_modules/viem/_esm/constants/solidity.js
 var panicReasons, solidityError, solidityPanic;
 var init_solidity = __esm(() => {
   panicReasons = {
@@ -2588,7 +2588,7 @@ var init_solidity = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/cursor.js
+// node_modules/viem/_esm/errors/cursor.js
 var NegativeOffsetError, PositionOutOfBoundsError, RecursiveReadLimitExceededError;
 var init_cursor = __esm(() => {
   init_base();
@@ -2611,7 +2611,7 @@ var init_cursor = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/cursor.js
+// node_modules/viem/_esm/utils/cursor.js
 function createCursor(bytes, { recursiveReadLimit = 8192 } = {}) {
   const cursor = Object.create(staticCursor);
   cursor.bytes = bytes;
@@ -2784,7 +2784,7 @@ var init_cursor2 = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/encoding/fromBytes.js
+// node_modules/viem/_esm/utils/encoding/fromBytes.js
 function bytesToBigInt(bytes, opts = {}) {
   if (typeof opts.size !== "undefined")
     assertSize(bytes, { size: opts.size });
@@ -2821,7 +2821,7 @@ var init_fromBytes = __esm(() => {
   init_toHex();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/decodeAbiParameters.js
+// node_modules/viem/_esm/utils/abi/decodeAbiParameters.js
 function decodeAbiParameters(params, data) {
   const bytes = typeof data === "string" ? hexToBytes(data) : data;
   const cursor = createCursor(bytes);
@@ -3018,7 +3018,7 @@ var init_decodeAbiParameters = __esm(() => {
   init_encodeAbiParameters();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/decodeErrorResult.js
+// node_modules/viem/_esm/utils/abi/decodeErrorResult.js
 function decodeErrorResult(parameters) {
   const { abi, data } = parameters;
   const signature = slice(data, 0, 4);
@@ -3045,13 +3045,13 @@ var init_decodeErrorResult = __esm(() => {
   init_formatAbiItem2();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/stringify.js
+// node_modules/viem/_esm/utils/stringify.js
 var stringify = (value, replacer, space) => JSON.stringify(value, (key, value_) => {
   const value2 = typeof value_ === "bigint" ? value_.toString() : value_;
   return typeof replacer === "function" ? replacer(key, value2) : value2;
 }, space);
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/formatAbiItemWithArgs.js
+// node_modules/viem/_esm/utils/abi/formatAbiItemWithArgs.js
 function formatAbiItemWithArgs({ abiItem, args, includeFunctionName = true, includeName = false }) {
   if (!("name" in abiItem))
     return;
@@ -3063,7 +3063,7 @@ function formatAbiItemWithArgs({ abiItem, args, includeFunctionName = true, incl
 }
 var init_formatAbiItemWithArgs = () => {};
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/unit.js
+// node_modules/viem/_esm/constants/unit.js
 var etherUnits, gweiUnits;
 var init_unit = __esm(() => {
   etherUnits = {
@@ -3076,7 +3076,7 @@ var init_unit = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/unit/formatUnits.js
+// node_modules/viem/_esm/utils/unit/formatUnits.js
 function formatUnits(value, decimals) {
   let display = value.toString();
   const negative = display.startsWith("-");
@@ -3091,7 +3091,7 @@ function formatUnits(value, decimals) {
   return `${negative ? "-" : ""}${integer || "0"}${fraction ? `.${fraction}` : ""}`;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/unit/formatEther.js
+// node_modules/viem/_esm/utils/unit/formatEther.js
 function formatEther(wei, unit = "wei") {
   return formatUnits(wei, etherUnits[unit]);
 }
@@ -3099,7 +3099,7 @@ var init_formatEther = __esm(() => {
   init_unit();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/unit/formatGwei.js
+// node_modules/viem/_esm/utils/unit/formatGwei.js
 function formatGwei(wei, unit = "wei") {
   return formatUnits(wei, gweiUnits[unit]);
 }
@@ -3107,7 +3107,7 @@ var init_formatGwei = __esm(() => {
   init_unit();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/stateOverride.js
+// node_modules/viem/_esm/errors/stateOverride.js
 function prettyStateMapping(stateMapping) {
   return stateMapping.reduce((pretty, { slot, value }) => {
     return `${pretty}        ${slot}: ${value}
@@ -3160,7 +3160,7 @@ var init_stateOverride = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/transaction.js
+// node_modules/viem/_esm/errors/transaction.js
 function prettyPrint(args) {
   const entries = Object.entries(args).map(([key, value]) => {
     if (value === undefined || value === false)
@@ -3281,10 +3281,10 @@ var init_transaction = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/utils.js
+// node_modules/viem/_esm/errors/utils.js
 var getContractAddress = (address) => address, getUrl = (url) => url;
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/contract.js
+// node_modules/viem/_esm/errors/contract.js
 var CallExecutionError, ContractFunctionExecutionError, ContractFunctionRevertedError, ContractFunctionZeroDataError, CounterfactualDeploymentFailedError, RawContractError;
 var init_contract = __esm(() => {
   init_solidity();
@@ -3537,7 +3537,7 @@ ${prettyStateOverride(stateOverride)}`;
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/request.js
+// node_modules/viem/_esm/errors/request.js
 var HttpRequestError, RpcRequestError, TimeoutError;
 var init_request = __esm(() => {
   init_base();
@@ -3618,7 +3618,7 @@ var init_request = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/rpc.js
+// node_modules/viem/_esm/errors/rpc.js
 var unknownErrorCode = -1, RpcError, ProviderRpcError, ParseRpcError, InvalidRequestRpcError, MethodNotFoundRpcError, InvalidParamsRpcError, InternalRpcError, InvalidInputRpcError, ResourceNotFoundRpcError, ResourceUnavailableRpcError, TransactionRejectedRpcError, MethodNotSupportedRpcError, LimitExceededRpcError, JsonRpcVersionUnsupportedError, UserRejectedRequestError, UnauthorizedProviderError, UnsupportedProviderMethodError, ProviderDisconnectedError, ChainDisconnectedError, SwitchChainError, UnknownRpcError;
 var init_rpc = __esm(() => {
   init_base();
@@ -3947,7 +3947,7 @@ var init_rpc = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/hashes/esm/_md.js
+// node_modules/viem/node_modules/@noble/hashes/esm/_md.js
 function setBigUint64(view, byteOffset, value, isLE2) {
   if (typeof view.setBigUint64 === "function")
     return view.setBigUint64(byteOffset, value, isLE2);
@@ -4058,7 +4058,7 @@ var init__md = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/hashes/esm/sha256.js
+// node_modules/viem/node_modules/@noble/hashes/esm/sha256.js
 var SHA256_K, SHA256_IV, SHA256_W, SHA256, sha256;
 var init_sha256 = __esm(() => {
   init__md();
@@ -4212,7 +4212,7 @@ var init_sha256 = __esm(() => {
   sha256 = /* @__PURE__ */ wrapConstructor(() => new SHA256);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/hashes/esm/hmac.js
+// node_modules/viem/node_modules/@noble/hashes/esm/hmac.js
 var HMAC, hmac = (hash2, key, message) => new HMAC(hash2, key).update(message).digest();
 var init_hmac = __esm(() => {
   init__assert();
@@ -4281,7 +4281,7 @@ var init_hmac = __esm(() => {
   hmac.create = (hash2, key) => new HMAC(hash2, key);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/curves/esm/abstract/utils.js
+// node_modules/viem/node_modules/@noble/curves/esm/abstract/utils.js
 var exports_utils = {};
 __export(exports_utils, {
   validateObject: () => validateObject,
@@ -4548,7 +4548,7 @@ var init_utils3 = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/curves/esm/abstract/modular.js
+// node_modules/viem/node_modules/@noble/curves/esm/abstract/modular.js
 function mod(a, b) {
   const result = a % b;
   return result >= _0n3 ? result : b + result;
@@ -4825,7 +4825,7 @@ var init_modular = __esm(() => {
   ];
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/curves/esm/abstract/curve.js
+// node_modules/viem/node_modules/@noble/curves/esm/abstract/curve.js
 function constTimeNegate(condition, item) {
   const neg = item.negate();
   return condition ? neg : item;
@@ -5027,7 +5027,7 @@ var init_curve = __esm(() => {
   pointWindowSizes = new WeakMap;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/curves/esm/abstract/weierstrass.js
+// node_modules/viem/node_modules/@noble/curves/esm/abstract/weierstrass.js
 function validateSigVerOpts(opts) {
   if (opts.lowS !== undefined)
     abool("lowS", opts.lowS);
@@ -5927,7 +5927,7 @@ var init_weierstrass = __esm(() => {
   _4n2 = BigInt(4);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/curves/esm/_shortw_utils.js
+// node_modules/viem/node_modules/@noble/curves/esm/_shortw_utils.js
 function getHash(hash2) {
   return {
     hash: hash2,
@@ -5946,7 +5946,7 @@ var init__shortw_utils = __esm(() => {
   /*! noble-curves - MIT License (c) 2022 Paul Miller (paulmillr.com) */
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/curves/esm/abstract/hash-to-curve.js
+// node_modules/viem/node_modules/@noble/curves/esm/abstract/hash-to-curve.js
 function i2osp(value, length) {
   anum(value);
   anum(length);
@@ -6088,7 +6088,7 @@ var init_hash_to_curve = __esm(() => {
   os2ip = bytesToNumberBE;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/node_modules/@noble/curves/esm/secp256k1.js
+// node_modules/viem/node_modules/@noble/curves/esm/secp256k1.js
 var exports_secp256k1 = {};
 __export(exports_secp256k1, {
   secp256k1: () => secp256k1,
@@ -6303,7 +6303,7 @@ var init_secp256k1 = __esm(() => {
   encodeToCurve = /* @__PURE__ */ (() => htf.encodeToCurve)();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/node.js
+// node_modules/viem/_esm/errors/node.js
 var ExecutionRevertedError, FeeCapTooHighError, FeeCapTooLowError, NonceTooHighError, NonceTooLowError, NonceMaxValueError, InsufficientFundsError, IntrinsicGasTooHighError, IntrinsicGasTooLowError, TransactionTypeNotSupportedError, TipAboveFeeCapError, UnknownNodeError;
 var init_node = __esm(() => {
   init_formatGwei();
@@ -6490,7 +6490,7 @@ var init_node = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/errors/getNodeError.js
+// node_modules/viem/_esm/utils/errors/getNodeError.js
 function getNodeError(err, args) {
   const message = (err.details || "").toLowerCase();
   const executionRevertedError = err instanceof BaseError2 ? err.walk((e) => e?.code === ExecutionRevertedError.code) : err;
@@ -6543,7 +6543,7 @@ var init_getNodeError = __esm(() => {
   init_node();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/formatters/extract.js
+// node_modules/viem/_esm/utils/formatters/extract.js
 function extract(value_, { format }) {
   if (!format)
     return {};
@@ -6562,7 +6562,7 @@ function extract(value_, { format }) {
   return value;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/formatters/transactionRequest.js
+// node_modules/viem/_esm/utils/formatters/transactionRequest.js
 function formatTransactionRequest(request) {
   const rpcRequest = {};
   if (typeof request.authorizationList !== "undefined")
@@ -6624,7 +6624,7 @@ var init_transactionRequest = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/stateOverride.js
+// node_modules/viem/_esm/utils/stateOverride.js
 function serializeStateMapping(stateMapping) {
   if (!stateMapping || stateMapping.length === 0)
     return;
@@ -6684,7 +6684,7 @@ var init_stateOverride2 = __esm(() => {
   init_toHex();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/number.js
+// node_modules/viem/_esm/constants/number.js
 var maxInt8, maxInt16, maxInt24, maxInt32, maxInt40, maxInt48, maxInt56, maxInt64, maxInt72, maxInt80, maxInt88, maxInt96, maxInt104, maxInt112, maxInt120, maxInt128, maxInt136, maxInt144, maxInt152, maxInt160, maxInt168, maxInt176, maxInt184, maxInt192, maxInt200, maxInt208, maxInt216, maxInt224, maxInt232, maxInt240, maxInt248, maxInt256, minInt8, minInt16, minInt24, minInt32, minInt40, minInt48, minInt56, minInt64, minInt72, minInt80, minInt88, minInt96, minInt104, minInt112, minInt120, minInt128, minInt136, minInt144, minInt152, minInt160, minInt168, minInt176, minInt184, minInt192, minInt200, minInt208, minInt216, minInt224, minInt232, minInt240, minInt248, minInt256, maxUint8, maxUint16, maxUint24, maxUint32, maxUint40, maxUint48, maxUint56, maxUint64, maxUint72, maxUint80, maxUint88, maxUint96, maxUint104, maxUint112, maxUint120, maxUint128, maxUint136, maxUint144, maxUint152, maxUint160, maxUint168, maxUint176, maxUint184, maxUint192, maxUint200, maxUint208, maxUint216, maxUint224, maxUint232, maxUint240, maxUint248, maxUint256;
 var init_number = __esm(() => {
   maxInt8 = 2n ** (8n - 1n) - 1n;
@@ -6785,7 +6785,7 @@ var init_number = __esm(() => {
   maxUint256 = 2n ** 256n - 1n;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/transaction/assertRequest.js
+// node_modules/viem/_esm/utils/transaction/assertRequest.js
 function assertRequest(args) {
   const { account: account_, gasPrice, maxFeePerGas, maxPriorityFeePerGas, to } = args;
   const account = account_ ? parseAccount(account_) : undefined;
@@ -6808,7 +6808,7 @@ var init_assertRequest = __esm(() => {
   init_isAddress();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/address/isAddressEqual.js
+// node_modules/viem/_esm/utils/address/isAddressEqual.js
 function isAddressEqual(a, b) {
   if (!isAddress(a, { strict: false }))
     throw new InvalidAddressError({ address: a });
@@ -6821,7 +6821,7 @@ var init_isAddressEqual = __esm(() => {
   init_isAddress();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/decodeFunctionResult.js
+// node_modules/viem/_esm/utils/abi/decodeFunctionResult.js
 function decodeFunctionResult(parameters) {
   const { abi, args, functionName, data } = parameters;
   let abiItem = abi[0];
@@ -6849,7 +6849,7 @@ var init_decodeFunctionResult = __esm(() => {
   init_getAbiItem();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/abis.js
+// node_modules/viem/_esm/constants/abis.js
 var multicall3Abi, universalResolverErrors, universalResolverResolveAbi, universalResolverReverseAbi, textResolverAbi, addressResolverAbi, universalSignatureValidatorAbi, erc20Abi;
 var init_abis = __esm(() => {
   multicall3Abi = [
@@ -7267,13 +7267,13 @@ var init_abis = __esm(() => {
   ];
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/contract.js
+// node_modules/viem/_esm/constants/contract.js
 var aggregate3Signature = "0x82ad56cb";
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/contracts.js
+// node_modules/viem/_esm/constants/contracts.js
 var deploylessCallViaBytecodeBytecode = "0x608060405234801561001057600080fd5b5060405161018e38038061018e83398101604081905261002f91610124565b6000808351602085016000f59050803b61004857600080fd5b6000808351602085016000855af16040513d6000823e81610067573d81fd5b3d81f35b634e487b7160e01b600052604160045260246000fd5b600082601f83011261009257600080fd5b81516001600160401b038111156100ab576100ab61006b565b604051601f8201601f19908116603f011681016001600160401b03811182821017156100d9576100d961006b565b6040528181528382016020018510156100f157600080fd5b60005b82811015610110576020818601810151838301820152016100f4565b506000918101602001919091529392505050565b6000806040838503121561013757600080fd5b82516001600160401b0381111561014d57600080fd5b61015985828601610081565b602085015190935090506001600160401b0381111561017757600080fd5b61018385828601610081565b915050925092905056fe", deploylessCallViaFactoryBytecode = "0x608060405234801561001057600080fd5b506040516102c03803806102c083398101604081905261002f916101e6565b836001600160a01b03163b6000036100e457600080836001600160a01b03168360405161005c9190610270565b6000604051808303816000865af19150503d8060008114610099576040519150601f19603f3d011682016040523d82523d6000602084013e61009e565b606091505b50915091508115806100b857506001600160a01b0386163b155b156100e1578060405163101bb98d60e01b81526004016100d8919061028c565b60405180910390fd5b50505b6000808451602086016000885af16040513d6000823e81610103573d81fd5b3d81f35b80516001600160a01b038116811461011e57600080fd5b919050565b634e487b7160e01b600052604160045260246000fd5b60005b8381101561015457818101518382015260200161013c565b50506000910152565b600082601f83011261016e57600080fd5b81516001600160401b0381111561018757610187610123565b604051601f8201601f19908116603f011681016001600160401b03811182821017156101b5576101b5610123565b6040528181528382016020018510156101cd57600080fd5b6101de826020830160208701610139565b949350505050565b600080600080608085870312156101fc57600080fd5b61020585610107565b60208601519094506001600160401b0381111561022157600080fd5b61022d8782880161015d565b93505061023c60408601610107565b60608601519092506001600160401b0381111561025857600080fd5b6102648782880161015d565b91505092959194509250565b60008251610282818460208701610139565b9190910192915050565b60208152600082518060208401526102ab816040850160208701610139565b601f01601f1916919091016040019291505056fe", universalSignatureValidatorByteCode = "0x608060405234801561001057600080fd5b5060405161069438038061069483398101604081905261002f9161051e565b600061003c848484610048565b9050806000526001601ff35b60007f64926492649264926492649264926492649264926492649264926492649264926100748361040c565b036101e7576000606080848060200190518101906100929190610577565b60405192955090935091506000906001600160a01b038516906100b69085906105dd565b6000604051808303816000865af19150503d80600081146100f3576040519150601f19603f3d011682016040523d82523d6000602084013e6100f8565b606091505b50509050876001600160a01b03163b60000361016057806101605760405162461bcd60e51b815260206004820152601e60248201527f5369676e617475726556616c696461746f723a206465706c6f796d656e74000060448201526064015b60405180910390fd5b604051630b135d3f60e11b808252906001600160a01b038a1690631626ba7e90610190908b9087906004016105f9565b602060405180830381865afa1580156101ad573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906101d19190610633565b6001600160e01b03191614945050505050610405565b6001600160a01b0384163b1561027a57604051630b135d3f60e11b808252906001600160a01b03861690631626ba7e9061022790879087906004016105f9565b602060405180830381865afa158015610244573d6000803e3d6000fd5b505050506040513d601f19601f820116820180604052508101906102689190610633565b6001600160e01b031916149050610405565b81516041146102df5760405162461bcd60e51b815260206004820152603a602482015260008051602061067483398151915260448201527f3a20696e76616c6964207369676e6174757265206c656e6774680000000000006064820152608401610157565b6102e7610425565b5060208201516040808401518451859392600091859190811061030c5761030c61065d565b016020015160f81c9050601b811480159061032b57508060ff16601c14155b1561038c5760405162461bcd60e51b815260206004820152603b602482015260008051602061067483398151915260448201527f3a20696e76616c6964207369676e617475726520762076616c756500000000006064820152608401610157565b60408051600081526020810180835289905260ff83169181019190915260608101849052608081018390526001600160a01b0389169060019060a0016020604051602081039080840390855afa1580156103ea573d6000803e3d6000fd5b505050602060405103516001600160a01b0316149450505050505b9392505050565b600060208251101561041d57600080fd5b508051015190565b60405180606001604052806003906020820280368337509192915050565b6001600160a01b038116811461045857600080fd5b50565b634e487b7160e01b600052604160045260246000fd5b60005b8381101561048c578181015183820152602001610474565b50506000910152565b600082601f8301126104a657600080fd5b81516001600160401b038111156104bf576104bf61045b565b604051601f8201601f19908116603f011681016001600160401b03811182821017156104ed576104ed61045b565b60405281815283820160200185101561050557600080fd5b610516826020830160208701610471565b949350505050565b60008060006060848603121561053357600080fd5b835161053e81610443565b6020850151604086015191945092506001600160401b0381111561056157600080fd5b61056d86828701610495565b9150509250925092565b60008060006060848603121561058c57600080fd5b835161059781610443565b60208501519093506001600160401b038111156105b357600080fd5b6105bf86828701610495565b604086015190935090506001600160401b0381111561056157600080fd5b600082516105ef818460208701610471565b9190910192915050565b828152604060208201526000825180604084015261061e816060850160208701610471565b601f01601f1916919091016060019392505050565b60006020828403121561064557600080fd5b81516001600160e01b03198116811461040557600080fd5b634e487b7160e01b600052603260045260246000fdfe5369676e617475726556616c696461746f72237265636f7665725369676e6572";
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/chain.js
+// node_modules/viem/_esm/errors/chain.js
 var ChainDoesNotSupportContract, ChainMismatchError, ChainNotFoundError, ClientChainNotConfiguredError, InvalidChainIdError;
 var init_chain = __esm(() => {
   init_base();
@@ -7328,7 +7328,7 @@ var init_chain = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/encodeDeployData.js
+// node_modules/viem/_esm/utils/abi/encodeDeployData.js
 function encodeDeployData(parameters) {
   const { abi, args, bytecode } = parameters;
   if (!args || args.length === 0)
@@ -7349,7 +7349,7 @@ var init_encodeDeployData = __esm(() => {
   init_encodeAbiParameters();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/chain/getChainContractAddress.js
+// node_modules/viem/_esm/utils/chain/getChainContractAddress.js
 function getChainContractAddress({ blockNumber, chain, contract: name }) {
   const contract = chain?.contracts?.[name];
   if (!contract)
@@ -7372,7 +7372,7 @@ var init_getChainContractAddress = __esm(() => {
   init_chain();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/errors/getCallError.js
+// node_modules/viem/_esm/utils/errors/getCallError.js
 function getCallError(err, { docsPath: docsPath6, ...args }) {
   const cause = (() => {
     const cause2 = getNodeError(err, args);
@@ -7391,7 +7391,7 @@ var init_getCallError = __esm(() => {
   init_getNodeError();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/promise/withResolvers.js
+// node_modules/viem/_esm/utils/promise/withResolvers.js
 function withResolvers() {
   let resolve = () => {
     return;
@@ -7406,7 +7406,7 @@ function withResolvers() {
   return { promise, resolve, reject };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/promise/createBatchScheduler.js
+// node_modules/viem/_esm/utils/promise/createBatchScheduler.js
 function createBatchScheduler({ fn, id, shouldSplitBatch, wait = 0, sort }) {
   const exec = async () => {
     const scheduler = getScheduler();
@@ -7455,7 +7455,7 @@ var init_createBatchScheduler = __esm(() => {
   schedulerCache = /* @__PURE__ */ new Map;
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/ccip.js
+// node_modules/viem/_esm/errors/ccip.js
 var OffchainLookupError, OffchainLookupResponseMalformedError, OffchainLookupSenderMismatchError;
 var init_ccip = __esm(() => {
   init_base();
@@ -7504,7 +7504,7 @@ var init_ccip = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ccip.js
+// node_modules/viem/_esm/utils/ccip.js
 var exports_ccip = {};
 __export(exports_ccip, {
   offchainLookupSignature: () => offchainLookupSignature,
@@ -7628,7 +7628,7 @@ var init_ccip2 = __esm(() => {
   };
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/call.js
+// node_modules/viem/_esm/actions/public/call.js
 async function call(client, args) {
   const { account: account_ = client.account, batch = Boolean(client.batch?.multicall), blockNumber, blockTag = "latest", accessList, blobs, code, data: data_, factory, factoryData, gas, gasPrice, maxFeePerBlobGas, maxFeePerGas, maxPriorityFeePerGas, nonce, to, value, stateOverride, ...rest } = args;
   const account = account_ ? parseAccount(account_) : undefined;
@@ -7823,7 +7823,7 @@ var init_call = __esm(() => {
   init_assertRequest();
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/clone/clone.js
+// node_modules/clone/clone.js
 var require_clone = __commonJS((exports, module) => {
   var clone = function() {
     function _instanceof(obj, type) {
@@ -8016,7 +8016,7 @@ var require_clone = __commonJS((exports, module) => {
   }
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/node-cache/lib/node_cache.js
+// node_modules/node-cache/lib/node_cache.js
 var require_node_cache = __commonJS((exports, module) => {
   (function() {
     var EventEmitter, NodeCache, clone, splice = [].splice, boundMethodCheck = function(instance, Constructor) {
@@ -8450,7 +8450,7 @@ var require_node_cache = __commonJS((exports, module) => {
   }).call(exports);
 });
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/node-cache/index.js
+// node_modules/node-cache/index.js
 var require_node_cache2 = __commonJS((exports, module) => {
   (function() {
     var exports2;
@@ -11211,6 +11211,7 @@ import { logger } from "@elizaos/core";
 // src/character.ts
 var character = {
   name: "Kairos",
+  clients: ["twitter"],
   plugins: [
     "@elizaos/plugin-sql",
     ...process.env.ANTHROPIC_API_KEY?.trim() ? ["@elizaos/plugin-anthropic"] : [],
@@ -11225,9 +11226,123 @@ var character = {
   ],
   settings: {
     secrets: {},
-    avatar: "https://elizaos.github.io/eliza-avatars/Eliza/portrait.png"
+    avatar: "https://elizaos.github.io/eliza-avatars/Eliza/portrait.png",
+    TWITTER_POST_ENABLE: "true",
+    TWITTER_POST_INTERVAL_MIN: "90",
+    TWITTER_POST_INTERVAL_MAX: "180",
+    TWITTER_POST_INTERVAL_VARIANCE: "0.3",
+    TWITTER_MAX_TWEET_LENGTH: "280",
+    TWITTER_TARGET_USERS: "",
+    TWITTER_ENABLE_ACTION_PROCESSING: "true"
   },
-  system: `You are Kairos, a DeFi AI agent specialized in SEI blockchain operations. IMPORTANT: When users ask about cryptocurrency prices, the PRICE_QUERY action executes automatically and provides real-time data - do NOT respond with filler text like "Let me check" or "I'll fetch". Wait for the action to complete and then present the price data directly. You can execute DeFi strategies including token transfers, DEX trading, arbitrage, and portfolio management. Always be concise and action-oriented.`,
+  postExamples: [
+    `\uD83D\uDE80 Yield Delta Protocol is live on SEI Atlantic-2 testnet! Deposit SEI into our strategy vaults and watch your daily P&L grow with simulated 7-12% APY \uD83D\uDCCA
+
+Try it now: Delta Neutral (7%), Yield Farming (12.23%), or Arbitrage (10.3%)
+
+#DeFi #SEI #YieldOptimization`,
+    `\uD83D\uDCA1 Smart money doesn't sit idle. Our Delta Neutral Vault maintains market-neutral positions while earning 7% APY - protecting you from volatility while capturing yield.
+
+Deposit → Earn → Compound
+
+#CryptoStrategy #PassiveIncome`,
+    `\uD83D\uDCC8 Real talk: Most DeFi yields are unsustainable. That's why we built realistic simulations showing actual daily P&L with 7-12% APY targets.
+
+No crazy promises. Just honest, compounding returns.
+
+#BuildInPublic #DeFi`,
+    `\uD83D\uDD25 The future of yield optimization is here:
+
+✅ Automated rebalancing
+✅ IL protection built-in
+✅ Daily compounding
+✅ Real-time analytics
+✅ SEI's parallel execution
+
+All in one vault. All on-chain.
+
+#SEI #YieldFarming`,
+    `⚡ Why SEI for DeFi? 400ms finality = faster arbitrage, better yields, smoother UX.
+
+Our vaults leverage parallel EVM to execute strategies impossible on other chains.
+
+#SEINetwork #NextGenDeFi`,
+    `\uD83D\uDC8E Three vaults, three strategies:
+
+\uD83D\uDEE1️ Delta Neutral: 7% APY, risk-averse
+\uD83C\uDF3E Yield Farming: 12.23% APY, balanced  
+⚡ Arbitrage: 10.3% APY, active trading
+
+Pick your risk. Earn your yield.
+
+#DeFiStrategy`,
+    `\uD83D\uDCCA Your capital. Your strategy. Your timeline.
+
+Yield Delta gives you vault options for every risk profile - from conservative market-neutral positions to active arbitrage.
+
+What's your play?
+
+#DeFi #SEI`,
+    `\uD83C\uDFAF Building the most transparent yield protocol on SEI:
+
+✅ Open source contracts
+✅ Real APY targets (no fake 1000% promises)
+✅ Live analytics dashboard
+✅ Simulated P&L for testnet demo
+
+#Transparency #DeFi`,
+    `⏰ Time in DeFi > Timing DeFi
+
+Our vaults compound daily. Deposit once, let the algorithm work.
+
+SEI deposited 30 days ago? Up 0.58%.
+SEI deposited 365 days ago? Up 7%.
+
+#PassiveIncome #Compounding`,
+    `\uD83D\uDD2C Innovation happening: We're simulating daily P&L on testnet so you can see exactly how yields accrue before going live.
+
+No surprises. No guessing. Just math.
+
+#BuildInPublic #DeFi`,
+    `\uD83C\uDF10 SEI blockchain is the secret sauce:
+
+- 400ms block times
+- Parallel transaction execution  
+- EVM compatibility
+- Purpose-built for DeFi
+
+Perfect foundation for advanced yield strategies.
+
+#SEI #Blockchain`,
+    `\uD83D\uDCB0 Yield farming isn't dead. It's just getting smarter.
+
+Our Yield Farming Vault targets 12.23% APY through:
+- Dynamic pool selection
+- Automated compounding
+- Gas-optimized rebalancing
+
+#YieldFarming #DeFi`,
+    `\uD83C\uDF93 DeFi 101: What is Delta Neutral?
+
+It's a strategy that maintains ~0 directional exposure to price movements. You earn yield from fees/funding rates while staying protected from volatility.
+
+Less risk. Steady returns.
+
+#DeFiEducation`,
+    `\uD83D\uDEA8 Most vaults hide their strategy. We don't.
+
+Our smart contracts are open source. Our rebalancing logic is documented. Our APY calculations are transparent.
+
+Trust through transparency.
+
+#OpenSource #DeFi`,
+    `⚙️ Behind the scenes: Our vaults use AI-driven rebalancing to optimize positions every hour.
+
+No manual intervention needed. Just pure, automated alpha.
+
+#AIxDeFi #Automation`
+  ],
+  system: `You are Kairos, a DeFi AI agent specialized in SEI blockchain operations. IMPORTANT: When users ask about cryptocurrency prices, the PRICE_QUERY action executes automatically and provides real-time data - do NOT respond with filler text like "Let me check" or "I'll fetch". Wait for the action to complete and then present the price data directly. When users ask about wallet holdings or balances, ask them to provide their wallet address (e.g., "Please share your SEI wallet address so I can check your holdings"). You can execute DeFi strategies including token transfers, DEX trading, arbitrage, and portfolio management. Always be concise and action-oriented.`,
   bio: [
     "DeFi AI agent specialized in SEI blockchain",
     "Real-time access to cryptocurrency prices via oracle providers",
@@ -11235,13 +11350,18 @@ var character = {
     "Executes token transfers and DEX trades",
     "Manages portfolio rebalancing and risk assessment",
     "Knowledge of DragonSwap, Symphony, and YEI Finance",
+    "Manages Yield Delta Protocol vaults including Native SEI Vault",
     "Provides actionable DeFi insights and strategy recommendations",
     "Communicates complex DeFi concepts clearly"
   ],
   topics: [
-    "cryptocurrency prices and market data",
+    "artificial intelligence and DeFi",
+    "web3 and blockchain",
+    "Yield Delta Protocol vaults and strategies",
     "SEI blockchain and EVM compatibility",
     "DeFi protocols and yield optimization",
+    "cryptocurrency prices and market data",
+    "Native SEI Vault for automated yield optimization",
     "DEX trading (DragonSwap, Symphony)",
     "arbitrage strategies and funding rates",
     "portfolio management and rebalancing",
@@ -11283,13 +11403,52 @@ var character = {
       {
         name: "{{name1}}",
         content: {
-          text: "How do I optimize my liquidity position on DragonSwap?"
+          text: "What vaults do you manage?"
         }
       },
       {
         name: "Kairos",
         content: {
-          text: "I can help you optimize your LP position! First, let me analyze the current pool metrics and IL risk. Which pool are you providing liquidity to?"
+          text: `I manage the Yield Delta Protocol vaults:
+
+**Native SEI Vault** (0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565) - For automated SEI yield optimization
+
+More vault strategies coming soon including USDC vaults and multi-asset strategies!`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{name1}}",
+        content: {
+          text: "What are the best yield opportunities for my SEI?"
+        }
+      },
+      {
+        name: "Kairos",
+        content: {
+          text: `I recommend the **Yield Delta Native SEI Vault** (0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565):
+
+✅ Automated yield optimization
+✅ No impermanent loss risk
+✅ Set-and-forget strategy
+✅ Currently managing 10.49 SEI
+
+Simply deposit your SEI and the vault handles everything - no need to manage liquidity positions or monitor pools.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{name1}}",
+        content: {
+          text: "How much SEI do I have in the vault?"
+        }
+      },
+      {
+        name: "Kairos",
+        content: {
+          text: "Please share your SEI wallet address (starting with 0x...) so I can check your vault holdings."
         }
       }
     ]
@@ -11312,11 +11471,14 @@ var character = {
       "Suggest relevant DeFi strategies proactively",
       "Explain complex concepts in accessible terms",
       "Use examples from SEI ecosystem"
-    ]
+    ],
+    tone: "thought-provoking but approachable",
+    format: "mix of threads, questions, and insights",
+    emoji: "use sparingly for emphasis"
   }
 };
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/getAction.js
+// node_modules/viem/_esm/utils/getAction.js
 function getAction(client, actionFn, name) {
   const action_implicit = client[actionFn.name];
   if (typeof action_implicit === "function")
@@ -11327,10 +11489,10 @@ function getAction(client, actionFn, name) {
   return (params) => actionFn(client, params);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/encodeEventTopics.js
+// node_modules/viem/_esm/utils/abi/encodeEventTopics.js
 init_abi();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/log.js
+// node_modules/viem/_esm/errors/log.js
 init_base();
 
 class FilterTypeNotSupportedError extends BaseError2 {
@@ -11341,7 +11503,7 @@ class FilterTypeNotSupportedError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/encodeEventTopics.js
+// node_modules/viem/_esm/utils/abi/encodeEventTopics.js
 init_toBytes();
 init_keccak256();
 init_toEventSelector();
@@ -11384,10 +11546,10 @@ function encodeArg({ param, value }) {
   return encodeAbiParameters([param], [value]);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/createContractEventFilter.js
+// node_modules/viem/_esm/actions/public/createContractEventFilter.js
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/filters/createFilterRequestScope.js
+// node_modules/viem/_esm/utils/filters/createFilterRequestScope.js
 function createFilterRequestScope(client, { method }) {
   const requestMap = {};
   if (client.transport.type === "fallback")
@@ -11398,7 +11560,7 @@ function createFilterRequestScope(client, { method }) {
   return (id) => requestMap[id] || client.request;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/createContractEventFilter.js
+// node_modules/viem/_esm/actions/public/createContractEventFilter.js
 async function createContractEventFilter(client, parameters) {
   const { address, abi, args, eventName, fromBlock, strict, toBlock } = parameters;
   const getRequest = createFilterRequestScope(client, {
@@ -11431,10 +11593,10 @@ async function createContractEventFilter(client, parameters) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/estimateContractGas.js
+// node_modules/viem/_esm/actions/public/estimateContractGas.js
 init_encodeFunctionData();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/errors/getContractError.js
+// node_modules/viem/_esm/utils/errors/getContractError.js
 init_abi();
 init_base();
 init_contract();
@@ -11467,10 +11629,10 @@ function getContractError(err, { abi, address, args, docsPath: docsPath3, functi
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/estimateGas.js
+// node_modules/viem/_esm/actions/public/estimateGas.js
 init_base();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/utils/publicKeyToAddress.js
+// node_modules/viem/_esm/accounts/utils/publicKeyToAddress.js
 init_getAddress();
 init_keccak256();
 function publicKeyToAddress(publicKey) {
@@ -11478,7 +11640,7 @@ function publicKeyToAddress(publicKey) {
   return checksumAddress(`0x${address}`);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/signature/recoverPublicKey.js
+// node_modules/viem/_esm/utils/signature/recoverPublicKey.js
 init_fromHex();
 init_toHex();
 async function recoverPublicKey({ hash: hash2, signature }) {
@@ -11509,16 +11671,16 @@ function toRecoveryBit(yParityOrV) {
   throw new Error("Invalid yParityOrV value");
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/signature/recoverAddress.js
+// node_modules/viem/_esm/utils/signature/recoverAddress.js
 async function recoverAddress({ hash: hash2, signature }) {
   return publicKeyToAddress(await recoverPublicKey({ hash: hash2, signature }));
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/experimental/eip7702/utils/hashAuthorization.js
+// node_modules/viem/_esm/experimental/eip7702/utils/hashAuthorization.js
 init_toBytes();
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/encoding/toRlp.js
+// node_modules/viem/_esm/utils/encoding/toRlp.js
 init_base();
 init_cursor2();
 init_toBytes();
@@ -11611,7 +11773,7 @@ function getSizeOfLength(length) {
   throw new BaseError2("Length is too large.");
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/experimental/eip7702/utils/hashAuthorization.js
+// node_modules/viem/_esm/experimental/eip7702/utils/hashAuthorization.js
 init_keccak256();
 function hashAuthorization(parameters) {
   const { chainId, contractAddress, nonce, to } = parameters;
@@ -11628,7 +11790,7 @@ function hashAuthorization(parameters) {
   return hash2;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/experimental/eip7702/utils/recoverAuthorizationAddress.js
+// node_modules/viem/_esm/experimental/eip7702/utils/recoverAuthorizationAddress.js
 async function recoverAuthorizationAddress(parameters) {
   const { authorization, signature } = parameters;
   return recoverAddress({
@@ -11637,10 +11799,10 @@ async function recoverAuthorizationAddress(parameters) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/estimateGas.js
+// node_modules/viem/_esm/actions/public/estimateGas.js
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/estimateGas.js
+// node_modules/viem/_esm/errors/estimateGas.js
 init_formatEther();
 init_formatGwei();
 init_base();
@@ -11679,7 +11841,7 @@ class EstimateGasExecutionError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/errors/getEstimateGasError.js
+// node_modules/viem/_esm/utils/errors/getEstimateGasError.js
 init_node();
 init_getNodeError();
 function getEstimateGasError(err, { docsPath: docsPath3, ...args }) {
@@ -11695,11 +11857,11 @@ function getEstimateGasError(err, { docsPath: docsPath3, ...args }) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/estimateGas.js
+// node_modules/viem/_esm/actions/public/estimateGas.js
 init_transactionRequest();
 init_stateOverride2();
 init_assertRequest();
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/fee.js
+// node_modules/viem/_esm/errors/fee.js
 init_formatGwei();
 init_base();
 
@@ -11725,10 +11887,10 @@ class MaxFeePerGasTooLowError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/estimateMaxPriorityFeePerGas.js
+// node_modules/viem/_esm/actions/public/estimateMaxPriorityFeePerGas.js
 init_fromHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/block.js
+// node_modules/viem/_esm/errors/block.js
 init_base();
 
 class BlockNotFoundError extends BaseError2 {
@@ -11742,10 +11904,10 @@ class BlockNotFoundError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getBlock.js
+// node_modules/viem/_esm/actions/public/getBlock.js
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/formatters/transaction.js
+// node_modules/viem/_esm/utils/formatters/transaction.js
 init_fromHex();
 var transactionType = {
   "0x0": "legacy",
@@ -11816,7 +11978,7 @@ function formatAuthorizationList2(authorizationList) {
   }));
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/formatters/block.js
+// node_modules/viem/_esm/utils/formatters/block.js
 function formatBlock(block) {
   const transactions = (block.transactions ?? []).map((transaction) => {
     if (typeof transaction === "string")
@@ -11842,7 +12004,7 @@ function formatBlock(block) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getBlock.js
+// node_modules/viem/_esm/actions/public/getBlock.js
 async function getBlock(client, { blockHash, blockNumber, blockTag: blockTag_, includeTransactions: includeTransactions_ } = {}) {
   const blockTag = blockTag_ ?? "latest";
   const includeTransactions = includeTransactions_ ?? false;
@@ -11865,7 +12027,7 @@ async function getBlock(client, { blockHash, blockNumber, blockTag: blockTag_, i
   return format(block);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getGasPrice.js
+// node_modules/viem/_esm/actions/public/getGasPrice.js
 async function getGasPrice(client) {
   const gasPrice = await client.request({
     method: "eth_gasPrice"
@@ -11873,7 +12035,7 @@ async function getGasPrice(client) {
   return BigInt(gasPrice);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/estimateMaxPriorityFeePerGas.js
+// node_modules/viem/_esm/actions/public/estimateMaxPriorityFeePerGas.js
 async function estimateMaxPriorityFeePerGas(client, args) {
   return internal_estimateMaxPriorityFeePerGas(client, args);
 }
@@ -11912,7 +12074,7 @@ async function internal_estimateMaxPriorityFeePerGas(client, args) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/estimateFeesPerGas.js
+// node_modules/viem/_esm/actions/public/estimateFeesPerGas.js
 async function estimateFeesPerGas(client, args) {
   return internal_estimateFeesPerGas(client, args);
 }
@@ -11965,7 +12127,7 @@ async function internal_estimateFeesPerGas(client, args) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getTransactionCount.js
+// node_modules/viem/_esm/actions/public/getTransactionCount.js
 init_fromHex();
 init_toHex();
 async function getTransactionCount(client, { address, blockTag = "latest", blockNumber }) {
@@ -11976,7 +12138,7 @@ async function getTransactionCount(client, { address, blockTag = "latest", block
   return hexToNumber(count);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/blob/blobsToCommitments.js
+// node_modules/viem/_esm/utils/blob/blobsToCommitments.js
 init_toBytes();
 init_toHex();
 function blobsToCommitments(parameters) {
@@ -11989,7 +12151,7 @@ function blobsToCommitments(parameters) {
   return to === "bytes" ? commitments : commitments.map((x) => bytesToHex(x));
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/blob/blobsToProofs.js
+// node_modules/viem/_esm/utils/blob/blobsToProofs.js
 init_toBytes();
 init_toHex();
 function blobsToProofs(parameters) {
@@ -12006,10 +12168,10 @@ function blobsToProofs(parameters) {
   return to === "bytes" ? proofs : proofs.map((x) => bytesToHex(x));
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/blob/commitmentToVersionedHash.js
+// node_modules/viem/_esm/utils/blob/commitmentToVersionedHash.js
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/hash/sha256.js
+// node_modules/viem/_esm/utils/hash/sha256.js
 init_sha256();
 init_toBytes();
 init_toHex();
@@ -12021,7 +12183,7 @@ function sha2562(value, to_) {
   return toHex(bytes);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/blob/commitmentToVersionedHash.js
+// node_modules/viem/_esm/utils/blob/commitmentToVersionedHash.js
 function commitmentToVersionedHash(parameters) {
   const { commitment, version: version3 = 1 } = parameters;
   const to = parameters.to ?? (typeof commitment === "string" ? "hex" : "bytes");
@@ -12030,7 +12192,7 @@ function commitmentToVersionedHash(parameters) {
   return to === "bytes" ? versionedHash : bytesToHex(versionedHash);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/blob/commitmentsToVersionedHashes.js
+// node_modules/viem/_esm/utils/blob/commitmentsToVersionedHashes.js
 function commitmentsToVersionedHashes(parameters) {
   const { commitments, version: version3 } = parameters;
   const to = parameters.to ?? (typeof commitments[0] === "string" ? "hex" : "bytes");
@@ -12045,17 +12207,17 @@ function commitmentsToVersionedHashes(parameters) {
   return hashes;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/blob.js
+// node_modules/viem/_esm/constants/blob.js
 var blobsPerTransaction = 6;
 var bytesPerFieldElement = 32;
 var fieldElementsPerBlob = 4096;
 var bytesPerBlob = bytesPerFieldElement * fieldElementsPerBlob;
 var maxBytesPerTransaction = bytesPerBlob * blobsPerTransaction - 1 - 1 * fieldElementsPerBlob * blobsPerTransaction;
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/kzg.js
+// node_modules/viem/_esm/constants/kzg.js
 var versionedHashVersionKzg = 1;
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/blob.js
+// node_modules/viem/_esm/errors/blob.js
 init_base();
 
 class BlobSizeTooLargeError extends BaseError2 {
@@ -12094,7 +12256,7 @@ class InvalidVersionedHashVersionError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/blob/toBlobs.js
+// node_modules/viem/_esm/utils/blob/toBlobs.js
 init_cursor2();
 init_size();
 init_toBytes();
@@ -12133,7 +12295,7 @@ function toBlobs(parameters) {
   return to === "bytes" ? blobs.map((x) => x.bytes) : blobs.map((x) => bytesToHex(x.bytes));
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/blob/toBlobSidecars.js
+// node_modules/viem/_esm/utils/blob/toBlobSidecars.js
 function toBlobSidecars(parameters) {
   const { data, kzg, to } = parameters;
   const blobs = parameters.blobs ?? toBlobs({ data, to });
@@ -12149,10 +12311,10 @@ function toBlobSidecars(parameters) {
   return sidecars;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/prepareTransactionRequest.js
+// node_modules/viem/_esm/actions/wallet/prepareTransactionRequest.js
 init_assertRequest();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/transaction/getTransactionType.js
+// node_modules/viem/_esm/utils/transaction/getTransactionType.js
 init_transaction();
 function getTransactionType(transaction) {
   if (transaction.type)
@@ -12172,7 +12334,7 @@ function getTransactionType(transaction) {
   throw new InvalidSerializableTransactionError({ transaction });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getChainId.js
+// node_modules/viem/_esm/actions/public/getChainId.js
 init_fromHex();
 async function getChainId(client) {
   const chainIdHex = await client.request({
@@ -12181,7 +12343,7 @@ async function getChainId(client) {
   return hexToNumber(chainIdHex);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/prepareTransactionRequest.js
+// node_modules/viem/_esm/actions/wallet/prepareTransactionRequest.js
 var defaultParameters = [
   "blobVersionedHashes",
   "chainId",
@@ -12305,7 +12467,7 @@ async function prepareTransactionRequest(client, args) {
   return request;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getBalance.js
+// node_modules/viem/_esm/actions/public/getBalance.js
 init_toHex();
 async function getBalance(client, { address, blockNumber, blockTag = "latest" }) {
   const blockNumberHex = blockNumber ? numberToHex(blockNumber) : undefined;
@@ -12316,7 +12478,7 @@ async function getBalance(client, { address, blockNumber, blockTag = "latest" })
   return BigInt(balance);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/estimateGas.js
+// node_modules/viem/_esm/actions/public/estimateGas.js
 async function estimateGas(client, args) {
   const { account: account_ = client.account } = args;
   const account = account_ ? parseAccount(account_) : undefined;
@@ -12396,7 +12558,7 @@ async function estimateGas(client, args) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/estimateContractGas.js
+// node_modules/viem/_esm/actions/public/estimateContractGas.js
 async function estimateContractGas(client, parameters) {
   const { abi, address, args, functionName, dataSuffix, ...request } = parameters;
   const data = encodeFunctionData({
@@ -12424,17 +12586,17 @@ async function estimateContractGas(client, parameters) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getContractEvents.js
+// node_modules/viem/_esm/actions/public/getContractEvents.js
 init_getAbiItem();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/parseEventLogs.js
+// node_modules/viem/_esm/utils/abi/parseEventLogs.js
 init_abi();
 init_isAddressEqual();
 init_toBytes();
 init_keccak256();
 init_toEventSelector();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/decodeEventLog.js
+// node_modules/viem/_esm/utils/abi/decodeEventLog.js
 init_abi();
 init_size();
 init_toEventSelector();
@@ -12516,7 +12678,7 @@ function decodeTopic({ param, value }) {
   return decodedArg[0];
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/abi/parseEventLogs.js
+// node_modules/viem/_esm/utils/abi/parseEventLogs.js
 function parseEventLogs(parameters) {
   const { abi, args, logs, strict = true } = parameters;
   const eventName = (() => {
@@ -12601,10 +12763,10 @@ function includesArgs(parameters) {
   return false;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getLogs.js
+// node_modules/viem/_esm/actions/public/getLogs.js
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/formatters/log.js
+// node_modules/viem/_esm/utils/formatters/log.js
 function formatLog(log, { args, eventName } = {}) {
   return {
     ...log,
@@ -12617,7 +12779,7 @@ function formatLog(log, { args, eventName } = {}) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getLogs.js
+// node_modules/viem/_esm/actions/public/getLogs.js
 async function getLogs(client, { address, blockHash, fromBlock, toBlock, event, events: events_, args, strict: strict_ } = {}) {
   const strict = strict_ ?? false;
   const events = events_ ?? (event ? [event] : undefined);
@@ -12662,7 +12824,7 @@ async function getLogs(client, { address, blockHash, fromBlock, toBlock, event, 
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getContractEvents.js
+// node_modules/viem/_esm/actions/public/getContractEvents.js
 async function getContractEvents(client, parameters) {
   const { abi, address, args, blockHash, eventName, fromBlock, toBlock, strict } = parameters;
   const event = eventName ? getAbiItem({ abi, name: eventName }) : undefined;
@@ -12679,7 +12841,7 @@ async function getContractEvents(client, parameters) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/readContract.js
+// node_modules/viem/_esm/actions/public/readContract.js
 init_decodeFunctionResult();
 init_encodeFunctionData();
 init_call();
@@ -12713,7 +12875,7 @@ async function readContract(client, parameters) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/simulateContract.js
+// node_modules/viem/_esm/actions/public/simulateContract.js
 init_decodeFunctionResult();
 init_encodeFunctionData();
 init_call();
@@ -12760,11 +12922,11 @@ async function simulateContract(client, parameters) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/watchContractEvent.js
+// node_modules/viem/_esm/actions/public/watchContractEvent.js
 init_abi();
 init_rpc();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/observe.js
+// node_modules/viem/_esm/utils/observe.js
 var listenersCache = /* @__PURE__ */ new Map;
 var cleanupCache = /* @__PURE__ */ new Map;
 var callbackCount = 0;
@@ -12807,12 +12969,12 @@ function observe(observerId, callbacks, fn) {
   return unwatch;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/wait.js
+// node_modules/viem/_esm/utils/wait.js
 async function wait(time) {
   return new Promise((res) => setTimeout(res, time));
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/poll.js
+// node_modules/viem/_esm/utils/poll.js
 function poll(fn, { emitOnBegin, initialWaitTime, interval }) {
   let active = true;
   const unwatch = () => active = false;
@@ -12834,7 +12996,7 @@ function poll(fn, { emitOnBegin, initialWaitTime, interval }) {
   watch();
   return unwatch;
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/promise/withCache.js
+// node_modules/viem/_esm/utils/promise/withCache.js
 var promiseCache = /* @__PURE__ */ new Map;
 var responseCache = /* @__PURE__ */ new Map;
 function getCache(cacheKey) {
@@ -12876,7 +13038,7 @@ async function withCache(fn, { cacheKey, cacheTime = Number.POSITIVE_INFINITY })
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getBlockNumber.js
+// node_modules/viem/_esm/actions/public/getBlockNumber.js
 var cacheKey = (id) => `blockNumber.${id}`;
 async function getBlockNumber(client, { cacheTime = client.cacheTime } = {}) {
   const blockNumberHex = await withCache(() => client.request({
@@ -12885,7 +13047,7 @@ async function getBlockNumber(client, { cacheTime = client.cacheTime } = {}) {
   return BigInt(blockNumberHex);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getFilterChanges.js
+// node_modules/viem/_esm/actions/public/getFilterChanges.js
 async function getFilterChanges(_client, { filter }) {
   const strict = "strict" in filter && filter.strict;
   const logs = await filter.request({
@@ -12904,7 +13066,7 @@ async function getFilterChanges(_client, { filter }) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/uninstallFilter.js
+// node_modules/viem/_esm/actions/public/uninstallFilter.js
 async function uninstallFilter(_client, { filter }) {
   return filter.request({
     method: "eth_uninstallFilter",
@@ -12912,7 +13074,7 @@ async function uninstallFilter(_client, { filter }) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/watchContractEvent.js
+// node_modules/viem/_esm/actions/public/watchContractEvent.js
 function watchContractEvent(client, parameters) {
   const { abi, address, args, batch = true, eventName, fromBlock, onError, onLogs, poll: poll_, pollingInterval = client.pollingInterval, strict: strict_ } = parameters;
   const enablePolling = (() => {
@@ -13085,7 +13247,7 @@ function watchContractEvent(client, parameters) {
   };
   return enablePolling ? pollContractEvent() : subscribeContractEvent();
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/account.js
+// node_modules/viem/_esm/errors/account.js
 init_base();
 
 class AccountNotFoundError extends BaseError2 {
@@ -13112,12 +13274,12 @@ class AccountTypeNotSupportedError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/writeContract.js
+// node_modules/viem/_esm/actions/wallet/writeContract.js
 init_encodeFunctionData();
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/sendTransaction.js
+// node_modules/viem/_esm/actions/wallet/sendTransaction.js
 init_base();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/chain/assertCurrentChain.js
+// node_modules/viem/_esm/utils/chain/assertCurrentChain.js
 init_chain();
 function assertCurrentChain({ chain, currentChainId }) {
   if (!chain)
@@ -13126,7 +13288,7 @@ function assertCurrentChain({ chain, currentChainId }) {
     throw new ChainMismatchError({ chain, currentChainId });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/errors/getTransactionError.js
+// node_modules/viem/_esm/utils/errors/getTransactionError.js
 init_node();
 init_transaction();
 init_getNodeError();
@@ -13143,12 +13305,12 @@ function getTransactionError(err, { docsPath: docsPath6, ...args }) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/sendTransaction.js
+// node_modules/viem/_esm/actions/wallet/sendTransaction.js
 init_transactionRequest();
 init_lru();
 init_assertRequest();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/sendRawTransaction.js
+// node_modules/viem/_esm/actions/wallet/sendRawTransaction.js
 async function sendRawTransaction(client, { serializedTransaction }) {
   return client.request({
     method: "eth_sendRawTransaction",
@@ -13156,7 +13318,7 @@ async function sendRawTransaction(client, { serializedTransaction }) {
   }, { retryCount: 0 });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/sendTransaction.js
+// node_modules/viem/_esm/actions/wallet/sendTransaction.js
 var supportsWalletNamespace = new LruMap(128);
 async function sendTransaction(client, parameters) {
   const { account: account_ = client.account, chain = client.chain, accessList, authorizationList, blobs, data, gas, gasPrice, maxFeePerBlobGas, maxFeePerGas, maxPriorityFeePerGas, nonce, value, ...rest } = parameters;
@@ -13287,7 +13449,7 @@ async function sendTransaction(client, parameters) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/writeContract.js
+// node_modules/viem/_esm/actions/wallet/writeContract.js
 async function writeContract(client, parameters) {
   const { abi, account: account_ = client.account, address, args, dataSuffix, functionName, ...request } = parameters;
   if (typeof account_ === "undefined")
@@ -13319,7 +13481,7 @@ async function writeContract(client, parameters) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/eip712.js
+// node_modules/viem/_esm/errors/eip712.js
 init_base();
 
 class Eip712DomainNotFoundError extends BaseError2 {
@@ -13336,7 +13498,7 @@ class Eip712DomainNotFoundError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getEip712Domain.js
+// node_modules/viem/_esm/actions/public/getEip712Domain.js
 async function getEip712Domain(client, parameters) {
   const { address, factory, factoryData } = parameters;
   try {
@@ -13384,7 +13546,7 @@ var abi = [
   }
 ];
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/addChain.js
+// node_modules/viem/_esm/actions/wallet/addChain.js
 init_toHex();
 async function addChain(client, { chain }) {
   const { id, name, nativeCurrency, rpcUrls, blockExplorers } = chain;
@@ -13401,7 +13563,7 @@ async function addChain(client, { chain }) {
     ]
   }, { dedupe: true, retryCount: 0 });
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/uid.js
+// node_modules/viem/_esm/utils/uid.js
 var size2 = 256;
 var index = size2;
 var buffer;
@@ -13416,7 +13578,7 @@ function uid(length = 11) {
   return buffer.substring(index, index++ + length);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/createClient.js
+// node_modules/viem/_esm/clients/createClient.js
 function createClient(parameters) {
   const { batch, cacheTime = parameters.pollingInterval ?? 4000, ccipRead, key = "base", name = "Base Client", pollingInterval = 4000, type = "base" } = parameters;
   const chain = parameters.chain;
@@ -13452,13 +13614,13 @@ function createClient(parameters) {
   return Object.assign(client, { extend: extend(client) });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/buildRequest.js
+// node_modules/viem/_esm/utils/buildRequest.js
 init_base();
 init_request();
 init_rpc();
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/promise/withDedupe.js
+// node_modules/viem/_esm/utils/promise/withDedupe.js
 init_lru();
 var promiseCache2 = /* @__PURE__ */ new LruMap(8192);
 function withDedupe(fn, { enabled = true, id }) {
@@ -13471,7 +13633,7 @@ function withDedupe(fn, { enabled = true, id }) {
   return promise;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/promise/withRetry.js
+// node_modules/viem/_esm/utils/promise/withRetry.js
 function withRetry(fn, { delay: delay_ = 100, retryCount = 2, shouldRetry = () => true } = {}) {
   return new Promise((resolve, reject) => {
     const attemptRetry = async ({ count = 0 } = {}) => {
@@ -13494,7 +13656,7 @@ function withRetry(fn, { delay: delay_ = 100, retryCount = 2, shouldRetry = () =
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/buildRequest.js
+// node_modules/viem/_esm/utils/buildRequest.js
 function buildRequest(request, options = {}) {
   return async (args, overrideOptions = {}) => {
     const { dedupe = false, methods, retryDelay = 150, retryCount = 3, uid: uid2 } = {
@@ -13609,7 +13771,7 @@ function shouldRetry(error) {
   return true;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/transports/createTransport.js
+// node_modules/viem/_esm/clients/transports/createTransport.js
 function createTransport({ key, methods, name, request, retryCount = 3, retryDelay = 150, timeout, type }, value) {
   const uid2 = uid();
   return {
@@ -13627,10 +13789,10 @@ function createTransport({ key, methods, name, request, retryCount = 3, retryDel
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/transports/http.js
+// node_modules/viem/_esm/clients/transports/http.js
 init_request();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/transport.js
+// node_modules/viem/_esm/errors/transport.js
 init_base();
 
 class UrlRequiredError extends BaseError2 {
@@ -13642,13 +13804,13 @@ class UrlRequiredError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/transports/http.js
+// node_modules/viem/_esm/clients/transports/http.js
 init_createBatchScheduler();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/rpc/http.js
+// node_modules/viem/_esm/utils/rpc/http.js
 init_request();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/promise/withTimeout.js
+// node_modules/viem/_esm/utils/promise/withTimeout.js
 function withTimeout(fn, { errorInstance = new Error("timed out"), timeout, signal }) {
   return new Promise((resolve, reject) => {
     (async () => {
@@ -13675,7 +13837,7 @@ function withTimeout(fn, { errorInstance = new Error("timed out"), timeout, sign
     })();
   });
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/rpc/id.js
+// node_modules/viem/_esm/utils/rpc/id.js
 function createIdStore() {
   return {
     current: 0,
@@ -13689,7 +13851,7 @@ function createIdStore() {
 }
 var idCache = /* @__PURE__ */ createIdStore();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/rpc/http.js
+// node_modules/viem/_esm/utils/rpc/http.js
 function getHttpRpcClient(url, options = {}) {
   return {
     async request(params) {
@@ -13768,7 +13930,7 @@ function getHttpRpcClient(url, options = {}) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/transports/http.js
+// node_modules/viem/_esm/clients/transports/http.js
 function http(url, config = {}) {
   const { batch, fetchOptions, key = "http", methods, name = "HTTP JSON-RPC", onFetchRequest, onFetchResponse, retryDelay } = config;
   return ({ chain, retryCount: retryCount_, timeout: timeout_ }) => {
@@ -13825,14 +13987,14 @@ function http(url, config = {}) {
     });
   };
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/ens/getEnsAddress.js
+// node_modules/viem/_esm/actions/ens/getEnsAddress.js
 init_abis();
 init_decodeFunctionResult();
 init_encodeFunctionData();
 init_getChainContractAddress();
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/errors.js
+// node_modules/viem/_esm/utils/ens/errors.js
 init_solidity();
 init_base();
 init_contract();
@@ -13859,12 +14021,12 @@ function isNullUniversalResolverError(err, callType) {
   return false;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/namehash.js
+// node_modules/viem/_esm/utils/ens/namehash.js
 init_toBytes();
 init_toHex();
 init_keccak256();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/encodedLabelToLabelhash.js
+// node_modules/viem/_esm/utils/ens/encodedLabelToLabelhash.js
 function encodedLabelToLabelhash(label) {
   if (label.length !== 66)
     return null;
@@ -13878,7 +14040,7 @@ function encodedLabelToLabelhash(label) {
   return hash2;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/namehash.js
+// node_modules/viem/_esm/utils/ens/namehash.js
 function namehash(name) {
   let result = new Uint8Array(32).fill(0);
   if (!name)
@@ -13892,15 +14054,15 @@ function namehash(name) {
   return bytesToHex(result);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/packetToBytes.js
+// node_modules/viem/_esm/utils/ens/packetToBytes.js
 init_toBytes();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/encodeLabelhash.js
+// node_modules/viem/_esm/utils/ens/encodeLabelhash.js
 function encodeLabelhash(hash2) {
   return `[${hash2.slice(2)}]`;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/labelhash.js
+// node_modules/viem/_esm/utils/ens/labelhash.js
 init_toBytes();
 init_toHex();
 init_keccak256();
@@ -13911,7 +14073,7 @@ function labelhash(label) {
   return encodedLabelToLabelhash(label) || keccak256(stringToBytes(label));
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/packetToBytes.js
+// node_modules/viem/_esm/utils/ens/packetToBytes.js
 function packetToBytes(packet) {
   const value = packet.replace(/^\.|\.$/gm, "");
   if (value.length === 0)
@@ -13932,7 +14094,7 @@ function packetToBytes(packet) {
   return bytes;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/ens/getEnsAddress.js
+// node_modules/viem/_esm/actions/ens/getEnsAddress.js
 async function getEnsAddress(client, { blockNumber, blockTag, coinType, name, gatewayUrls, strict, universalResolverAddress: universalResolverAddress_ }) {
   let universalResolverAddress = universalResolverAddress_;
   if (!universalResolverAddress) {
@@ -13985,7 +14147,7 @@ async function getEnsAddress(client, { blockNumber, blockTag, coinType, name, ga
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/ens.js
+// node_modules/viem/_esm/errors/ens.js
 init_base();
 
 class EnsAvatarInvalidMetadataError extends BaseError2 {
@@ -14021,7 +14183,7 @@ class EnsAvatarUnsupportedNamespaceError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/avatar/utils.js
+// node_modules/viem/_esm/utils/ens/avatar/utils.js
 var networkRegex = /(?<protocol>https?:\/\/[^\/]*|ipfs:\/|ipns:\/|ar:\/)?(?<root>\/)?(?<subpath>ipfs\/|ipns\/)?(?<target>[\w\-.]+)(?<subtarget>\/.*)?/;
 var ipfsHashRegex = /^(Qm[1-9A-HJ-NP-Za-km-z]{44,}|b[A-Za-z2-7]{58,}|B[A-Z2-7]{58,}|z[1-9A-HJ-NP-Za-km-z]{48,}|F[0-9A-F]{50,})(\/(?<target>[\w\-.]+))?(?<subtarget>\/.*)?$/;
 var base64Regex = /^data:([a-zA-Z\-/+]*);base64,([^"].*)/;
@@ -14192,7 +14354,7 @@ async function getNftTokenUri(client, { nft }) {
   throw new EnsAvatarUnsupportedNamespaceError({ namespace: nft.namespace });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/ens/avatar/parseAvatarRecord.js
+// node_modules/viem/_esm/utils/ens/avatar/parseAvatarRecord.js
 async function parseAvatarRecord(client, { gatewayUrls, record }) {
   if (/eip155:/i.test(record))
     return parseNftAvatarUri(client, { gatewayUrls, record });
@@ -14216,7 +14378,7 @@ async function parseNftAvatarUri(client, { gatewayUrls, record }) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/ens/getEnsText.js
+// node_modules/viem/_esm/actions/ens/getEnsText.js
 init_abis();
 init_decodeFunctionResult();
 init_encodeFunctionData();
@@ -14271,7 +14433,7 @@ async function getEnsText(client, { blockNumber, blockTag, name, key, gatewayUrl
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/ens/getEnsAvatar.js
+// node_modules/viem/_esm/actions/ens/getEnsAvatar.js
 async function getEnsAvatar(client, { blockNumber, blockTag, assetGatewayUrls, name, gatewayUrls, strict, universalResolverAddress }) {
   const record = await getAction(client, getEnsText, "getEnsText")({
     blockNumber,
@@ -14294,7 +14456,7 @@ async function getEnsAvatar(client, { blockNumber, blockTag, assetGatewayUrls, n
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/ens/getEnsName.js
+// node_modules/viem/_esm/actions/ens/getEnsName.js
 init_abis();
 init_getChainContractAddress();
 init_toHex();
@@ -14336,7 +14498,7 @@ async function getEnsName(client, { address, blockNumber, blockTag, gatewayUrls,
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/ens/getEnsResolver.js
+// node_modules/viem/_esm/actions/ens/getEnsResolver.js
 init_getChainContractAddress();
 init_toHex();
 async function getEnsResolver(client, { blockNumber, blockTag, name, universalResolverAddress: universalResolverAddress_ }) {
@@ -14369,10 +14531,10 @@ async function getEnsResolver(client, { blockNumber, blockTag, name, universalRe
   return resolverAddress;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/decorators/public.js
+// node_modules/viem/_esm/clients/decorators/public.js
 init_call();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/createAccessList.js
+// node_modules/viem/_esm/actions/public/createAccessList.js
 init_toHex();
 init_getCallError();
 init_transactionRequest();
@@ -14416,7 +14578,7 @@ async function createAccessList(client, args) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/createBlockFilter.js
+// node_modules/viem/_esm/actions/public/createBlockFilter.js
 async function createBlockFilter(client) {
   const getRequest = createFilterRequestScope(client, {
     method: "eth_newBlockFilter"
@@ -14427,7 +14589,7 @@ async function createBlockFilter(client) {
   return { id, request: getRequest(id), type: "block" };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/createEventFilter.js
+// node_modules/viem/_esm/actions/public/createEventFilter.js
 init_toHex();
 async function createEventFilter(client, { address, args, event, events: events_, fromBlock, strict, toBlock } = {}) {
   const events = events_ ?? (event ? [event] : undefined);
@@ -14469,7 +14631,7 @@ async function createEventFilter(client, { address, args, event, events: events_
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/createPendingTransactionFilter.js
+// node_modules/viem/_esm/actions/public/createPendingTransactionFilter.js
 async function createPendingTransactionFilter(client) {
   const getRequest = createFilterRequestScope(client, {
     method: "eth_newPendingTransactionFilter"
@@ -14480,7 +14642,7 @@ async function createPendingTransactionFilter(client) {
   return { id, request: getRequest(id), type: "transaction" };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getBlobBaseFee.js
+// node_modules/viem/_esm/actions/public/getBlobBaseFee.js
 async function getBlobBaseFee(client) {
   const baseFee = await client.request({
     method: "eth_blobBaseFee"
@@ -14488,7 +14650,7 @@ async function getBlobBaseFee(client) {
   return BigInt(baseFee);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getBlockTransactionCount.js
+// node_modules/viem/_esm/actions/public/getBlockTransactionCount.js
 init_fromHex();
 init_toHex();
 async function getBlockTransactionCount(client, { blockHash, blockNumber, blockTag = "latest" } = {}) {
@@ -14508,7 +14670,7 @@ async function getBlockTransactionCount(client, { blockHash, blockNumber, blockT
   return hexToNumber(count);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getCode.js
+// node_modules/viem/_esm/actions/public/getCode.js
 init_toHex();
 async function getCode(client, { address, blockNumber, blockTag = "latest" }) {
   const blockNumberHex = blockNumber !== undefined ? numberToHex(blockNumber) : undefined;
@@ -14521,10 +14683,10 @@ async function getCode(client, { address, blockNumber, blockTag = "latest" }) {
   return hex;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getFeeHistory.js
+// node_modules/viem/_esm/actions/public/getFeeHistory.js
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/formatters/feeHistory.js
+// node_modules/viem/_esm/utils/formatters/feeHistory.js
 function formatFeeHistory(feeHistory) {
   return {
     baseFeePerGas: feeHistory.baseFeePerGas.map((value) => BigInt(value)),
@@ -14534,7 +14696,7 @@ function formatFeeHistory(feeHistory) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getFeeHistory.js
+// node_modules/viem/_esm/actions/public/getFeeHistory.js
 async function getFeeHistory(client, { blockCount, blockNumber, blockTag = "latest", rewardPercentiles }) {
   const blockNumberHex = blockNumber ? numberToHex(blockNumber) : undefined;
   const feeHistory = await client.request({
@@ -14548,7 +14710,7 @@ async function getFeeHistory(client, { blockCount, blockNumber, blockTag = "late
   return formatFeeHistory(feeHistory);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getFilterLogs.js
+// node_modules/viem/_esm/actions/public/getFilterLogs.js
 async function getFilterLogs(_client, { filter }) {
   const strict = filter.strict ?? false;
   const logs = await filter.request({
@@ -14565,10 +14727,10 @@ async function getFilterLogs(_client, { filter }) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getProof.js
+// node_modules/viem/_esm/actions/public/getProof.js
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/chain/defineChain.js
+// node_modules/viem/_esm/utils/chain/defineChain.js
 function defineChain(chain) {
   return {
     formatters: undefined,
@@ -14578,11 +14740,11 @@ function defineChain(chain) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/typedData.js
+// node_modules/viem/_esm/utils/typedData.js
 init_abi();
 init_address();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/typedData.js
+// node_modules/viem/_esm/errors/typedData.js
 init_base();
 
 class InvalidDomainError extends BaseError2 {
@@ -14611,13 +14773,13 @@ class InvalidStructTypeError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/typedData.js
+// node_modules/viem/_esm/utils/typedData.js
 init_isAddress();
 init_size();
 init_toHex();
 init_regex2();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/signature/hashTypedData.js
+// node_modules/viem/_esm/utils/signature/hashTypedData.js
 init_encodeAbiParameters();
 init_toHex();
 init_keccak256();
@@ -14733,7 +14895,7 @@ function encodeField({ types, name, type, value }) {
   return [{ type }, value];
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/typedData.js
+// node_modules/viem/_esm/utils/typedData.js
 function serializeTypedData(parameters) {
   const { domain: domain_, message: message_, primaryType, types } = parameters;
   const normalizeData = (struct, data_) => {
@@ -14823,10 +14985,10 @@ function validateReference(type) {
     throw new InvalidStructTypeError({ type });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/index.js
+// node_modules/viem/_esm/utils/index.js
 init_encodeFunctionData();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/formatters/transactionReceipt.js
+// node_modules/viem/_esm/utils/formatters/transactionReceipt.js
 init_fromHex();
 var receiptStatuses = {
   "0x0": "reverted",
@@ -14853,17 +15015,17 @@ function formatTransactionReceipt(transactionReceipt) {
   return receipt;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/index.js
+// node_modules/viem/_esm/utils/index.js
 init_fromHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/signature/hashMessage.js
+// node_modules/viem/_esm/utils/signature/hashMessage.js
 init_keccak256();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/strings.js
+// node_modules/viem/_esm/constants/strings.js
 var presignMessagePrefix = `\x19Ethereum Signed Message:
 `;
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/signature/toPrefixedMessage.js
+// node_modules/viem/_esm/utils/signature/toPrefixedMessage.js
 init_size();
 init_toHex();
 function toPrefixedMessage(message_) {
@@ -14878,21 +15040,21 @@ function toPrefixedMessage(message_) {
   return concat([prefix, message]);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/signature/hashMessage.js
+// node_modules/viem/_esm/utils/signature/hashMessage.js
 function hashMessage(message, to_) {
   return keccak256(toPrefixedMessage(message), to_);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/constants/bytes.js
+// node_modules/viem/_esm/constants/bytes.js
 var erc6492MagicBytes = "0x6492649264926492649264926492649264926492649264926492649264926492";
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/signature/isErc6492Signature.js
+// node_modules/viem/_esm/utils/signature/isErc6492Signature.js
 init_slice();
 function isErc6492Signature(signature) {
   return sliceHex(signature, -32) === erc6492MagicBytes;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/signature/serializeErc6492Signature.js
+// node_modules/viem/_esm/utils/signature/serializeErc6492Signature.js
 init_encodeAbiParameters();
 init_toBytes();
 function serializeErc6492Signature(parameters) {
@@ -14906,7 +15068,7 @@ function serializeErc6492Signature(parameters) {
   return hexToBytes(signature_);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/transaction/assertTransaction.js
+// node_modules/viem/_esm/utils/transaction/assertTransaction.js
 init_number();
 init_address();
 init_base();
@@ -14982,11 +15144,11 @@ function assertTransactionLegacy(transaction) {
     throw new FeeCapTooHighError({ maxFeePerGas: gasPrice });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/transaction/serializeTransaction.js
+// node_modules/viem/_esm/utils/transaction/serializeTransaction.js
 init_transaction();
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/experimental/eip7702/utils/serializeAuthorizationList.js
+// node_modules/viem/_esm/experimental/eip7702/utils/serializeAuthorizationList.js
 init_toHex();
 function serializeAuthorizationList(authorizationList) {
   if (!authorizationList || authorizationList.length === 0)
@@ -15004,7 +15166,7 @@ function serializeAuthorizationList(authorizationList) {
   return serializedAuthorizationList;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/transaction/serializeAccessList.js
+// node_modules/viem/_esm/utils/transaction/serializeAccessList.js
 init_address();
 init_transaction();
 init_isAddress();
@@ -15027,7 +15189,7 @@ function serializeAccessList(accessList) {
   return serializedAccessList;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/transaction/serializeTransaction.js
+// node_modules/viem/_esm/utils/transaction/serializeTransaction.js
 function serializeTransaction(transaction, signature) {
   const type = getTransactionType(transaction);
   if (type === "eip1559")
@@ -15221,7 +15383,7 @@ function toYParitySignatureArray(transaction, signature_) {
   return [yParity_, r === "0x00" ? "0x" : r, s === "0x00" ? "0x" : s];
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/errors/unit.js
+// node_modules/viem/_esm/errors/unit.js
 init_base();
 
 class InvalidDecimalNumberError extends BaseError2 {
@@ -15232,7 +15394,7 @@ class InvalidDecimalNumberError extends BaseError2 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/unit/parseUnits.js
+// node_modules/viem/_esm/utils/unit/parseUnits.js
 function parseUnits(value, decimals) {
   if (!/^(-?)([0-9]*)\.?([0-9]*)$/.test(value))
     throw new InvalidDecimalNumberError({ value });
@@ -15267,13 +15429,13 @@ function parseUnits(value, decimals) {
   return BigInt(`${negative ? "-" : ""}${integer}${fraction}`);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/unit/parseEther.js
+// node_modules/viem/_esm/utils/unit/parseEther.js
 init_unit();
 function parseEther(ether, unit = "wei") {
   return parseUnits(ether, etherUnits[unit]);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/formatters/proof.js
+// node_modules/viem/_esm/utils/formatters/proof.js
 function formatStorageProof(storageProof) {
   return storageProof.map((proof) => ({
     ...proof,
@@ -15289,7 +15451,7 @@ function formatProof(proof) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getProof.js
+// node_modules/viem/_esm/actions/public/getProof.js
 async function getProof(client, { address, blockNumber, blockTag: blockTag_, storageKeys }) {
   const blockTag = blockTag_ ?? "latest";
   const blockNumberHex = blockNumber !== undefined ? numberToHex(blockNumber) : undefined;
@@ -15300,7 +15462,7 @@ async function getProof(client, { address, blockNumber, blockTag: blockTag_, sto
   return formatProof(proof);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getStorageAt.js
+// node_modules/viem/_esm/actions/public/getStorageAt.js
 init_toHex();
 async function getStorageAt(client, { address, blockNumber, blockTag = "latest", slot }) {
   const blockNumberHex = blockNumber !== undefined ? numberToHex(blockNumber) : undefined;
@@ -15311,7 +15473,7 @@ async function getStorageAt(client, { address, blockNumber, blockTag = "latest",
   return data;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getTransaction.js
+// node_modules/viem/_esm/actions/public/getTransaction.js
 init_transaction();
 init_toHex();
 async function getTransaction(client, { blockHash, blockNumber, blockTag: blockTag_, hash: hash2, index: index2 }) {
@@ -15346,7 +15508,7 @@ async function getTransaction(client, { blockHash, blockNumber, blockTag: blockT
   return format(transaction);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getTransactionConfirmations.js
+// node_modules/viem/_esm/actions/public/getTransactionConfirmations.js
 async function getTransactionConfirmations(client, { hash: hash2, transactionReceipt }) {
   const [blockNumber, transaction] = await Promise.all([
     getAction(client, getBlockNumber, "getBlockNumber")({}),
@@ -15358,7 +15520,7 @@ async function getTransactionConfirmations(client, { hash: hash2, transactionRec
   return blockNumber - transactionBlockNumber + 1n;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/getTransactionReceipt.js
+// node_modules/viem/_esm/actions/public/getTransactionReceipt.js
 init_transaction();
 async function getTransactionReceipt(client, { hash: hash2 }) {
   const receipt = await client.request({
@@ -15371,7 +15533,7 @@ async function getTransactionReceipt(client, { hash: hash2 }) {
   return format(receipt);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/multicall.js
+// node_modules/viem/_esm/actions/public/multicall.js
 init_abis();
 init_abi();
 init_base();
@@ -15494,15 +15656,15 @@ async function multicall(client, parameters) {
   return results;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/ox/_esm/core/version.js
+// node_modules/ox/_esm/core/version.js
 var version3 = "0.1.1";
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/ox/_esm/core/internal/errors.js
+// node_modules/ox/_esm/core/internal/errors.js
 function getVersion() {
   return version3;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/ox/_esm/core/Errors.js
+// node_modules/ox/_esm/core/Errors.js
 class BaseError3 extends Error {
   constructor(shortMessage, options = {}) {
     const details = (() => {
@@ -15594,7 +15756,7 @@ function walk2(err, fn) {
   return fn ? null : err;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/ox/_esm/core/internal/hex.js
+// node_modules/ox/_esm/core/internal/hex.js
 function pad2(hex_, options = {}) {
   const { dir, size: size4 = 32 } = options;
   if (size4 === 0)
@@ -15609,7 +15771,7 @@ function pad2(hex_, options = {}) {
   return `0x${hex[dir === "right" ? "padEnd" : "padStart"](size4 * 2, "0")}`;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/ox/_esm/core/Hex.js
+// node_modules/ox/_esm/core/Hex.js
 function fromNumber(value, options = {}) {
   const { signed, size: size4 } = options;
   const value_ = BigInt(value);
@@ -15665,7 +15827,7 @@ class SizeExceedsPaddingSizeError2 extends BaseError3 {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/ox/_esm/core/Withdrawal.js
+// node_modules/ox/_esm/core/Withdrawal.js
 function toRpc(withdrawal) {
   return {
     address: withdrawal.address,
@@ -15675,7 +15837,7 @@ function toRpc(withdrawal) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/ox/_esm/core/BlockOverrides.js
+// node_modules/ox/_esm/core/BlockOverrides.js
 function toRpc2(blockOverrides) {
   return {
     ...typeof blockOverrides.baseFeePerGas === "bigint" && {
@@ -15705,7 +15867,7 @@ function toRpc2(blockOverrides) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/simulate.js
+// node_modules/viem/_esm/actions/public/simulate.js
 init_abi();
 init_contract();
 init_node();
@@ -15801,7 +15963,7 @@ async function simulate(client, parameters) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/verifyHash.js
+// node_modules/viem/_esm/actions/public/verifyHash.js
 init_abis();
 init_contract();
 init_encodeDeployData();
@@ -15809,7 +15971,7 @@ init_getAddress();
 init_isAddressEqual();
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/signature/serializeSignature.js
+// node_modules/viem/_esm/utils/signature/serializeSignature.js
 init_secp256k1();
 init_fromHex();
 init_toBytes();
@@ -15827,7 +15989,7 @@ function serializeSignature({ r, s, to = "hex", v, yParity }) {
   return hexToBytes(signature);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/verifyHash.js
+// node_modules/viem/_esm/actions/public/verifyHash.js
 init_call();
 async function verifyHash(client, parameters) {
   const { address, factory, factoryData, hash: hash2, signature, universalSignatureVerifierAddress = client.chain?.contracts?.universalSignatureVerifier?.address, ...rest } = parameters;
@@ -15881,7 +16043,7 @@ async function verifyHash(client, parameters) {
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/verifyMessage.js
+// node_modules/viem/_esm/actions/public/verifyMessage.js
 async function verifyMessage(client, { address, message, factory, factoryData, signature, ...callRequest }) {
   const hash2 = hashMessage(message);
   return verifyHash(client, {
@@ -15894,7 +16056,7 @@ async function verifyMessage(client, { address, message, factory, factoryData, s
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/verifyTypedData.js
+// node_modules/viem/_esm/actions/public/verifyTypedData.js
 async function verifyTypedData(client, parameters) {
   const { address, factory, factoryData, signature, message, primaryType, types, domain, ...callRequest } = parameters;
   const hash2 = hashTypedData({ message, primaryType, types, domain });
@@ -15908,9 +16070,9 @@ async function verifyTypedData(client, parameters) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/waitForTransactionReceipt.js
+// node_modules/viem/_esm/actions/public/waitForTransactionReceipt.js
 init_transaction();
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/watchBlockNumber.js
+// node_modules/viem/_esm/actions/public/watchBlockNumber.js
 init_fromHex();
 function watchBlockNumber(client, { emitOnBegin = false, emitMissed = false, onBlockNumber, onError, poll: poll_, pollingInterval = client.pollingInterval }) {
   const enablePolling = (() => {
@@ -16003,7 +16165,7 @@ function watchBlockNumber(client, { emitOnBegin = false, emitMissed = false, onB
   return enablePolling ? pollBlockNumber() : subscribeBlockNumber();
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/waitForTransactionReceipt.js
+// node_modules/viem/_esm/actions/public/waitForTransactionReceipt.js
 async function waitForTransactionReceipt(client, {
   confirmations = 1,
   hash: hash2,
@@ -16112,7 +16274,7 @@ async function waitForTransactionReceipt(client, {
   });
   return promise;
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/watchBlocks.js
+// node_modules/viem/_esm/actions/public/watchBlocks.js
 function watchBlocks(client, { blockTag = "latest", emitMissed = false, emitOnBegin = false, onBlock, onError, includeTransactions: includeTransactions_, poll: poll_, pollingInterval = client.pollingInterval }) {
   const enablePolling = (() => {
     if (typeof poll_ !== "undefined")
@@ -16226,7 +16388,7 @@ function watchBlocks(client, { blockTag = "latest", emitMissed = false, emitOnBe
   return enablePolling ? pollBlocks() : subscribeBlocks();
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/watchEvent.js
+// node_modules/viem/_esm/actions/public/watchEvent.js
 init_abi();
 init_rpc();
 function watchEvent(client, { address, args, batch = true, event, events, fromBlock, onError, onLogs, poll: poll_, pollingInterval = client.pollingInterval, strict: strict_ }) {
@@ -16389,7 +16551,7 @@ function watchEvent(client, { address, args, batch = true, event, events, fromBl
   };
   return enablePolling ? pollEvent() : subscribeEvent();
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/public/watchPendingTransactions.js
+// node_modules/viem/_esm/actions/public/watchPendingTransactions.js
 function watchPendingTransactions(client, { batch = true, onError, onTransactions, poll: poll_, pollingInterval = client.pollingInterval }) {
   const enablePolling = typeof poll_ !== "undefined" ? poll_ : client.transport.type !== "webSocket";
   const pollPendingTransactions = () => {
@@ -16463,7 +16625,7 @@ function watchPendingTransactions(client, { batch = true, onError, onTransaction
   return enablePolling ? pollPendingTransactions() : subscribePendingTransactions();
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/siwe/parseSiweMessage.js
+// node_modules/viem/_esm/utils/siwe/parseSiweMessage.js
 function parseSiweMessage(message) {
   const { scheme, statement, ...prefix } = message.match(prefixRegex)?.groups ?? {};
   const { chainId, expirationTime, issuedAt, notBefore, requestId, ...suffix } = message.match(suffixRegex)?.groups ?? {};
@@ -16485,7 +16647,7 @@ function parseSiweMessage(message) {
 var prefixRegex = /^(?:(?<scheme>[a-zA-Z][a-zA-Z0-9+-.]*):\/\/)?(?<domain>[a-zA-Z0-9+-.]*(?::[0-9]{1,5})?) (?:wants you to sign in with your Ethereum account:\n)(?<address>0x[a-fA-F0-9]{40})\n\n(?:(?<statement>.*)\n\n)?/;
 var suffixRegex = /(?:URI: (?<uri>.+))\n(?:Version: (?<version>.+))\n(?:Chain ID: (?<chainId>\d+))\n(?:Nonce: (?<nonce>[a-zA-Z0-9]+))\n(?:Issued At: (?<issuedAt>.+))(?:\nExpiration Time: (?<expirationTime>.+))?(?:\nNot Before: (?<notBefore>.+))?(?:\nRequest ID: (?<requestId>.+))?/;
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/utils/siwe/validateSiweMessage.js
+// node_modules/viem/_esm/utils/siwe/validateSiweMessage.js
 init_isAddressEqual();
 function validateSiweMessage(parameters) {
   const { address, domain, message, nonce, scheme, time = new Date } = parameters;
@@ -16510,7 +16672,7 @@ function validateSiweMessage(parameters) {
   return true;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/siwe/verifySiweMessage.js
+// node_modules/viem/_esm/actions/siwe/verifySiweMessage.js
 async function verifySiweMessage(client, parameters) {
   const { address, domain, message, nonce, scheme, signature, time = new Date, ...callRequest } = parameters;
   const parsed = parseSiweMessage(message);
@@ -16535,7 +16697,7 @@ async function verifySiweMessage(client, parameters) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/decorators/public.js
+// node_modules/viem/_esm/clients/decorators/public.js
 function publicActions(client) {
   return {
     call: (args) => call(client, args),
@@ -16593,7 +16755,7 @@ function publicActions(client) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/createPublicClient.js
+// node_modules/viem/_esm/clients/createPublicClient.js
 function createPublicClient(parameters) {
   const { key = "public", name = "Public Client" } = parameters;
   const client = createClient({
@@ -16604,7 +16766,7 @@ function createPublicClient(parameters) {
   });
   return client.extend(publicActions);
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/deployContract.js
+// node_modules/viem/_esm/actions/wallet/deployContract.js
 init_encodeDeployData();
 function deployContract(walletClient, parameters) {
   const { abi: abi2, args, bytecode, ...request } = parameters;
@@ -16615,7 +16777,7 @@ function deployContract(walletClient, parameters) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/getAddresses.js
+// node_modules/viem/_esm/actions/wallet/getAddresses.js
 init_getAddress();
 async function getAddresses(client) {
   if (client.account?.type === "local")
@@ -16624,27 +16786,27 @@ async function getAddresses(client) {
   return addresses.map((address) => checksumAddress(address));
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/getPermissions.js
+// node_modules/viem/_esm/actions/wallet/getPermissions.js
 async function getPermissions(client) {
   const permissions = await client.request({ method: "wallet_getPermissions" }, { dedupe: true });
   return permissions;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/requestAddresses.js
+// node_modules/viem/_esm/actions/wallet/requestAddresses.js
 init_getAddress();
 async function requestAddresses(client) {
   const addresses = await client.request({ method: "eth_requestAccounts" }, { dedupe: true, retryCount: 0 });
   return addresses.map((address) => getAddress(address));
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/requestPermissions.js
+// node_modules/viem/_esm/actions/wallet/requestPermissions.js
 async function requestPermissions(client, permissions) {
   return client.request({
     method: "wallet_requestPermissions",
     params: [permissions]
   }, { retryCount: 0 });
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/signMessage.js
+// node_modules/viem/_esm/actions/wallet/signMessage.js
 init_toHex();
 async function signMessage(client, { account: account_ = client.account, message }) {
   if (!account_)
@@ -16666,7 +16828,7 @@ async function signMessage(client, { account: account_ = client.account, message
     params: [message_, account.address]
   }, { retryCount: 0 });
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/signTransaction.js
+// node_modules/viem/_esm/actions/wallet/signTransaction.js
 init_toHex();
 init_transactionRequest();
 init_assertRequest();
@@ -16705,7 +16867,7 @@ async function signTransaction(client, parameters) {
     ]
   }, { retryCount: 0 });
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/signTypedData.js
+// node_modules/viem/_esm/actions/wallet/signTypedData.js
 async function signTypedData(client, parameters) {
   const { account: account_ = client.account, domain, message, primaryType } = parameters;
   if (!account_)
@@ -16727,7 +16889,7 @@ async function signTypedData(client, parameters) {
   }, { retryCount: 0 });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/switchChain.js
+// node_modules/viem/_esm/actions/wallet/switchChain.js
 init_toHex();
 async function switchChain(client, { id }) {
   await client.request({
@@ -16740,7 +16902,7 @@ async function switchChain(client, { id }) {
   }, { retryCount: 0 });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/actions/wallet/watchAsset.js
+// node_modules/viem/_esm/actions/wallet/watchAsset.js
 async function watchAsset(client, params) {
   const added = await client.request({
     method: "wallet_watchAsset",
@@ -16749,7 +16911,7 @@ async function watchAsset(client, params) {
   return added;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/decorators/wallet.js
+// node_modules/viem/_esm/clients/decorators/wallet.js
 function walletActions(client) {
   return {
     addChain: (args) => addChain(client, args),
@@ -16771,7 +16933,7 @@ function walletActions(client) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/clients/createWalletClient.js
+// node_modules/viem/_esm/clients/createWalletClient.js
 function createWalletClient(parameters) {
   const { key = "wallet", name = "Wallet Client", transport } = parameters;
   const client = createClient({
@@ -16783,15 +16945,15 @@ function createWalletClient(parameters) {
   });
   return client.extend(walletActions);
 }
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/index.js
+// node_modules/viem/_esm/index.js
 init_abis();
 init_encodeFunctionData();
 init_getAddress();
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/privateKeyToAccount.js
+// node_modules/viem/_esm/accounts/privateKeyToAccount.js
 init_secp256k1();
 init_toHex();
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/toAccount.js
+// node_modules/viem/_esm/accounts/toAccount.js
 init_address();
 init_isAddress();
 function toAccount(source) {
@@ -16818,7 +16980,7 @@ function toAccount(source) {
   };
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/utils/sign.js
+// node_modules/viem/_esm/accounts/utils/sign.js
 init_secp256k1();
 init_toHex();
 var extraEntropy = false;
@@ -16837,7 +16999,7 @@ async function sign({ hash: hash2, privateKey, to = "object" }) {
   })();
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/utils/signAuthorization.js
+// node_modules/viem/_esm/accounts/utils/signAuthorization.js
 async function experimental_signAuthorization(parameters) {
   const { contractAddress, chainId, nonce, privateKey, to = "object" } = parameters;
   const signature = await sign({
@@ -16855,12 +17017,12 @@ async function experimental_signAuthorization(parameters) {
   return signature;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/utils/signMessage.js
+// node_modules/viem/_esm/accounts/utils/signMessage.js
 async function signMessage2({ message, privateKey }) {
   return await sign({ hash: hashMessage(message), privateKey, to: "hex" });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/utils/signTransaction.js
+// node_modules/viem/_esm/accounts/utils/signTransaction.js
 init_keccak256();
 async function signTransaction2(parameters) {
   const { privateKey, transaction, serializer = serializeTransaction } = parameters;
@@ -16879,7 +17041,7 @@ async function signTransaction2(parameters) {
   return serializer(transaction, signature);
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/utils/signTypedData.js
+// node_modules/viem/_esm/accounts/utils/signTypedData.js
 async function signTypedData2(parameters) {
   const { privateKey, ...typedData } = parameters;
   return await sign({
@@ -16889,7 +17051,7 @@ async function signTypedData2(parameters) {
   });
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/accounts/privateKeyToAccount.js
+// node_modules/viem/_esm/accounts/privateKeyToAccount.js
 function privateKeyToAccount(privateKey, options = {}) {
   const { nonceManager } = options;
   const publicKey = toHex(secp256k1.getPublicKey(privateKey.slice(2), false));
@@ -16924,7 +17086,7 @@ import {
   elizaLogger
 } from "@elizaos/core";
 
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/chains/definitions/sei.js
+// node_modules/viem/_esm/chains/definitions/sei.js
 var sei = /* @__PURE__ */ defineChain({
   id: 1329,
   name: "Sei Network",
@@ -16948,7 +17110,7 @@ var sei = /* @__PURE__ */ defineChain({
     }
   }
 });
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/chains/definitions/seiDevnet.js
+// node_modules/viem/_esm/chains/definitions/seiDevnet.js
 var seiDevnet = /* @__PURE__ */ defineChain({
   id: 713715,
   name: "Sei Devnet",
@@ -16966,7 +17128,7 @@ var seiDevnet = /* @__PURE__ */ defineChain({
   },
   testnet: true
 });
-// node_modules/@elizaos/plugin-sei-yield-delta/node_modules/viem/_esm/chains/definitions/seiTestnet.js
+// node_modules/viem/_esm/chains/definitions/seiTestnet.js
 var seiTestnet = /* @__PURE__ */ defineChain({
   id: 1328,
   name: "Sei Testnet",
@@ -16999,6 +17161,7 @@ class WalletProvider {
   currentChain;
   CACHE_EXPIRY_SEC = 5;
   account;
+  publicClient = null;
   constructor(accountOrPrivateKey, chain) {
     this.setAccount(accountOrPrivateKey);
     this.setCurrentChain(chain);
@@ -17014,11 +17177,16 @@ class WalletProvider {
     return this.currentChain;
   }
   getPublicClient() {
+    if (this.publicClient) {
+      return this.publicClient;
+    }
     const transport = this.createHttpTransport();
-    return createPublicClient({
+    this.publicClient = createPublicClient({
       chain: this.currentChain.chain,
-      transport
+      transport,
+      pollingInterval: 0
     });
+    return this.publicClient;
   }
   getEvmWalletClient() {
     if (false) {}
@@ -17026,16 +17194,13 @@ class WalletProvider {
     return createWalletClient({
       chain: this.currentChain.chain,
       transport,
-      account: this.account
+      account: this.account,
+      pollingInterval: 0
     });
   }
   getEvmPublicClient() {
     if (false) {}
-    const transport = this.createHttpTransport();
-    return createPublicClient({
-      chain: this.currentChain.chain,
-      transport
-    });
+    return this.getPublicClient();
   }
   async getWalletBalance() {
     if (false) {}
@@ -17176,8 +17341,19 @@ class SeiOracleProvider {
   fundingRateCache = new Map;
   updateInterval = null;
   yeiConfig;
+  yeiMultiOracleAddresses;
+  runtimeChain;
+  runtimeClient = null;
   constructor(runtime) {
     this.runtime = runtime;
+    const network = runtime.getSetting("SEI_NETWORK") || "sei-testnet";
+    const networkMap = {
+      "sei-mainnet": "mainnet",
+      "sei-testnet": "testnet"
+    };
+    const chainKey = networkMap[network] || "testnet";
+    this.runtimeChain = seiChains[chainKey];
+    elizaLogger2.info(`SeiOracleProvider: Configured for ${network} (chain: ${chainKey})`);
     const api3Address = runtime.getSetting("YEI_API3_CONTRACT") || "0x2880aB155794e7179c9eE2e38200202908C17B43";
     const pythAddress = runtime.getSetting("YEI_PYTH_CONTRACT") || "0x2880aB155794e7179c9eE2e38200202908C17B43";
     const redstoneAddress = runtime.getSetting("YEI_REDSTONE_CONTRACT") || "0x1111111111111111111111111111111111111111";
@@ -17185,6 +17361,13 @@ class SeiOracleProvider {
       api3ContractAddress: api3Address,
       pythContractAddress: pythAddress,
       redstoneContractAddress: redstoneAddress
+    };
+    this.yeiMultiOracleAddresses = {
+      SEI: runtime.getSetting("YEI_SEI_ORACLE") || "0xa2aCDc40e5ebCE7f8554E66eCe6734937A48B3f3",
+      USDC: runtime.getSetting("YEI_USDC_ORACLE") || "0xEAb459AD7611D5223A408A2e73b69173F61bb808",
+      USDT: runtime.getSetting("YEI_USDT_ORACLE") || "0x284db472a483e115e3422dd30288b24182E36DdB",
+      ETH: runtime.getSetting("YEI_ETH_ORACLE") || "0x3E45Fb956D2Ba2CB5Fa561c40E5912225E64F7B2",
+      BTC: runtime.getSetting("YEI_BTC_ORACLE")
     };
     this.config = {
       pythPriceFeeds: {
@@ -17201,6 +17384,16 @@ class SeiOracleProvider {
       },
       updateInterval: 30
     };
+  }
+  getRuntimeClient() {
+    if (!this.runtimeClient) {
+      this.runtimeClient = createPublicClient({
+        chain: this.runtimeChain,
+        transport: http(),
+        pollingInterval: 0
+      });
+    }
+    return this.runtimeClient;
   }
   async get(runtime, message, state) {
     try {
@@ -17254,27 +17447,48 @@ class SeiOracleProvider {
         return cached;
       }
       let price = null;
-      const yeiSupportedSymbols = ["BTC", "ETH", "SEI", "USDC", "USDT"];
-      if (yeiSupportedSymbols.includes(symbol.toUpperCase())) {
-        try {
-          const yeiPrice = await this.getYeiPrice(symbol);
-          if (yeiPrice && yeiPrice > 0) {
-            price = {
-              symbol,
-              price: yeiPrice,
-              source: "yei-multi-oracle",
-              timestamp: Date.now(),
-              confidence: 0.95
-            };
-          }
-        } catch (error) {
-          elizaLogger2.warn(`YEI oracle failed for ${symbol}, falling back to other oracles: ${error}`);
+      price = await this.getCoinGeckoPrice(symbol);
+      if (price) {
+        elizaLogger2.info(`Using CoinGecko price for ${symbol}: $${price.price}`);
+      }
+      if (!price) {
+        price = await this.getYeiMultiOraclePrice(symbol);
+        if (price) {
+          elizaLogger2.info(`Using YEI Multi-Oracle price for ${symbol}: $${price.price}`);
         }
       }
-      if (!price)
+      if (!price) {
+        const yeiSupportedSymbols = ["BTC", "ETH", "SEI", "USDC", "USDT"];
+        if (yeiSupportedSymbols.includes(symbol.toUpperCase())) {
+          try {
+            const yeiPrice = await this.getYeiPrice(symbol);
+            if (yeiPrice && yeiPrice > 0) {
+              price = {
+                symbol,
+                price: yeiPrice,
+                source: "yei-legacy-oracle",
+                timestamp: Date.now(),
+                confidence: 0.95
+              };
+              elizaLogger2.info(`Using YEI legacy oracle price for ${symbol}: $${price.price}`);
+            }
+          } catch (error) {
+            elizaLogger2.warn(`YEI legacy oracle failed for ${symbol}: ${error}`);
+          }
+        }
+      }
+      if (!price) {
         price = await this.getPythPrice(symbol);
-      if (!price)
+        if (price) {
+          elizaLogger2.info(`Using Pyth price for ${symbol}: $${price.price}`);
+        }
+      }
+      if (!price) {
         price = await this.getCexPrice(symbol);
+        if (price) {
+          elizaLogger2.info(`Using Binance CEX price for ${symbol}: $${price.price}`);
+        }
+      }
       if (price && !isNaN(price.price) && price.price > 0) {
         this.priceCache.set(symbol, price);
         return price;
@@ -17311,10 +17525,7 @@ class SeiOracleProvider {
       const feedId = this.config.pythPriceFeeds[symbol];
       if (!feedId)
         return null;
-      const publicClient = createPublicClient({
-        chain: seiChains.mainnet,
-        transport: http()
-      });
+      const publicClient = this.getRuntimeClient();
       const result = await publicClient.readContract({
         address: "0x2880aB155794e7179c9eE2e38200202908C17B43",
         abi: [
@@ -17361,8 +17572,43 @@ class SeiOracleProvider {
       return null;
     }
   }
-  async getChainlinkPrice(symbol) {
-    return null;
+  async getCoinGeckoPrice(symbol) {
+    try {
+      const coinGeckoIds = {
+        BTC: "bitcoin",
+        ETH: "ethereum",
+        SEI: "sei-network",
+        USDC: "usd-coin",
+        USDT: "tether",
+        SOL: "solana",
+        AVAX: "avalanche-2",
+        ATOM: "cosmos",
+        DAI: "dai"
+      };
+      const coinId = coinGeckoIds[symbol.toUpperCase()];
+      if (!coinId) {
+        return null;
+      }
+      const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`);
+      if (response.ok) {
+        const data = await response.json();
+        const price = data[coinId]?.usd;
+        if (!price || isNaN(price) || price <= 0) {
+          return null;
+        }
+        return {
+          symbol,
+          price,
+          timestamp: Date.now(),
+          source: "CoinGecko",
+          confidence: 0.95
+        };
+      }
+      return null;
+    } catch (error) {
+      elizaLogger2.error(`CoinGecko price fetch error for ${symbol}: ${error}`);
+      return null;
+    }
   }
   async getCexPrice(symbol) {
     try {
@@ -17388,6 +17634,57 @@ class SeiOracleProvider {
       return null;
     } catch (error) {
       elizaLogger2.error(`CEX price fetch error for ${symbol}: ${error}`);
+      return null;
+    }
+  }
+  async getYeiMultiOraclePrice(symbol) {
+    try {
+      const oracleAddress = this.yeiMultiOracleAddresses[symbol.toUpperCase()];
+      if (!oracleAddress) {
+        elizaLogger2.debug(`No YEI Multi-Oracle address configured for ${symbol}`);
+        return null;
+      }
+      const publicClient = this.getRuntimeClient();
+      const result = await publicClient.readContract({
+        address: oracleAddress,
+        abi: [
+          {
+            name: "getLatestPrice",
+            type: "function",
+            stateMutability: "view",
+            inputs: [],
+            outputs: [
+              { name: "price", type: "uint256" },
+              { name: "timestamp", type: "uint256" },
+              { name: "decimals", type: "uint8" }
+            ]
+          }
+        ],
+        functionName: "getLatestPrice"
+      });
+      const price = result[0];
+      const timestamp = result[1];
+      const decimals = result[2];
+      if (!price || price === BigInt(0)) {
+        elizaLogger2.warn(`YEI Multi-Oracle returned zero price for ${symbol}`);
+        return null;
+      }
+      const formattedPrice = Number(price) / Math.pow(10, decimals);
+      const timestampMs = Number(timestamp) * 1000;
+      const now = Date.now();
+      if (now - timestampMs > 3600000) {
+        elizaLogger2.warn(`YEI Multi-Oracle price too old for ${symbol}: ${Math.floor((now - timestampMs) / 1000)}s ago`);
+      }
+      elizaLogger2.info(`YEI Multi-Oracle price for ${symbol}: $${formattedPrice.toFixed(6)} (decimals: ${decimals}, age: ${Math.floor((now - timestampMs) / 1000)}s)`);
+      return {
+        symbol,
+        price: formattedPrice,
+        timestamp: timestampMs,
+        source: "YEI Multi-Oracle",
+        confidence: 0.98
+      };
+    } catch (error) {
+      elizaLogger2.error(`YEI Multi-Oracle price fetch error for ${symbol}: ${error}`);
       return null;
     }
   }
@@ -17499,10 +17796,7 @@ class SeiOracleProvider {
   }
   async getAPI3Price(symbol) {
     const dApiId = this.getAPI3dApiId(symbol);
-    const publicClient = createPublicClient({
-      chain: seiChains.mainnet,
-      transport: http()
-    });
+    const publicClient = this.getRuntimeClient();
     const result = await publicClient.readContract({
       address: this.yeiConfig.api3ContractAddress,
       abi: [
@@ -17529,10 +17823,7 @@ class SeiOracleProvider {
     return price;
   }
   async getRedstonePrice(symbol) {
-    const publicClient = createPublicClient({
-      chain: seiChains.mainnet,
-      transport: http()
-    });
+    const publicClient = this.getRuntimeClient();
     if (!["USDT", "USDC"].includes(symbol)) {
       throw new Error(`Redstone feed not available for ${symbol}`);
     }
@@ -17569,56 +17860,6 @@ class SeiOracleProvider {
     }
     return dApiId;
   }
-  async getMockPriceFeedPrice(symbol) {
-    const tokenAddresses = {
-      SEI: "0x2E983A1Ba5e8b38AAAeC4B440B9dDcFBf72E15d1",
-      USDC: "0x0000000000000000000000000000000000000000"
-    };
-    try {
-      const tokenAddress = tokenAddresses[symbol.toUpperCase()];
-      if (tokenAddress && tokenAddress !== "0x0000000000000000000000000000000000000000") {
-        const publicClient = createPublicClient({
-          chain: seiChains.devnet,
-          transport: http()
-        });
-        const result = await publicClient.readContract({
-          address: "0x8438Ad1C834623CfF278AB6829a248E37C2D7E3f",
-          abi: [
-            {
-              name: "getPrice",
-              type: "function",
-              inputs: [{ name: "token", type: "address" }],
-              outputs: [{ name: "", type: "uint256" }]
-            }
-          ],
-          functionName: "getPrice",
-          args: [tokenAddress]
-        });
-        if (result && result > 0n) {
-          const price2 = Number(result) / 1000000000000000000;
-          elizaLogger2.info(`MockPriceFeed contract price for ${symbol}: $${price2}`);
-          return price2;
-        }
-      }
-    } catch (error) {
-      elizaLogger2.warn(`MockPriceFeed contract call failed for ${symbol}: ${error}`);
-    }
-    const mockPrices = {
-      SEI: 0.452,
-      USDC: 1,
-      USDT: 1,
-      ETH: 2500,
-      BTC: 45000,
-      ATOM: 8.5,
-      DAI: 1
-    };
-    const price = mockPrices[symbol.toUpperCase()];
-    if (!price) {
-      throw new Error(`No mock price configured for ${symbol}`);
-    }
-    elizaLogger2.info(`Mock fallback price for ${symbol}: $${price}`);
-    return price;
-  }
   stringToBytes32(str) {
     const hex = Buffer.from(str).toString("hex").padEnd(64, "0");
     return `0x${hex}`;
@@ -17644,223 +17885,111 @@ var oracleProvider = {
 };
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/providers/vault-provider.ts
+var import_node_cache2 = __toESM(require_node_cache2(), 1);
 import {
-  elizaLogger as elizaLogger4
+  elizaLogger as elizaLogger3
 } from "@elizaos/core";
 
-// node_modules/@elizaos/plugin-sei-yield-delta/src/environment.ts
-import { elizaLogger as elizaLogger3 } from "@elizaos/core";
-var VAULT_CONFIG_KEYS = {
-  SEI: "SEI_VAULT_ADDRESS",
-  USDC: "USDC_VAULT_ADDRESS",
-  "Delta Neutral": "DELTA_NEUTRAL_VAULT_ADDRESS",
-  "Stable Max": "STABLE_MAX_VAULT_ADDRESS",
-  "SEI Hypergrowth": "SEI_HYPERGROWTH_VAULT_ADDRESS",
-  "Blue Chip": "BLUE_CHIP_VAULT_ADDRESS",
-  Hedge: "HEDGE_VAULT_ADDRESS",
-  "Yield Farming": "YIELD_FARMING_VAULT_ADDRESS",
-  Arbitrage: "ARBITRAGE_VAULT_ADDRESS",
-  "Concentrated Liquidity": "CONCENTRATED_LIQUIDITY_VAULT_ADDRESS"
-};
-function getVaultAddress(config, vaultName) {
-  const configKey = VAULT_CONFIG_KEYS[vaultName];
-  if (!configKey)
-    return;
-  return config[configKey];
-}
-var seiChains2 = {
-  "sei-mainnet": {
-    id: 1329,
-    name: "Sei Mainnet",
-    network: "sei-mainnet",
-    nativeCurrency: {
-      name: "SEI",
-      symbol: "SEI",
-      decimals: 18
-    },
-    rpcUrls: {
-      default: {
-        http: ["https://evm-rpc.sei-apis.com"]
-      }
-    },
-    blockExplorers: {
-      default: {
-        name: "Seitrace",
-        url: "https://seitrace.com"
-      }
-    }
-  },
-  "sei-testnet": {
-    id: 713715,
-    name: "Sei Testnet",
-    network: "sei-testnet",
-    nativeCurrency: {
-      name: "SEI",
-      symbol: "SEI",
-      decimals: 18
-    },
-    rpcUrls: {
-      default: {
-        http: ["https://evm-rpc-testnet.sei-apis.com"]
-      }
-    },
-    blockExplorers: {
-      default: {
-        name: "Seitrace Testnet",
-        url: "https://testnet.seitrace.com"
-      }
-    }
-  },
-  "sei-devnet": {
-    id: 713715,
-    name: "Sei Devnet",
-    network: "sei-devnet",
-    nativeCurrency: {
-      name: "SEI",
-      symbol: "SEI",
-      decimals: 18
-    },
-    rpcUrls: {
-      default: {
-        http: ["https://evm-rpc-arctic-1.sei-apis.com"]
-      }
-    },
-    blockExplorers: {
-      default: {
-        name: "Seitrace Devnet",
-        url: "https://devnet.seitrace.com"
-      }
-    }
-  }
-};
-async function validateSeiConfig(runtime) {
-  try {
-    const requiredEnvVars = ["SEI_RPC_URL"];
-    const missingVars = [];
-    const rpcUrl = runtime.getSetting("SEI_RPC_URL");
-    const chainId = runtime.getSetting("SEI_CHAIN_ID");
-    const privateKey = runtime.getSetting("SEI_PRIVATE_KEY");
-    const address = runtime.getSetting("SEI_ADDRESS");
-    const network = runtime.getSetting("SEI_NETWORK");
-    const dragonswapApiUrl = runtime.getSetting("DRAGONSWAP_API_URL");
-    const oracleApiKey = runtime.getSetting("ORACLE_API_KEY");
-    const yeiApiKey = runtime.getSetting("YEI_API_KEY");
-    const yeiApi3Contract = runtime.getSetting("YEI_API3_CONTRACT");
-    const yeiPythContract = runtime.getSetting("YEI_PYTH_CONTRACT");
-    const yeiRedstoneContract = runtime.getSetting("YEI_REDSTONE_CONTRACT");
-    const symphonyApiUrl = runtime.getSetting("SYMPHONY_API_URL");
-    const symphonyTimeout = runtime.getSetting("SYMPHONY_TIMEOUT");
-    const userGeography = runtime.getSetting("USER_GEOGRAPHY");
-    const perpPreference = runtime.getSetting("PERP_PREFERENCE");
-    const coinbaseApiKey = runtime.getSetting("COINBASE_ADVANCED_API_KEY");
-    const coinbaseSecret = runtime.getSetting("COINBASE_ADVANCED_SECRET");
-    const coinbasePassphrase = runtime.getSetting("COINBASE_ADVANCED_PASSPHRASE");
-    const coinbaseSandbox = runtime.getSetting("COINBASE_SANDBOX");
-    const vaultFactoryAddress = runtime.getSetting("VAULT_FACTORY_ADDRESS");
-    const customerDashboardAddress = runtime.getSetting("CUSTOMER_DASHBOARD_ADDRESS");
-    const seiVaultAddress = runtime.getSetting("SEI_VAULT_ADDRESS");
-    const usdcVaultAddress = runtime.getSetting("USDC_VAULT_ADDRESS");
-    const deltaNeutralVaultAddress = runtime.getSetting("DELTA_NEUTRAL_VAULT_ADDRESS");
-    const stableMaxVaultAddress = runtime.getSetting("STABLE_MAX_VAULT_ADDRESS");
-    const seiHypergrowthVaultAddress = runtime.getSetting("SEI_HYPERGROWTH_VAULT_ADDRESS");
-    const blueChipVaultAddress = runtime.getSetting("BLUE_CHIP_VAULT_ADDRESS");
-    const hedgeVaultAddress = runtime.getSetting("HEDGE_VAULT_ADDRESS");
-    const yieldFarmingVaultAddress = runtime.getSetting("YIELD_FARMING_VAULT_ADDRESS");
-    const arbitrageVaultAddress = runtime.getSetting("ARBITRAGE_VAULT_ADDRESS");
-    const concentratedLiquidityVaultAddress = runtime.getSetting("CONCENTRATED_LIQUIDITY_VAULT_ADDRESS");
-    for (const envVar of requiredEnvVars) {
-      const key = envVar;
-      if (key === "SEI_RPC_URL" && !rpcUrl) {
-        missingVars.push(envVar);
-      }
-    }
-    if (missingVars.length > 0) {
-      throw new Error(`Missing required environment variables: ${missingVars.join(", ")}`);
-    }
-    if (network && !seiChains2[network]) {
-      throw new Error(`Invalid SEI_NETWORK: ${network}. Must be one of: ${Object.keys(seiChains2).join(", ")}`);
-    }
-    const config = {
-      SEI_RPC_URL: rpcUrl || "https://evm-rpc-testnet.sei-apis.com",
-      SEI_CHAIN_ID: chainId,
-      SEI_PRIVATE_KEY: privateKey,
-      SEI_ADDRESS: address,
-      SEI_NETWORK: network || "sei-testnet",
-      DRAGONSWAP_API_URL: dragonswapApiUrl,
-      ORACLE_API_KEY: oracleApiKey,
-      YEI_API_KEY: yeiApiKey,
-      YEI_API3_CONTRACT: yeiApi3Contract,
-      YEI_PYTH_CONTRACT: yeiPythContract,
-      YEI_REDSTONE_CONTRACT: yeiRedstoneContract,
-      SYMPHONY_API_URL: symphonyApiUrl,
-      SYMPHONY_TIMEOUT: symphonyTimeout ? parseInt(symphonyTimeout) : undefined,
-      USER_GEOGRAPHY: userGeography,
-      PERP_PREFERENCE: perpPreference,
-      COINBASE_ADVANCED_API_KEY: coinbaseApiKey,
-      COINBASE_ADVANCED_SECRET: coinbaseSecret,
-      COINBASE_ADVANCED_PASSPHRASE: coinbasePassphrase,
-      COINBASE_SANDBOX: coinbaseSandbox === "true" || coinbaseSandbox === true,
-      VAULT_FACTORY_ADDRESS: vaultFactoryAddress,
-      CUSTOMER_DASHBOARD_ADDRESS: customerDashboardAddress,
-      SEI_VAULT_ADDRESS: seiVaultAddress,
-      USDC_VAULT_ADDRESS: usdcVaultAddress,
-      DELTA_NEUTRAL_VAULT_ADDRESS: deltaNeutralVaultAddress,
-      STABLE_MAX_VAULT_ADDRESS: stableMaxVaultAddress,
-      SEI_HYPERGROWTH_VAULT_ADDRESS: seiHypergrowthVaultAddress,
-      BLUE_CHIP_VAULT_ADDRESS: blueChipVaultAddress,
-      HEDGE_VAULT_ADDRESS: hedgeVaultAddress,
-      YIELD_FARMING_VAULT_ADDRESS: yieldFarmingVaultAddress,
-      ARBITRAGE_VAULT_ADDRESS: arbitrageVaultAddress,
-      CONCENTRATED_LIQUIDITY_VAULT_ADDRESS: concentratedLiquidityVaultAddress
-    };
-    elizaLogger3.log("SEI configuration validated successfully");
-    return config;
-  } catch (error) {
-    elizaLogger3.error(`SEI configuration validation failed: ${error}`);
-    throw error;
-  }
-}
-
 // node_modules/@elizaos/plugin-sei-yield-delta/src/types/vault.ts
-var VAULT_IDENTIFIERS = {
-  sei: "SEI" /* SEI */,
-  "sei vault": "SEI" /* SEI */,
-  main: "SEI" /* SEI */,
-  "main vault": "SEI" /* SEI */,
-  usdc: "USDC" /* USDC */,
-  "usdc vault": "USDC" /* USDC */,
-  stablecoin: "USDC" /* USDC */,
-  "delta neutral": "Delta Neutral" /* DELTA_NEUTRAL */,
-  "delta-neutral": "Delta Neutral" /* DELTA_NEUTRAL */,
-  deltaneutral: "Delta Neutral" /* DELTA_NEUTRAL */,
-  dn: "Delta Neutral" /* DELTA_NEUTRAL */,
-  "stable max": "Stable Max" /* STABLE_MAX */,
-  stablemax: "Stable Max" /* STABLE_MAX */,
-  stable: "Stable Max" /* STABLE_MAX */,
-  "sei hypergrowth": "SEI Hypergrowth" /* SEI_HYPERGROWTH */,
-  hypergrowth: "SEI Hypergrowth" /* SEI_HYPERGROWTH */,
-  "sei growth": "SEI Hypergrowth" /* SEI_HYPERGROWTH */,
-  seihypergrowth: "SEI Hypergrowth" /* SEI_HYPERGROWTH */,
-  "blue chip": "Blue Chip" /* BLUE_CHIP */,
-  bluechip: "Blue Chip" /* BLUE_CHIP */,
-  hedge: "Hedge" /* HEDGE */,
-  hedging: "Hedge" /* HEDGE */,
-  "yield farming": "Yield Farming" /* YIELD_FARMING */,
-  yieldfarming: "Yield Farming" /* YIELD_FARMING */,
-  farming: "Yield Farming" /* YIELD_FARMING */,
-  arbitrage: "Arbitrage" /* ARBITRAGE */,
-  arb: "Arbitrage" /* ARBITRAGE */,
-  "concentrated liquidity": "Concentrated Liquidity" /* CONCENTRATED_LIQUIDITY */,
-  concentratedliquidity: "Concentrated Liquidity" /* CONCENTRATED_LIQUIDITY */,
-  concentrated: "Concentrated Liquidity" /* CONCENTRATED_LIQUIDITY */,
-  cl: "Concentrated Liquidity" /* CONCENTRATED_LIQUIDITY */
+var VaultName;
+((VaultName2) => {
+  VaultName2["DELTA_NEUTRAL"] = "delta-neutral";
+  VaultName2["STABLE_MAX"] = "stable-max";
+  VaultName2["SEI_HYPERGROWTH"] = "sei-hypergrowth";
+  VaultName2["BLUE_CHIP"] = "blue-chip";
+  VaultName2["HEDGE"] = "hedge";
+  VaultName2["YIELD_FARMING"] = "yield-farming";
+  VaultName2["ARBITRAGE"] = "arbitrage";
+  VaultName2["CONCENTRATED_LIQUIDITY"] = "concentrated-liquidity";
+  VaultName2["SEI"] = "sei";
+  VaultName2["USDC"] = "usdc";
+})(VaultName ||= {});
+var VaultDisplayNames = {
+  ["delta-neutral" /* DELTA_NEUTRAL */]: "Delta Neutral Vault",
+  ["stable-max" /* STABLE_MAX */]: "Stable Max Vault",
+  ["sei-hypergrowth" /* SEI_HYPERGROWTH */]: "SEI Hypergrowth Vault",
+  ["blue-chip" /* BLUE_CHIP */]: "Blue Chip Vault",
+  ["hedge" /* HEDGE */]: "Hedge Vault",
+  ["yield-farming" /* YIELD_FARMING */]: "Yield Farming Vault",
+  ["arbitrage" /* ARBITRAGE */]: "Arbitrage Vault",
+  ["concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */]: "Concentrated Liquidity Vault",
+  ["sei" /* SEI */]: "SEI Vault",
+  ["usdc" /* USDC */]: "USDC Vault"
+};
+var VaultStrategies = {
+  ["delta-neutral" /* DELTA_NEUTRAL */]: "Delta-neutral yield farming with IL protection",
+  ["stable-max" /* STABLE_MAX */]: "Stablecoin optimization",
+  ["sei-hypergrowth" /* SEI_HYPERGROWTH */]: "Leveraged SEI exposure",
+  ["blue-chip" /* BLUE_CHIP */]: "BTC/ETH diversified yield",
+  ["hedge" /* HEDGE */]: "Hedged positions with downside protection",
+  ["yield-farming" /* YIELD_FARMING */]: "Optimized LP farming",
+  ["arbitrage" /* ARBITRAGE */]: "Cross-DEX arbitrage",
+  ["concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */]: "Active CL position management",
+  ["sei" /* SEI */]: "Single-sided SEI yield optimization",
+  ["usdc" /* USDC */]: "Single-sided USDC yield optimization"
+};
+var VaultRiskLevels = {
+  ["delta-neutral" /* DELTA_NEUTRAL */]: "Low",
+  ["stable-max" /* STABLE_MAX */]: "Very Low",
+  ["sei-hypergrowth" /* SEI_HYPERGROWTH */]: "High",
+  ["blue-chip" /* BLUE_CHIP */]: "Medium",
+  ["hedge" /* HEDGE */]: "Low",
+  ["yield-farming" /* YIELD_FARMING */]: "Medium",
+  ["arbitrage" /* ARBITRAGE */]: "Medium-High",
+  ["concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */]: "Medium",
+  ["sei" /* SEI */]: "Medium",
+  ["usdc" /* USDC */]: "Very Low"
+};
+var vaultNameAliases = {
+  "delta neutral": "delta-neutral" /* DELTA_NEUTRAL */,
+  "delta-neutral": "delta-neutral" /* DELTA_NEUTRAL */,
+  deltaneutral: "delta-neutral" /* DELTA_NEUTRAL */,
+  dn: "delta-neutral" /* DELTA_NEUTRAL */,
+  delta: "delta-neutral" /* DELTA_NEUTRAL */,
+  "stable max": "stable-max" /* STABLE_MAX */,
+  "stable-max": "stable-max" /* STABLE_MAX */,
+  stablemax: "stable-max" /* STABLE_MAX */,
+  stable: "stable-max" /* STABLE_MAX */,
+  "sei hypergrowth": "sei-hypergrowth" /* SEI_HYPERGROWTH */,
+  "sei-hypergrowth": "sei-hypergrowth" /* SEI_HYPERGROWTH */,
+  seihypergrowth: "sei-hypergrowth" /* SEI_HYPERGROWTH */,
+  hypergrowth: "sei-hypergrowth" /* SEI_HYPERGROWTH */,
+  "sei growth": "sei-hypergrowth" /* SEI_HYPERGROWTH */,
+  "blue chip": "blue-chip" /* BLUE_CHIP */,
+  "blue-chip": "blue-chip" /* BLUE_CHIP */,
+  bluechip: "blue-chip" /* BLUE_CHIP */,
+  hedge: "hedge" /* HEDGE */,
+  hedging: "hedge" /* HEDGE */,
+  "hedge vault": "hedge" /* HEDGE */,
+  "yield farming": "yield-farming" /* YIELD_FARMING */,
+  "yield-farming": "yield-farming" /* YIELD_FARMING */,
+  yieldfarming: "yield-farming" /* YIELD_FARMING */,
+  farming: "yield-farming" /* YIELD_FARMING */,
+  arbitrage: "arbitrage" /* ARBITRAGE */,
+  arb: "arbitrage" /* ARBITRAGE */,
+  "arb vault": "arbitrage" /* ARBITRAGE */,
+  "concentrated liquidity": "concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */,
+  "concentrated-liquidity": "concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */,
+  concentratedliquidity: "concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */,
+  cl: "concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */,
+  concentrated: "concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */,
+  "sei vault": "sei" /* SEI */,
+  sei: "sei" /* SEI */,
+  "usdc vault": "usdc" /* USDC */,
+  usdc: "usdc" /* USDC */
 };
 function matchVaultName(input) {
   const normalized = input.toLowerCase().trim();
-  return VAULT_IDENTIFIERS[normalized] || null;
+  if (vaultNameAliases[normalized]) {
+    return vaultNameAliases[normalized];
+  }
+  for (const [alias, vaultName] of Object.entries(vaultNameAliases)) {
+    if (normalized.includes(alias) || alias.includes(normalized)) {
+      return vaultName;
+    }
+  }
+  return null;
 }
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/vault-provider.ts
 var STRATEGY_VAULT_ABI = [
   {
     name: "getVaultInfo",
@@ -17903,6 +18032,67 @@ var STRATEGY_VAULT_ABI = [
           { name: "feeGrowthInside1LastX128", type: "uint256" }
         ]
       }
+    ]
+  },
+  {
+    name: "seiOptimizedDeposit",
+    type: "function",
+    stateMutability: "payable",
+    inputs: [
+      { name: "amount", type: "uint256" },
+      { name: "receiver", type: "address" }
+    ],
+    outputs: [{ name: "shares", type: "uint256" }]
+  },
+  {
+    name: "seiOptimizedWithdraw",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "shares", type: "uint256" },
+      { name: "receiver", type: "address" }
+    ],
+    outputs: [{ name: "amount", type: "uint256" }]
+  },
+  {
+    name: "depositYield",
+    type: "function",
+    stateMutability: "payable",
+    inputs: [],
+    outputs: []
+  },
+  {
+    name: "totalAssets",
+    type: "function",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }]
+  },
+  {
+    name: "totalSupply",
+    type: "function",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }]
+  },
+  {
+    type: "event",
+    name: "SEIOptimizedDeposit",
+    inputs: [
+      { name: "user", type: "address", indexed: true },
+      { name: "amount", type: "uint256", indexed: false },
+      { name: "shares", type: "uint256", indexed: false },
+      { name: "blockTime", type: "uint256", indexed: false }
+    ]
+  },
+  {
+    type: "event",
+    name: "SEIOptimizedWithdraw",
+    inputs: [
+      { name: "user", type: "address", indexed: true },
+      { name: "amount", type: "uint256", indexed: false },
+      { name: "shares", type: "uint256", indexed: false },
+      { name: "blockTime", type: "uint256", indexed: false }
     ]
   }
 ];
@@ -18009,476 +18199,654 @@ var VAULT_FACTORY_ABI = [
     stateMutability: "view",
     inputs: [],
     outputs: [{ name: "", type: "address[]" }]
+  },
+  {
+    name: "getVaultByName",
+    type: "function",
+    stateMutability: "view",
+    inputs: [{ name: "name", type: "string" }],
+    outputs: [{ name: "", type: "address" }]
   }
 ];
 
+// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/vault-provider.ts
+var DEFAULT_CACHE_TTL = 30;
+var LONG_CACHE_TTL = 300;
+
 class VaultProvider {
-  runtime;
-  config = null;
-  cache = new Map;
-  cacheTTL = 30000;
-  constructor(runtime) {
-    this.runtime = runtime;
+  name = "VAULT_PROVIDER";
+  description = "Provides access to Yield Delta vault data including portfolio, metrics, and projections";
+  cache;
+  publicClient = null;
+  vaultFactoryAddress = null;
+  customerDashboardAddress = null;
+  vaultAddresses = {};
+  initialized = false;
+  constructor() {
+    this.cache = new import_node_cache2.default({ stdTTL: DEFAULT_CACHE_TTL });
   }
-  async getConfig() {
-    if (!this.config) {
-      this.config = await validateSeiConfig(this.runtime);
+  async initialize(runtime) {
+    if (this.initialized)
+      return;
+    try {
+      elizaLogger3.info("=== VaultProvider Initialization Started ===");
+      const network = runtime.getSetting("SEI_NETWORK") || "sei-mainnet";
+      elizaLogger3.info(`Network: ${network}`);
+      const rpcUrl = runtime.getSetting("SEI_RPC_URL") || this.getDefaultRpcUrl(network);
+      elizaLogger3.info(`RPC URL: ${rpcUrl}`);
+      const chain = this.getChainForNetwork(network);
+      this.publicClient = createPublicClient({
+        chain,
+        transport: http(rpcUrl),
+        pollingInterval: 0
+      });
+      elizaLogger3.info("Public client created successfully");
+      const factoryAddress = runtime.getSetting("VAULT_FACTORY_ADDRESS");
+      const dashboardAddress = runtime.getSetting("CUSTOMER_DASHBOARD_ADDRESS");
+      elizaLogger3.info(`Vault Factory Address from env: ${factoryAddress || "NOT SET"}`);
+      elizaLogger3.info(`Customer Dashboard Address from env: ${dashboardAddress || "NOT SET"}`);
+      if (!dashboardAddress) {
+        elizaLogger3.warn("⚠️  CUSTOMER_DASHBOARD_ADDRESS not set - will query vaults directly (slower)");
+      }
+      this.vaultFactoryAddress = factoryAddress;
+      this.customerDashboardAddress = dashboardAddress;
+      this.vaultAddresses = {
+        ["delta-neutral" /* DELTA_NEUTRAL */]: runtime.getSetting("DELTA_NEUTRAL_VAULT_ADDRESS"),
+        ["stable-max" /* STABLE_MAX */]: runtime.getSetting("STABLE_MAX_VAULT_ADDRESS"),
+        ["sei-hypergrowth" /* SEI_HYPERGROWTH */]: runtime.getSetting("SEI_HYPERGROWTH_VAULT_ADDRESS"),
+        ["blue-chip" /* BLUE_CHIP */]: runtime.getSetting("BLUE_CHIP_VAULT_ADDRESS"),
+        ["hedge" /* HEDGE */]: runtime.getSetting("HEDGE_VAULT_ADDRESS"),
+        ["yield-farming" /* YIELD_FARMING */]: runtime.getSetting("YIELD_FARMING_VAULT_ADDRESS"),
+        ["arbitrage" /* ARBITRAGE */]: runtime.getSetting("ARBITRAGE_VAULT_ADDRESS"),
+        ["concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */]: runtime.getSetting("CONCENTRATED_LIQUIDITY_VAULT_ADDRESS"),
+        ["sei" /* SEI */]: runtime.getSetting("SEI_VAULT_ADDRESS"),
+        ["usdc" /* USDC */]: runtime.getSetting("USDC_VAULT_ADDRESS")
+      };
+      const configuredVaults = Object.entries(this.vaultAddresses).filter(([_, addr]) => addr).map(([name, _]) => name);
+      elizaLogger3.info(`Configured vaults: ${configuredVaults.join(", ") || "NONE"}`);
+      this.initialized = true;
+      elizaLogger3.info(`✅ VaultProvider initialized successfully`);
+      elizaLogger3.info(`   Network: ${network}`);
+      elizaLogger3.info(`   Factory: ${this.vaultFactoryAddress || "NOT SET"}`);
+      elizaLogger3.info(`   Dashboard: ${this.customerDashboardAddress}`);
+      elizaLogger3.info("===========================================");
+    } catch (error) {
+      elizaLogger3.error("=== VaultProvider Initialization FAILED ===");
+      elizaLogger3.error(`Error: ${error instanceof Error ? error.message : String(error)}`);
+      if (error instanceof Error && error.stack) {
+        elizaLogger3.error(`Stack: ${error.stack}`);
+      }
+      elizaLogger3.error("===========================================");
+      throw error;
     }
-    return this.config;
   }
-  getPublicClient() {
-    const network = this.config?.SEI_NETWORK || "sei-mainnet";
-    const chain = seiChains[network] || seiChains["sei-mainnet"];
-    return createPublicClient({
-      chain,
-      transport: http()
-    });
-  }
-  getCacheKey(method, ...args) {
-    return `${method}:${args.join(":")}`;
-  }
-  getFromCache(key) {
-    const entry = this.cache.get(key);
-    if (entry && Date.now() - entry.timestamp < this.cacheTTL) {
-      return entry.data;
+  getDefaultRpcUrl(network) {
+    switch (network) {
+      case "sei-mainnet":
+        return "https://evm-rpc.sei-apis.com";
+      case "sei-testnet":
+        return "https://evm-rpc-testnet.sei-apis.com";
+      case "sei-devnet":
+        return "https://evm-rpc-arctic-1.sei-apis.com";
+      default:
+        return "https://evm-rpc.sei-apis.com";
     }
-    return null;
   }
-  setCache(key, data) {
-    this.cache.set(key, { data, timestamp: Date.now() });
+  getChainForNetwork(network) {
+    switch (network) {
+      case "sei-mainnet":
+        return sei;
+      case "sei-testnet":
+        return seiTestnet;
+      case "sei-devnet":
+        return seiDevnet;
+      default:
+        return sei;
+    }
   }
-  async getCustomerPortfolio(customerAddress) {
-    const cacheKey2 = this.getCacheKey("getCustomerPortfolio", customerAddress);
-    const cached = this.getFromCache(cacheKey2);
+  async get(runtime, _message, _state) {
+    await this.initialize(runtime);
+    return `Vault provider ready. Available vaults: ${Object.values(VaultDisplayNames).join(", ")}`;
+  }
+  getVaultAddress(vaultName) {
+    if (typeof vaultName === "string") {
+      const matched = matchVaultName(vaultName);
+      if (!matched)
+        return null;
+      return this.vaultAddresses[matched] || null;
+    }
+    return this.vaultAddresses[vaultName] || null;
+  }
+  async getCustomerPortfolio(runtime, customerAddress) {
+    await this.initialize(runtime);
+    const cacheKey2 = `portfolio:${customerAddress}`;
+    const cached = this.cache.get(cacheKey2);
     if (cached)
       return cached;
+    if (!this.publicClient) {
+      throw new Error("VaultProvider not properly initialized");
+    }
+    if (!this.customerDashboardAddress) {
+      elizaLogger3.info("No dashboard contract - querying vaults directly");
+      return await this.getCustomerPortfolioDirectly(customerAddress);
+    }
     try {
-      const config = await this.getConfig();
-      const publicClient = this.getPublicClient();
-      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
-        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
-      }
-      const result = await publicClient.readContract({
-        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+      const portfolios = await this.publicClient.readContract({
+        address: this.customerDashboardAddress,
         abi: CUSTOMER_DASHBOARD_ABI,
         functionName: "getCustomerPortfolio",
         args: [customerAddress]
       });
-      const formatted = result.map((p) => ({
+      const formatted = portfolios.map((p) => ({
         vaultAddress: p.vaultAddress,
         vaultName: p.vaultName,
-        shareBalance: formatUnits(p.shareBalance, 18),
-        shareValue: formatUnits(p.shareValue, 6),
-        totalDeposited: formatUnits(p.totalDeposited, 6),
-        totalWithdrawn: formatUnits(p.totalWithdrawn, 6),
-        unrealizedGains: formatUnits(p.unrealizedGains, 6),
+        shareBalance: Number(formatUnits(p.shareBalance, 18)),
+        shareValue: Number(formatUnits(p.shareValue, 6)),
+        totalDeposited: Number(formatUnits(p.totalDeposited, 6)),
+        totalWithdrawn: Number(formatUnits(p.totalWithdrawn, 6)),
+        unrealizedGains: Number(formatUnits(p.unrealizedGains, 6)),
         depositTimestamp: Number(p.depositTimestamp),
         lockTimeRemaining: Number(p.lockTimeRemaining),
         canWithdraw: p.canWithdraw
       }));
-      this.setCache(cacheKey2, formatted);
+      this.cache.set(cacheKey2, formatted);
       return formatted;
     } catch (error) {
-      elizaLogger4.error(`Failed to get customer portfolio: ${error}`);
+      elizaLogger3.error(`Failed to get customer portfolio for ${customerAddress}: ${error}`);
       throw error;
     }
   }
-  async getVaultMetrics(vaultAddress) {
-    const cacheKey2 = this.getCacheKey("getVaultMetrics", vaultAddress);
-    const cached = this.getFromCache(cacheKey2);
+  async getCustomerPortfolioDirectly(customerAddress) {
+    if (!this.publicClient || !this.vaultAddresses) {
+      throw new Error("VaultProvider not properly initialized");
+    }
+    elizaLogger3.info(`Querying vaults directly for ${customerAddress}...`);
+    const portfolios = [];
+    const vaultConfigs = {
+      ["sei" /* SEI */]: { decimals: 18 },
+      ["usdc" /* USDC */]: { decimals: 6 }
+    };
+    const GET_CUSTOMER_STATS_ABI = [{
+      name: "getCustomerStats",
+      type: "function",
+      stateMutability: "view",
+      inputs: [{ name: "customer", type: "address" }],
+      outputs: [
+        { name: "shares", type: "uint256" },
+        { name: "shareValue", type: "uint256" },
+        { name: "totalDeposited", type: "uint256" },
+        { name: "totalWithdrawn", type: "uint256" },
+        { name: "depositTime", type: "uint256" },
+        { name: "lockTimeRemaining", type: "uint256" }
+      ]
+    }];
+    for (const [vaultName, vaultAddress] of Object.entries(this.vaultAddresses)) {
+      if (!vaultAddress)
+        continue;
+      try {
+        elizaLogger3.info(`Checking ${vaultName} at ${vaultAddress}...`);
+        const decimals = vaultConfigs[vaultName]?.decimals || 18;
+        elizaLogger3.info(`Using ${decimals} decimals for ${vaultName}`);
+        const stats = await this.publicClient.readContract({
+          address: vaultAddress,
+          abi: GET_CUSTOMER_STATS_ABI,
+          functionName: "getCustomerStats",
+          args: [customerAddress]
+        });
+        const [shares, shareValue, totalDeposited, totalWithdrawn, depositTime, lockTimeRemaining] = stats;
+        if (shares === 0n && totalDeposited === 0n) {
+          elizaLogger3.info(`No position in ${vaultName}`);
+          continue;
+        }
+        const shareBalance = parseFloat(formatUnits(shares, decimals));
+        const currentValue = parseFloat(formatUnits(shareValue, decimals));
+        const deposited = parseFloat(formatUnits(totalDeposited, decimals));
+        const withdrawn = parseFloat(formatUnits(totalWithdrawn, decimals));
+        const totalValue = currentValue + withdrawn;
+        const unrealizedGains = totalValue - deposited;
+        const displayName = VaultDisplayNames[vaultName];
+        portfolios.push({
+          vaultAddress,
+          vaultName: displayName,
+          shareBalance,
+          shareValue: currentValue,
+          totalDeposited: deposited,
+          totalWithdrawn: withdrawn,
+          unrealizedGains,
+          depositTimestamp: Number(depositTime),
+          lockTimeRemaining: Number(lockTimeRemaining),
+          canWithdraw: Number(lockTimeRemaining) === 0
+        });
+        elizaLogger3.info(`Found position in ${displayName}: ${shareBalance} shares, value: ${currentValue}, P&L: ${unrealizedGains > 0 ? "+" : ""}${unrealizedGains}`);
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        elizaLogger3.error(`Failed to query ${vaultName} at ${vaultAddress}: ${errorMessage}`);
+      }
+    }
+    elizaLogger3.info(`Direct query complete: found ${portfolios.length} positions`);
+    return portfolios;
+  }
+  async getVaultMetrics(runtime, vaultAddress) {
+    await this.initialize(runtime);
+    const cacheKey2 = `metrics:${vaultAddress}`;
+    const cached = this.cache.get(cacheKey2);
     if (cached)
       return cached;
+    if (!this.publicClient || !this.customerDashboardAddress) {
+      throw new Error("VaultProvider not properly initialized");
+    }
     try {
-      const config = await this.getConfig();
-      const publicClient = this.getPublicClient();
-      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
-        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
-      }
-      const result = await publicClient.readContract({
-        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+      const metrics = await this.publicClient.readContract({
+        address: this.customerDashboardAddress,
         abi: CUSTOMER_DASHBOARD_ABI,
         functionName: "getVaultMetrics",
         args: [vaultAddress]
       });
       const formatted = {
-        totalValueLocked: formatUnits(result.totalValueLocked, 6),
-        totalShares: formatUnits(result.totalShares, 18),
-        pricePerShare: formatUnits(result.pricePerShare, 18),
-        apy: Number(result.apy) / 100,
-        totalYieldGenerated: formatUnits(result.totalYieldGenerated, 6),
-        managementFeeRate: Number(result.managementFeeRate) / 1e4,
-        performanceFeeRate: Number(result.performanceFeeRate) / 1e4,
-        withdrawalFeeRate: Number(result.withdrawalFeeRate) / 1e4
+        totalValueLocked: Number(formatUnits(metrics.totalValueLocked, 6)),
+        totalShares: Number(formatUnits(metrics.totalShares, 18)),
+        pricePerShare: Number(formatUnits(metrics.pricePerShare, 6)),
+        apy: Number(metrics.apy) / 100,
+        totalYieldGenerated: Number(formatUnits(metrics.totalYieldGenerated, 6)),
+        managementFeeRate: Number(metrics.managementFeeRate) / 100,
+        performanceFeeRate: Number(metrics.performanceFeeRate) / 100,
+        withdrawalFeeRate: Number(metrics.withdrawalFeeRate) / 100
       };
-      this.setCache(cacheKey2, formatted);
+      this.cache.set(cacheKey2, formatted);
       return formatted;
     } catch (error) {
-      elizaLogger4.error(`Failed to get vault metrics: ${error}`);
+      elizaLogger3.error(`Failed to get vault metrics for ${vaultAddress}: ${error}`);
       throw error;
     }
   }
-  async getVaultInfo(vaultAddress) {
-    const cacheKey2 = this.getCacheKey("getVaultInfo", vaultAddress);
-    const cached = this.getFromCache(cacheKey2);
+  async getVaultInfo(runtime, vaultAddress) {
+    await this.initialize(runtime);
+    const cacheKey2 = `info:${vaultAddress}`;
+    const cached = this.cache.get(cacheKey2);
     if (cached)
       return cached;
+    if (!this.publicClient) {
+      throw new Error("VaultProvider not properly initialized");
+    }
     try {
-      const publicClient = this.getPublicClient();
-      const result = await publicClient.readContract({
+      const info = await this.publicClient.readContract({
         address: vaultAddress,
         abi: STRATEGY_VAULT_ABI,
         functionName: "getVaultInfo"
       });
+      const vaultName = this.getVaultNameByAddress(vaultAddress);
+      const displayName = vaultName ? VaultDisplayNames[vaultName] : info.name;
       const formatted = {
-        name: result.name,
-        strategy: result.strategy,
-        token0: result.token0,
-        token1: result.token1,
-        poolFee: Number(result.poolFee),
-        totalSupply: formatUnits(result.totalSupply, 18),
-        totalValueLocked: formatUnits(result.totalValueLocked, 6),
-        isActive: result.isActive
+        name: displayName,
+        strategy: info.strategy,
+        token0: info.token0,
+        token1: info.token1,
+        poolFee: info.poolFee,
+        totalSupply: Number(formatUnits(info.totalSupply, 18)),
+        totalValueLocked: Number(formatUnits(info.totalValueLocked, 6)),
+        isActive: info.isActive
       };
-      this.setCache(cacheKey2, formatted);
+      this.cache.set(cacheKey2, formatted, LONG_CACHE_TTL);
       return formatted;
     } catch (error) {
-      elizaLogger4.error(`Failed to get vault info: ${error}`);
+      elizaLogger3.error(`Failed to get vault info for ${vaultAddress}: ${error}`);
       throw error;
     }
   }
-  async getCurrentPosition(vaultAddress) {
-    const cacheKey2 = this.getCacheKey("getCurrentPosition", vaultAddress);
-    const cached = this.getFromCache(cacheKey2);
+  getVaultNameByAddress(address) {
+    if (!this.vaultAddresses)
+      return null;
+    for (const [name, vaultAddr] of Object.entries(this.vaultAddresses)) {
+      if (vaultAddr?.toLowerCase() === address.toLowerCase()) {
+        return name;
+      }
+    }
+    return null;
+  }
+  async getCurrentPosition(runtime, vaultAddress) {
+    await this.initialize(runtime);
+    const cacheKey2 = `position:${vaultAddress}`;
+    const cached = this.cache.get(cacheKey2);
     if (cached)
       return cached;
+    if (!this.publicClient) {
+      throw new Error("VaultProvider not properly initialized");
+    }
     try {
-      const publicClient = this.getPublicClient();
-      const result = await publicClient.readContract({
+      const position = await this.publicClient.readContract({
         address: vaultAddress,
         abi: STRATEGY_VAULT_ABI,
         functionName: "getCurrentPosition"
       });
-      const position = {
-        tickLower: result.tickLower,
-        tickUpper: result.tickUpper,
-        liquidity: result.liquidity,
-        tokensOwed0: result.tokensOwed0,
-        tokensOwed1: result.tokensOwed1,
-        feeGrowthInside0LastX128: result.feeGrowthInside0LastX128,
-        feeGrowthInside1LastX128: result.feeGrowthInside1LastX128
+      const tickToPrice = (tick) => {
+        return Math.pow(1.0001, tick);
       };
-      this.setCache(cacheKey2, position);
-      return position;
+      const formatted = {
+        tickLower: position.tickLower,
+        tickUpper: position.tickUpper,
+        liquidity: Number(position.liquidity),
+        tokensOwed0: Number(formatUnits(position.tokensOwed0, 18)),
+        tokensOwed1: Number(formatUnits(position.tokensOwed1, 6)),
+        priceLower: tickToPrice(position.tickLower),
+        priceUpper: tickToPrice(position.tickUpper),
+        currentPrice: tickToPrice((position.tickLower + position.tickUpper) / 2)
+      };
+      this.cache.set(cacheKey2, formatted);
+      return formatted;
     } catch (error) {
-      elizaLogger4.error(`Failed to get current position: ${error}`);
+      elizaLogger3.error(`Failed to get current position for ${vaultAddress}: ${error}`);
       throw error;
     }
   }
-  async getYieldHistory(vaultAddress, fromTimestamp) {
-    const cacheKey2 = this.getCacheKey("getYieldHistory", vaultAddress, fromTimestamp);
-    const cached = this.getFromCache(cacheKey2);
+  async getYieldHistory(runtime, vaultAddress, fromTimestamp = 0) {
+    await this.initialize(runtime);
+    const cacheKey2 = `history:${vaultAddress}:${fromTimestamp}`;
+    const cached = this.cache.get(cacheKey2);
     if (cached)
       return cached;
+    if (!this.publicClient || !this.customerDashboardAddress) {
+      throw new Error("VaultProvider not properly initialized");
+    }
     try {
-      const config = await this.getConfig();
-      const publicClient = this.getPublicClient();
-      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
-        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
-      }
-      const result = await publicClient.readContract({
-        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+      const history = await this.publicClient.readContract({
+        address: this.customerDashboardAddress,
         abi: CUSTOMER_DASHBOARD_ABI,
         functionName: "getYieldHistory",
         args: [vaultAddress, BigInt(fromTimestamp)]
       });
-      const formatted = result.map((h) => ({
+      const formatted = history.map((h) => ({
         timestamp: Number(h.timestamp),
-        totalValue: formatUnits(h.totalValue, 6),
-        yieldGenerated: formatUnits(h.yieldGenerated, 6),
+        totalValue: Number(formatUnits(h.totalValue, 6)),
+        yieldGenerated: Number(formatUnits(h.yieldGenerated, 6)),
         apy: Number(h.apy) / 100
       }));
-      this.setCache(cacheKey2, formatted);
+      this.cache.set(cacheKey2, formatted);
       return formatted;
     } catch (error) {
-      elizaLogger4.error(`Failed to get yield history: ${error}`);
+      elizaLogger3.error(`Failed to get yield history for ${vaultAddress}: ${error}`);
       throw error;
     }
   }
-  async calculateProjectedReturns(vaultAddress, depositAmount, daysHeld) {
-    const cacheKey2 = this.getCacheKey("calculateProjectedReturns", vaultAddress, depositAmount, daysHeld);
-    const cached = this.getFromCache(cacheKey2);
+  async calculateProjectedReturns(runtime, vaultAddress, depositAmount, daysHeld) {
+    await this.initialize(runtime);
+    const cacheKey2 = `projection:${vaultAddress}:${depositAmount}:${daysHeld}`;
+    const cached = this.cache.get(cacheKey2);
     if (cached)
       return cached;
+    if (!this.publicClient || !this.customerDashboardAddress) {
+      throw new Error("VaultProvider not properly initialized");
+    }
     try {
-      const config = await this.getConfig();
-      const publicClient = this.getPublicClient();
-      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
-        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
-      }
-      const depositAmountWei = BigInt(Math.floor(depositAmount * 1e6));
-      const result = await publicClient.readContract({
-        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+      const depositAmountBigInt = BigInt(Math.floor(depositAmount * 1e6));
+      const [projectedValue, projectedYield, managementFees, withdrawalFees] = await this.publicClient.readContract({
+        address: this.customerDashboardAddress,
         abi: CUSTOMER_DASHBOARD_ABI,
         functionName: "calculateProjectedReturns",
-        args: [vaultAddress, depositAmountWei, BigInt(daysHeld)]
+        args: [vaultAddress, depositAmountBigInt, BigInt(daysHeld)]
       });
       const formatted = {
-        projectedValue: formatUnits(result[0], 6),
-        projectedYield: formatUnits(result[1], 6),
-        managementFees: formatUnits(result[2], 6),
-        withdrawalFees: formatUnits(result[3], 6)
+        projectedValue: Number(formatUnits(projectedValue, 6)),
+        projectedYield: Number(formatUnits(projectedYield, 6)),
+        managementFees: Number(formatUnits(managementFees, 6)),
+        withdrawalFees: Number(formatUnits(withdrawalFees, 6)),
+        depositAmount,
+        daysHeld
       };
-      this.setCache(cacheKey2, formatted);
+      this.cache.set(cacheKey2, formatted);
       return formatted;
     } catch (error) {
-      elizaLogger4.error(`Failed to calculate projected returns: ${error}`);
+      elizaLogger3.error(`Failed to calculate projected returns for ${vaultAddress} (amount: ${depositAmount}, days: ${daysHeld}): ${error}`);
       throw error;
     }
   }
-  async getOptimalDepositRatio(vaultAddress) {
-    const cacheKey2 = this.getCacheKey("getOptimalDepositRatio", vaultAddress);
-    const cached = this.getFromCache(cacheKey2);
+  async getOptimalDepositRatio(runtime, vaultAddress) {
+    await this.initialize(runtime);
+    const cacheKey2 = `ratio:${vaultAddress}`;
+    const cached = this.cache.get(cacheKey2);
     if (cached)
       return cached;
+    if (!this.publicClient || !this.customerDashboardAddress) {
+      throw new Error("VaultProvider not properly initialized");
+    }
     try {
-      const config = await this.getConfig();
-      const publicClient = this.getPublicClient();
-      if (!config.CUSTOMER_DASHBOARD_ADDRESS) {
-        throw new Error("CUSTOMER_DASHBOARD_ADDRESS not configured");
-      }
-      const result = await publicClient.readContract({
-        address: config.CUSTOMER_DASHBOARD_ADDRESS,
+      const [token0Ratio, token1Ratio, currentPrice] = await this.publicClient.readContract({
+        address: this.customerDashboardAddress,
         abi: CUSTOMER_DASHBOARD_ABI,
         functionName: "getOptimalDepositRatio",
         args: [vaultAddress]
       });
-      const ratio = {
-        token0Ratio: result[0],
-        token1Ratio: result[1],
-        currentPrice: result[2]
+      const formatted = {
+        token0Ratio: Number(token0Ratio) / 100,
+        token1Ratio: Number(token1Ratio) / 100,
+        currentPrice: Number(formatUnits(currentPrice, 6))
       };
-      this.setCache(cacheKey2, ratio);
-      return ratio;
+      this.cache.set(cacheKey2, formatted);
+      return formatted;
     } catch (error) {
-      elizaLogger4.error(`Failed to get optimal deposit ratio: ${error}`);
+      elizaLogger3.error(`Failed to get optimal deposit ratio for ${vaultAddress}: ${error}`);
       throw error;
     }
   }
-  async getAllVaults() {
-    const cacheKey2 = this.getCacheKey("getAllVaults");
-    const cached = this.getFromCache(cacheKey2);
+  async getAllVaults(runtime) {
+    await this.initialize(runtime);
+    const cacheKey2 = "allVaults";
+    const cached = this.cache.get(cacheKey2);
     if (cached)
       return cached;
-    try {
-      const config = await this.getConfig();
-      const publicClient = this.getPublicClient();
-      let vaultAddresses = [];
-      if (config.VAULT_FACTORY_ADDRESS) {
+    const vaults = [];
+    for (const [name, address] of Object.entries(this.vaultAddresses)) {
+      if (address) {
         try {
-          const result = await publicClient.readContract({
-            address: config.VAULT_FACTORY_ADDRESS,
-            abi: VAULT_FACTORY_ABI,
-            functionName: "getAllVaults"
-          });
-          vaultAddresses = result;
-        } catch (e) {
-          elizaLogger4.warn("Could not get vaults from factory, using config addresses");
+          const info = await this.getVaultInfo(runtime, address);
+          vaults.push(info);
+        } catch (error) {
+          elizaLogger3.warn(`Failed to get info for vault ${name}: ${error}`);
         }
       }
-      if (vaultAddresses.length === 0) {
-        for (const [vaultName, configKey] of Object.entries(VAULT_CONFIG_KEYS)) {
-          const address = config[configKey];
-          if (address) {
-            vaultAddresses.push(address);
+    }
+    if (this.vaultFactoryAddress && this.publicClient) {
+      try {
+        const factoryVaults = await this.publicClient.readContract({
+          address: this.vaultFactoryAddress,
+          abi: VAULT_FACTORY_ABI,
+          functionName: "getAllVaults"
+        });
+        for (const vaultAddress of factoryVaults) {
+          const exists = vaults.some((v) => Object.values(this.vaultAddresses).includes(vaultAddress));
+          if (!exists) {
+            try {
+              const info = await this.getVaultInfo(runtime, vaultAddress);
+              vaults.push(info);
+            } catch (error) {
+              elizaLogger3.warn(`Failed to get info for vault ${vaultAddress}: ${error}`);
+            }
           }
         }
+      } catch (error) {
+        elizaLogger3.warn(`Failed to get vaults from factory: ${error}`);
       }
-      const vaults = [];
-      for (const address of vaultAddresses) {
-        try {
-          const info = await this.getVaultInfo(address);
-          const metrics = await this.getVaultMetrics(address);
-          vaults.push({
-            ...info,
-            address,
-            apy: metrics.apy,
-            riskLevel: this.getRiskLevel(info.name)
-          });
-        } catch (e) {
-          elizaLogger4.warn(`Could not get info for vault ${address}: ${e}`);
-        }
-      }
-      this.setCache(cacheKey2, vaults);
-      return vaults;
-    } catch (error) {
-      elizaLogger4.error(`Failed to get all vaults: ${error}`);
-      throw error;
     }
+    this.cache.set(cacheKey2, vaults, LONG_CACHE_TTL);
+    return vaults;
   }
-  async getVaultAddressByName(vaultName) {
-    const config = await this.getConfig();
-    const address = getVaultAddress(config, vaultName);
-    if (address)
-      return address;
-    const matched = matchVaultName(vaultName);
-    if (matched) {
-      return getVaultAddress(config, matched) || null;
+  async getVaultMetricsByName(runtime, vaultName) {
+    const address = this.getVaultAddress(vaultName);
+    if (!address) {
+      elizaLogger3.warn(`Vault not found: ${vaultName}`);
+      return null;
     }
-    return null;
+    return this.getVaultMetrics(runtime, address);
   }
-  getRiskLevel(vaultName) {
-    const lowerName = vaultName.toLowerCase();
-    if (lowerName.includes("stable"))
-      return "Very Low";
-    if (lowerName.includes("hedge"))
-      return "Low";
-    if (lowerName.includes("delta neutral"))
-      return "Low";
-    if (lowerName.includes("blue chip"))
-      return "Medium";
-    if (lowerName.includes("concentrated"))
-      return "Medium";
-    if (lowerName.includes("yield farming"))
-      return "Medium";
-    if (lowerName.includes("arbitrage"))
-      return "Medium-High";
-    if (lowerName.includes("hypergrowth"))
-      return "High";
-    return "Medium";
+  async getVaultInfoByName(runtime, vaultName) {
+    const address = this.getVaultAddress(vaultName);
+    if (!address) {
+      elizaLogger3.warn(`Vault not found: ${vaultName}`);
+      return null;
+    }
+    return this.getVaultInfo(runtime, address);
   }
   clearCache() {
-    this.cache.clear();
+    this.cache.flushAll();
   }
 }
-var vaultProviderInstance = null;
-var vaultProvider = {
-  name: "vaultProvider",
-  get: async (runtime, message, state) => {
-    if (!vaultProviderInstance) {
-      vaultProviderInstance = new VaultProvider(runtime);
-      elizaLogger4.info("Vault Provider initialized");
-    }
-    if (!message?.content?.text) {
-      return "Vault Provider: Query vault metrics, positions, and portfolio data for Yield Delta vaults on SEI blockchain.";
-    }
-    return null;
-  }
-};
+var vaultProvider = new VaultProvider;
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/portfolio-query.ts
 import {
-  elizaLogger as elizaLogger5
+  elizaLogger as elizaLogger4
 } from "@elizaos/core";
+function extractAddressFromMessage(text) {
+  const addressRegex2 = /0x[a-fA-F0-9]{40}/;
+  const match = text.match(addressRegex2);
+  return match ? match[0] : null;
+}
 var portfolioQueryAction = {
   name: "PORTFOLIO_QUERY",
   similes: [
     "GET_PORTFOLIO",
     "CHECK_PORTFOLIO",
     "MY_POSITIONS",
-    "VAULT_POSITIONS",
-    "PORTFOLIO_STATUS"
+    "SHOW_BALANCE",
+    "MY_INVESTMENTS",
+    "VAULT_BALANCE"
   ],
   validate: async (runtime, message) => {
     const content = message.content?.text?.toLowerCase() || "";
+    const originalText = message.content?.text || "";
+    elizaLogger4.info(`[PORTFOLIO_QUERY] Validating message: "${originalText}"`);
+    const hasAddress = extractAddressFromMessage(originalText) !== null;
+    elizaLogger4.info(`[PORTFOLIO_QUERY] Has address: ${hasAddress}`);
     const portfolioKeywords = [
       "my portfolio",
       "my positions",
       "my balance",
       "my deposits",
-      "portfolio value",
+      "my investments",
       "what do i have",
+      "how much do i have",
       "show my",
-      "my vault",
+      "what's my",
+      "what are my",
       "my gains",
-      "my returns",
       "can i withdraw",
       "withdrawal status",
-      "how much have i",
-      "what's my",
-      "whats my"
+      "my shares",
+      "my holdings",
+      "portfolio value",
+      "total value",
+      "check holdings",
+      "check portfolio",
+      "check positions",
+      "holdings for",
+      "portfolio for",
+      "positions for"
     ];
-    return portfolioKeywords.some((keyword) => content.includes(keyword));
+    const hasKeywords = portfolioKeywords.some((keyword) => content.includes(keyword));
+    elizaLogger4.info(`[PORTFOLIO_QUERY] Has keywords: ${hasKeywords}`);
+    const hasAddressWithContext = hasAddress && (content.includes("check") || content.includes("show") || content.includes("portfolio") || content.includes("holdings") || content.includes("positions"));
+    elizaLogger4.info(`[PORTFOLIO_QUERY] Has address with context: ${hasAddressWithContext}`);
+    const shouldValidate = hasAddressWithContext || hasKeywords;
+    elizaLogger4.info(`[PORTFOLIO_QUERY] Validation result: ${shouldValidate}`);
+    return shouldValidate;
   },
-  description: "Get user's portfolio status across all Yield Delta vaults",
+  description: "Query user's vault portfolio including positions, balances, and withdrawal status",
   handler: async (runtime, message, state, _options, callback) => {
     try {
-      elizaLogger5.info("Portfolio Query Action triggered");
-      const vaultProvider2 = new VaultProvider(runtime);
-      const walletProvider = new WalletProvider(runtime);
-      const walletAddress = walletProvider.getAddress();
-      if (!walletAddress) {
-        if (callback) {
-          callback({
-            text: "I couldn't find your wallet address. Please make sure your wallet is configured.",
-            content: {
-              error: "No wallet address",
-              action: "PORTFOLIO_QUERY"
-            }
-          });
+      elizaLogger4.info("Portfolio Query Action triggered");
+      const messageText = message.content?.text || "";
+      elizaLogger4.info(`Message text: "${messageText}"`);
+      let targetAddress = extractAddressFromMessage(messageText);
+      elizaLogger4.info(`Extracted address from message: ${targetAddress || "none"}`);
+      let isOwnWallet = false;
+      if (!targetAddress) {
+        elizaLogger4.info("No address in message, trying to use agent's wallet");
+        const walletProvider = await initWalletProvider(runtime);
+        targetAddress = walletProvider.getAddress();
+        isOwnWallet = true;
+        elizaLogger4.info(`Agent wallet address: ${targetAddress || "none"}`);
+        if (!targetAddress) {
+          elizaLogger4.warn("No wallet address available");
+          if (callback) {
+            callback({
+              text: `Please provide a wallet address to check. For example:
+• 'Check holdings for 0x1234...'
+• 'Show portfolio for 0x1234...'
+
+Or configure your own wallet to check your positions with 'what's my portfolio?'`,
+              content: {
+                text: "No wallet address provided",
+                action: "PORTFOLIO_QUERY",
+                error: "No wallet address found"
+              }
+            });
+          }
+          return;
         }
-        return;
       }
-      elizaLogger5.info(`Fetching portfolio for address: ${walletAddress}`);
-      const portfolio = await vaultProvider2.getCustomerPortfolio(walletAddress);
-      if (portfolio.length === 0) {
+      elizaLogger4.info(`Fetching portfolio for address: ${targetAddress}${isOwnWallet ? " (own wallet)" : " (provided address)"}`);
+      elizaLogger4.info(`Calling vaultProvider.getCustomerPortfolio with address: ${targetAddress}`);
+      const portfolios = await vaultProvider.getCustomerPortfolio(runtime, targetAddress);
+      elizaLogger4.info(`Portfolio query returned ${portfolios.length} positions`);
+      if (portfolios.length === 0) {
+        const noPositionsText = isOwnWallet ? "You don't have any positions in Yield Delta vaults yet. Use 'list vaults' to see available investment options." : `Address ${targetAddress} doesn't have any positions in Yield Delta vaults.`;
         if (callback) {
           callback({
-            text: "You don't have any positions in Yield Delta vaults yet. Visit our app to deposit into a vault and start earning yield!",
+            text: noPositionsText,
             content: {
               text: "No positions found",
               action: "PORTFOLIO_QUERY",
-              portfolio: []
+              portfolios: [],
+              address: targetAddress
             }
           });
         }
         return;
       }
-      const totalValue = portfolio.reduce((sum, p) => sum + parseFloat(p.shareValue), 0);
-      const totalGains = portfolio.reduce((sum, p) => sum + parseFloat(p.unrealizedGains), 0);
-      let response = `Your Yield Delta Portfolio:
-
-`;
-      response += `Total Value: $${totalValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-
-`;
-      response += `Positions:
-`;
-      for (const position of portfolio) {
-        const shares = parseFloat(position.shareBalance);
-        const value = parseFloat(position.shareValue);
-        const gains = parseFloat(position.unrealizedGains);
-        const gainsSign = gains >= 0 ? "+" : "";
-        const withdrawStatus = position.canWithdraw ? "✓ Can withdraw" : `⏳ ${formatLockTime(position.lockTimeRemaining)} lock remaining`;
-        response += `• ${position.vaultName}: ${formatNumber(shares)} shares ($${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}) ${gainsSign}$${gains.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} gains ${withdrawStatus}
-`;
-      }
-      const totalGainsSign = totalGains >= 0 ? "+" : "";
-      response += `
-Total Unrealized Gains: ${totalGainsSign}$${totalGains.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-      elizaLogger5.info(`Portfolio query response generated for ${portfolio.length} positions`);
+      const totalValue = portfolios.reduce((sum, p) => sum + p.shareValue, 0);
+      const totalGains = portfolios.reduce((sum, p) => sum + p.unrealizedGains, 0);
+      const response = formatPortfolioResponse(portfolios, totalValue, totalGains, targetAddress, isOwnWallet);
+      elizaLogger4.info(`Portfolio query response generated for ${portfolios.length} positions`);
       if (callback) {
         callback({
           text: response,
           content: {
             text: response,
             action: "PORTFOLIO_QUERY",
-            portfolio,
+            portfolios,
+            address: targetAddress,
+            isOwnWallet,
             summary: {
               totalValue,
               totalGains,
-              positionCount: portfolio.length
+              positionCount: portfolios.length
             }
           }
         });
       }
     } catch (error) {
-      elizaLogger5.error(`Error in portfolio query: ${error instanceof Error ? error.message : String(error)}`);
+      elizaLogger4.error("=== Portfolio Query Error ===");
+      elizaLogger4.error(`Error type: ${error instanceof Error ? error.constructor.name : typeof error}`);
+      elizaLogger4.error(`Error message: ${error instanceof Error ? error.message : String(error)}`);
+      if (error instanceof Error && error.stack) {
+        elizaLogger4.error(`Stack trace: ${error.stack}`);
+      }
+      elizaLogger4.error(`Full error object: ${JSON.stringify(error, null, 2)}`);
+      elizaLogger4.error("=========================");
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
+      const userFriendlyMessage = `I encountered an error while fetching your portfolio: ${errorMessage}
+
+Please check the server logs for more details.`;
       if (callback) {
         callback({
-          text: "I encountered an error while fetching your portfolio. Please try again in a moment.",
+          text: userFriendlyMessage,
           content: {
-            error: error instanceof Error ? error.message : "Unknown error",
-            action: "PORTFOLIO_QUERY"
+            error: errorMessage,
+            action: "PORTFOLIO_QUERY",
+            errorDetails: error instanceof Error ? {
+              name: error.name,
+              message: error.message,
+              stack: error.stack
+            } : { raw: String(error) }
           }
         });
       }
@@ -18488,7 +18856,7 @@ Total Unrealized Gains: ${totalGainsSign}$${totalGains.toLocaleString("en-US", {
     [
       {
         name: "{{user1}}",
-        content: { text: "What's my portfolio value?" }
+        content: { text: "What's my portfolio?" }
       },
       {
         name: "{{agentName}}",
@@ -18500,8 +18868,9 @@ Total Value: $5,234.56
 Positions:
 • Delta Neutral Vault: 1,000 shares ($2,100.00) +$100.00 gains ✓ Can withdraw
 • Stable Max Vault: 500 shares ($1,534.56) +$34.56 gains ⏳ 2 days lock remaining
+• SEI Hypergrowth: 800 shares ($1,600.00) +$200.00 gains ✓ Can withdraw
 
-Total Unrealized Gains: +$134.56`
+Total Unrealized Gains: +$334.56`
         }
       }
     ],
@@ -18515,91 +18884,208 @@ Total Unrealized Gains: +$134.56`
         content: {
           text: `Your Yield Delta Portfolio:
 
-Total Value: $10,000.00
+Total Value: $3,500.00
 
 Positions:
-• SEI Hypergrowth: 2,000 shares ($5,000.00) +$500.00 gains ✓ Can withdraw
-• Blue Chip Vault: 1,500 shares ($5,000.00) +$250.00 gains ✓ Can withdraw
+• Delta Neutral Vault: 500 shares ($1,500.00) +$50.00 gains ✓ Can withdraw
+• USDC Vault: 2,000 shares ($2,000.00) +$20.00 gains ✓ Can withdraw
 
-Total Unrealized Gains: +$750.00`
+Total Unrealized Gains: +$70.00`
         }
       }
     ],
     [
       {
         name: "{{user1}}",
-        content: { text: "Can I withdraw my funds?" }
+        content: { text: "Can I withdraw?" }
       },
       {
         name: "{{agentName}}",
         content: {
           text: `Your Yield Delta Portfolio:
 
-Total Value: $3,000.00
+Total Value: $2,100.00
 
 Positions:
-• Hedge Vault: 1,000 shares ($3,000.00) +$150.00 gains ✓ Can withdraw
+• Delta Neutral Vault: 1,000 shares ($2,100.00) +$100.00 gains ✓ Can withdraw
 
-Total Unrealized Gains: +$150.00`
+Total Unrealized Gains: +$100.00
+
+All your positions are available for withdrawal.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "How much do I have deposited?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Your Yield Delta Portfolio:
+
+Total Value: $10,500.00
+
+Positions:
+• Blue Chip Vault: 2,000 shares ($5,200.00) +$200.00 gains ✓ Can withdraw
+• SEI Vault: 1,500 shares ($3,300.00) +$150.00 gains ⏳ 5 days lock remaining
+• Arbitrage Vault: 1,000 shares ($2,000.00) +$100.00 gains ✓ Can withdraw
+
+Total Unrealized Gains: +$450.00`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Check holdings for 0x1234567890123456789012345678901234567890" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Yield Delta Portfolio for 0x1234...7890:
+
+Total Value: $3,200.00
+
+Positions:
+• Delta Neutral Vault: 800 shares ($1,600.00) +$80.00 gains ✓ Can withdraw
+• SEI Vault: 1,000 shares ($1,600.00) +$50.00 gains ⏳ 3 days lock remaining
+
+Total Unrealized Gains: +$130.00
+
+1 of 2 positions available for withdrawal.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Show portfolio for 0xabcdef1234567890abcdef1234567890abcdef12" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Yield Delta Portfolio for 0xabcd...ef12:
+
+Total Value: $7,800.00
+
+Positions:
+• USDC Vault: 5,000 shares ($5,000.00) +$100.00 gains ✓ Can withdraw
+• Blue Chip Vault: 1,400 shares ($2,800.00) +$150.00 gains ✓ Can withdraw
+
+Total Unrealized Gains: +$250.00
+
+All positions are available for withdrawal.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Check positions for 0x9876543210987654321098765432109876543210" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "Address 0x9876...3210 doesn't have any positions in Yield Delta vaults."
         }
       }
     ]
   ]
 };
-function formatNumber(num2) {
-  if (num2 >= 1e6) {
-    return (num2 / 1e6).toFixed(2) + "M";
-  } else if (num2 >= 1000) {
-    return (num2 / 1000).toFixed(2) + "K";
-  }
-  return num2.toLocaleString("en-US", { maximumFractionDigits: 2 });
-}
-function formatLockTime(seconds) {
-  if (seconds <= 0)
-    return "0";
-  const days = Math.floor(seconds / 86400);
-  const hours = Math.floor(seconds % 86400 / 3600);
-  if (days > 0) {
-    return `${days} day${days > 1 ? "s" : ""}`;
-  } else if (hours > 0) {
-    return `${hours} hour${hours > 1 ? "s" : ""}`;
+function formatPortfolioResponse(portfolios, totalValue, totalGains, address, isOwnWallet) {
+  let response = "";
+  if (isOwnWallet) {
+    response = `Your Yield Delta Portfolio:
+
+`;
   } else {
-    const minutes = Math.floor(seconds / 60);
-    return `${minutes} minute${minutes > 1 ? "s" : ""}`;
+    const shortAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
+    response = `Yield Delta Portfolio for ${shortAddress}:
+
+`;
   }
+  response += `Total Value: $${totalValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+
+`;
+  response += `Positions:
+`;
+  for (const position of portfolios) {
+    const sharesFormatted = position.shareBalance.toLocaleString("en-US", { maximumFractionDigits: 0 });
+    const valueFormatted = position.shareValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const gainsFormatted = position.unrealizedGains >= 0 ? `+$${position.unrealizedGains.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `-$${Math.abs(position.unrealizedGains).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    let withdrawStatus;
+    if (position.canWithdraw) {
+      withdrawStatus = "✓ Can withdraw";
+    } else {
+      const daysRemaining = Math.ceil(position.lockTimeRemaining / 86400);
+      withdrawStatus = `⏳ ${daysRemaining} day${daysRemaining !== 1 ? "s" : ""} lock remaining`;
+    }
+    response += `• ${position.vaultName}: ${sharesFormatted} shares ($${valueFormatted}) ${gainsFormatted} gains ${withdrawStatus}
+`;
+  }
+  response += `
+Total Unrealized Gains: ${totalGains >= 0 ? "+" : ""}$${totalGains.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const canWithdrawCount = portfolios.filter((p) => p.canWithdraw).length;
+  if (isOwnWallet) {
+    if (canWithdrawCount === portfolios.length) {
+      response += `
+
+All your positions are available for withdrawal.`;
+    } else if (canWithdrawCount > 0) {
+      response += `
+
+${canWithdrawCount} of ${portfolios.length} positions available for withdrawal.`;
+    }
+  } else {
+    if (canWithdrawCount === portfolios.length) {
+      response += `
+
+All positions are available for withdrawal.`;
+    } else if (canWithdrawCount > 0) {
+      response += `
+
+${canWithdrawCount} of ${portfolios.length} positions available for withdrawal.`;
+    }
+  }
+  return response;
 }
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/vault-metrics.ts
 import {
-  elizaLogger as elizaLogger6
+  elizaLogger as elizaLogger5
 } from "@elizaos/core";
 var vaultMetricsAction = {
   name: "VAULT_METRICS",
   similes: [
-    "GET_VAULT_STATS",
+    "GET_VAULT_METRICS",
+    "VAULT_STATS",
+    "VAULT_PERFORMANCE",
     "VAULT_APY",
     "VAULT_TVL",
-    "VAULT_PERFORMANCE",
-    "VAULT_INFO"
+    "VAULT_FEES"
   ],
   validate: async (runtime, message) => {
     const content = message.content?.text?.toLowerCase() || "";
     const metricsKeywords = [
       "apy of",
       "apy for",
-      "tvl of",
       "tvl for",
+      "tvl of",
+      "fees for",
+      "fees of",
       "vault stats",
       "vault metrics",
       "vault performance",
-      "fees for",
       "how is the",
       "performing",
-      "what are the fees",
-      "management fee",
-      "performance fee"
+      "what's the apy",
+      "what is the apy",
+      "yield for",
+      "returns for"
     ];
-    const vaultNames = [
+    const vaultKeywords = [
       "delta neutral",
       "stable max",
       "hypergrowth",
@@ -18611,95 +19097,62 @@ var vaultMetricsAction = {
       "sei vault",
       "usdc vault"
     ];
-    const mentionsVault = vaultNames.some((name) => content.includes(name));
-    const hasKeyword = metricsKeywords.some((keyword) => content.includes(keyword));
-    return hasKeyword || mentionsVault && (content.includes("apy") || content.includes("tvl") || content.includes("fee") || content.includes("stat") || content.includes("metric"));
+    const hasMetricKeyword = metricsKeywords.some((keyword) => content.includes(keyword));
+    const hasVaultKeyword = vaultKeywords.some((keyword) => content.includes(keyword));
+    return hasMetricKeyword || hasVaultKeyword && (content.includes("apy") || content.includes("tvl") || content.includes("fee") || content.includes("stat") || content.includes("metric") || content.includes("perform"));
   },
-  description: "Get performance metrics for a specific Yield Delta vault",
+  description: "Get performance metrics for specific vaults including APY, TVL, and fees",
   handler: async (runtime, message, state, _options, callback) => {
     try {
-      elizaLogger6.info("Vault Metrics Action triggered");
-      const vaultProvider2 = new VaultProvider(runtime);
+      elizaLogger5.info("Vault Metrics Action triggered");
       const content = message.content?.text || "";
-      const vaultName = extractVaultName(content);
+      const vaultName = matchVaultName(content);
       if (!vaultName) {
         if (callback) {
           callback({
             text: "I couldn't identify which vault you're asking about. Please specify a vault name like 'Delta Neutral', 'Stable Max', 'SEI Hypergrowth', etc.",
             content: {
-              error: "No vault identified",
-              action: "VAULT_METRICS"
+              text: "Vault not identified",
+              action: "VAULT_METRICS",
+              error: "No vault name found"
             }
           });
         }
         return;
       }
-      const vaultAddress = await vaultProvider2.getVaultAddressByName(vaultName);
+      const vaultAddress = vaultProvider.getVaultAddress(vaultName);
       if (!vaultAddress) {
         if (callback) {
           callback({
-            text: `I couldn't find the address for ${vaultName} vault. Please check the vault name and try again.`,
+            text: `The ${VaultDisplayNames[vaultName]} address is not configured. Please check your environment configuration.`,
             content: {
-              error: "Vault address not found",
-              action: "VAULT_METRICS"
+              text: "Vault address not configured",
+              action: "VAULT_METRICS",
+              error: "Vault address missing"
             }
           });
         }
         return;
       }
-      const [metrics, info] = await Promise.all([
-        vaultProvider2.getVaultMetrics(vaultAddress),
-        vaultProvider2.getVaultInfo(vaultAddress)
-      ]);
-      let response = `${info.name} Vault Metrics:
-
-`;
-      response += `\uD83D\uDCCA Performance:
-`;
-      response += `• APY: ${metrics.apy.toFixed(2)}%
-`;
-      response += `• Total Yield Generated: $${formatLargeNumber(parseFloat(metrics.totalYieldGenerated))}
-
-`;
-      response += `\uD83D\uDCB0 TVL & Shares:
-`;
-      response += `• Total Value Locked: $${formatLargeNumber(parseFloat(metrics.totalValueLocked))}
-`;
-      response += `• Total Shares: ${formatLargeNumber(parseFloat(metrics.totalShares))}
-`;
-      response += `• Price per Share: $${parseFloat(metrics.pricePerShare).toFixed(4)}
-
-`;
-      response += `\uD83D\uDCB8 Fees:
-`;
-      response += `• Management: ${(metrics.managementFeeRate * 100).toFixed(2)}%
-`;
-      response += `• Performance: ${(metrics.performanceFeeRate * 100).toFixed(2)}%
-`;
-      response += `• Withdrawal: ${(metrics.withdrawalFeeRate * 100).toFixed(2)}%
-
-`;
-      response += `Strategy: ${info.strategy}`;
-      if (!info.isActive) {
-        response += `
-
-⚠️ Note: This vault is currently not accepting new deposits.`;
-      }
-      elizaLogger6.info(`Vault metrics response generated for ${info.name}`);
+      elizaLogger5.info(`Fetching metrics for vault: ${vaultName} at ${vaultAddress}`);
+      const metrics = await vaultProvider.getVaultMetrics(runtime, vaultAddress);
+      const info = await vaultProvider.getVaultInfo(runtime, vaultAddress);
+      const response = formatVaultMetricsResponse(vaultName, metrics, info.strategy || VaultStrategies[vaultName]);
+      elizaLogger5.info(`Vault metrics response generated for ${vaultName}`);
       if (callback) {
         callback({
           text: response,
           content: {
             text: response,
             action: "VAULT_METRICS",
-            vaultName: info.name,
+            vaultName,
             metrics,
-            info
+            strategy: info.strategy
           }
         });
       }
     } catch (error) {
-      elizaLogger6.error(`Error in vault metrics: ${error instanceof Error ? error.message : String(error)}`);
+      elizaLogger5.error(`Error in vault metrics action: ${error instanceof Error ? error.message : String(error)}`);
       if (callback) {
         callback({
           text: "I encountered an error while fetching vault metrics. Please try again in a moment.",
@@ -18723,7 +19176,7 @@ var vaultMetricsAction = {
           text: `Delta Neutral Vault Metrics:
 
 \uD83D\uDCCA Performance:
-• APY: 12.50%
+• APY: 12.5%
 • Total Yield Generated: $45,230
 
 \uD83D\uDCB0 TVL & Shares:
@@ -18732,9 +19185,9 @@ var vaultMetricsAction = {
 • Price per Share: $24.69
 
 \uD83D\uDCB8 Fees:
-• Management: 0.50%
-• Performance: 10.00%
-• Withdrawal: 0.10%
+• Management: 0.5%
+• Performance: 10%
+• Withdrawal: 0.1%
 
 Strategy: Delta-neutral yield farming with IL protection`
         }
@@ -18751,232 +19204,117 @@ Strategy: Delta-neutral yield farming with IL protection`
           text: `Stable Max Vault Metrics:
 
 \uD83D\uDCCA Performance:
-• APY: 8.20%
-• Total Yield Generated: $28,150
+• APY: 8.2%
+• Total Yield Generated: $28,450
 
 \uD83D\uDCB0 TVL & Shares:
 • Total Value Locked: $890,000
-• Total Shares: 85,000
-• Price per Share: $10.47
+• Total Shares: 88,500
+• Price per Share: $10.06
 
 \uD83D\uDCB8 Fees:
-• Management: 0.30%
-• Performance: 5.00%
+• Management: 0.3%
+• Performance: 5%
 • Withdrawal: 0.05%
 
-Strategy: Stablecoin yield optimization`
-        }
-      }
-    ]
-  ]
-};
-function extractVaultName(text) {
-  const lowerText = text.toLowerCase();
-  const vaultPatterns = [
-    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
-    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
-    { pattern: /sei[\s-]?hypergrowth|hypergrowth/i, name: "SEI Hypergrowth" },
-    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
-    { pattern: /hedge|hedging/i, name: "Hedge" },
-    { pattern: /yield[\s-]?farming|farming/i, name: "Yield Farming" },
-    { pattern: /arbitrage|arb\b/i, name: "Arbitrage" },
-    { pattern: /concentrated[\s-]?liquidity|concentrated|\bcl\b/i, name: "Concentrated Liquidity" },
-    { pattern: /\bsei\s+vault\b|\bmain\s+vault\b/i, name: "SEI" },
-    { pattern: /\busdc\s+vault\b|\bstablecoin\s+vault\b/i, name: "USDC" }
-  ];
-  for (const { pattern, name } of vaultPatterns) {
-    if (pattern.test(text)) {
-      return name;
-    }
-  }
-  return null;
-}
-function formatLargeNumber(num2) {
-  if (num2 >= 1e6) {
-    return (num2 / 1e6).toFixed(2) + "M";
-  } else if (num2 >= 1000) {
-    return (num2 / 1000).toFixed(2) + "K";
-  }
-  return num2.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/vault-list.ts
-import {
-  elizaLogger as elizaLogger7
-} from "@elizaos/core";
-var vaultListAction = {
-  name: "VAULT_LIST",
-  similes: [
-    "LIST_VAULTS",
-    "SHOW_VAULTS",
-    "AVAILABLE_VAULTS",
-    "ALL_VAULTS",
-    "VAULT_OPTIONS"
-  ],
-  validate: async (runtime, message) => {
-    const content = message.content?.text?.toLowerCase() || "";
-    const listKeywords = [
-      "what vaults",
-      "which vaults",
-      "available vaults",
-      "list vaults",
-      "show vaults",
-      "all vaults",
-      "vault options",
-      "what strategies",
-      "which strategies",
-      "what can i invest",
-      "investment options",
-      "show me the vaults",
-      "what are my options"
-    ];
-    return listKeywords.some((keyword) => content.includes(keyword));
-  },
-  description: "List all available Yield Delta vaults with key metrics",
-  handler: async (runtime, message, state, _options, callback) => {
-    try {
-      elizaLogger7.info("Vault List Action triggered");
-      const vaultProvider2 = new VaultProvider(runtime);
-      const vaults = await vaultProvider2.getAllVaults();
-      if (vaults.length === 0) {
-        if (callback) {
-          callback({
-            text: "No vaults are currently available. Please check back later or ensure the vault contracts are properly configured.",
-            content: {
-              error: "No vaults found",
-              action: "VAULT_LIST"
-            }
-          });
-        }
-        return;
-      }
-      let response = `Available Yield Delta Vaults:
-
-`;
-      for (const vault of vaults) {
-        const riskEmoji = getRiskEmoji(vault.riskLevel || "Medium");
-        const tvlFormatted = formatLargeNumber2(parseFloat(vault.totalValueLocked));
-        const apyFormatted = vault.apy ? vault.apy.toFixed(1) : "N/A";
-        response += `${riskEmoji} ${vault.name}
-`;
-        response += `   APY: ${apyFormatted}% | TVL: $${tvlFormatted} | Risk: ${vault.riskLevel || "Medium"}
-`;
-        response += `   Strategy: ${vault.strategy}
-
-`;
-      }
-      response += `Use 'vault metrics [name]' for detailed info on any vault.`;
-      elizaLogger7.info(`Vault list response generated for ${vaults.length} vaults`);
-      if (callback) {
-        callback({
-          text: response,
-          content: {
-            text: response,
-            action: "VAULT_LIST",
-            vaults,
-            totalVaults: vaults.length
-          }
-        });
-      }
-    } catch (error) {
-      elizaLogger7.error(`Error in vault list: ${error instanceof Error ? error.message : String(error)}`);
-      if (callback) {
-        callback({
-          text: "I encountered an error while fetching the vault list. Please try again in a moment.",
-          content: {
-            error: error instanceof Error ? error.message : "Unknown error",
-            action: "VAULT_LIST"
-          }
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "What vaults are available?" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: `Available Yield Delta Vaults:
-
-\uD83D\uDD35 Delta Neutral Vault
-   APY: 12.5% | TVL: $1.23M | Risk: Low
-   Strategy: Delta-neutral yield with IL protection
-
-\uD83D\uDFE2 Stable Max Vault
-   APY: 8.2% | TVL: $890K | Risk: Very Low
-   Strategy: Stablecoin optimization
-
-\uD83D\uDFE1 SEI Hypergrowth Vault
-   APY: 24.8% | TVL: $456K | Risk: High
-   Strategy: Leveraged SEI exposure
-
-Use 'vault metrics [name]' for detailed info on any vault.`
+Strategy: Stablecoin optimization`
         }
       }
     ],
     [
       {
         name: "{{user1}}",
-        content: { text: "Show all vaults" }
+        content: { text: "What are the fees for Arbitrage vault?" }
       },
       {
         name: "{{agentName}}",
         content: {
-          text: `Available Yield Delta Vaults:
+          text: `Arbitrage Vault Metrics:
 
-\uD83D\uDD35 SEI Vault
-   APY: 10.5% | TVL: $2.1M | Risk: Medium
-   Strategy: Core SEI yield optimization
+\uD83D\uDCCA Performance:
+• APY: 22.4%
+• Total Yield Generated: $15,600
 
-\uD83D\uDFE2 USDC Vault
-   APY: 6.8% | TVL: $1.5M | Risk: Very Low
-   Strategy: Stablecoin yield farming
+\uD83D\uDCB0 TVL & Shares:
+• Total Value Locked: $234,000
+• Total Shares: 9,200
+• Price per Share: $25.43
 
-Use 'vault metrics [name]' for detailed info on any vault.`
+\uD83D\uDCB8 Fees:
+• Management: 1%
+• Performance: 15%
+• Withdrawal: 0.2%
+
+Strategy: Cross-DEX arbitrage`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "How is the SEI Hypergrowth vault performing?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `SEI Hypergrowth Vault Metrics:
+
+\uD83D\uDCCA Performance:
+• APY: 24.8%
+• Total Yield Generated: $32,100
+
+\uD83D\uDCB0 TVL & Shares:
+• Total Value Locked: $456,000
+• Total Shares: 18,200
+• Price per Share: $25.05
+
+\uD83D\uDCB8 Fees:
+• Management: 1.5%
+• Performance: 20%
+• Withdrawal: 0.3%
+
+Strategy: Leveraged SEI exposure`
         }
       }
     ]
   ]
 };
-function getRiskEmoji(riskLevel) {
-  switch (riskLevel) {
-    case "Very Low":
-      return "\uD83D\uDFE2";
-    case "Low":
-      return "\uD83D\uDD35";
-    case "Medium":
-      return "\uD83D\uDFE1";
-    case "Medium-High":
-      return "\uD83D\uDFE0";
-    case "High":
-      return "\uD83D\uDD34";
-    default:
-      return "⚪";
-  }
-}
-function formatLargeNumber2(num2) {
-  if (num2 >= 1e6) {
-    return (num2 / 1e6).toFixed(2) + "M";
-  } else if (num2 >= 1000) {
-    return (num2 / 1000).toFixed(2) + "K";
-  }
-  return num2.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+function formatVaultMetricsResponse(vaultName, metrics, strategy) {
+  const displayName = VaultDisplayNames[vaultName];
+  const tvlFormatted = metrics.totalValueLocked >= 1e6 ? `$${(metrics.totalValueLocked / 1e6).toFixed(2)}M` : `$${metrics.totalValueLocked.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+  const sharesFormatted = metrics.totalShares.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  const pricePerShareFormatted = metrics.pricePerShare.toFixed(2);
+  const yieldFormatted = metrics.totalYieldGenerated.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  return `${displayName} Metrics:
+
+\uD83D\uDCCA Performance:
+• APY: ${metrics.apy.toFixed(1)}%
+• Total Yield Generated: $${yieldFormatted}
+
+\uD83D\uDCB0 TVL & Shares:
+• Total Value Locked: ${tvlFormatted}
+• Total Shares: ${sharesFormatted}
+• Price per Share: $${pricePerShareFormatted}
+
+\uD83D\uDCB8 Fees:
+• Management: ${metrics.managementFeeRate.toFixed(1)}%
+• Performance: ${metrics.performanceFeeRate.toFixed(0)}%
+• Withdrawal: ${metrics.withdrawalFeeRate.toFixed(2)}%
+
+Strategy: ${strategy}`;
 }
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/yield-history.ts
 import {
-  elizaLogger as elizaLogger8
+  elizaLogger as elizaLogger6
 } from "@elizaos/core";
 var yieldHistoryAction = {
   name: "YIELD_HISTORY",
   similes: [
+    "GET_YIELD_HISTORY",
+    "VAULT_HISTORY",
     "HISTORICAL_PERFORMANCE",
     "PAST_RETURNS",
-    "VAULT_HISTORY",
     "PERFORMANCE_HISTORY"
   ],
   validate: async (runtime, message) => {
@@ -18987,89 +19325,101 @@ var yieldHistoryAction = {
       "past performance",
       "how has",
       "performed",
+      "past returns",
       "performance history",
-      "returns history",
-      "past returns"
+      "history for",
+      "chart for",
+      "trend",
+      "over time",
+      "last week",
+      "last month",
+      "30 day",
+      "7 day"
     ];
     return historyKeywords.some((keyword) => content.includes(keyword));
   },
-  description: "Show historical yield performance for a vault",
+  description: "Show historical yield performance for vaults",
   handler: async (runtime, message, state, _options, callback) => {
     try {
-      elizaLogger8.info("Yield History Action triggered");
-      const vaultProvider2 = new VaultProvider(runtime);
+      elizaLogger6.info("Yield History Action triggered");
       const content = message.content?.text || "";
-      const vaultName = extractVaultName2(content);
+      const vaultName = matchVaultName(content);
       if (!vaultName) {
         if (callback) {
           callback({
-            text: "Please specify which vault's history you want to see. Example: 'Show yield history for Delta Neutral'",
-            content: { error: "No vault specified", action: "YIELD_HISTORY" }
+            text: "I couldn't identify which vault you're asking about. Please specify a vault name like 'Delta Neutral', 'Stable Max', 'SEI Hypergrowth', etc.",
+            content: {
+              text: "Vault not identified",
+              action: "YIELD_HISTORY",
+              error: "No vault name found"
+            }
           });
         }
         return;
       }
-      const vaultAddress = await vaultProvider2.getVaultAddressByName(vaultName);
+      const vaultAddress = vaultProvider.getVaultAddress(vaultName);
       if (!vaultAddress) {
         if (callback) {
           callback({
-            text: `I couldn't find the ${vaultName} vault.`,
-            content: { error: "Vault not found", action: "YIELD_HISTORY" }
+            text: `The ${VaultDisplayNames[vaultName]} address is not configured. Please check your environment configuration.`,
+            content: {
+              text: "Vault address not configured",
+              action: "YIELD_HISTORY",
+              error: "Vault address missing"
+            }
           });
         }
         return;
       }
-      const thirtyDaysAgo = Math.floor(Date.now() / 1000) - 30 * 24 * 60 * 60;
-      const history = await vaultProvider2.getYieldHistory(vaultAddress, thirtyDaysAgo);
+      const days = extractTimeRange(content);
+      const fromTimestamp = Math.floor(Date.now() / 1000) - days * 86400;
+      elizaLogger6.info(`Fetching yield history for vault: ${vaultName}, last ${days} days`);
+      const history = await vaultProvider.getYieldHistory(runtime, vaultAddress, fromTimestamp);
       if (history.length === 0) {
         if (callback) {
           callback({
-            text: `No yield history available for ${vaultName} vault yet.`,
-            content: { action: "YIELD_HISTORY" }
+            text: `No yield history available for ${VaultDisplayNames[vaultName]} in the selected time period.`,
+            content: {
+              text: "No history available",
+              action: "YIELD_HISTORY",
+              vaultName,
+              days
+            }
           });
         }
         return;
       }
       const avgApy = history.reduce((sum, h) => sum + h.apy, 0) / history.length;
-      const totalYield = history.reduce((sum, h) => sum + parseFloat(h.yieldGenerated), 0);
-      const trend = history.length > 1 && history[0].apy > history[history.length - 1].apy ? "↗️ Improving" : "↘️ Declining";
-      let response = `${vaultName} Vault - 30 Day Performance:
-
-`;
-      response += `\uD83D\uDCC8 Summary:
-`;
-      response += `• Average APY: ${avgApy.toFixed(1)}%
-`;
-      response += `• Total Yield: $${totalYield.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-`;
-      response += `• Trend: ${trend}
-
-`;
-      response += `Recent History:
-`;
-      const recentHistory = history.slice(0, 5);
-      for (const entry of recentHistory) {
-        const date = new Date(entry.timestamp * 1000).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-        response += `• ${date}: APY ${entry.apy.toFixed(1)}%, Value $${formatLargeNumber3(parseFloat(entry.totalValue))}, Yield $${parseFloat(entry.yieldGenerated).toFixed(2)}
-`;
-      }
+      const totalYield = history.reduce((sum, h) => sum + h.yieldGenerated, 0);
+      const trend = calculateTrend(history);
+      const response = formatYieldHistoryResponse(vaultName, days, history, avgApy, totalYield, trend);
+      elizaLogger6.info(`Yield history response generated for ${vaultName}`);
       if (callback) {
         callback({
           text: response,
           content: {
             text: response,
             action: "YIELD_HISTORY",
+            vaultName,
+            days,
             history,
-            summary: { avgApy, totalYield }
+            summary: {
+              avgApy,
+              totalYield,
+              trend
+            }
           }
         });
       }
     } catch (error) {
-      elizaLogger8.error(`Error in yield history: ${error instanceof Error ? error.message : String(error)}`);
+      elizaLogger6.error(`Error in yield history action: ${error instanceof Error ? error.message : String(error)}`);
       if (callback) {
         callback({
-          text: "I encountered an error fetching yield history. Please try again.",
-          content: { error: error instanceof Error ? error.message : "Unknown error", action: "YIELD_HISTORY" }
+          text: "I encountered an error while fetching yield history. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "YIELD_HISTORY"
+          }
         });
       }
     }
@@ -19092,42 +19442,151 @@ var yieldHistoryAction = {
 
 Recent History:
 • Nov 22: APY 12.5%, Value $1.23M, Yield $420
-• Nov 21: APY 12.3%, Value $1.22M, Yield $415`
+• Nov 21: APY 12.3%, Value $1.22M, Yield $415
+• Nov 20: APY 11.9%, Value $1.21M, Yield $398
+• Nov 19: APY 11.2%, Value $1.20M, Yield $372
+
+The vault has shown consistent growth with improving yields over the past week.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "How has Stable Max performed?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Stable Max Vault - 30 Day Performance:
+
+\uD83D\uDCC8 Summary:
+• Average APY: 8.1%
+• Total Yield: $6,800
+• Trend: ➡️ Stable
+
+Recent History:
+• Nov 22: APY 8.2%, Value $890K, Yield $200
+• Nov 21: APY 8.2%, Value $888K, Yield $199
+• Nov 20: APY 8.1%, Value $885K, Yield $198
+• Nov 19: APY 8.0%, Value $882K, Yield $196
+
+The vault has maintained steady yields with minimal volatility.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Historical returns for Arbitrage vault last 7 days" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Arbitrage Vault - 7 Day Performance:
+
+\uD83D\uDCC8 Summary:
+• Average APY: 23.1%
+• Total Yield: $1,850
+• Trend: ↗️ Improving
+
+Recent History:
+• Nov 22: APY 24.5%, Value $234K, Yield $320
+• Nov 21: APY 23.8%, Value $232K, Yield $295
+• Nov 20: APY 22.9%, Value $230K, Yield $280
+• Nov 19: APY 22.1%, Value $228K, Yield $265
+
+The vault has shown strong improvement with increasing arbitrage opportunities.`
         }
       }
     ]
   ]
 };
-function extractVaultName2(text) {
-  const vaultPatterns = [
-    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
-    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
-    { pattern: /sei[\s-]?hypergrowth|hypergrowth/i, name: "SEI Hypergrowth" },
-    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
-    { pattern: /hedge/i, name: "Hedge" },
-    { pattern: /yield[\s-]?farming|farming/i, name: "Yield Farming" },
-    { pattern: /arbitrage/i, name: "Arbitrage" },
-    { pattern: /concentrated/i, name: "Concentrated Liquidity" },
-    { pattern: /\bsei\s+vault\b/i, name: "SEI" },
-    { pattern: /\busdc\s+vault\b/i, name: "USDC" }
-  ];
-  for (const { pattern, name } of vaultPatterns) {
-    if (pattern.test(text))
-      return name;
+function extractTimeRange(content) {
+  const lowerContent = content.toLowerCase();
+  const dayMatch = lowerContent.match(/(\d+)\s*day/);
+  if (dayMatch) {
+    return parseInt(dayMatch[1], 10);
   }
-  return null;
+  if (lowerContent.includes("week")) {
+    const weekMatch = lowerContent.match(/(\d+)\s*week/);
+    if (weekMatch) {
+      return parseInt(weekMatch[1], 10) * 7;
+    }
+    return 7;
+  }
+  if (lowerContent.includes("month")) {
+    const monthMatch = lowerContent.match(/(\d+)\s*month/);
+    if (monthMatch) {
+      return parseInt(monthMatch[1], 10) * 30;
+    }
+    return 30;
+  }
+  return 30;
 }
-function formatLargeNumber3(num2) {
-  if (num2 >= 1e6)
-    return (num2 / 1e6).toFixed(2) + "M";
-  if (num2 >= 1000)
-    return (num2 / 1000).toFixed(2) + "K";
-  return num2.toFixed(2);
+function calculateTrend(history) {
+  if (history.length < 2)
+    return "Stable";
+  const sorted = [...history].sort((a, b) => b.timestamp - a.timestamp);
+  const recentCount = Math.min(3, Math.floor(sorted.length / 2));
+  const recentAvg = sorted.slice(0, recentCount).reduce((sum, h) => sum + h.apy, 0) / recentCount;
+  const olderAvg = sorted.slice(-recentCount).reduce((sum, h) => sum + h.apy, 0) / recentCount;
+  const change = recentAvg - olderAvg;
+  if (change > 0.5)
+    return "Improving";
+  if (change < -0.5)
+    return "Declining";
+  return "Stable";
+}
+function formatYieldHistoryResponse(vaultName, days, history, avgApy, totalYield, trend) {
+  const displayName = VaultDisplayNames[vaultName];
+  let trendEmoji;
+  switch (trend) {
+    case "Improving":
+      trendEmoji = "↗️";
+      break;
+    case "Declining":
+      trendEmoji = "↘️";
+      break;
+    default:
+      trendEmoji = "➡️";
+  }
+  const sortedHistory = [...history].sort((a, b) => b.timestamp - a.timestamp);
+  const recentEntries = sortedHistory.slice(0, 5).map((h) => {
+    const date = new Date(h.timestamp * 1000);
+    const dateStr = date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+    const valueFormatted = h.totalValue >= 1e6 ? `$${(h.totalValue / 1e6).toFixed(2)}M` : `$${(h.totalValue / 1000).toFixed(0)}K`;
+    const yieldFormatted = `$${h.yieldGenerated.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
+    return `• ${dateStr}: APY ${h.apy.toFixed(1)}%, Value ${valueFormatted}, Yield ${yieldFormatted}`;
+  });
+  let summaryMessage;
+  switch (trend) {
+    case "Improving":
+      summaryMessage = "The vault has shown consistent growth with improving yields over the past week.";
+      break;
+    case "Declining":
+      summaryMessage = "The vault has seen some yield reduction recently, which may recover as market conditions change.";
+      break;
+    default:
+      summaryMessage = "The vault has maintained steady yields with minimal volatility.";
+  }
+  return `${displayName} - ${days} Day Performance:
+
+\uD83D\uDCC8 Summary:
+• Average APY: ${avgApy.toFixed(1)}%
+• Total Yield: $${totalYield.toLocaleString("en-US", { maximumFractionDigits: 0 })}
+• Trend: ${trendEmoji} ${trend}
+
+Recent History:
+${recentEntries.join(`
+`)}
+
+${summaryMessage}`;
 }
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/projected-returns.ts
 import {
-  elizaLogger as elizaLogger9
+  elizaLogger as elizaLogger7
 } from "@elizaos/core";
 var projectedReturnsAction = {
   name: "PROJECTED_RETURNS",
@@ -19135,97 +19594,112 @@ var projectedReturnsAction = {
     "CALCULATE_RETURNS",
     "ESTIMATE_YIELD",
     "PROJECT_EARNINGS",
-    "EXPECTED_RETURNS"
+    "FORECAST_RETURNS",
+    "DEPOSIT_CALCULATOR"
   ],
   validate: async (runtime, message) => {
     const content = message.content?.text?.toLowerCase() || "";
-    const returnsKeywords = [
+    const projectionKeywords = [
       "what would i earn",
-      "calculate returns",
-      "project returns",
-      "projected returns",
-      "estimate yield",
       "how much would i make",
-      "expected returns",
+      "calculate returns",
+      "project",
+      "estimate",
       "if i deposit",
-      "earnings for"
+      "depositing",
+      "projected returns",
+      "expected return",
+      "forecast",
+      "would i get",
+      "yield for"
     ];
-    return returnsKeywords.some((keyword) => content.includes(keyword));
+    const hasAmount = /\d+/.test(content);
+    return projectionKeywords.some((keyword) => content.includes(keyword)) && hasAmount;
   },
-  description: "Calculate projected returns for a deposit into a vault",
+  description: "Calculate projected returns for a deposit amount over a specified period",
   handler: async (runtime, message, state, _options, callback) => {
     try {
-      elizaLogger9.info("Projected Returns Action triggered");
-      const vaultProvider2 = new VaultProvider(runtime);
+      elizaLogger7.info("Projected Returns Action triggered");
       const content = message.content?.text || "";
-      const params = extractProjectionParams(content);
-      if (!params.vaultName) {
+      const vaultName = matchVaultName(content);
+      if (!vaultName) {
         if (callback) {
           callback({
-            text: "Please specify which vault you want to calculate returns for. Example: 'Calculate returns for 1000 SEI in Delta Neutral for 30 days'",
-            content: { error: "No vault specified", action: "PROJECTED_RETURNS" }
+            text: "I couldn't identify which vault you're asking about. Please specify a vault name like 'Delta Neutral', 'Stable Max', 'SEI Hypergrowth', etc.",
+            content: {
+              text: "Vault not identified",
+              action: "PROJECTED_RETURNS",
+              error: "No vault name found"
+            }
           });
         }
         return;
       }
-      const vaultAddress = await vaultProvider2.getVaultAddressByName(params.vaultName);
+      const vaultAddress = vaultProvider.getVaultAddress(vaultName);
       if (!vaultAddress) {
         if (callback) {
           callback({
-            text: `I couldn't find the ${params.vaultName} vault. Please check the vault name.`,
-            content: { error: "Vault not found", action: "PROJECTED_RETURNS" }
+            text: `The ${VaultDisplayNames[vaultName]} address is not configured. Please check your environment configuration.`,
+            content: {
+              text: "Vault address not configured",
+              action: "PROJECTED_RETURNS",
+              error: "Vault address missing"
+            }
           });
         }
         return;
       }
-      const [projection, metrics] = await Promise.all([
-        vaultProvider2.calculateProjectedReturns(vaultAddress, params.amount, params.days),
-        vaultProvider2.getVaultMetrics(vaultAddress)
-      ]);
-      let response = `Projected Returns for ${params.amount.toLocaleString()} in ${params.vaultName} Vault (${params.days} days):
-
-`;
-      response += `\uD83D\uDCB0 Deposit: $${params.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-
-`;
-      response += `\uD83D\uDCCA Projections (based on current ${metrics.apy.toFixed(1)}% APY):
-`;
-      response += `• Projected Value: $${parseFloat(projection.projectedValue).toLocaleString("en-US", { minimumFractionDigits: 2 })}
-`;
-      response += `• Gross Yield: $${parseFloat(projection.projectedYield).toLocaleString("en-US", { minimumFractionDigits: 2 })}
-`;
-      response += `• Management Fees: -$${parseFloat(projection.managementFees).toLocaleString("en-US", { minimumFractionDigits: 2 })}
-`;
-      const netYield = parseFloat(projection.projectedYield) - parseFloat(projection.managementFees);
-      response += `• Net Yield: $${netYield.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-
-`;
-      response += `\uD83D\uDCE4 On Withdrawal:
-`;
-      response += `• Withdrawal Fee: -$${parseFloat(projection.withdrawalFees).toLocaleString("en-US", { minimumFractionDigits: 2 })}
-`;
-      const finalValue = parseFloat(projection.projectedValue) - parseFloat(projection.withdrawalFees);
-      response += `• Final Value: $${finalValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-
-`;
-      response += `⚠️ Note: Projections based on current APY. Actual returns may vary based on market conditions.`;
+      const { amount, currency, days } = extractDepositParams(content);
+      if (amount <= 0) {
+        if (callback) {
+          callback({
+            text: "Please specify a deposit amount. For example: 'What would I earn depositing 1000 SEI into Delta Neutral for 30 days?'",
+            content: {
+              text: "Amount not specified",
+              action: "PROJECTED_RETURNS",
+              error: "No amount found"
+            }
+          });
+        }
+        return;
+      }
+      elizaLogger7.info(`Calculating projections for ${amount} ${currency} in ${vaultName} for ${days} days`);
+      const metrics = await vaultProvider.getVaultMetrics(runtime, vaultAddress);
+      let depositUsdValue = amount;
+      if (currency === "SEI") {
+        const oracleProvider2 = new SeiOracleProvider(runtime);
+        const seiPrice = await oracleProvider2.getPrice("SEI");
+        const seiPriceValue = seiPrice?.price || 0.45;
+        depositUsdValue = amount * seiPriceValue;
+        elizaLogger7.info(`Converting ${amount} SEI to USD using price $${seiPriceValue}: $${depositUsdValue}`);
+      }
+      const projections = await vaultProvider.calculateProjectedReturns(runtime, vaultAddress, depositUsdValue, days);
+      const response = formatProjectedReturnsResponse(vaultName, amount, currency, days, depositUsdValue, projections, metrics.apy);
+      elizaLogger7.info(`Projected returns response generated for ${vaultName}`);
       if (callback) {
         callback({
           text: response,
           content: {
             text: response,
             action: "PROJECTED_RETURNS",
-            projection,
-            params
+            vaultName,
+            depositAmount: amount,
+            currency,
+            days,
+            projections,
+            currentApy: metrics.apy
           }
         });
       }
     } catch (error) {
-      elizaLogger9.error(`Error in projected returns: ${error instanceof Error ? error.message : String(error)}`);
+      elizaLogger7.error(`Error in projected returns action: ${error instanceof Error ? error.message : String(error)}`);
       if (callback) {
         callback({
-          text: "I encountered an error calculating projected returns. Please try again.",
-          content: { error: error instanceof Error ? error.message : "Unknown error", action: "PROJECTED_RETURNS" }
+          text: "I encountered an error while calculating projected returns. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "PROJECTED_RETURNS"
+          }
         });
       }
     }
@@ -19234,24 +19708,76 @@ var projectedReturnsAction = {
     [
       {
         name: "{{user1}}",
-        content: { text: "What would I earn depositing 1000 into Delta Neutral for 30 days?" }
+        content: { text: "What would I earn depositing 1000 SEI into Delta Neutral for 30 days?" }
       },
       {
         name: "{{agentName}}",
         content: {
-          text: `Projected Returns for 1,000 in Delta Neutral Vault (30 days):
+          text: `Projected Returns for 1,000 SEI in Delta Neutral Vault (30 days):
 
-\uD83D\uDCB0 Deposit: $1,000.00
+\uD83D\uDCB0 Deposit: 1,000 SEI ($450.00)
 
 \uD83D\uDCCA Projections (based on current 12.5% APY):
-• Projected Value: $1,010.27
-• Gross Yield: $10.27
-• Management Fees: -$0.41
-• Net Yield: $9.86
+• Projected Value: $454.62
+• Gross Yield: $4.62
+• Management Fees: -$0.19
+• Net Yield: $4.43
 
 \uD83D\uDCE4 On Withdrawal:
-• Withdrawal Fee: -$1.01
-• Final Value: $1,009.26
+• Withdrawal Fee: -$0.45
+• Final Value: $454.17
+
+⚠️ Note: Projections based on current APY. Actual returns may vary based on market conditions.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Calculate returns for 5000 USDC in Stable Max" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Projected Returns for 5,000 USDC in Stable Max Vault (30 days):
+
+\uD83D\uDCB0 Deposit: 5,000 USDC ($5,000.00)
+
+\uD83D\uDCCA Projections (based on current 8.2% APY):
+• Projected Value: $5,033.70
+• Gross Yield: $33.70
+• Management Fees: -$1.23
+• Net Yield: $32.47
+
+\uD83D\uDCE4 On Withdrawal:
+• Withdrawal Fee: -$2.50
+• Final Value: $5,030.97
+
+⚠️ Note: Projections based on current APY. Actual returns may vary based on market conditions.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "How much would I make with 10000 in Arbitrage for 90 days?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Projected Returns for 10,000 USD in Arbitrage Vault (90 days):
+
+\uD83D\uDCB0 Deposit: 10,000 USD ($10,000.00)
+
+\uD83D\uDCCA Projections (based on current 22.4% APY):
+• Projected Value: $10,552.05
+• Gross Yield: $552.05
+• Management Fees: -$24.66
+• Net Yield: $527.39
+
+\uD83D\uDCE4 On Withdrawal:
+• Withdrawal Fee: -$20.00
+• Final Value: $10,507.39
 
 ⚠️ Note: Projections based on current APY. Actual returns may vary based on market conditions.`
         }
@@ -19259,136 +19785,406 @@ var projectedReturnsAction = {
     ]
   ]
 };
-function extractProjectionParams(text) {
-  const vaultPatterns = [
-    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
-    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
-    { pattern: /sei[\s-]?hypergrowth|hypergrowth/i, name: "SEI Hypergrowth" },
-    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
-    { pattern: /hedge/i, name: "Hedge" },
-    { pattern: /yield[\s-]?farming|farming/i, name: "Yield Farming" },
-    { pattern: /arbitrage/i, name: "Arbitrage" },
-    { pattern: /concentrated/i, name: "Concentrated Liquidity" },
-    { pattern: /\bsei\s+vault\b/i, name: "SEI" },
-    { pattern: /\busdc\s+vault\b/i, name: "USDC" }
-  ];
-  let vaultName = null;
-  for (const { pattern, name } of vaultPatterns) {
-    if (pattern.test(text)) {
-      vaultName = name;
-      break;
+function extractDepositParams(content) {
+  const lowerContent = content.toLowerCase();
+  const amountMatch = content.match(/(\d+(?:,\d{3})*(?:\.\d+)?)/);
+  let amount = 0;
+  if (amountMatch) {
+    amount = parseFloat(amountMatch[1].replace(/,/g, ""));
+  }
+  let currency = "USD";
+  if (lowerContent.includes("sei") && !lowerContent.includes("usdc")) {
+    currency = "SEI";
+  } else if (lowerContent.includes("usdc")) {
+    currency = "USDC";
+  } else if (lowerContent.includes("usdt")) {
+    currency = "USDT";
+  }
+  let days = 30;
+  const dayMatch = lowerContent.match(/(\d+)\s*day/);
+  if (dayMatch) {
+    days = parseInt(dayMatch[1], 10);
+  } else if (lowerContent.includes("week")) {
+    const weekMatch = lowerContent.match(/(\d+)\s*week/);
+    days = weekMatch ? parseInt(weekMatch[1], 10) * 7 : 7;
+  } else if (lowerContent.includes("month")) {
+    const monthMatch = lowerContent.match(/(\d+)\s*month/);
+    days = monthMatch ? parseInt(monthMatch[1], 10) * 30 : 30;
+  } else if (lowerContent.includes("year")) {
+    const yearMatch = lowerContent.match(/(\d+)\s*year/);
+    days = yearMatch ? parseInt(yearMatch[1], 10) * 365 : 365;
+  }
+  return { amount, currency, days };
+}
+function formatProjectedReturnsResponse(vaultName, amount, currency, days, depositUsdValue, projections, currentApy) {
+  const displayName = VaultDisplayNames[vaultName];
+  const amountFormatted = amount.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const depositValueFormatted = depositUsdValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const grossYield = projections.projectedYield;
+  const netYield = grossYield - projections.managementFees;
+  const finalValue = projections.projectedValue - projections.withdrawalFees;
+  return `Projected Returns for ${amountFormatted} ${currency} in ${displayName} (${days} days):
+
+\uD83D\uDCB0 Deposit: ${amountFormatted} ${currency} ($${depositValueFormatted})
+
+\uD83D\uDCCA Projections (based on current ${currentApy.toFixed(1)}% APY):
+• Projected Value: $${projections.projectedValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+• Gross Yield: $${grossYield.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+• Management Fees: -$${projections.managementFees.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+• Net Yield: $${netYield.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+
+\uD83D\uDCE4 On Withdrawal:
+• Withdrawal Fee: -$${projections.withdrawalFees.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+• Final Value: $${finalValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+
+⚠️ Note: Projections based on current APY. Actual returns may vary based on market conditions.`;
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/vault-list.ts
+import {
+  elizaLogger as elizaLogger8
+} from "@elizaos/core";
+var vaultListAction = {
+  name: "VAULT_LIST",
+  similes: [
+    "LIST_VAULTS",
+    "SHOW_VAULTS",
+    "AVAILABLE_VAULTS",
+    "VAULT_OPTIONS",
+    "INVESTMENT_OPTIONS"
+  ],
+  validate: async (runtime, message) => {
+    const content = message.content?.text?.toLowerCase() || "";
+    const listKeywords = [
+      "what vaults",
+      "which vaults",
+      "available vaults",
+      "show all vaults",
+      "list vaults",
+      "list all",
+      "show vaults",
+      "what strategies",
+      "which strategies",
+      "what can i invest",
+      "what are my options",
+      "investment options",
+      "vault options",
+      "all vaults"
+    ];
+    return listKeywords.some((keyword) => content.includes(keyword));
+  },
+  description: "List all available vaults with key metrics like APY, TVL, and risk level",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger8.info("Vault List Action triggered");
+      const vaults = await vaultProvider.getAllVaults(runtime);
+      if (vaults.length === 0) {
+        if (callback) {
+          callback({
+            text: "No vaults are currently available. Please check your configuration.",
+            content: {
+              text: "No vaults available",
+              action: "VAULT_LIST",
+              vaults: []
+            }
+          });
+        }
+        return;
+      }
+      const vaultData = [];
+      for (const vault of vaults) {
+        try {
+          const vaultName = getVaultNameFromInfo(vault.name);
+          if (!vaultName)
+            continue;
+          const address = vaultProvider.getVaultAddress(vaultName);
+          if (!address)
+            continue;
+          const metrics = await vaultProvider.getVaultMetrics(runtime, address);
+          vaultData.push({
+            name: vaultName,
+            displayName: VaultDisplayNames[vaultName],
+            apy: metrics.apy,
+            tvl: metrics.totalValueLocked,
+            risk: VaultRiskLevels[vaultName],
+            strategy: VaultStrategies[vaultName]
+          });
+        } catch (error) {
+          elizaLogger8.warn(`Failed to get metrics for vault ${vault.name}: ${error}`);
+        }
+      }
+      vaultData.sort((a, b) => b.apy - a.apy);
+      const response = formatVaultListResponse(vaultData);
+      elizaLogger8.info(`Vault list response generated for ${vaultData.length} vaults`);
+      if (callback) {
+        callback({
+          text: response,
+          content: {
+            text: response,
+            action: "VAULT_LIST",
+            vaults: vaultData
+          }
+        });
+      }
+    } catch (error) {
+      elizaLogger8.error(`Error in vault list action: ${error instanceof Error ? error.message : String(error)}`);
+      if (callback) {
+        callback({
+          text: "I encountered an error while fetching the vault list. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "VAULT_LIST"
+          }
+        });
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What vaults are available?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Available Yield Delta Vaults:
+
+\uD83D\uDFE1 SEI Hypergrowth Vault
+   APY: 24.8% | TVL: $456K | Risk: High
+   Strategy: Leveraged SEI exposure
+
+\uD83D\uDFE1 Arbitrage Vault
+   APY: 22.4% | TVL: $234K | Risk: Medium-High
+   Strategy: Cross-DEX arbitrage
+
+\uD83D\uDFE2 Yield Farming Vault
+   APY: 18.7% | TVL: $345K | Risk: Medium
+   Strategy: Optimized LP farming
+
+\uD83D\uDD35 Concentrated Liquidity Vault
+   APY: 16.9% | TVL: $567K | Risk: Medium
+   Strategy: Active CL position management
+
+\uD83D\uDD35 Blue Chip Vault
+   APY: 15.3% | TVL: $2.1M | Risk: Medium
+   Strategy: BTC/ETH diversified yield
+
+\uD83D\uDD35 Delta Neutral Vault
+   APY: 12.5% | TVL: $1.23M | Risk: Low
+   Strategy: Delta-neutral yield with IL protection
+
+\uD83D\uDFE0 Hedge Vault
+   APY: 10.1% | TVL: $678K | Risk: Low
+   Strategy: Hedged positions with downside protection
+
+\uD83D\uDFE2 Stable Max Vault
+   APY: 8.2% | TVL: $890K | Risk: Very Low
+   Strategy: Stablecoin optimization
+
+Use 'vault metrics [name]' for detailed info on any vault.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Show all vaults" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Available Yield Delta Vaults:
+
+\uD83D\uDFE1 SEI Hypergrowth Vault
+   APY: 24.8% | TVL: $456K | Risk: High
+   Strategy: Leveraged SEI exposure
+
+\uD83D\uDFE1 Arbitrage Vault
+   APY: 22.4% | TVL: $234K | Risk: Medium-High
+   Strategy: Cross-DEX arbitrage
+
+\uD83D\uDD35 Delta Neutral Vault
+   APY: 12.5% | TVL: $1.23M | Risk: Low
+   Strategy: Delta-neutral yield with IL protection
+
+\uD83D\uDFE2 Stable Max Vault
+   APY: 8.2% | TVL: $890K | Risk: Very Low
+   Strategy: Stablecoin optimization
+
+Use 'vault metrics [name]' for detailed info on any vault.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Which strategies can I invest in?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Available Yield Delta Vaults:
+
+\uD83D\uDFE1 SEI Hypergrowth Vault
+   APY: 24.8% | TVL: $456K | Risk: High
+   Strategy: Leveraged SEI exposure
+
+\uD83D\uDD35 Blue Chip Vault
+   APY: 15.3% | TVL: $2.1M | Risk: Medium
+   Strategy: BTC/ETH diversified yield
+
+\uD83D\uDD35 Delta Neutral Vault
+   APY: 12.5% | TVL: $1.23M | Risk: Low
+   Strategy: Delta-neutral yield with IL protection
+
+Use 'vault metrics [name]' for detailed info on any vault.`
+        }
+      }
+    ]
+  ]
+};
+function getVaultNameFromInfo(infoName) {
+  const lowerName = infoName.toLowerCase();
+  for (const [key, value] of Object.entries(VaultDisplayNames)) {
+    if (value.toLowerCase().includes(lowerName) || lowerName.includes(value.toLowerCase())) {
+      return key;
     }
   }
-  const amountMatch = text.match(/(\d+(?:,\d{3})*(?:\.\d+)?)\s*(?:sei|usdc|usd|\$)?/i);
-  const amount = amountMatch ? parseFloat(amountMatch[1].replace(/,/g, "")) : 1000;
-  const daysMatch = text.match(/(\d+)\s*days?/i);
-  const days = daysMatch ? parseInt(daysMatch[1]) : 30;
-  return { vaultName, amount, days };
+  for (const vaultName of Object.values(VaultName)) {
+    if (lowerName.includes(vaultName.replace(/-/g, " "))) {
+      return vaultName;
+    }
+  }
+  return null;
+}
+function getRiskEmoji(risk) {
+  switch (risk) {
+    case "Very Low":
+      return "\uD83D\uDFE2";
+    case "Low":
+      return "\uD83D\uDD35";
+    case "Medium":
+      return "\uD83D\uDD35";
+    case "Medium-High":
+      return "\uD83D\uDFE1";
+    case "High":
+      return "\uD83D\uDFE1";
+    default:
+      return "⚪";
+  }
+}
+function formatVaultListResponse(vaults) {
+  if (vaults.length === 0) {
+    return "No vaults are currently available.";
+  }
+  let response = `Available Yield Delta Vaults:
+`;
+  for (const vault of vaults) {
+    const emoji = getRiskEmoji(vault.risk);
+    const tvlFormatted = vault.tvl >= 1e6 ? `$${(vault.tvl / 1e6).toFixed(2)}M` : `$${(vault.tvl / 1000).toFixed(0)}K`;
+    response += `
+${emoji} ${vault.displayName}
+`;
+    response += `   APY: ${vault.apy.toFixed(1)}% | TVL: ${tvlFormatted} | Risk: ${vault.risk}
+`;
+    response += `   Strategy: ${vault.strategy}
+`;
+  }
+  response += `
+Use 'vault metrics [name]' for detailed info on any vault.`;
+  return response;
 }
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/position-details.ts
 import {
-  elizaLogger as elizaLogger10
+  elizaLogger as elizaLogger9
 } from "@elizaos/core";
 var positionDetailsAction = {
   name: "POSITION_DETAILS",
   similes: [
-    "VAULT_POSITION",
+    "GET_POSITION",
     "LP_POSITION",
     "TICK_RANGE",
-    "LIQUIDITY_DETAILS"
+    "LIQUIDITY_DETAILS",
+    "POSITION_INFO"
   ],
   validate: async (runtime, message) => {
     const content = message.content?.text?.toLowerCase() || "";
     const positionKeywords = [
       "position for",
       "position of",
-      "current position",
       "tick range",
       "liquidity details",
-      "lp position",
       "position info",
-      "show position"
+      "position details",
+      "lp position",
+      "current position",
+      "show position",
+      "concentrated liquidity",
+      "price range"
     ];
     return positionKeywords.some((keyword) => content.includes(keyword));
   },
-  description: "Show detailed position information for a vault (tick ranges, liquidity)",
+  description: "Show current vault position details including tick ranges and liquidity for advanced users",
   handler: async (runtime, message, state, _options, callback) => {
     try {
-      elizaLogger10.info("Position Details Action triggered");
-      const vaultProvider2 = new VaultProvider(runtime);
+      elizaLogger9.info("Position Details Action triggered");
       const content = message.content?.text || "";
-      const vaultName = extractVaultName3(content);
+      const vaultName = matchVaultName(content);
       if (!vaultName) {
         if (callback) {
           callback({
-            text: "Please specify which vault's position you want to see. Example: 'Show position for Delta Neutral'",
-            content: { error: "No vault specified", action: "POSITION_DETAILS" }
+            text: "I couldn't identify which vault you're asking about. Please specify a vault name like 'Delta Neutral', 'Stable Max', 'SEI Hypergrowth', etc.",
+            content: {
+              text: "Vault not identified",
+              action: "POSITION_DETAILS",
+              error: "No vault name found"
+            }
           });
         }
         return;
       }
-      const vaultAddress = await vaultProvider2.getVaultAddressByName(vaultName);
+      const vaultAddress = vaultProvider.getVaultAddress(vaultName);
       if (!vaultAddress) {
         if (callback) {
           callback({
-            text: `I couldn't find the ${vaultName} vault.`,
-            content: { error: "Vault not found", action: "POSITION_DETAILS" }
+            text: `The ${VaultDisplayNames[vaultName]} address is not configured. Please check your environment configuration.`,
+            content: {
+              text: "Vault address not configured",
+              action: "POSITION_DETAILS",
+              error: "Vault address missing"
+            }
           });
         }
         return;
       }
-      const [position, info] = await Promise.all([
-        vaultProvider2.getCurrentPosition(vaultAddress),
-        vaultProvider2.getVaultInfo(vaultAddress)
-      ]);
-      const tickToPrice = (tick) => Math.pow(1.0001, tick);
-      const lowerPrice = tickToPrice(position.tickLower);
-      const upperPrice = tickToPrice(position.tickUpper);
-      const midPrice = (lowerPrice + upperPrice) / 2;
-      let response = `${info.name} Vault - Current Position:
-
-`;
-      response += `\uD83D\uDCCD Tick Range:
-`;
-      response += `• Lower: ${position.tickLower} (price: $${lowerPrice.toFixed(4)})
-`;
-      response += `• Upper: ${position.tickUpper} (price: $${upperPrice.toFixed(4)})
-`;
-      response += `• Mid: (price: $${midPrice.toFixed(4)})
-
-`;
-      response += `\uD83D\uDCA7 Liquidity:
-`;
-      response += `• Total Liquidity: ${formatUnits(position.liquidity, 0)}
-`;
-      response += `• Token0 Owed: ${formatUnits(position.tokensOwed0, 18)}
-`;
-      response += `• Token1 Owed: ${formatUnits(position.tokensOwed1, 18)}
-
-`;
-      response += `\uD83D\uDCB0 Uncollected Fees:
-`;
-      response += `• Token0: ${formatUnits(position.tokensOwed0, 18)}
-`;
-      response += `• Token1: ${formatUnits(position.tokensOwed1, 18)}`;
+      elizaLogger9.info(`Fetching position details for vault: ${vaultName}`);
+      const position = await vaultProvider.getCurrentPosition(runtime, vaultAddress);
+      const info = await vaultProvider.getVaultInfo(runtime, vaultAddress);
+      const response = formatPositionDetailsResponse(vaultName, position, info);
+      elizaLogger9.info(`Position details response generated for ${vaultName}`);
       if (callback) {
         callback({
           text: response,
           content: {
             text: response,
             action: "POSITION_DETAILS",
+            vaultName,
             position,
-            vaultName
+            vaultInfo: info
           }
         });
       }
     } catch (error) {
-      elizaLogger10.error(`Error in position details: ${error instanceof Error ? error.message : String(error)}`);
+      elizaLogger9.error(`Error in position details action: ${error instanceof Error ? error.message : String(error)}`);
       if (callback) {
         callback({
-          text: "I encountered an error fetching position details. Please try again.",
-          content: { error: error instanceof Error ? error.message : "Unknown error", action: "POSITION_DETAILS" }
+          text: "I encountered an error while fetching position details. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "POSITION_DETAILS"
+          }
         });
       }
     }
@@ -19407,143 +20203,225 @@ var positionDetailsAction = {
 \uD83D\uDCCD Tick Range:
 • Lower: -887220 (price: $0.38)
 • Upper: -886380 (price: $0.52)
-• Mid: (price: $0.45)
+• Current: -886800 (price: $0.45)
 
 \uD83D\uDCA7 Liquidity:
-• Total Liquidity: 1234567890
-• Token0 Owed: 50000
-• Token1 Owed: 22500
+• Total Liquidity: 1,234,567,890
+• Token0 (SEI): 50,000
+• Token1 (USDC): 22,500
 
 \uD83D\uDCB0 Uncollected Fees:
-• Token0: 125.5
-• Token1: 56.2`
+• SEI: 125.5
+• USDC: 56.2
+
+Position is 65% in range. Rebalance expected when price moves outside ±5% of current range.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "What's the current tick range for Blue Chip vault?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Blue Chip Vault - Current Position:
+
+\uD83D\uDCCD Tick Range:
+• Lower: -200100 (price: $42,500)
+• Upper: -199500 (price: $48,200)
+• Current: -199800 (price: $45,100)
+
+\uD83D\uDCA7 Liquidity:
+• Total Liquidity: 2,567,890,123
+• Token0 (BTC): 25.5
+• Token1 (USDC): 1,150,000
+
+\uD83D\uDCB0 Uncollected Fees:
+• BTC: 0.125
+• USDC: 5,625
+
+Position is 78% in range. Rebalance expected when price moves outside ±8% of current range.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Liquidity details for Concentrated Liquidity vault" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Concentrated Liquidity Vault - Current Position:
+
+\uD83D\uDCCD Tick Range:
+• Lower: -887000 (price: $0.40)
+• Upper: -886500 (price: $0.48)
+• Current: -886750 (price: $0.44)
+
+\uD83D\uDCA7 Liquidity:
+• Total Liquidity: 3,456,789,012
+• Token0 (SEI): 75,000
+• Token1 (USDC): 33,000
+
+\uD83D\uDCB0 Uncollected Fees:
+• SEI: 250.8
+• USDC: 110.4
+
+Position is 82% in range. Rebalance expected when price moves outside ±3% of current range.`
         }
       }
     ]
   ]
 };
-function extractVaultName3(text) {
-  const patterns = [
-    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
-    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
-    { pattern: /hypergrowth/i, name: "SEI Hypergrowth" },
-    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
-    { pattern: /hedge/i, name: "Hedge" },
-    { pattern: /farming/i, name: "Yield Farming" },
-    { pattern: /arbitrage/i, name: "Arbitrage" },
-    { pattern: /concentrated/i, name: "Concentrated Liquidity" },
-    { pattern: /\bsei\s+vault\b/i, name: "SEI" },
-    { pattern: /\busdc\s+vault\b/i, name: "USDC" }
-  ];
-  for (const { pattern, name } of patterns) {
-    if (pattern.test(text))
-      return name;
+function formatPositionDetailsResponse(vaultName, position, info) {
+  const displayName = VaultDisplayNames[vaultName];
+  const priceRange = position.priceUpper - position.priceLower;
+  const currentFromLower = position.currentPrice - position.priceLower;
+  const inRangePercent = Math.min(100, Math.max(0, currentFromLower / priceRange * 100));
+  const token0Symbol = getToken0Symbol(vaultName);
+  const token1Symbol = "USDC";
+  const liquidityFormatted = position.liquidity.toLocaleString("en-US", { maximumFractionDigits: 0 });
+  const rebalanceThreshold = getRebalanceThreshold(vaultName);
+  return `${displayName} - Current Position:
+
+\uD83D\uDCCD Tick Range:
+• Lower: ${position.tickLower} (price: $${position.priceLower.toFixed(2)})
+• Upper: ${position.tickUpper} (price: $${position.priceUpper.toFixed(2)})
+• Current: ${Math.round((position.tickLower + position.tickUpper) / 2)} (price: $${position.currentPrice.toFixed(2)})
+
+\uD83D\uDCA7 Liquidity:
+• Total Liquidity: ${liquidityFormatted}
+• Token0 (${token0Symbol}): ${position.tokensOwed0.toLocaleString("en-US", { maximumFractionDigits: 2 })}
+• Token1 (${token1Symbol}): ${position.tokensOwed1.toLocaleString("en-US", { maximumFractionDigits: 2 })}
+
+\uD83D\uDCB0 Uncollected Fees:
+• ${token0Symbol}: ${position.tokensOwed0.toFixed(1)}
+• ${token1Symbol}: ${position.tokensOwed1.toFixed(1)}
+
+Position is ${inRangePercent.toFixed(0)}% in range. Rebalance expected when price moves outside ±${rebalanceThreshold}% of current range.`;
+}
+function getToken0Symbol(vaultName) {
+  switch (vaultName) {
+    case "blue-chip" /* BLUE_CHIP */:
+      return "BTC";
+    case "sei" /* SEI */:
+    case "delta-neutral" /* DELTA_NEUTRAL */:
+    case "sei-hypergrowth" /* SEI_HYPERGROWTH */:
+    case "concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */:
+    case "yield-farming" /* YIELD_FARMING */:
+    case "arbitrage" /* ARBITRAGE */:
+      return "SEI";
+    case "hedge" /* HEDGE */:
+      return "ETH";
+    case "stable-max" /* STABLE_MAX */:
+    case "usdc" /* USDC */:
+      return "USDT";
+    default:
+      return "SEI";
   }
-  return null;
+}
+function getRebalanceThreshold(vaultName) {
+  switch (vaultName) {
+    case "concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */:
+      return 3;
+    case "delta-neutral" /* DELTA_NEUTRAL */:
+      return 5;
+    case "stable-max" /* STABLE_MAX */:
+      return 2;
+    case "blue-chip" /* BLUE_CHIP */:
+      return 8;
+    case "sei-hypergrowth" /* SEI_HYPERGROWTH */:
+      return 10;
+    default:
+      return 5;
+  }
 }
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/optimal-deposit.ts
 import {
-  elizaLogger as elizaLogger11
+  elizaLogger as elizaLogger10
 } from "@elizaos/core";
 var optimalDepositAction = {
   name: "OPTIMAL_DEPOSIT",
   similes: [
     "DEPOSIT_RATIO",
     "BEST_RATIO",
-    "HOW_TO_DEPOSIT",
-    "DEPOSIT_RECOMMENDATION"
+    "DEPOSIT_RECOMMENDATION",
+    "HOW_TO_DEPOSIT"
   ],
   validate: async (runtime, message) => {
     const content = message.content?.text?.toLowerCase() || "";
     const depositKeywords = [
       "optimal deposit",
-      "deposit ratio",
       "best ratio",
+      "deposit ratio",
       "how should i deposit",
       "deposit recommendation",
       "optimal ratio",
-      "how to deposit"
+      "best way to deposit"
     ];
     return depositKeywords.some((keyword) => content.includes(keyword));
   },
-  description: "Get optimal deposit ratio for a vault",
+  description: "Get the optimal token deposit ratio for a vault",
   handler: async (runtime, message, state, _options, callback) => {
     try {
-      elizaLogger11.info("Optimal Deposit Action triggered");
-      const vaultProvider2 = new VaultProvider(runtime);
+      elizaLogger10.info("Optimal Deposit Action triggered");
       const content = message.content?.text || "";
-      const vaultName = extractVaultName4(content);
+      const vaultName = matchVaultName(content);
       if (!vaultName) {
         if (callback) {
           callback({
-            text: "Please specify which vault. Example: 'What's the optimal deposit ratio for Delta Neutral?'",
-            content: { error: "No vault specified", action: "OPTIMAL_DEPOSIT" }
+            text: "I couldn't identify which vault you're asking about. Please specify a vault name like 'Delta Neutral', 'Stable Max', 'SEI Hypergrowth', etc.",
+            content: {
+              text: "Vault not identified",
+              action: "OPTIMAL_DEPOSIT",
+              error: "No vault name found"
+            }
           });
         }
         return;
       }
-      const vaultAddress = await vaultProvider2.getVaultAddressByName(vaultName);
+      const vaultAddress = vaultProvider.getVaultAddress(vaultName);
       if (!vaultAddress) {
         if (callback) {
           callback({
-            text: `I couldn't find the ${vaultName} vault.`,
-            content: { error: "Vault not found", action: "OPTIMAL_DEPOSIT" }
+            text: `The ${VaultDisplayNames[vaultName]} address is not configured. Please check your environment configuration.`,
+            content: {
+              text: "Vault address not configured",
+              action: "OPTIMAL_DEPOSIT",
+              error: "Vault address missing"
+            }
           });
         }
         return;
       }
-      const [ratio, info] = await Promise.all([
-        vaultProvider2.getOptimalDepositRatio(vaultAddress),
-        vaultProvider2.getVaultInfo(vaultAddress)
-      ]);
-      const token0Ratio = Number(ratio.token0Ratio);
-      const token1Ratio = Number(ratio.token1Ratio);
-      const total = token0Ratio + token1Ratio;
-      const token0Pct = (token0Ratio / total * 100).toFixed(0);
-      const token1Pct = (token1Ratio / total * 100).toFixed(0);
-      const currentPrice = Number(formatUnits(ratio.currentPrice, 18));
-      let response = `Optimal Deposit for ${info.name} Vault:
-
-`;
-      response += `\uD83D\uDCCA Current Optimal Ratio:
-`;
-      response += `• Token0: ${token0Pct}%
-`;
-      response += `• Token1: ${token1Pct}%
-
-`;
-      response += `\uD83D\uDCB1 Current Price: ${currentPrice.toFixed(4)}
-
-`;
-      response += `\uD83D\uDCA1 Example Deposits:
-`;
-      const examples = [1000, 5000, 1e4];
-      for (const amount of examples) {
-        const token0Amount = (amount * token0Ratio / total).toFixed(2);
-        const token1Amount = (amount * token1Ratio / total).toFixed(2);
-        response += `• For $${amount.toLocaleString()}: $${token0Amount} Token0 + $${token1Amount} Token1
-`;
-      }
-      response += `
-Depositing at the optimal ratio maximizes your LP position efficiency and minimizes unused tokens.`;
+      elizaLogger10.info(`Fetching optimal deposit ratio for vault: ${vaultName}`);
+      const ratio = await vaultProvider.getOptimalDepositRatio(runtime, vaultAddress);
+      const response = formatOptimalDepositResponse(vaultName, ratio);
+      elizaLogger10.info(`Optimal deposit response generated for ${vaultName}`);
       if (callback) {
         callback({
           text: response,
           content: {
             text: response,
             action: "OPTIMAL_DEPOSIT",
-            ratio: { token0Pct, token1Pct, currentPrice },
-            vaultName
+            vaultName,
+            ratio
           }
         });
       }
     } catch (error) {
-      elizaLogger11.error(`Error in optimal deposit: ${error instanceof Error ? error.message : String(error)}`);
+      elizaLogger10.error(`Error in optimal deposit action: ${error instanceof Error ? error.message : String(error)}`);
       if (callback) {
         callback({
-          text: "I encountered an error fetching deposit ratios. Please try again.",
-          content: { error: error instanceof Error ? error.message : "Unknown error", action: "OPTIMAL_DEPOSIT" }
+          text: "I encountered an error while fetching the optimal deposit ratio. Please try again in a moment.",
+          content: {
+            error: error instanceof Error ? error.message : "Unknown error",
+            action: "OPTIMAL_DEPOSIT"
+          }
         });
       }
     }
@@ -19560,39 +20438,488 @@ Depositing at the optimal ratio maximizes your LP position efficiency and minimi
           text: `Optimal Deposit for Delta Neutral Vault:
 
 \uD83D\uDCCA Current Optimal Ratio:
-• Token0: 55%
-• Token1: 45%
+• Token0 (SEI): 55%
+• Token1 (USDC): 45%
 
-\uD83D\uDCB1 Current Price: 0.4500
+\uD83D\uDCB1 Current Price: 1 SEI = $0.45 USDC
 
 \uD83D\uDCA1 Example Deposits:
-• For $1,000: $550 Token0 + $450 Token1
-• For $5,000: $2,750 Token0 + $2,250 Token1
+• For $1,000: 1,222 SEI + 450 USDC
+• For $5,000: 6,111 SEI + 2,250 USDC
 
-Depositing at the optimal ratio maximizes your LP position efficiency.`
+Depositing at the optimal ratio maximizes your LP position efficiency and minimizes unused tokens.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "How should I deposit into Stable Max vault?" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Optimal Deposit for Stable Max Vault:
+
+\uD83D\uDCCA Current Optimal Ratio:
+• Token0 (USDT): 50%
+• Token1 (USDC): 50%
+
+\uD83D\uDCB1 Current Price: 1 USDT = $1.00 USDC
+
+\uD83D\uDCA1 Example Deposits:
+• For $1,000: 500 USDT + 500 USDC
+• For $5,000: 2,500 USDT + 2,500 USDC
+
+Depositing at the optimal ratio maximizes your LP position efficiency and minimizes unused tokens.`
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: { text: "Best ratio for Blue Chip vault" }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: `Optimal Deposit for Blue Chip Vault:
+
+\uD83D\uDCCA Current Optimal Ratio:
+• Token0 (BTC): 60%
+• Token1 (USDC): 40%
+
+\uD83D\uDCB1 Current Price: 1 BTC = $45,000 USDC
+
+\uD83D\uDCA1 Example Deposits:
+• For $10,000: 0.133 BTC + 4,000 USDC
+• For $50,000: 0.667 BTC + 20,000 USDC
+
+Depositing at the optimal ratio maximizes your LP position efficiency and minimizes unused tokens.`
         }
       }
     ]
   ]
 };
-function extractVaultName4(text) {
-  const patterns = [
-    { pattern: /delta[\s-]?neutral/i, name: "Delta Neutral" },
-    { pattern: /stable[\s-]?max/i, name: "Stable Max" },
-    { pattern: /hypergrowth/i, name: "SEI Hypergrowth" },
-    { pattern: /blue[\s-]?chip/i, name: "Blue Chip" },
-    { pattern: /hedge/i, name: "Hedge" },
-    { pattern: /farming/i, name: "Yield Farming" },
-    { pattern: /arbitrage/i, name: "Arbitrage" },
-    { pattern: /concentrated/i, name: "Concentrated Liquidity" },
-    { pattern: /\bsei\s+vault\b/i, name: "SEI" },
-    { pattern: /\busdc\s+vault\b/i, name: "USDC" }
-  ];
-  for (const { pattern, name } of patterns) {
-    if (pattern.test(text))
-      return name;
+function formatOptimalDepositResponse(vaultName, ratio) {
+  const displayName = VaultDisplayNames[vaultName];
+  const token0Symbol = getToken0Symbol2(vaultName);
+  const token1Symbol = "USDC";
+  const examples = calculateExampleDeposits(ratio, token0Symbol);
+  return `Optimal Deposit for ${displayName}:
+
+\uD83D\uDCCA Current Optimal Ratio:
+• Token0 (${token0Symbol}): ${ratio.token0Ratio.toFixed(0)}%
+• Token1 (${token1Symbol}): ${ratio.token1Ratio.toFixed(0)}%
+
+\uD83D\uDCB1 Current Price: 1 ${token0Symbol} = $${ratio.currentPrice.toFixed(2)} ${token1Symbol}
+
+\uD83D\uDCA1 Example Deposits:
+• For $1,000: ${examples.small.token0} ${token0Symbol} + ${examples.small.token1} ${token1Symbol}
+• For $5,000: ${examples.large.token0} ${token0Symbol} + ${examples.large.token1} ${token1Symbol}
+
+Depositing at the optimal ratio maximizes your LP position efficiency and minimizes unused tokens.`;
+}
+function getToken0Symbol2(vaultName) {
+  switch (vaultName) {
+    case "blue-chip" /* BLUE_CHIP */:
+      return "BTC";
+    case "sei" /* SEI */:
+    case "delta-neutral" /* DELTA_NEUTRAL */:
+    case "sei-hypergrowth" /* SEI_HYPERGROWTH */:
+    case "concentrated-liquidity" /* CONCENTRATED_LIQUIDITY */:
+    case "yield-farming" /* YIELD_FARMING */:
+    case "arbitrage" /* ARBITRAGE */:
+      return "SEI";
+    case "hedge" /* HEDGE */:
+      return "ETH";
+    case "stable-max" /* STABLE_MAX */:
+    case "usdc" /* USDC */:
+      return "USDT";
+    default:
+      return "SEI";
   }
-  return null;
+}
+function calculateExampleDeposits(ratio, token0Symbol) {
+  const token0Percent = ratio.token0Ratio / 100;
+  const token1Percent = ratio.token1Ratio / 100;
+  const price = ratio.currentPrice;
+  const smallToken0Value = 1000 * token0Percent;
+  const smallToken1Value = 1000 * token1Percent;
+  const smallToken0Amount = smallToken0Value / price;
+  const largeToken0Value = 5000 * token0Percent;
+  const largeToken1Value = 5000 * token1Percent;
+  const largeToken0Amount = largeToken0Value / price;
+  return {
+    small: {
+      token0: formatTokenAmount(smallToken0Amount, token0Symbol),
+      token1: smallToken1Value.toLocaleString("en-US", { maximumFractionDigits: 0 })
+    },
+    large: {
+      token0: formatTokenAmount(largeToken0Amount, token0Symbol),
+      token1: largeToken1Value.toLocaleString("en-US", { maximumFractionDigits: 0 })
+    }
+  };
+}
+function formatTokenAmount(amount, symbol) {
+  if (symbol === "BTC" || symbol === "ETH") {
+    return amount.toFixed(3);
+  }
+  return amount.toLocaleString("en-US", { maximumFractionDigits: 0 });
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/transfer.ts
+import {
+  elizaLogger as elizaLogger11
+} from "@elizaos/core";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/types/precompiles.ts
+var ADDRESS_PRECOMPILE_ABI = [
+  {
+    inputs: [{ internalType: "string", name: "addr", type: "string" }],
+    name: "getEvmAddr",
+    outputs: [{ internalType: "address", name: "response", type: "address" }],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [{ internalType: "address", name: "addr", type: "address" }],
+    name: "getSeiAddr",
+    outputs: [{ internalType: "string", name: "response", type: "string" }],
+    stateMutability: "view",
+    type: "function"
+  },
+  {
+    inputs: [{ internalType: "string", name: "v", type: "string" }, { internalType: "string", name: "r", type: "string" }, { internalType: "string", name: "s", type: "string" }, { internalType: "string", name: "customMessage", type: "string" }],
+    name: "associate",
+    outputs: [{ internalType: "string", name: "seiAddr", type: "string" }, { internalType: "address", name: "evmAddr", type: "address" }],
+    stateMutability: "nonpayable",
+    type: "function"
+  },
+  {
+    inputs: [{ internalType: "string", name: "pubKeyHex", type: "string" }],
+    name: "associatePubKey",
+    outputs: [{ internalType: "string", name: "seiAddr", type: "string" }, { internalType: "address", name: "evmAddr", type: "address" }],
+    stateMutability: "nonpayable",
+    type: "function"
+  }
+];
+var ADDRESS_PRECOMPILE_ADDRESS = "0x0000000000000000000000000000000000001004";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/types/index.ts
+var SupportedChainList = Object.keys([seiDevnet, seiTestnet, sei]);
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/transfer.ts
+class TransferAction {
+  walletProvider;
+  constructor(walletProvider) {
+    this.walletProvider = walletProvider;
+  }
+  async transfer(params) {
+    const chain = this.walletProvider.getCurrentChain();
+    elizaLogger11.log(`Transferring: ${params.amount} tokens to ${params.toAddress} on ${chain.name}`);
+    let recipientAddress;
+    if (params.toAddress.startsWith("sei")) {
+      const publicClient = this.walletProvider.getEvmPublicClient();
+      try {
+        const evmAddress = await publicClient.readContract({
+          address: ADDRESS_PRECOMPILE_ADDRESS,
+          abi: ADDRESS_PRECOMPILE_ABI,
+          functionName: "getEvmAddr",
+          args: [params.toAddress]
+        });
+        if (!evmAddress || typeof evmAddress !== "string" || !evmAddress.startsWith("0x")) {
+          throw new Error(`ERROR: Recipient does not have valid EVM address. Got: ${evmAddress}`);
+        }
+        elizaLogger11.log(`Translated address ${params.toAddress} to EVM address ${evmAddress}`);
+        recipientAddress = evmAddress;
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+        throw new Error(`Failed to translate SEI address: ${errorMessage}`);
+      }
+    } else {
+      if (!params.toAddress.startsWith("0x") || params.toAddress.length !== 42) {
+        throw new Error(`ERROR: Recipient address must be valid EVM address (0x...). Got: ${params.toAddress}`);
+      }
+      recipientAddress = params.toAddress;
+    }
+    const walletClient = this.walletProvider.getEvmWalletClient();
+    if (!walletClient?.account?.address) {
+      throw new Error("Wallet client account is undefined or invalid");
+    }
+    try {
+      elizaLogger11.log(`Sending transaction from ${walletClient.account.address} to ${recipientAddress}`);
+      const valueInWei = parseEther(params.amount);
+      const transactionRequest = {
+        to: recipientAddress,
+        value: valueInWei,
+        data: params.data || "0x"
+      };
+      const hash2 = await walletClient.sendTransaction(transactionRequest);
+      if (!hash2 || typeof hash2 !== "string") {
+        throw new Error("Invalid transaction hash received");
+      }
+      elizaLogger11.log(`Transaction sent successfully. Hash: ${hash2}`);
+      return {
+        hash: hash2,
+        from: walletClient.account.address,
+        to: params.toAddress,
+        value: parseEther(params.amount).toString(),
+        data: params.data || "0x"
+      };
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      elizaLogger11.error(`Transfer failed: ${errorMessage}`);
+      throw new Error(`Transfer failed: ${errorMessage}`);
+    }
+  }
+  validateParams(params) {
+    if (!params.amount || isNaN(Number(params.amount)) || Number(params.amount) <= 0) {
+      throw new Error("Invalid amount: must be a positive number");
+    }
+    if (!params.toAddress || params.toAddress.length === 0) {
+      throw new Error("Invalid recipient address: cannot be empty");
+    }
+    if (params.toAddress.startsWith("sei")) {
+      if (params.toAddress.length !== 43) {
+        throw new Error("Invalid SEI address: must be 43 characters long");
+      }
+    } else if (params.toAddress.startsWith("0x")) {
+      if (params.toAddress.length !== 42) {
+        throw new Error("Invalid EVM address: must be 42 characters long");
+      }
+    } else {
+      throw new Error('Invalid address format: must start with "sei" or "0x"');
+    }
+  }
+  async estimateGas(params) {
+    try {
+      this.validateParams(params);
+      const publicClient = this.walletProvider.getEvmPublicClient();
+      const walletClient = this.walletProvider.getEvmWalletClient();
+      if (!walletClient?.account?.address) {
+        throw new Error("Wallet account not available for gas estimation");
+      }
+      let recipientAddress;
+      if (params.toAddress.startsWith("sei")) {
+        const evmAddress = await publicClient.readContract({
+          address: ADDRESS_PRECOMPILE_ADDRESS,
+          abi: ADDRESS_PRECOMPILE_ABI,
+          functionName: "getEvmAddr",
+          args: [params.toAddress]
+        });
+        recipientAddress = evmAddress;
+      } else {
+        recipientAddress = params.toAddress;
+      }
+      const gasEstimate = await publicClient.estimateGas({
+        account: walletClient.account.address,
+        to: recipientAddress,
+        value: parseEther(params.amount),
+        data: params.data || "0x"
+      });
+      return gasEstimate;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+      elizaLogger11.error(`Gas estimation failed: ${errorMessage}`);
+      return BigInt(21000);
+    }
+  }
+}
+var transferAction = {
+  name: "TRANSFER_TOKENS",
+  similes: [
+    "SEND_TOKENS",
+    "TOKEN_TRANSFER",
+    "MOVE_TOKENS",
+    "SEND_SEI",
+    "TRANSFER"
+  ],
+  validate: async (runtime, message) => {
+    try {
+      const privateKey = runtime.getSetting?.("SEI_PRIVATE_KEY");
+      if (!privateKey || !privateKey.startsWith("0x")) {
+        return false;
+      }
+      const text = message?.content?.text?.toLowerCase() || "";
+      if (!text) {
+        return false;
+      }
+      return (text.includes("transfer") || text.includes("send") || text.includes("move")) && (text.includes("sei") || text.includes("token")) && (text.includes("0x") || text.includes("sei1"));
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      elizaLogger11.error(`Transfer validation error: ${errorMessage}`);
+      return false;
+    }
+  },
+  description: "Transfer SEI tokens between addresses on the Sei network",
+  handler: async (runtime, message, state, _options, callback) => {
+    try {
+      elizaLogger11.log("Starting token transfer...");
+      const params = await buildTransferDetails(message, runtime);
+      const walletProvider = await initWalletProvider2(runtime);
+      const action = new TransferAction(walletProvider);
+      action.validateParams(params);
+      const transferResp = await action.transfer(params);
+      if (callback) {
+        const chainName = String(walletProvider.getCurrentChain().name);
+        const hash2 = String(transferResp.hash);
+        const recipient = String(transferResp.to);
+        const amount = String(params.amount);
+        const toAddress = String(params.toAddress);
+        const successMessage = `✅ Successfully transferred ${amount} SEI to ${toAddress}
+
+\uD83D\uDCC4 Transaction Hash: ${hash2}
+\uD83D\uDD17 Chain: ${chainName}`;
+        const response = {
+          text: successMessage,
+          content: {
+            success: true,
+            hash: hash2,
+            amount,
+            recipient,
+            chain: chainName
+          }
+        };
+        callback(response);
+      }
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      elizaLogger11.error(`Error during token transfer: ${errorMessage}`);
+      if (callback) {
+        const errorResponse = {
+          text: `❌ Transfer failed: ${errorMessage}`,
+          content: {
+            error: true,
+            message: errorMessage
+          }
+        };
+        callback(errorResponse);
+      }
+    }
+  },
+  examples: [
+    [
+      {
+        name: "{{user1}}",
+        content: {
+          text: "Transfer 1 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+        }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "I'll help you transfer 1 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
+        }
+      }
+    ],
+    [
+      {
+        name: "{{user1}}",
+        content: {
+          text: "Send 5 SEI to sei1abc123def456"
+        }
+      },
+      {
+        name: "{{agentName}}",
+        content: {
+          text: "Transferring 5 SEI to sei1abc123def456"
+        }
+      }
+    ]
+  ]
+};
+function getErrorMessage(error) {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  if (typeof error === "string") {
+    return error;
+  }
+  return "Unknown error occurred";
+}
+function getMessageText(message) {
+  if (!message || !message.content) {
+    throw new Error("Invalid message: missing content");
+  }
+  const text = message.content.text;
+  if (!text || typeof text !== "string") {
+    throw new Error("Invalid message: missing or invalid text content");
+  }
+  return text.trim();
+}
+async function buildTransferDetails(message, runtime) {
+  try {
+    const messageText = getMessageText(message);
+    if (!messageText) {
+      throw new Error("Empty message text");
+    }
+    const params = parseTransferParams(messageText);
+    if (!params) {
+      throw new Error(`Could not parse transfer parameters. Please specify amount and recipient address.
+
+Example: 'Send 100 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e'`);
+    }
+    return params;
+  } catch (error) {
+    const errorMessage = getErrorMessage(error);
+    elizaLogger11.error(`Failed to build transfer details: ${errorMessage}`);
+    throw new Error(`Transfer parameter parsing failed: ${errorMessage}`);
+  }
+}
+function parseTransferParams(text) {
+  if (!text || typeof text !== "string" || !text.trim()) {
+    return null;
+  }
+  const amountMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:SEI|sei)/i);
+  const addressMatch = text.match(/(0x[a-fA-F0-9]{40}|sei1[a-z0-9]{38})/);
+  if (!amountMatch || !addressMatch) {
+    return null;
+  }
+  return {
+    amount: amountMatch[1],
+    toAddress: addressMatch[1]
+  };
+}
+async function initWalletProvider2(runtime) {
+  try {
+    const privateKey = runtime.getSetting("SEI_PRIVATE_KEY");
+    const network = runtime.getSetting("SEI_NETWORK") || "testnet";
+    if (!privateKey) {
+      throw new Error("SEI_PRIVATE_KEY is required");
+    }
+    if (!privateKey.startsWith("0x")) {
+      throw new Error("SEI_PRIVATE_KEY must start with '0x'");
+    }
+    elizaLogger11.debug(`Initializing wallet provider for network: ${network}`);
+    const chainWithName = createChainWithName(network);
+    return new WalletProvider(privateKey, chainWithName);
+  } catch (error) {
+    const errorMessage = getErrorMessage(error);
+    elizaLogger11.error(`Failed to initialize wallet provider: ${errorMessage}`);
+    throw new Error(`Wallet provider initialization failed: ${errorMessage}`);
+  }
+}
+
+class ChainConfigFactory {
+  static configs = new Map([
+    ["mainnet", { name: "sei-mainnet", chain: sei }],
+    ["testnet", { name: "sei-testnet", chain: seiTestnet }],
+    ["atlantic-2", { name: "sei-testnet", chain: seiTestnet }]
+  ]);
+  static create(network) {
+    const config = this.configs.get(network.toLowerCase());
+    if (!config) {
+      throw new Error(`Unsupported network: ${network}. Supported: ${Array.from(this.configs.keys()).join(", ")}`);
+    }
+    return {
+      name: config.name,
+      chain: config.chain
+    };
+  }
+}
+function createChainWithName(network) {
+  return ChainConfigFactory.create(network);
 }
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/price-query.ts
@@ -19731,7 +21058,7 @@ Unable to fetch prices for: ${failedSymbols.map((r) => r.symbol.toUpperCase()).j
       {
         name: "{{agentName}}",
         content: {
-          text: "The current price of SEI is $0.4520 (Source: mock-price-feed, updated just now)"
+          text: "The current price of SEI is $0.1345 (Source: CoinGecko)"
         }
       }
     ],
@@ -19745,8 +21072,8 @@ Unable to fetch prices for: ${failedSymbols.map((r) => r.symbol.toUpperCase()).j
         content: {
           text: `Here are the current cryptocurrency prices:
 
-BTC: $45000.00 (mock-price-feed)
-ETH: $2500.00 (mock-price-feed)`
+BTC: $68,432.50 (CoinGecko)
+ETH: $3,245.67 (CoinGecko)`
         }
       }
     ],
@@ -19758,7 +21085,7 @@ ETH: $2500.00 (mock-price-feed)`
       {
         name: "{{agentName}}",
         content: {
-          text: "The current price of SEI is $0.4520 (Source: mock-price-feed, updated just now)"
+          text: "The current price of SEI is $0.1345 (Source: CoinGecko)"
         }
       }
     ]
@@ -19785,697 +21112,177 @@ function formatTimestamp(timestamp) {
   return `${Math.floor(diff / 86400000)} days ago`;
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/transfer.ts
-import {
-  elizaLogger as elizaLogger13
-} from "@elizaos/core";
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/types/precompiles.ts
-var ADDRESS_PRECOMPILE_ABI = [
-  {
-    inputs: [{ internalType: "string", name: "addr", type: "string" }],
-    name: "getEvmAddr",
-    outputs: [{ internalType: "address", name: "response", type: "address" }],
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [{ internalType: "address", name: "addr", type: "address" }],
-    name: "getSeiAddr",
-    outputs: [{ internalType: "string", name: "response", type: "string" }],
-    stateMutability: "view",
-    type: "function"
-  },
-  {
-    inputs: [{ internalType: "string", name: "v", type: "string" }, { internalType: "string", name: "r", type: "string" }, { internalType: "string", name: "s", type: "string" }, { internalType: "string", name: "customMessage", type: "string" }],
-    name: "associate",
-    outputs: [{ internalType: "string", name: "seiAddr", type: "string" }, { internalType: "address", name: "evmAddr", type: "address" }],
-    stateMutability: "nonpayable",
-    type: "function"
-  },
-  {
-    inputs: [{ internalType: "string", name: "pubKeyHex", type: "string" }],
-    name: "associatePubKey",
-    outputs: [{ internalType: "string", name: "seiAddr", type: "string" }, { internalType: "address", name: "evmAddr", type: "address" }],
-    stateMutability: "nonpayable",
-    type: "function"
-  }
-];
-var ADDRESS_PRECOMPILE_ADDRESS = "0x0000000000000000000000000000000000001004";
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/types/index.ts
-var SupportedChainList = Object.keys([seiDevnet, seiTestnet, sei]);
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/transfer.ts
-class TransferAction {
-  walletProvider;
-  constructor(walletProvider) {
-    this.walletProvider = walletProvider;
-  }
-  async transfer(params) {
-    const chain = this.walletProvider.getCurrentChain();
-    elizaLogger13.log(`Transferring: ${params.amount} tokens to ${params.toAddress} on ${chain.name}`);
-    let recipientAddress;
-    if (params.toAddress.startsWith("sei")) {
-      const publicClient = this.walletProvider.getEvmPublicClient();
-      try {
-        const evmAddress = await publicClient.readContract({
-          address: ADDRESS_PRECOMPILE_ADDRESS,
-          abi: ADDRESS_PRECOMPILE_ABI,
-          functionName: "getEvmAddr",
-          args: [params.toAddress]
-        });
-        if (!evmAddress || typeof evmAddress !== "string" || !evmAddress.startsWith("0x")) {
-          throw new Error(`ERROR: Recipient does not have valid EVM address. Got: ${evmAddress}`);
-        }
-        elizaLogger13.log(`Translated address ${params.toAddress} to EVM address ${evmAddress}`);
-        recipientAddress = evmAddress;
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-        throw new Error(`Failed to translate SEI address: ${errorMessage}`);
-      }
-    } else {
-      if (!params.toAddress.startsWith("0x") || params.toAddress.length !== 42) {
-        throw new Error(`ERROR: Recipient address must be valid EVM address (0x...). Got: ${params.toAddress}`);
-      }
-      recipientAddress = params.toAddress;
-    }
-    const walletClient = this.walletProvider.getEvmWalletClient();
-    if (!walletClient?.account?.address) {
-      throw new Error("Wallet client account is undefined or invalid");
-    }
-    try {
-      elizaLogger13.log(`Sending transaction from ${walletClient.account.address} to ${recipientAddress}`);
-      const valueInWei = parseEther(params.amount);
-      const transactionRequest = {
-        to: recipientAddress,
-        value: valueInWei,
-        data: params.data || "0x"
-      };
-      const hash2 = await walletClient.sendTransaction(transactionRequest);
-      if (!hash2 || typeof hash2 !== "string") {
-        throw new Error("Invalid transaction hash received");
-      }
-      elizaLogger13.log(`Transaction sent successfully. Hash: ${hash2}`);
-      return {
-        hash: hash2,
-        from: walletClient.account.address,
-        to: params.toAddress,
-        value: parseEther(params.amount).toString(),
-        data: params.data || "0x"
-      };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      elizaLogger13.error(`Transfer failed: ${errorMessage}`);
-      throw new Error(`Transfer failed: ${errorMessage}`);
-    }
-  }
-  validateParams(params) {
-    if (!params.amount || isNaN(Number(params.amount)) || Number(params.amount) <= 0) {
-      throw new Error("Invalid amount: must be a positive number");
-    }
-    if (!params.toAddress || params.toAddress.length === 0) {
-      throw new Error("Invalid recipient address: cannot be empty");
-    }
-    if (params.toAddress.startsWith("sei")) {
-      if (params.toAddress.length !== 43) {
-        throw new Error("Invalid SEI address: must be 43 characters long");
-      }
-    } else if (params.toAddress.startsWith("0x")) {
-      if (params.toAddress.length !== 42) {
-        throw new Error("Invalid EVM address: must be 42 characters long");
-      }
-    } else {
-      throw new Error('Invalid address format: must start with "sei" or "0x"');
-    }
-  }
-  async estimateGas(params) {
-    try {
-      this.validateParams(params);
-      const publicClient = this.walletProvider.getEvmPublicClient();
-      const walletClient = this.walletProvider.getEvmWalletClient();
-      if (!walletClient?.account?.address) {
-        throw new Error("Wallet account not available for gas estimation");
-      }
-      let recipientAddress;
-      if (params.toAddress.startsWith("sei")) {
-        const evmAddress = await publicClient.readContract({
-          address: ADDRESS_PRECOMPILE_ADDRESS,
-          abi: ADDRESS_PRECOMPILE_ABI,
-          functionName: "getEvmAddr",
-          args: [params.toAddress]
-        });
-        recipientAddress = evmAddress;
-      } else {
-        recipientAddress = params.toAddress;
-      }
-      const gasEstimate = await publicClient.estimateGas({
-        account: walletClient.account.address,
-        to: recipientAddress,
-        value: parseEther(params.amount),
-        data: params.data || "0x"
-      });
-      return gasEstimate;
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-      elizaLogger13.error(`Gas estimation failed: ${errorMessage}`);
-      return BigInt(21000);
-    }
-  }
-}
-var transferAction = {
-  name: "TRANSFER_TOKENS",
-  similes: [
-    "SEND_TOKENS",
-    "TOKEN_TRANSFER",
-    "MOVE_TOKENS",
-    "SEND_SEI",
-    "TRANSFER"
-  ],
-  validate: async (runtime, message) => {
-    try {
-      const privateKey = runtime.getSetting?.("SEI_PRIVATE_KEY");
-      if (!privateKey || !privateKey.startsWith("0x")) {
-        return false;
-      }
-      const text = message?.content?.text?.toLowerCase() || "";
-      if (!text) {
-        return false;
-      }
-      return (text.includes("transfer") || text.includes("send") || text.includes("move")) && (text.includes("sei") || text.includes("token")) && (text.includes("0x") || text.includes("sei1"));
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      elizaLogger13.error(`Transfer validation error: ${errorMessage}`);
-      return false;
-    }
-  },
-  description: "Transfer SEI tokens between addresses on the Sei network",
-  handler: async (runtime, message, state, _options, callback) => {
-    try {
-      elizaLogger13.log("Starting token transfer...");
-      const params = await buildTransferDetails(message, runtime);
-      const walletProvider = await initWalletProvider2(runtime);
-      const action = new TransferAction(walletProvider);
-      action.validateParams(params);
-      const transferResp = await action.transfer(params);
-      if (callback) {
-        const chainName = String(walletProvider.getCurrentChain().name);
-        const hash2 = String(transferResp.hash);
-        const recipient = String(transferResp.to);
-        const amount = String(params.amount);
-        const toAddress = String(params.toAddress);
-        const successMessage = `✅ Successfully transferred ${amount} SEI to ${toAddress}
-
-\uD83D\uDCC4 Transaction Hash: ${hash2}
-\uD83D\uDD17 Chain: ${chainName}`;
-        const response = {
-          text: successMessage,
-          content: {
-            success: true,
-            hash: hash2,
-            amount,
-            recipient,
-            chain: chainName
-          }
-        };
-        callback(response);
-      }
-    } catch (error) {
-      const errorMessage = getErrorMessage(error);
-      elizaLogger13.error(`Error during token transfer: ${errorMessage}`);
-      if (callback) {
-        const errorResponse = {
-          text: `❌ Transfer failed: ${errorMessage}`,
-          content: {
-            error: true,
-            message: errorMessage
-          }
-        };
-        callback(errorResponse);
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: {
-          text: "Transfer 1 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
-        }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "I'll help you transfer 1 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: {
-          text: "Send 5 SEI to sei1abc123def456"
-        }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Transferring 5 SEI to sei1abc123def456"
-        }
-      }
-    ]
-  ]
-};
-function getErrorMessage(error) {
-  if (error instanceof Error) {
-    return error.message;
-  }
-  if (typeof error === "string") {
-    return error;
-  }
-  return "Unknown error occurred";
-}
-function getMessageText(message) {
-  if (!message || !message.content) {
-    throw new Error("Invalid message: missing content");
-  }
-  const text = message.content.text;
-  if (!text || typeof text !== "string") {
-    throw new Error("Invalid message: missing or invalid text content");
-  }
-  return text.trim();
-}
-async function buildTransferDetails(message, runtime) {
-  try {
-    const messageText = getMessageText(message);
-    if (!messageText) {
-      throw new Error("Empty message text");
-    }
-    const params = parseTransferParams(messageText);
-    if (!params) {
-      throw new Error(`Could not parse transfer parameters. Please specify amount and recipient address.
-
-Example: 'Send 100 SEI to 0x742d35Cc6634C0532925a3b844Bc454e4438f44e'`);
-    }
-    return params;
-  } catch (error) {
-    const errorMessage = getErrorMessage(error);
-    elizaLogger13.error(`Failed to build transfer details: ${errorMessage}`);
-    throw new Error(`Transfer parameter parsing failed: ${errorMessage}`);
-  }
-}
-function parseTransferParams(text) {
-  if (!text || typeof text !== "string" || !text.trim()) {
-    return null;
-  }
-  const amountMatch = text.match(/(\d+(?:\.\d+)?)\s*(?:SEI|sei)/i);
-  const addressMatch = text.match(/(0x[a-fA-F0-9]{40}|sei1[a-z0-9]{38})/);
-  if (!amountMatch || !addressMatch) {
-    return null;
-  }
-  return {
-    amount: amountMatch[1],
-    toAddress: addressMatch[1]
-  };
-}
-async function initWalletProvider2(runtime) {
-  try {
-    const privateKey = runtime.getSetting("SEI_PRIVATE_KEY");
-    const network = runtime.getSetting("SEI_NETWORK") || "testnet";
-    if (!privateKey) {
-      throw new Error("SEI_PRIVATE_KEY is required");
-    }
-    if (!privateKey.startsWith("0x")) {
-      throw new Error("SEI_PRIVATE_KEY must start with '0x'");
-    }
-    elizaLogger13.debug(`Initializing wallet provider for network: ${network}`);
-    const chainWithName = createChainWithName(network);
-    return new WalletProvider(privateKey, chainWithName);
-  } catch (error) {
-    const errorMessage = getErrorMessage(error);
-    elizaLogger13.error(`Failed to initialize wallet provider: ${errorMessage}`);
-    throw new Error(`Wallet provider initialization failed: ${errorMessage}`);
-  }
-}
-
-class ChainConfigFactory {
-  static configs = new Map([
-    ["mainnet", { name: "sei-mainnet", chain: sei }],
-    ["testnet", { name: "sei-testnet", chain: seiTestnet }],
-    ["atlantic-2", { name: "sei-testnet", chain: seiTestnet }]
-  ]);
-  static create(network) {
-    const config = this.configs.get(network.toLowerCase());
-    if (!config) {
-      throw new Error(`Unsupported network: ${network}. Supported: ${Array.from(this.configs.keys()).join(", ")}`);
-    }
-    return {
-      name: config.name,
-      chain: config.chain
-    };
-  }
-}
-function createChainWithName(network) {
-  return ChainConfigFactory.create(network);
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/yei-finance.ts
-var yeiFinanceAction = {
-  name: "YEI_FINANCE",
-  similes: [
-    "YEI_LENDING",
-    "YEI_BORROWING",
-    "YEI_ORACLE",
-    "YEI_RATES"
-  ],
-  validate: async (runtime, message) => {
-    const config = validateSeiConfig(runtime);
-    const content = message.content?.text?.toLowerCase() || "";
-    const yeiKeywords = [
-      "yei finance",
-      "yei lending",
-      "yei borrow",
-      "yei oracle",
-      "lending rates",
-      "borrow rates",
-      "collateral",
-      "liquidation",
-      "api3",
-      "multi oracle",
-      "defi lending",
-      "deposit"
-    ];
-    if (content.includes("deposit") && content.includes("sei")) {
-      return true;
-    }
-    return yeiKeywords.some((keyword) => content.includes(keyword));
-  },
-  description: "Get information about YEI Finance lending protocol, rates, and oracle prices",
-  handler: async (runtime, message, state, _options, callback) => {
-    try {
-      const config = await validateSeiConfig(runtime);
-      const oracle = new SeiOracleProvider(runtime);
-      const content = message.content?.text?.toLowerCase() || "";
-      let response = "";
-      if (content.includes("deposit") && content.includes("sei")) {
-        const amountMatch = content.match(/([\d.]+)\s*sei/i);
-        const amount = amountMatch ? parseFloat(amountMatch[1]) : 0;
-        if (amount > 0) {
-          console.log(`\uD83C\uDFE6 YEI Finance: Executing deposit of ${amount} SEI...`);
-          const depositResult = {
-            success: true,
-            amount,
-            protocol: "YEI Finance",
-            action: "deposit",
-            expectedAPY: 5,
-            timestamp: Date.now()
-          };
-          response = `✅ YEI Finance Deposit Executed:
-• Amount: ${amount} SEI
-• Protocol: YEI Finance Lending
-• Expected APY: 5.0%
-• Status: Position opened successfully
-
-The deposit has been allocated to the YEI Finance lending pool where it will earn yield from borrowers.`;
-          if (callback) {
-            callback({
-              text: response,
-              content: {
-                text: response,
-                source: "yei-finance",
-                action: "YEI_FINANCE",
-                result: depositResult
-              }
-            });
-          }
-          return;
-        }
-      }
-      if (content.includes("lending rates") || content.includes("borrow rates")) {
-        response = `YEI Finance Lending Rates:
-• Multi-oracle price feeds ensure accurate valuations
-• API3 dAPI (Primary) + Pyth Network (Backup) + Redstone (Fallback)
-• Competitive interest rates with liquidation protection
-• Current supported assets: BTC, ETH, SEI, USDC, USDT
-
-For real-time rates, prices are fetched from our multi-oracle system.`;
-      } else if (content.includes("oracle") || content.includes("api3") || content.includes("pyth")) {
-        try {
-          const btcPrice = await oracle.getPrice("BTC");
-          const ethPrice = await oracle.getPrice("ETH");
-          response = `YEI Finance Multi-Oracle System:
-\uD83D\uDD39 API3 dAPI: Primary oracle source with high accuracy
-\uD83D\uDD39 Pyth Network: 100+ publishers for price consensus  
-\uD83D\uDD39 Redstone Classic: Backup for stablecoin pairs
-
-Current Prices (Multi-Oracle):
-${btcPrice ? `• BTC: $${btcPrice.price.toFixed(2)} (${btcPrice.source})` : "• BTC: Price unavailable"}
-${ethPrice ? `• ETH: $${ethPrice.price.toFixed(2)} (${ethPrice.source})` : "• ETH: Price unavailable"}
-
-This multi-oracle approach provides manipulation resistance and high reliability.`;
-        } catch (error) {
-          response = `YEI Finance Multi-Oracle System:
-\uD83D\uDD39 API3 dAPI: Primary oracle source
-� Pyth Network: Backup with 100+ publishers
-\uD83D\uDD39 Redstone Classic: Fallback for stablecoins
-
-The multi-oracle system ensures price accuracy and manipulation resistance for safe lending operations.`;
-        }
-      } else {
-        response = `YEI Finance - Advanced DeFi Lending Protocol:
-
-\uD83C\uDFE6 **Core Features:**
-• Multi-collateral lending and borrowing
-• API3 + Pyth + Redstone oracle integration
-• Automated liquidation protection
-• Interest rate optimization
-
-\uD83D\uDD12 **Security:**
-• Multi-oracle price validation
-• Manipulation-resistant pricing
-• Smart contract audited protocols
-
-\uD83D\uDCCA **Supported Assets:**
-• BTC, ETH, SEI (Native)
-• USDC, USDT (Stablecoins)
-
-\uD83D\uDCA1 **Benefits:**
-• Higher capital efficiency
-• Lower liquidation risks
-• Competitive interest rates
-• Transparent on-chain operations
-
-Ask about specific lending rates, oracle prices, or collateral requirements!`;
-      }
-      if (callback) {
-        callback({
-          text: response,
-          content: {
-            text: response,
-            source: "yei-finance",
-            action: "YEI_FINANCE"
-          }
-        });
-      }
-    } catch (error) {
-      console.error("Error in YEI Finance action:", error);
-      if (callback) {
-        callback({
-          text: "I encountered an error fetching YEI Finance information. Please try again.",
-          content: {
-            error: error instanceof Error ? error.message : "Unknown error",
-            action: "YEI_FINANCE"
-          }
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "What are the current YEI Finance lending rates?" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Let me check the current YEI Finance lending rates and oracle prices...",
-          action: "YEI_FINANCE"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "How does YEI Finance's multi-oracle system work?" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "YEI Finance uses a sophisticated multi-oracle strategy...",
-          action: "YEI_FINANCE"
-        }
-      }
-    ]
-  ]
-};
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/amm-layer.ts
-class AMMLayerManager {
-  clob;
-  positions = {};
-  onRebalance;
-  onFallback;
-  constructor(clob, hooks) {
-    this.clob = clob;
-    if (hooks) {
-      this.onRebalance = hooks.onRebalance;
-      this.onFallback = hooks.onFallback;
-    }
-  }
-  async initPosition(symbol, min, max, amount) {
-    this.positions[symbol] = {
-      range: { min, max },
-      amount,
-      analytics: { fees: 0, slippage: 0, rebalances: 0 }
-    };
-    return this.positions[symbol];
-  }
-  setDynamicRange(symbol, price, volatility = 0.05) {
-    const band = price * volatility;
-    if (this.positions[symbol]) {
-      this.positions[symbol].range.min = price - band;
-      this.positions[symbol].range.max = price + band;
-    }
-    return this.positions[symbol]?.range;
-  }
-  async rebalance(symbol, newPrice, fee = 0, slippage = 0, threshold = 0.02) {
-    const pos = this.positions[symbol];
-    if (!pos)
-      return null;
-    const minThreshold = pos.range.min - pos.range.min * threshold;
-    const maxThreshold = pos.range.max + pos.range.max * threshold;
-    if (newPrice < minThreshold || newPrice > maxThreshold) {
-      this.setDynamicRange(symbol, newPrice);
-      pos.analytics.rebalances++;
-      pos.analytics.fees += fee;
-      pos.analytics.slippage += slippage;
-      if (this.onRebalance)
-        this.onRebalance(symbol, pos);
-      await this.placeRangeOrder(symbol);
-    }
-    return pos;
-  }
-  async placeRangeOrder(symbol) {
-    const pos = this.positions[symbol];
-    if (!pos)
-      return null;
-    return this.clob.placeRangeOrder(symbol, pos.range, pos.amount);
-  }
-  async handleEscape(symbol, price) {
-    const pos = this.positions[symbol];
-    if (!pos)
-      return null;
-    if (price > pos.range.max || price < pos.range.min) {
-      if (this.onFallback)
-        this.onFallback(symbol);
-      return "options-hedge-activated";
-    }
-    return "in-range";
-  }
-  getAnalytics(symbol) {
-    const pos = this.positions[symbol];
-    return pos ? pos.analytics : null;
-  }
-  async rebalanceAll(prices, fee = 0, slippage = 0, threshold = 0.02) {
-    for (const symbol of Object.keys(prices)) {
-      await this.rebalance(symbol, prices[symbol], fee, slippage, threshold);
-    }
-  }
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/evaluators/amm-risk.ts
-var ammRiskEvaluator = {
-  name: "AMM_RISK_EVALUATOR",
-  description: "Evaluates risk and opportunity for AMM positions using analytics and price bands",
-  validate: async (runtime, positions) => {
-    return Array.isArray(positions) && positions.length > 0;
-  },
-  async handler(runtime, positions, _, __, callback) {
-    const clob = runtime.seiClobProvider;
-    const manager = new AMMLayerManager(clob);
-    for (const p of positions) {
-      await manager.initPosition(p.symbol, p.min, p.max, p.amount);
-    }
-    const riskReport = Object.keys(manager["positions"]).map((symbol) => {
-      const analytics = manager.getAnalytics(symbol);
-      const pos = manager["positions"][symbol];
-      const riskLevel = analytics && (analytics.rebalances > 2 || analytics.slippage > 1) ? "HIGH" : "LOW";
-      return { symbol, riskLevel, analytics, range: pos.range };
-    });
-    const result = { success: true, data: riskReport };
-    if (callback)
-      callback(result);
-    return result;
-  },
-  examples: [
-    {
-      prompt: "Evaluate AMM risk for my positions",
-      messages: [
-        { name: "{{user1}}", content: { text: "Evaluate AMM risk for my positions" } },
-        { name: "{{agentName}}", content: { action: "AMM_RISK_EVALUATOR", text: "AMM risk evaluation complete. Report: ..." } }
-      ],
-      outcome: "AMM risk evaluation complete. Report: ..."
-    }
-  ]
-};
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/amm-manager.ts
-class AMMManagerProvider {
-  manager;
-  name = "AMM_MANAGER";
-  description = "Provides AMM layer management for SEI yield optimization strategies";
-  constructor(clob, hooks) {
-    this.manager = new AMMLayerManager(clob, hooks);
-  }
-  async get(runtime, message, state) {
-    try {
-      const managerStatus = {
-        isActive: true,
-        supportedPools: [],
-        activeStrategies: [],
-        lastUpdate: new Date().toISOString()
-      };
-      return {
-        text: `AMM Manager Status: ${JSON.stringify(managerStatus, null, 2)}`,
-        values: managerStatus,
-        data: {
-          provider: "AMM_MANAGER",
-          timestamp: Date.now()
-        }
-      };
-    } catch (error) {
-      return {
-        text: `AMM Manager unavailable: ${error instanceof Error ? error.message : String(error)}`,
-        values: { error: true },
-        data: {
-          provider: "AMM_MANAGER",
-          error: error instanceof Error ? error.message : String(error),
-          timestamp: Date.now()
-        }
-      };
-    }
-  }
-  getManager() {
-    return this.manager;
-  }
-}
-var AMMManagerProvider_Instance = new AMMManagerProvider;
-
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/dragonswap.ts
 import {
   elizaLogger as elizaLogger14
 } from "@elizaos/core";
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/environment.ts
+import { elizaLogger as elizaLogger13 } from "@elizaos/core";
+var seiChains2 = {
+  "sei-mainnet": {
+    id: 1329,
+    name: "Sei Mainnet",
+    network: "sei-mainnet",
+    nativeCurrency: {
+      name: "SEI",
+      symbol: "SEI",
+      decimals: 18
+    },
+    rpcUrls: {
+      default: {
+        http: ["https://evm-rpc.sei-apis.com"]
+      }
+    },
+    blockExplorers: {
+      default: {
+        name: "Seitrace",
+        url: "https://seitrace.com"
+      }
+    }
+  },
+  "sei-testnet": {
+    id: 713715,
+    name: "Sei Testnet",
+    network: "sei-testnet",
+    nativeCurrency: {
+      name: "SEI",
+      symbol: "SEI",
+      decimals: 18
+    },
+    rpcUrls: {
+      default: {
+        http: ["https://evm-rpc-testnet.sei-apis.com"]
+      }
+    },
+    blockExplorers: {
+      default: {
+        name: "Seitrace Testnet",
+        url: "https://testnet.seitrace.com"
+      }
+    }
+  },
+  "sei-devnet": {
+    id: 713715,
+    name: "Sei Devnet",
+    network: "sei-devnet",
+    nativeCurrency: {
+      name: "SEI",
+      symbol: "SEI",
+      decimals: 18
+    },
+    rpcUrls: {
+      default: {
+        http: ["https://evm-rpc-arctic-1.sei-apis.com"]
+      }
+    },
+    blockExplorers: {
+      default: {
+        name: "Seitrace Devnet",
+        url: "https://devnet.seitrace.com"
+      }
+    }
+  }
+};
+async function validateSeiConfig(runtime) {
+  try {
+    const requiredEnvVars = ["SEI_RPC_URL"];
+    const missingVars = [];
+    const rpcUrl = runtime.getSetting("SEI_RPC_URL");
+    const chainId = runtime.getSetting("SEI_CHAIN_ID");
+    const privateKey = runtime.getSetting("SEI_PRIVATE_KEY");
+    const address = runtime.getSetting("SEI_ADDRESS");
+    const network = runtime.getSetting("SEI_NETWORK");
+    const dragonswapApiUrl = runtime.getSetting("DRAGONSWAP_API_URL");
+    const oracleApiKey = runtime.getSetting("ORACLE_API_KEY");
+    const yeiApiKey = runtime.getSetting("YEI_API_KEY");
+    const yeiApi3Contract = runtime.getSetting("YEI_API3_CONTRACT");
+    const yeiPythContract = runtime.getSetting("YEI_PYTH_CONTRACT");
+    const yeiRedstoneContract = runtime.getSetting("YEI_REDSTONE_CONTRACT");
+    const yeiSeiOracle = runtime.getSetting("YEI_SEI_ORACLE");
+    const yeiUsdcOracle = runtime.getSetting("YEI_USDC_ORACLE");
+    const yeiUsdtOracle = runtime.getSetting("YEI_USDT_ORACLE");
+    const yeiEthOracle = runtime.getSetting("YEI_ETH_ORACLE");
+    const yeiBtcOracle = runtime.getSetting("YEI_BTC_ORACLE");
+    const symphonyApiUrl = runtime.getSetting("SYMPHONY_API_URL");
+    const symphonyTimeout = runtime.getSetting("SYMPHONY_TIMEOUT");
+    const userGeography = runtime.getSetting("USER_GEOGRAPHY");
+    const perpPreference = runtime.getSetting("PERP_PREFERENCE");
+    const coinbaseApiKey = runtime.getSetting("COINBASE_ADVANCED_API_KEY");
+    const coinbaseSecret = runtime.getSetting("COINBASE_ADVANCED_SECRET");
+    const coinbasePassphrase = runtime.getSetting("COINBASE_ADVANCED_PASSPHRASE");
+    const coinbaseSandbox = runtime.getSetting("COINBASE_SANDBOX");
+    const vaultFactoryAddress = runtime.getSetting("VAULT_FACTORY_ADDRESS");
+    const customerDashboardAddress = runtime.getSetting("CUSTOMER_DASHBOARD_ADDRESS");
+    const deltaNeutralVaultAddress = runtime.getSetting("DELTA_NEUTRAL_VAULT_ADDRESS");
+    const stableMaxVaultAddress = runtime.getSetting("STABLE_MAX_VAULT_ADDRESS");
+    const seiHypergrowthVaultAddress = runtime.getSetting("SEI_HYPERGROWTH_VAULT_ADDRESS");
+    const blueChipVaultAddress = runtime.getSetting("BLUE_CHIP_VAULT_ADDRESS");
+    const hedgeVaultAddress = runtime.getSetting("HEDGE_VAULT_ADDRESS");
+    const yieldFarmingVaultAddress = runtime.getSetting("YIELD_FARMING_VAULT_ADDRESS");
+    const arbitrageVaultAddress = runtime.getSetting("ARBITRAGE_VAULT_ADDRESS");
+    const concentratedLiquidityVaultAddress = runtime.getSetting("CONCENTRATED_LIQUIDITY_VAULT_ADDRESS");
+    const seiVaultAddress = runtime.getSetting("SEI_VAULT_ADDRESS");
+    const usdcVaultAddress = runtime.getSetting("USDC_VAULT_ADDRESS");
+    for (const envVar of requiredEnvVars) {
+      const key = envVar;
+      if (key === "SEI_RPC_URL" && !rpcUrl) {
+        missingVars.push(envVar);
+      }
+    }
+    if (missingVars.length > 0) {
+      throw new Error(`Missing required environment variables: ${missingVars.join(", ")}`);
+    }
+    if (network && !seiChains2[network]) {
+      throw new Error(`Invalid SEI_NETWORK: ${network}. Must be one of: ${Object.keys(seiChains2).join(", ")}`);
+    }
+    const config = {
+      SEI_RPC_URL: rpcUrl || "https://evm-rpc-testnet.sei-apis.com",
+      SEI_CHAIN_ID: chainId,
+      SEI_PRIVATE_KEY: privateKey,
+      SEI_ADDRESS: address,
+      SEI_NETWORK: network || "sei-testnet",
+      DRAGONSWAP_API_URL: dragonswapApiUrl,
+      ORACLE_API_KEY: oracleApiKey,
+      YEI_API_KEY: yeiApiKey,
+      YEI_API3_CONTRACT: yeiApi3Contract,
+      YEI_PYTH_CONTRACT: yeiPythContract,
+      YEI_REDSTONE_CONTRACT: yeiRedstoneContract,
+      YEI_SEI_ORACLE: yeiSeiOracle,
+      YEI_USDC_ORACLE: yeiUsdcOracle,
+      YEI_USDT_ORACLE: yeiUsdtOracle,
+      YEI_ETH_ORACLE: yeiEthOracle,
+      YEI_BTC_ORACLE: yeiBtcOracle,
+      SYMPHONY_API_URL: symphonyApiUrl,
+      SYMPHONY_TIMEOUT: symphonyTimeout ? parseInt(symphonyTimeout) : undefined,
+      USER_GEOGRAPHY: userGeography,
+      PERP_PREFERENCE: perpPreference,
+      COINBASE_ADVANCED_API_KEY: coinbaseApiKey,
+      COINBASE_ADVANCED_SECRET: coinbaseSecret,
+      COINBASE_ADVANCED_PASSPHRASE: coinbasePassphrase,
+      COINBASE_SANDBOX: coinbaseSandbox === "true" || coinbaseSandbox === true,
+      VAULT_FACTORY_ADDRESS: vaultFactoryAddress,
+      CUSTOMER_DASHBOARD_ADDRESS: customerDashboardAddress,
+      DELTA_NEUTRAL_VAULT_ADDRESS: deltaNeutralVaultAddress,
+      STABLE_MAX_VAULT_ADDRESS: stableMaxVaultAddress,
+      SEI_HYPERGROWTH_VAULT_ADDRESS: seiHypergrowthVaultAddress,
+      BLUE_CHIP_VAULT_ADDRESS: blueChipVaultAddress,
+      HEDGE_VAULT_ADDRESS: hedgeVaultAddress,
+      YIELD_FARMING_VAULT_ADDRESS: yieldFarmingVaultAddress,
+      ARBITRAGE_VAULT_ADDRESS: arbitrageVaultAddress,
+      CONCENTRATED_LIQUIDITY_VAULT_ADDRESS: concentratedLiquidityVaultAddress,
+      SEI_VAULT_ADDRESS: seiVaultAddress,
+      USDC_VAULT_ADDRESS: usdcVaultAddress
+    };
+    elizaLogger13.log("SEI configuration validated successfully");
+    return config;
+  } catch (error) {
+    elizaLogger13.error(`SEI configuration validation failed: ${error}`);
+    throw error;
+  }
+}
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/dragonswap.ts
 var swapRouterAbi = [
   {
     inputs: [
@@ -21443,644 +22250,11 @@ class FundingArbitrageEngine {
     }
   }
 }
-async function getOrCreateArbitrageEngine(runtime) {
-  try {
-    const config = await validateSeiConfig(runtime);
-    const privateKey = config.SEI_PRIVATE_KEY;
-    if (!privateKey) {
-      throw new Error("SEI_PRIVATE_KEY not found in environment");
-    }
-    const formattedKey = privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`;
-    const walletProvider = new WalletProvider(formattedKey, {
-      name: config.SEI_NETWORK || "sei-devnet",
-      chain: seiChains["devnet"]
-    });
-    const oracleProvider2 = new SeiOracleProvider(runtime);
-    return new FundingArbitrageEngine(walletProvider, oracleProvider2, runtime);
-  } catch (error) {
-    elizaLogger16.error(`Failed to create arbitrage engine:: ${error}`);
-    throw error;
-  }
-}
-var fundingArbitrageAction = {
-  name: "FUNDING_ARBITRAGE",
-  similes: ["ARBITRAGE", "FUNDING_RATE"],
-  validate: async (runtime, message) => {
-    try {
-      await validateSeiConfig(runtime);
-      const text = message?.content?.text?.toLowerCase() || "";
-      return text.includes("arbitrage") || text.includes("funding");
-    } catch {
-      return false;
-    }
-  },
-  description: "Execute funding rate arbitrage strategies",
-  handler: async (runtime, message, state, _options, callback) => {
-    try {
-      const arbitrageEngine = await getOrCreateArbitrageEngine(runtime);
-      const messageText = message?.content?.text?.toLowerCase() || "";
-      if (messageText.includes("status") || messageText.includes("position")) {
-        const activePositions = arbitrageEngine.getActivePositions();
-        if (activePositions.length === 0) {
-          if (callback) {
-            await callback({
-              text: "No active arbitrage positions.",
-              content: {
-                type: "status",
-                hasPositions: false
-              }
-            });
-          }
-          return;
-        }
-        await arbitrageEngine.updatePositionPnL();
-        const positionsText = activePositions.map((pos) => `${pos.symbol} Arbitrage (${pos.id.split("_")[1]})
-` + `   Strategy: ${pos.cexSide.toUpperCase()} CEX + ${pos.dexSide.toUpperCase()} DEX
-` + `   Size: $${pos.size.toLocaleString()}
-` + `   Duration: ${Math.floor((Date.now() - pos.entryTime) / (24 * 60 * 60 * 1000))} days
-` + `   Net PnL: $${pos.netPnl.toFixed(2)}
-` + `   Expected Return: ${(pos.expectedReturn * 100).toFixed(2)}% annual`).join(`
-
-`);
-        if (callback) {
-          await callback({
-            text: `\uD83D\uDCCA Active Arbitrage Positions:
-
-${positionsText}`,
-            content: {
-              type: "positions",
-              positions: activePositions
-            }
-          });
-        }
-      } else if (messageText.includes("scan") || messageText.includes("opportunity")) {
-        if (callback) {
-          await callback({
-            text: "\uD83D\uDD0D Scanning for arbitrage opportunities...",
-            content: { type: "scanning" }
-          });
-        }
-        const opportunities = await arbitrageEngine.scanOpportunities();
-        if (opportunities.length === 0) {
-          if (callback) {
-            await callback({
-              text: "No profitable arbitrage opportunities found at the moment.",
-              content: { type: "scan_result", opportunities: [] }
-            });
-          }
-        } else {
-          const opportunitiesText = opportunities.map((opp) => `\uD83D\uDCB0 ${opp.symbol} Arbitrage
-` + `   Target Exchange: ${opp.targetExchange}
-` + `   Strategy: ${opp.hedgeAction === "short_dex" ? "SHORT DEX + LONG CEX" : "LONG DEX + SHORT CEX"}
-` + `   Expected Return: ${(opp.expectedReturn * 100).toFixed(2)}% annual
-` + `   Required Capital: $${opp.requiredCapital.toLocaleString()}
-` + `   Risk Level: ${opp.risk.toUpperCase()}
-` + `   Confidence: ${(opp.confidence * 100).toFixed(0)}%`).join(`
-
-`);
-          if (callback) {
-            await callback({
-              text: `\uD83D\uDCC8 Found ${opportunities.length} Arbitrage Opportunities:
-
-${opportunitiesText}`,
-              content: {
-                type: "scan_result",
-                opportunities
-              }
-            });
-          }
-        }
-      } else if (messageText.includes("execute")) {
-        const symbolMatch = messageText.match(/execute.*?arbitrage.*?(\w{3,6})/i) || messageText.match(/arbitrage.*?(\w{3,6})/i);
-        const symbol = symbolMatch ? symbolMatch[1].toUpperCase() : null;
-        if (!symbol) {
-          if (callback) {
-            await callback({
-              text: "Please specify a symbol. Example: 'execute arbitrage BTC'",
-              content: { type: "error", message: "Symbol required" }
-            });
-          }
-          return;
-        }
-        if (callback) {
-          await callback({
-            text: `\uD83D\uDE80 Executing arbitrage for ${symbol}...`,
-            content: { type: "executing", symbol }
-          });
-        }
-        const opportunities = await arbitrageEngine.scanOpportunities();
-        const opportunity = opportunities.find((opp) => opp.symbol === symbol);
-        if (!opportunity) {
-          if (callback) {
-            await callback({
-              text: `❌ No profitable arbitrage opportunity found for ${symbol} at the moment.`,
-              content: { type: "execution_result", success: false, symbol, reason: "No opportunity" }
-            });
-          }
-          return;
-        }
-        const success = await arbitrageEngine.executeArbitrage(opportunity.symbol);
-        if (callback) {
-          if (success) {
-            await callback({
-              text: `✅ Successfully initiated ${symbol} arbitrage position!
-` + `Expected Return: ${(opportunity.expectedReturn * 100).toFixed(2)}% annual
-` + `Capital Deployed: $${opportunity.requiredCapital.toLocaleString()}`,
-              content: {
-                type: "execution_result",
-                success: true,
-                symbol,
-                opportunity
-              }
-            });
-          } else {
-            await callback({
-              text: `❌ Failed to execute ${symbol} arbitrage. Check logs for details.`,
-              content: { type: "execution_result", success: false, symbol }
-            });
-          }
-        }
-      } else {
-        if (callback) {
-          await callback({
-            text: `\uD83E\uDD16 Funding Arbitrage Bot Commands:
-
-` + `• 'scan arbitrage opportunities' - Find profitable opportunities
-` + `• 'execute arbitrage [symbol]' - Execute arbitrage for a symbol
-` + `• 'arbitrage status' - Check active positions
-
-` + `Examples:
-` + `• 'scan arbitrage opportunities'
-` + `• 'execute arbitrage BTC'
-` + "• 'arbitrage status'",
-            content: {
-              type: "help",
-              commands: [
-                "scan arbitrage opportunities",
-                "execute arbitrage [symbol]",
-                "arbitrage status"
-              ]
-            }
-          });
-        }
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      elizaLogger16.error(`Funding arbitrage error:: ${errorMessage}`);
-      if (callback) {
-        await callback({
-          text: `❌ Error: ${errorMessage}`,
-          content: {
-            type: "error",
-            error: errorMessage
-          }
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Scan for funding arbitrage opportunities" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Scanning funding rates across exchanges for arbitrage opportunities...",
-          action: "FUNDING_ARBITRAGE"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Execute arbitrage BTC" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Executing BTC funding rate arbitrage strategy...",
-          action: "FUNDING_ARBITRAGE"
-        }
-      }
-    ]
-  ]
-};
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/rebalance.ts
 import {
   elizaLogger as elizaLogger17
 } from "@elizaos/core";
-class PortfolioRebalancer {
-  walletProvider;
-  oracleProvider;
-  constructor(walletProvider, oracleProvider2) {
-    this.walletProvider = walletProvider;
-    this.oracleProvider = oracleProvider2;
-  }
-  getStrategies() {
-    return [
-      {
-        name: "Conservative DeFi",
-        description: "Low-risk allocation focused on stable yields",
-        allocations: {
-          SEI: 40,
-          USDC: 30,
-          ETH: 20,
-          BTC: 10
-        },
-        rebalanceThreshold: 5,
-        riskLevel: "conservative"
-      },
-      {
-        name: "Balanced Growth",
-        description: "Moderate risk with diversified DeFi exposure",
-        allocations: {
-          SEI: 25,
-          USDC: 25,
-          ETH: 25,
-          BTC: 15,
-          ATOM: 10
-        },
-        rebalanceThreshold: 7.5,
-        riskLevel: "moderate"
-      },
-      {
-        name: "Aggressive DeFi",
-        description: "High-risk, high-reward DeFi strategy",
-        allocations: {
-          SEI: 30,
-          ETH: 25,
-          BTC: 20,
-          ATOM: 15,
-          OSMO: 10
-        },
-        rebalanceThreshold: 10,
-        riskLevel: "aggressive"
-      },
-      {
-        name: "Yield Farming Focus",
-        description: "Optimized for maximum yield opportunities",
-        allocations: {
-          SEI: 35,
-          USDC: 20,
-          ETH: 20,
-          LP_TOKENS: 25
-        },
-        rebalanceThreshold: 8,
-        riskLevel: "moderate"
-      }
-    ];
-  }
-  async analyzePortfolio(walletAddress, strategyName) {
-    try {
-      const strategies = this.getStrategies();
-      const strategy = strategyName ? strategies.find((s) => s.name === strategyName) || strategies[1] : strategies[1];
-      const portfolioBalances = await this.getPortfolioBalances(walletAddress);
-      const totalValue = Object.values(portfolioBalances).reduce((sum, value) => sum + value, 0);
-      elizaLogger17.info(`DEBUG: Portfolio balances for ${walletAddress}:`, portfolioBalances);
-      elizaLogger17.info(`DEBUG: Total portfolio value: ${totalValue}`);
-      if (totalValue === 0) {
-        elizaLogger17.error(`DEBUG: Portfolio analysis failed - no value found for ${walletAddress}`);
-        elizaLogger17.error(`DEBUG: Portfolio balances were:`, portfolioBalances);
-        throw new Error("Portfolio has no value");
-      }
-      const assets = [];
-      const recommendations = [];
-      for (const [symbol, targetPercentage] of Object.entries(strategy.allocations)) {
-        const currentValue = portfolioBalances[symbol] || 0;
-        const currentPercentage = currentValue / totalValue * 100;
-        const deviation = currentPercentage - targetPercentage;
-        let recommended = "hold";
-        let amount = 0;
-        if (Math.abs(deviation) > strategy.rebalanceThreshold) {
-          if (deviation > 0) {
-            recommended = "sell";
-            amount = deviation / 100 * totalValue;
-          } else {
-            recommended = "buy";
-            amount = Math.abs(deviation / 100) * totalValue;
-          }
-          recommendations.push({
-            asset: symbol,
-            action: recommended,
-            amount,
-            reason: `${Math.abs(deviation).toFixed(2)}% deviation from target`,
-            priority: Math.abs(deviation) > strategy.rebalanceThreshold * 2 ? "high" : "medium"
-          });
-        }
-        assets.push({
-          symbol,
-          targetPercentage,
-          currentPercentage,
-          currentValue,
-          deviation,
-          recommended,
-          amount
-        });
-      }
-      const rebalanceNeeded = recommendations.length > 0;
-      return {
-        totalValue,
-        strategy,
-        assets,
-        rebalanceNeeded,
-        recommendations
-      };
-    } catch (error) {
-      elizaLogger17.error(`Portfolio analysis failed:: ${error}`);
-      throw error;
-    }
-  }
-  async executeRebalance(walletAddress, recommendations) {
-    try {
-      const results = [];
-      for (const recommendation of recommendations) {
-        const txHash = await this.executeRecommendation(walletAddress, recommendation);
-        if (txHash) {
-          results.push(txHash);
-          elizaLogger17.info(`Executed ${recommendation.action} for ${recommendation.asset}: ${txHash}`);
-        }
-      }
-      return results;
-    } catch (error) {
-      elizaLogger17.error(`Portfolio rebalance failed:: ${error}`);
-      throw error;
-    }
-  }
-  async executeRecommendation(walletAddress, recommendation) {
-    try {
-      elizaLogger17.info(`Executing ${recommendation.action} of ${recommendation.amount} ${recommendation.asset}`);
-      return `0x${Math.random().toString(16).substring(2, 66)}`;
-    } catch (error) {
-      elizaLogger17.error(`Failed to execute ${recommendation.action} for ${recommendation.asset}:: ${error}`);
-      return null;
-    }
-  }
-  async getAssetBalance(symbol, address) {
-    try {
-      const testBalances = {
-        "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc": {
-          SEI: 1e4,
-          USDC: 1e4,
-          USDT: 5000,
-          ETH: 100,
-          BTC: 5,
-          ATOM: 1000,
-          DAI: 5000
-        },
-        "0x90f79bf6eb2c4f870365e785982e1f101e93b906": {
-          SEI: 5000,
-          USDC: 5000,
-          USDT: 2000,
-          ETH: 25,
-          BTC: 1,
-          ATOM: 500,
-          DAI: 3000
-        },
-        "0x15d34aaf54267db7d7c367839aaf71a00a2c6a65": {
-          SEI: 1e5,
-          USDC: 50000,
-          USDT: 25000,
-          ETH: 500,
-          BTC: 20,
-          ATOM: 1e4,
-          DAI: 30000
-        },
-        "0x2222222222222222222222222222222222222222": {
-          SEI: 1e4,
-          USDC: 1e4,
-          USDT: 5000,
-          ETH: 100,
-          BTC: 5,
-          ATOM: 1000,
-          DAI: 5000
-        },
-        "0x3333333333333333333333333333333333333333": {
-          SEI: 5000,
-          USDC: 5000,
-          USDT: 2000,
-          ETH: 25,
-          BTC: 1,
-          ATOM: 500,
-          DAI: 3000
-        },
-        "0x4444444444444444444444444444444444444444": {
-          SEI: 1e5,
-          USDC: 50000,
-          USDT: 25000,
-          ETH: 500,
-          BTC: 20,
-          ATOM: 1e4,
-          DAI: 30000
-        }
-      };
-      const addressLower = address.toLowerCase();
-      const userBalances = testBalances[addressLower];
-      const tokenBalance = userBalances ? userBalances[symbol] || 0 : 0;
-      elizaLogger17.info(`DEBUG: Original address: ${address}`);
-      elizaLogger17.info(`DEBUG: Lowercase address: ${addressLower}`);
-      elizaLogger17.info(`DEBUG: Available test addresses:`, Object.keys(testBalances));
-      elizaLogger17.info(`DEBUG: Address exists in testBalances:`, addressLower in testBalances);
-      elizaLogger17.info(`DEBUG: Found user balances:`, userBalances);
-      elizaLogger17.info(`DEBUG: Token balance for ${symbol}: ${tokenBalance}`);
-      return tokenBalance;
-    } catch (error) {
-      elizaLogger17.error(`Failed to get balance for ${symbol}:: ${error}`);
-      return 0;
-    }
-  }
-  async getPortfolioBalances(walletAddress) {
-    try {
-      const balances = {};
-      const mockPrices = {
-        SEI: 0.45,
-        USDC: 1,
-        USDT: 1,
-        ETH: 2800,
-        BTC: 68000,
-        ATOM: 9.5,
-        DAI: 1,
-        OSMO: 0.78
-      };
-      const symbols = ["SEI", "USDC", "USDT", "ETH", "BTC", "ATOM", "DAI", "OSMO"];
-      for (const symbol of symbols) {
-        let price = mockPrices[symbol] || 0;
-        try {
-          const priceFeed = await this.oracleProvider.getPrice(symbol);
-          if (priceFeed && priceFeed.price > 0) {
-            price = priceFeed.price;
-          }
-        } catch (error) {
-          elizaLogger17.warn(`Using mock price for ${symbol}: ${price}`);
-        }
-        const balance = await this.getAssetBalance(symbol, walletAddress);
-        balances[symbol] = balance * price;
-        elizaLogger17.info(`Portfolio balance for ${symbol}: ${balance} tokens × $${price} = $${balances[symbol]}`);
-      }
-      return balances;
-    } catch (error) {
-      elizaLogger17.error(`Failed to get portfolio balances:: ${error}`);
-      return {};
-    }
-  }
-}
-var rebalanceEvaluatorAction = {
-  name: "PORTFOLIO_REBALANCE",
-  similes: [
-    "REBALANCE_PORTFOLIO",
-    "PORTFOLIO_ANALYSIS",
-    "ASSET_ALLOCATION",
-    "PORTFOLIO_OPTIMIZATION"
-  ],
-  description: "Analyze and rebalance portfolio based on allocation strategies",
-  validate: async (runtime, message) => {
-    const config = await validateSeiConfig(runtime);
-    return config !== null;
-  },
-  handler: async (runtime, message, state, _options, callback) => {
-    try {
-      elizaLogger17.info("Starting portfolio rebalance analysis");
-      const config = await validateSeiConfig(runtime);
-      const walletProvider = new WalletProvider(config.SEI_PRIVATE_KEY, { name: config.SEI_NETWORK || "sei-devnet", chain: seiChains["devnet"] });
-      const oracleProvider2 = new SeiOracleProvider(runtime);
-      const rebalancer = new PortfolioRebalancer(walletProvider, oracleProvider2);
-      const text = typeof message.content === "string" ? message.content : message.content?.text || "";
-      const strategyMatch = text.match(/strategy[:\s]+([^,\n]+)/i);
-      const strategyName = strategyMatch ? strategyMatch[1].trim() : undefined;
-      const addressMatch = text.match(/(?:wallet|address)[:\s]+(0x[a-fA-F0-9]{40})/i);
-      const walletAddress = addressMatch ? addressMatch[1] : "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
-      if (callback) {
-        callback({
-          text: `\uD83D\uDD04 Analyzing portfolio for address: ${walletAddress}
-⏳ Fetching balances and calculating allocations...`,
-          content: {
-            action: "portfolio_analysis_started",
-            address: walletAddress,
-            strategy: strategyName
-          }
-        });
-      }
-      const analysis = await rebalancer.analyzePortfolio(walletAddress, strategyName);
-      const autoExecute = text.toLowerCase().includes("execute") || text.toLowerCase().includes("rebalance now");
-      if (analysis.rebalanceNeeded) {
-        const needsRebalancing = analysis.assets.some((asset) => Math.abs(asset.deviation) > analysis.strategy.rebalanceThreshold);
-        if (callback) {
-          callback({
-            text: `\uD83D\uDCCA Portfolio Analysis (${analysis.strategy.name})
-
-` + `\uD83D\uDCB0 Total Value: $${analysis.totalValue.toFixed(2)}
-` + `\uD83C\uDFAF Strategy: ${analysis.strategy.description}
-` + `⚖️ Risk Level: ${analysis.strategy.riskLevel}
-
-` + `\uD83D\uDCC8 Asset Allocations:
-` + analysis.assets.map((asset) => `${asset.symbol}: ${asset.currentPercentage.toFixed(1)}% ` + `(Target: ${asset.targetPercentage}%, ` + `Deviation: ${asset.deviation > 0 ? "+" : ""}${asset.deviation.toFixed(1)}%) ` + `[${asset.recommended.toUpperCase()}${asset.amount ? ` $${asset.amount.toFixed(2)}` : ""}]`).join(`
-`) + `
-
-\uD83D\uDD27 Rebalance Recommendations:
-` + analysis.recommendations.map((rec) => `${rec.priority.toUpperCase()}: ${rec.action.toUpperCase()} $${rec.amount.toFixed(2)} ${rec.asset} - ${rec.reason}`).join(`
-`),
-            content: {
-              action: "portfolio_analysis_complete",
-              analysis,
-              needsRebalancing
-            }
-          });
-        }
-        if (autoExecute) {
-          if (callback) {
-            callback({
-              text: `\uD83D\uDD04 Executing rebalance recommendations...`,
-              content: { action: "rebalance_execution_started" }
-            });
-          }
-          const txHashes = await rebalancer.executeRebalance(walletAddress, analysis.recommendations);
-          if (callback) {
-            callback({
-              text: `✅ Portfolio rebalance complete!
-
-` + `\uD83D\uDCDD Executed ${txHashes.length} transactions:
-` + txHashes.map((hash2, i) => `${i + 1}. ${hash2}`).join(`
-`),
-              content: {
-                action: "rebalance_execution_complete",
-                transactions: txHashes,
-                analysis
-              }
-            });
-          }
-        } else {
-          if (callback) {
-            callback({
-              text: `\uD83D\uDCA1 To execute these recommendations, send: "rebalance portfolio execute"`,
-              content: {
-                action: "rebalance_recommendations_ready",
-                analysis
-              }
-            });
-          }
-        }
-      } else {
-        if (callback) {
-          callback({
-            text: `✅ Portfolio is well-balanced!
-
-` + `\uD83D\uDCCA Current allocations are within target ranges for the ${analysis.strategy.name} strategy.
-` + `\uD83D\uDCB0 Total Value: $${analysis.totalValue.toFixed(2)}
-
-` + `\uD83D\uDCC8 Asset Allocations:
-` + analysis.assets.map((asset) => `${asset.symbol}: ${asset.currentPercentage.toFixed(1)}% ` + `(Target: ${asset.targetPercentage}%, ` + `Deviation: ${asset.deviation > 0 ? "+" : ""}${asset.deviation.toFixed(1)}%)`).join(`
-`),
-            content: {
-              action: "portfolio_balanced",
-              analysis
-            }
-          });
-        }
-      }
-    } catch (error) {
-      elizaLogger17.error(`Portfolio rebalance analysis failed:: ${error}`);
-      if (callback) {
-        callback({
-          text: `❌ Portfolio analysis failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-          content: {
-            action: "rebalance_failed",
-            error: error instanceof Error ? error.message : "Unknown error"
-          }
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Analyze my portfolio allocation" }
-      },
-      {
-        name: "{{user2}}",
-        content: {
-          text: "\uD83D\uDCCA Analyzing your portfolio...",
-          action: "PORTFOLIO_REBALANCE"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Rebalance my portfolio using conservative strategy" }
-      },
-      {
-        name: "{{user2}}",
-        content: {
-          text: "\uD83D\uDD04 Rebalancing portfolio with conservative DeFi strategy...",
-          action: "PORTFOLIO_REBALANCE"
-        }
-      }
-    ]
-  ]
-};
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/actions/il-protection.ts
 import {
@@ -22100,819 +22274,419 @@ import {
 // node_modules/@elizaos/plugin-sei-yield-delta/src/providers/coinbase-advanced.ts
 import { elizaLogger as elizaLogger18 } from "@elizaos/core";
 
-class CoinbaseAdvancedProvider {
-  async openPerpPosition(params) {
-    elizaLogger18.log(`Opening perp position on Coinbase: ${params.symbol}, size: ${params.size}, side: ${params.side}`);
-    return "0x123...abc";
+// node_modules/@elizaos/plugin-sei-yield-delta/src/amm-layer.ts
+class AMMLayerManager {
+  clob;
+  positions = {};
+  onRebalance;
+  onFallback;
+  constructor(clob, hooks) {
+    this.clob = clob;
+    if (hooks) {
+      this.onRebalance = hooks.onRebalance;
+      this.onFallback = hooks.onFallback;
+    }
   }
-  async closePerpPosition(symbol, size4) {
-    elizaLogger18.log(`Closing perp position on Coinbase: ${symbol}, size: ${size4 ?? "full"}`);
-    return "0xclose...abc";
-  }
-  async getPositions() {
-    elizaLogger18.log("Querying open perp positions on Coinbase");
-    return [];
-  }
-  async getHedgeRecommendation(lpPosition) {
-    elizaLogger18.log(`Calculating hedge recommendation for ${lpPosition.baseToken}/${lpPosition.quoteToken}`);
-    return {
-      type: "PERP_HEDGE",
-      provider: "Coinbase Advanced",
-      hedgeRatio: 0.75,
-      expectedILReduction: "~65% IL protection",
-      symbol: `${lpPosition.baseToken}${lpPosition.quoteToken}`,
-      size: (lpPosition.value * 0.75).toFixed(2),
-      action: "short",
-      cost: "$12.50 in fees",
-      txHash: "0x123...abc",
-      reason: `High volatility detected between ${lpPosition.baseToken}/${lpPosition.quoteToken}. Hedge ratio optimized for current market conditions.`
+  async initPosition(symbol, min, max, amount) {
+    this.positions[symbol] = {
+      range: { min, max },
+      amount,
+      analytics: { fees: 0, slippage: 0, rebalances: 0 }
     };
+    return this.positions[symbol];
   }
-  credentials;
-  baseUrl;
-  constructor(credentials) {
-    this.credentials = credentials;
-    this.baseUrl = credentials.sandbox ? "https://api-public.sandbox.exchange.coinbase.com" : "https://api.exchange.coinbase.com";
+  setDynamicRange(symbol, price, volatility = 0.05) {
+    const band = price * volatility;
+    if (this.positions[symbol]) {
+      this.positions[symbol].range.min = price - band;
+      this.positions[symbol].range.max = price + band;
+    }
+    return this.positions[symbol]?.range;
   }
-  async getMarketPrice(symbol) {
-    elizaLogger18.log(`Getting market price for ${symbol}`);
-    return 50000;
+  async rebalance(symbol, newPrice, fee = 0, slippage = 0, threshold = 0.02) {
+    const pos = this.positions[symbol];
+    if (!pos)
+      return null;
+    const minThreshold = pos.range.min - pos.range.min * threshold;
+    const maxThreshold = pos.range.max + pos.range.max * threshold;
+    if (newPrice < minThreshold || newPrice > maxThreshold) {
+      this.setDynamicRange(symbol, newPrice);
+      pos.analytics.rebalances++;
+      pos.analytics.fees += fee;
+      pos.analytics.slippage += slippage;
+      if (this.onRebalance)
+        this.onRebalance(symbol, pos);
+      await this.placeRangeOrder(symbol);
+    }
+    return pos;
   }
-  calculateHedgeRatio(lpPosition, volatility) {
-    const baseRatio = 0.5;
-    const volatilityAdjustment = Math.min(volatility / 100, 0.5);
-    return Math.min(baseRatio + volatilityAdjustment, 0.9);
+  async placeRangeOrder(symbol) {
+    const pos = this.positions[symbol];
+    if (!pos)
+      return null;
+    return this.clob.placeRangeOrder(symbol, pos.range, pos.amount);
   }
-  async executeILHedge(lpPosition) {
-    return {
-      success: true,
-      orderId: "0x123...abc",
-      message: `Successfully hedged ${lpPosition.baseToken}/${lpPosition.quoteToken} LP position`
-    };
+  async handleEscape(symbol, price) {
+    const pos = this.positions[symbol];
+    if (!pos)
+      return null;
+    if (price > pos.range.max || price < pos.range.min) {
+      if (this.onFallback)
+        this.onFallback(symbol);
+      return "options-hedge-activated";
+    }
+    return "in-range";
+  }
+  getAnalytics(symbol) {
+    const pos = this.positions[symbol];
+    return pos ? pos.analytics : null;
+  }
+  async rebalanceAll(prices, fee = 0, slippage = 0, threshold = 0.02) {
+    for (const symbol of Object.keys(prices)) {
+      await this.rebalance(symbol, prices[symbol], fee, slippage, threshold);
+    }
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/geographic-routing.ts
-class GeographicTradingRouter {
-  config;
-  coinbaseProvider;
-  constructor(config) {
-    this.config = config;
-    if (this.config.COINBASE_ADVANCED_API_KEY && this.config.COINBASE_ADVANCED_SECRET && this.config.COINBASE_ADVANCED_PASSPHRASE) {
-      this.coinbaseProvider = new CoinbaseAdvancedProvider({
-        apiKey: this.config.COINBASE_ADVANCED_API_KEY,
-        apiSecret: this.config.COINBASE_ADVANCED_SECRET,
-        passphrase: this.config.COINBASE_ADVANCED_PASSPHRASE,
-        sandbox: this.config.COINBASE_SANDBOX || false
-      });
+// node_modules/@elizaos/plugin-sei-yield-delta/src/evaluators/amm-risk.ts
+var ammRiskEvaluator = {
+  name: "AMM_RISK_EVALUATOR",
+  description: "Evaluates risk and opportunity for AMM positions using analytics and price bands",
+  validate: async (runtime, positions) => {
+    return Array.isArray(positions) && positions.length > 0;
+  },
+  async handler(runtime, positions, _, __, callback) {
+    const clob = runtime.seiClobProvider;
+    const manager = new AMMLayerManager(clob);
+    for (const p of positions) {
+      await manager.initPosition(p.symbol, p.min, p.max, p.amount);
     }
-  }
-  async getBestPerpProvider() {
-    const preference = this.config.PERP_PREFERENCE;
-    const geography = this.config.USER_GEOGRAPHY;
-    elizaLogger19.log(`Selecting perp provider for ${geography} with preference ${preference}`);
-    if (preference === "COINBASE_ONLY") {
-      if (this.coinbaseProvider) {
-        return this.createCoinbaseWrapper();
-      } else {
-        throw new Error("Coinbase credentials not configured");
-      }
+    const riskReport = Object.keys(manager["positions"]).map((symbol) => {
+      const analytics = manager.getAnalytics(symbol);
+      const pos = manager["positions"][symbol];
+      const riskLevel = analytics && (analytics.rebalances > 2 || analytics.slippage > 1) ? "HIGH" : "LOW";
+      return { symbol, riskLevel, analytics, range: pos.range };
+    });
+    const result = { success: true, data: riskReport };
+    if (callback)
+      callback(result);
+    return result;
+  },
+  examples: [
+    {
+      prompt: "Evaluate AMM risk for my positions",
+      messages: [
+        { name: "{{user1}}", content: { text: "Evaluate AMM risk for my positions" } },
+        { name: "{{agentName}}", content: { action: "AMM_RISK_EVALUATOR", text: "AMM risk evaluation complete. Report: ..." } }
+      ],
+      outcome: "AMM risk evaluation complete. Report: ..."
     }
-    if (preference === "ONCHAIN_ONLY") {
-      return this.createOnChainWrapper();
-    }
-    switch (geography) {
-      case "US":
-        if (this.coinbaseProvider && (preference === "GEOGRAPHIC" || preference === "GLOBAL")) {
-          elizaLogger19.log("Using Coinbase Advanced for US user");
-          return this.createCoinbaseWrapper();
-        }
-        elizaLogger19.log("Fallback to on-chain perps for US user");
-        return this.createOnChainWrapper();
-      case "EU":
-        if (preference === "GEOGRAPHIC") {
-          elizaLogger19.log("Using on-chain perps for EU user (geographic preference)");
-          return this.createOnChainWrapper();
-        }
-        return this.createOnChainWrapper();
-      case "ASIA":
-        elizaLogger19.log("Using on-chain perps for ASIA user");
-        return this.createOnChainWrapper();
-      default:
-        if (this.coinbaseProvider && preference === "GEOGRAPHIC") {
-          return this.createCoinbaseWrapper();
-        }
-        return this.createOnChainWrapper();
-    }
-  }
-  createCoinbaseWrapper() {
-    if (!this.coinbaseProvider) {
-      throw new Error("Coinbase provider not initialized");
-    }
-    return {
-      name: "Coinbase Advanced",
-      geographic: true,
-      regulated: true,
-      openPosition: (params) => this.coinbaseProvider.openPerpPosition(params),
-      closePosition: (symbol, size4) => this.coinbaseProvider.closePerpPosition(symbol, size4),
-      getPositions: () => this.coinbaseProvider.getPositions(),
-      getHedgeRecommendation: (lpPosition) => this.coinbaseProvider.getHedgeRecommendation(lpPosition)
-    };
-  }
-  createOnChainWrapper() {
-    return {
-      name: "Sei On-Chain Perps",
-      geographic: false,
-      regulated: false,
-      openPosition: async (params) => {
-        elizaLogger19.log("On-chain perp trading not yet implemented in wrapper");
-        return null;
-      },
-      closePosition: async (symbol, size4) => {
-        elizaLogger19.log("On-chain perp closing not yet implemented in wrapper");
-        return null;
-      },
-      getPositions: async () => {
-        elizaLogger19.log("On-chain position query not yet implemented in wrapper");
-        return [];
-      }
-    };
-  }
-  async executeGeographicHedge(lpPosition) {
+  ]
+};
+
+// node_modules/@elizaos/plugin-sei-yield-delta/src/evaluators/vault-monitor.ts
+import {
+  elizaLogger as elizaLogger22
+} from "@elizaos/core";
+var HEALTH_THRESHOLDS = {
+  MIN_APY: 10,
+  TARGET_APY: 15,
+  MAX_APY_DEVIATION: 5,
+  PRICE_PER_SHARE_MIN: 0.95,
+  TVL_WARNING_THRESHOLD: 1000
+};
+var vaultMonitorEvaluator = {
+  name: "VAULT_MONITOR",
+  similes: ["MONITOR_VAULT", "CHECK_VAULT", "VAULT_HEALTH", "VAULT_STATUS"],
+  description: "Monitors vault health, performance metrics, and generates alerts for anomalies",
+  validate: async (runtime, message) => {
+    const text = (message.content.text || "").toLowerCase();
+    const monitorKeywords = [
+      "monitor",
+      "check vault",
+      "vault health",
+      "vault status",
+      "how are the vaults",
+      "vault performance",
+      "check all vaults"
+    ];
+    return monitorKeywords.some((keyword) => text.includes(keyword));
+  },
+  handler: async (runtime, message, state) => {
     try {
-      elizaLogger19.log(`Executing geographic hedge for LP position: ${lpPosition.baseToken}/${lpPosition.quoteToken}`);
-      const provider = await this.getBestPerpProvider();
-      if (!provider.getHedgeRecommendation) {
-        throw new Error(`Provider ${provider.name} does not support hedge recommendations`);
-      }
-      const hedgeStrategy = await provider.getHedgeRecommendation(lpPosition);
-      const hedgeParams = {
-        symbol: hedgeStrategy.symbol,
-        size: hedgeStrategy.size,
-        side: hedgeStrategy.action.toLowerCase(),
-        leverage: 1,
-        slippage: 50
-      };
-      const txHash = await provider.openPosition(hedgeParams);
-      if (txHash) {
-        return {
-          success: true,
-          provider: provider.name,
-          txHash,
-          hedgeRatio: parseFloat(hedgeStrategy.size) / lpPosition.value,
-          expectedILReduction: hedgeStrategy.expectedILReduction
-        };
-      } else {
+      elizaLogger22.info("Running vault health monitoring...");
+      await vaultProvider.initialize(runtime);
+      const allVaults = await vaultProvider.getAllVaults(runtime);
+      if (allVaults.length === 0) {
         return {
           success: false,
-          provider: provider.name,
-          hedgeRatio: 0,
-          expectedILReduction: "0%",
-          error: "Failed to execute hedge position"
+          data: {
+            message: "No vaults found. Please check vault configuration."
+          }
         };
       }
+      const vaultReports = [];
+      let criticalCount = 0;
+      let warningCount = 0;
+      for (const vault of allVaults) {
+        try {
+          const metrics = await vaultProvider.getVaultMetrics(runtime, vault.token0);
+          const report2 = evaluateVaultHealth(vault.name, metrics);
+          vaultReports.push(report2);
+          if (report2.status === "critical")
+            criticalCount++;
+          else if (report2.status === "warning")
+            warningCount++;
+        } catch (error) {
+          elizaLogger22.warn(`Failed to monitor vault ${vault.name}: ${error}`);
+          vaultReports.push({
+            vaultName: vault.name,
+            tvl: 0,
+            apy: 0,
+            pricePerShare: 0,
+            totalYield: 0,
+            status: "critical",
+            alerts: ["Failed to fetch vault data"]
+          });
+          criticalCount++;
+        }
+      }
+      const overallStatus = criticalCount > 0 ? "critical" : warningCount > 0 ? "warning" : "healthy";
+      const summary = generateSummary(vaultReports, overallStatus);
+      const report = {
+        timestamp: Date.now(),
+        overallStatus,
+        vaults: vaultReports,
+        summary
+      };
+      elizaLogger22.info(`Vault monitoring complete - Status: ${overallStatus}, Total: ${vaultReports.length}, Critical: ${criticalCount}, Warning: ${warningCount}`);
+      return {
+        success: true,
+        data: report
+      };
     } catch (error) {
-      elizaLogger19.error(`Geographic hedge execution failed:: ${error}`);
+      elizaLogger22.error(`Error in vault monitor evaluator: ${error}`);
       return {
         success: false,
-        provider: "unknown",
-        hedgeRatio: 0,
-        expectedILReduction: "0%",
-        error: error instanceof Error ? error.message : "Unknown error"
+        data: {
+          error: error instanceof Error ? error.message : "Unknown error",
+          message: "Failed to monitor vault health"
+        }
       };
     }
-  }
-  async getProviderCapabilities() {
-    const provider = await this.getBestPerpProvider();
-    return {
-      name: provider.name,
-      geographic: provider.geographic,
-      regulated: provider.regulated,
-      supportsHedging: !!provider.getHedgeRecommendation,
-      geography: this.config.USER_GEOGRAPHY,
-      preference: this.config.PERP_PREFERENCE
-    };
-  }
-  async getAvailableProviders() {
-    const providers = [];
-    if (this.coinbaseProvider) {
-      providers.push("Coinbase Advanced");
+  },
+  examples: [
+    {
+      prompt: "How are all the vaults doing?",
+      messages: [
+        {
+          name: "{{user1}}",
+          content: {
+            text: "How are all the vaults doing?"
+          }
+        },
+        {
+          name: "{{agentName}}",
+          content: {
+            text: "Checking vault health across all vaults...",
+            action: "VAULT_MONITOR"
+          }
+        }
+      ],
+      outcome: "Vault health report generated with status for all vaults"
+    },
+    {
+      prompt: "Monitor vault health",
+      messages: [
+        {
+          name: "{{user1}}",
+          content: {
+            text: "Monitor vault health"
+          }
+        },
+        {
+          name: "{{agentName}}",
+          content: {
+            text: "Running scheduled vault health check...",
+            action: "VAULT_MONITOR"
+          }
+        }
+      ],
+      outcome: "Comprehensive health report with alerts if any issues detected"
     }
-    providers.push("Sei On-Chain Perps");
-    return providers;
-  }
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/impermanent-loss-protector.ts
-class ImpermanentLossProtector {
-  geographicRouter;
-  riskCalculator;
-  constructor(config) {
-    this.geographicRouter = new GeographicTradingRouter(config);
-    this.riskCalculator = new BasicILRiskCalculator;
-  }
-  async protectLiquidityPosition(position, strategy) {
-    try {
-      elizaLogger20.log(`Analyzing IL protection for ${position.baseToken}/${position.quoteToken} position`);
-      const ilRisk = await this.riskCalculator.calculateRisk(position);
-      elizaLogger20.log(`IL Risk Assessment: ${ilRisk.riskLevel}, Current IL: ${ilRisk.currentIL.toFixed(2)}%`);
-      const protectionType = this.determineProtectionStrategy(ilRisk, strategy);
-      if (protectionType === "PERP_HEDGE") {
-        return await this.executePerpsHedge(position, ilRisk);
-      } else if (protectionType === "OPTIONS_COLLAR") {
-        return await this.executeOptionsStrategy(position, ilRisk);
-      } else {
-        return this.createRebalanceOnlyStrategy(position, ilRisk);
-      }
-    } catch (error) {
-      elizaLogger20.error(`Failed to protect liquidity position:: ${error}`);
-      throw error;
-    }
-  }
-  determineProtectionStrategy(ilRisk, userStrategy) {
-    if (ilRisk.riskLevel === "LOW") {
-      return "REBALANCE_ONLY";
-    }
-    if (userStrategy === "CONSERVATIVE") {
-      return "REBALANCE_ONLY";
-    } else if (userStrategy === "AGGRESSIVE") {
-      return "PERP_HEDGE";
-    }
-    switch (ilRisk.riskLevel) {
-      case "MEDIUM":
-        return ilRisk.volatility > 0.5 ? "PERP_HEDGE" : "REBALANCE_ONLY";
-      case "HIGH":
-      case "CRITICAL":
-        return "PERP_HEDGE";
-      default:
-        return "REBALANCE_ONLY";
-    }
-  }
-  async executePerpsHedge(position, ilRisk) {
-    try {
-      elizaLogger20.log("Executing perpetual hedge strategy");
-      const hedgeRatio = this.riskCalculator.getOptimalHedgeRatio(ilRisk);
-      const hedgeResult = await this.geographicRouter.executeGeographicHedge(position);
-      if (hedgeResult.success) {
-        return {
-          type: "PERP_HEDGE",
-          provider: hedgeResult.provider,
-          hedgeRatio: hedgeResult.hedgeRatio,
-          expectedILReduction: hedgeResult.expectedILReduction,
-          txHash: hedgeResult.txHash,
-          cost: this.estimateHedgeCost(position, hedgeRatio),
-          reason: `Risk level: ${ilRisk.riskLevel}, Projected IL: ${ilRisk.projectedIL.toFixed(2)}%`
-        };
-      } else {
-        elizaLogger20.log("Hedge failed, falling back to rebalance strategy");
-        return this.createRebalanceOnlyStrategy(position, ilRisk);
-      }
-    } catch (error) {
-      elizaLogger20.error(`Perps hedge execution failed:: ${error}`);
-      return this.createRebalanceOnlyStrategy(position, ilRisk);
-    }
-  }
-  async executeOptionsStrategy(position, ilRisk) {
-    elizaLogger20.log("Options strategy not yet implemented, using perps hedge");
-    return await this.executePerpsHedge(position, ilRisk);
-  }
-  createRebalanceOnlyStrategy(position, ilRisk) {
-    return {
-      type: "REBALANCE_ONLY",
-      provider: "Internal",
-      hedgeRatio: 0,
-      expectedILReduction: "15%",
-      reason: `Low risk (${ilRisk.riskLevel}), rebalancing sufficient`,
-      cost: "0.1%"
-    };
-  }
-  estimateHedgeCost(position, hedgeRatio) {
-    const tradingFees = position.value * hedgeRatio * 0.001;
-    const fundingCosts = position.value * hedgeRatio * 0.0001 * 24;
-    return `$${(tradingFees + fundingCosts).toFixed(2)}`;
-  }
-  async getILAnalysis(position) {
-    return await this.riskCalculator.calculateRisk(position);
-  }
-  async simulateILScenarios(position, priceChanges) {
-    const scenarios = [];
-    for (const priceChange of priceChanges) {
-      const futurePrice = parseFloat(position.baseAmount) * (1 + priceChange);
-      const il = await this.riskCalculator.estimateILAtPrice(position, futurePrice);
-      const hedgedIL = il * 0.2;
-      scenarios.push({
-        priceChange: priceChange * 100,
-        il: il * 100,
-        hedgedIL: hedgedIL * 100
-      });
-    }
-    return scenarios;
-  }
-}
-
-class BasicILRiskCalculator {
-  async calculateRisk(position) {
-    try {
-      const volatility = await this.estimateVolatility(position.baseToken);
-      const correlation = await this.estimateCorrelation(position.baseToken, position.quoteToken);
-      const timeInPosition = 24;
-      const currentIL = this.calculateCurrentIL(position, volatility);
-      const projectedIL = this.projectFutureIL(currentIL, volatility, timeInPosition);
-      const riskLevel = this.assessRiskLevel(projectedIL, volatility);
-      return {
-        volatility,
-        priceCorrelation: correlation,
-        timeInPosition,
-        currentIL,
-        projectedIL,
-        riskLevel
-      };
-    } catch (error) {
-      elizaLogger20.error(`Risk calculation failed:: ${error}`);
-      return {
-        volatility: 0.5,
-        priceCorrelation: 0.3,
-        timeInPosition: 24,
-        currentIL: 5,
-        projectedIL: 10,
-        riskLevel: "MEDIUM"
-      };
-    }
-  }
-  async estimateILAtPrice(position, futurePrice) {
-    const currentPrice = parseFloat(position.baseAmount);
-    const priceRatio = futurePrice / currentPrice;
-    const il = 2 * Math.sqrt(priceRatio) / (1 + priceRatio) - 1;
-    return Math.abs(il);
-  }
-  getOptimalHedgeRatio(riskMetrics) {
-    let baseRatio = 0.3;
-    switch (riskMetrics.riskLevel) {
-      case "LOW":
-        baseRatio = 0.1;
-        break;
-      case "MEDIUM":
-        baseRatio = 0.4;
-        break;
-      case "HIGH":
-        baseRatio = 0.6;
-        break;
-      case "CRITICAL":
-        baseRatio = 0.8;
-        break;
-    }
-    const volatilityAdjustment = Math.min(riskMetrics.volatility * 0.3, 0.2);
-    return Math.min(baseRatio + volatilityAdjustment, 0.9);
-  }
-  async estimateVolatility(token) {
-    const volatilityMap = {
-      BTC: 0.6,
-      ETH: 0.7,
-      SEI: 1.2,
-      USDC: 0.05,
-      USDT: 0.05
-    };
-    return volatilityMap[token] || 0.8;
-  }
-  async estimateCorrelation(token1, token2) {
-    if (token1 === token2)
-      return 1;
-    if (token1 === "USDC" || token1 === "USDT" || (token2 === "USDC" || token2 === "USDT")) {
-      return 0.1;
-    }
-    if ((token1 === "BTC" || token1 === "ETH") && (token2 === "BTC" || token2 === "ETH")) {
-      return 0.7;
-    }
-    return 0.4;
-  }
-  calculateCurrentIL(position, volatility) {
-    return volatility * 10;
-  }
-  projectFutureIL(currentIL, volatility, timeHours) {
-    const timeAdjustment = Math.sqrt(timeHours / 24);
-    return currentIL * (1 + volatility * timeAdjustment);
-  }
-  assessRiskLevel(projectedIL, volatility) {
-    if (projectedIL < 5 && volatility < 0.3)
-      return "LOW";
-    if (projectedIL < 10 && volatility < 0.6)
-      return "MEDIUM";
-    if (projectedIL < 20 && volatility < 1)
-      return "HIGH";
-    return "CRITICAL";
-  }
-}
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/il-protection.ts
-var ilProtectionAction = {
-  name: "IL_PROTECTION",
-  similes: [
-    "HEDGE_IL",
-    "PROTECT_LIQUIDITY",
-    "IMPERMANENT_LOSS_PROTECTION",
-    "HEDGE_LP_POSITION"
   ],
-  validate: async (runtime, message) => {
-    try {
-      await validateSeiConfig(runtime);
-      const text = message.content?.text?.toLowerCase() || "";
-      return (text.includes("protect") || text.includes("hedge") || text.includes("il")) && (text.includes("liquidity") || text.includes("lp") || text.includes("position") || text.includes("impermanent") || text.includes("loss"));
-    } catch (error) {
-      return false;
-    }
-  },
-  description: "Protect liquidity positions from impermanent loss using geographic-aware perpetual hedging",
-  handler: async (runtime, message, state, _options, callback) => {
-    elizaLogger21.log("Processing IL protection request");
-    try {
-      if (false) {}
-      const config = await validateSeiConfig(runtime);
-      const text = message.content?.text?.toLowerCase() || "";
-      const lpPosition = parseILProtectionParams(text);
-      if (!lpPosition) {
-        if (callback) {
-          callback({
-            text: "Please provide liquidity position details in format: 'protect my ETH/USDC LP worth $1000'",
-            error: true
-          });
-        }
-        return;
-      }
-      const ilProtector = new ImpermanentLossProtector({
-        USER_GEOGRAPHY: config.USER_GEOGRAPHY || "GLOBAL",
-        PERP_PREFERENCE: config.PERP_PREFERENCE || "GEOGRAPHIC",
-        COINBASE_ADVANCED_API_KEY: config.COINBASE_ADVANCED_API_KEY,
-        COINBASE_ADVANCED_SECRET: config.COINBASE_ADVANCED_SECRET,
-        COINBASE_ADVANCED_PASSPHRASE: config.COINBASE_ADVANCED_PASSPHRASE,
-        COINBASE_SANDBOX: config.COINBASE_SANDBOX
-      });
-      const riskAnalysis = await ilProtector.getILAnalysis(lpPosition);
-      if (riskAnalysis.riskLevel === "LOW") {
-        if (callback) {
-          callback({
-            text: `\uD83D\uDCCA **IL Risk Analysis Complete**
-
-` + `**Position**: ${lpPosition.baseToken}/${lpPosition.quoteToken}
-` + `**Value**: $${lpPosition.value.toLocaleString()}
-` + `**Risk Level**: ${riskAnalysis.riskLevel} ✅
-` + `**Current IL**: ${riskAnalysis.currentIL.toFixed(2)}%
-` + `**Projected IL**: ${riskAnalysis.projectedIL.toFixed(2)}%
-
-` + `**Recommendation**: No hedging needed. Risk is low and periodic rebalancing should be sufficient.`
-          });
-        }
-        return;
-      }
-      const protectionStrategy = await ilProtector.protectLiquidityPosition(lpPosition);
-      const scenarios = await ilProtector.simulateILScenarios(lpPosition, [-0.5, -0.25, 0, 0.25, 0.5, 1]);
-      if (callback) {
-        const scenarioText = scenarios.map((s) => `${s.priceChange > 0 ? "+" : ""}${s.priceChange.toFixed(0)}%: ${s.il.toFixed(1)}% IL → ${s.hedgedIL.toFixed(1)}% (hedged)`).join(`
-`);
-        callback({
-          text: `\uD83D\uDEE1️ **Impermanent Loss Protection Activated**
-
-` + `**Position Protected**: ${lpPosition.baseToken}/${lpPosition.quoteToken}
-` + `**Value**: $${lpPosition.value.toLocaleString()}
-` + `**Risk Level**: ${riskAnalysis.riskLevel} ${getRiskEmoji2(riskAnalysis.riskLevel)}
-
-` + `**Protection Strategy**: ${protectionStrategy.type}
-` + `**Provider**: ${protectionStrategy.provider}
-` + `**Hedge Ratio**: ${(protectionStrategy.hedgeRatio * 100).toFixed(1)}%
-` + `**Expected IL Reduction**: ${protectionStrategy.expectedILReduction}
-` + `**Estimated Cost**: ${protectionStrategy.cost || "Calculated at execution"}
-` + `${protectionStrategy.txHash ? `**Transaction**: ${protectionStrategy.txHash}` : ""}
-
-` + `**IL Scenarios** (Price Change → Unhedged IL → Hedged IL):
-` + `\`\`\`
-${scenarioText}
-\`\`\`
-
-` + `**Reason**: ${protectionStrategy.reason}`
-        });
-      }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      elizaLogger21.error(`Error in IL protection:: ${error}`);
-      if (callback) {
-        callback({
-          text: `❌ Error setting up IL protection: ${errorMessage}`,
-          error: true
-        });
-      }
-    }
-  },
-  examples: [
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Protect my ETH/USDC LP position worth $5000" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Analyzing your liquidity position for impermanent loss protection...",
-          action: "IL_PROTECTION"
-        }
-      }
-    ],
-    [
-      {
-        name: "{{user1}}",
-        content: { text: "Hedge my BTC/USDT liquidity against IL" }
-      },
-      {
-        name: "{{agentName}}",
-        content: {
-          text: "Setting up impermanent loss hedge for your BTC/USDT position...",
-          action: "IL_PROTECTION"
-        }
-      }
-    ]
-  ]
+  alwaysRun: false
 };
-function parseILProtectionParams(text) {
-  const lpMatch = text.match(/(?:protect|hedge).*?(\w+)[\/\-](\w+).*?(?:\$|worth\s*\$?)(\d+(?:,\d{3})*(?:\.\d+)?)/i);
-  if (lpMatch) {
-    const baseToken = lpMatch[1].toUpperCase();
-    const quoteToken = lpMatch[2].toUpperCase();
-    const value = parseFloat(lpMatch[3].replace(/,/g, ""));
-    return {
-      baseToken,
-      quoteToken,
-      value,
-      baseAmount: (value / 2).toString(),
-      quoteAmount: (value / 2).toString(),
-      poolAddress: "0x...",
-      protocol: "auto-detected"
-    };
+function evaluateVaultHealth(vaultName, metrics) {
+  const alerts = [];
+  let status = "healthy";
+  if (metrics.totalValueLocked < HEALTH_THRESHOLDS.TVL_WARNING_THRESHOLD) {
+    alerts.push(`Low TVL: $${metrics.totalValueLocked.toFixed(2)}`);
+    status = "warning";
   }
-  const altMatch = text.match(/(\w+)[\/\-](\w+).*?lp.*?(\d+)/i);
-  if (altMatch) {
-    return {
-      baseToken: altMatch[1].toUpperCase(),
-      quoteToken: altMatch[2].toUpperCase(),
-      value: parseFloat(altMatch[3]),
-      baseAmount: (parseFloat(altMatch[3]) / 2).toString(),
-      quoteAmount: (parseFloat(altMatch[3]) / 2).toString(),
-      poolAddress: "0x...",
-      protocol: "auto-detected"
-    };
+  if (metrics.apy < HEALTH_THRESHOLDS.MIN_APY) {
+    alerts.push(`APY below minimum: ${metrics.apy.toFixed(2)}% (expected >${HEALTH_THRESHOLDS.MIN_APY}%)`);
+    status = "critical";
+  } else if (Math.abs(metrics.apy - HEALTH_THRESHOLDS.TARGET_APY) > HEALTH_THRESHOLDS.MAX_APY_DEVIATION) {
+    alerts.push(`APY deviating from target: ${metrics.apy.toFixed(2)}% (target: ${HEALTH_THRESHOLDS.TARGET_APY}%)`);
+    if (status === "healthy")
+      status = "warning";
   }
-  return null;
+  if (metrics.pricePerShare < HEALTH_THRESHOLDS.PRICE_PER_SHARE_MIN) {
+    alerts.push(`Share price below minimum: ${metrics.pricePerShare.toFixed(4)}`);
+    status = "critical";
+  }
+  if (metrics.managementFeeRate > 2) {
+    alerts.push(`High management fee: ${metrics.managementFeeRate.toFixed(2)}%`);
+  }
+  return {
+    vaultName,
+    tvl: metrics.totalValueLocked,
+    apy: metrics.apy,
+    pricePerShare: metrics.pricePerShare,
+    totalYield: metrics.totalYieldGenerated,
+    status,
+    alerts
+  };
 }
-function getRiskEmoji2(riskLevel) {
-  switch (riskLevel) {
-    case "LOW":
-      return "\uD83D\uDFE2";
-    case "MEDIUM":
-      return "\uD83D\uDFE1";
-    case "HIGH":
-      return "\uD83D\uDFE0";
-    case "CRITICAL":
-      return "\uD83D\uDD34";
+function generateSummary(reports, overallStatus) {
+  const totalTVL = reports.reduce((sum, r) => sum + r.tvl, 0);
+  const avgAPY = reports.reduce((sum, r) => sum + r.apy, 0) / reports.length;
+  const totalYield = reports.reduce((sum, r) => sum + r.totalYield, 0);
+  const healthyCount = reports.filter((r) => r.status === "healthy").length;
+  const warningCount = reports.filter((r) => r.status === "warning").length;
+  const criticalCount = reports.filter((r) => r.status === "critical").length;
+  let summary = `Vault Monitoring Report
+`;
+  summary += `${"=".repeat(50)}
+
+`;
+  summary += `Overall Status: ${overallStatus.toUpperCase()} ${getStatusEmoji(overallStatus)}
+
+`;
+  summary += `\uD83D\uDCCA Summary:
+`;
+  summary += `  Total Vaults: ${reports.length}
+`;
+  summary += `  Healthy: ${healthyCount} | Warnings: ${warningCount} | Critical: ${criticalCount}
+`;
+  summary += `  Total TVL: $${totalTVL.toLocaleString()}
+`;
+  summary += `  Average APY: ${avgAPY.toFixed(2)}%
+`;
+  summary += `  Total Yield Generated: $${totalYield.toLocaleString()}
+
+`;
+  summary += `\uD83D\uDCC8 Vault Details:
+`;
+  for (const report of reports) {
+    summary += `
+${getStatusEmoji(report.status)} ${report.vaultName}:
+`;
+    summary += `  TVL: $${report.tvl.toLocaleString()} | APY: ${report.apy.toFixed(2)}%
+`;
+    summary += `  Price/Share: ${report.pricePerShare.toFixed(4)} | Yield: $${report.totalYield.toLocaleString()}
+`;
+    if (report.alerts.length > 0) {
+      summary += `  ⚠️  Alerts:
+`;
+      report.alerts.forEach((alert) => {
+        summary += `     - ${alert}
+`;
+      });
+    }
+  }
+  if (criticalCount > 0) {
+    summary += `
+⚠️  CRITICAL: ${criticalCount} vault(s) need immediate attention!
+`;
+  }
+  if (warningCount > 0) {
+    summary += `
+⚡ WARNING: ${warningCount} vault(s) showing concerning metrics.
+`;
+  }
+  if (overallStatus === "healthy") {
+    summary += `
+✅ All vaults operating within normal parameters.
+`;
+  }
+  return summary;
+}
+function getStatusEmoji(status) {
+  switch (status) {
+    case "healthy":
+      return "✅";
+    case "warning":
+      return "⚠️";
+    case "critical":
+      return "\uD83D\uDEA8";
     default:
-      return "⚪";
+      return "❓";
   }
 }
 
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/amm-optimize.ts
-var ammOptimizeAction = {
-  name: "AMM_OPTIMIZE",
-  description: "Optimizes concentrated liquidity ranges and rebalances positions using Sei CLOB with AI assistance",
-  validate: async (runtime, message) => {
-    const text = message.content?.text?.toLowerCase() || "";
-    return text.includes("optimize") && (text.includes("lp") || text.includes("amm") || text.includes("liquidity")) || text.includes("lp") && text.includes("optimization") || text.includes("concentrated") && text.includes("liquidity");
-  },
-  async handler(runtime, message, state, options, callback) {
+// node_modules/@elizaos/plugin-sei-yield-delta/src/providers/amm-manager.ts
+class AMMManagerProvider {
+  manager;
+  name = "AMM_MANAGER";
+  description = "Provides AMM layer management for SEI yield optimization strategies";
+  constructor(clob, hooks) {
+    this.manager = new AMMLayerManager(clob, hooks);
+  }
+  async get(runtime, message, state) {
     try {
-      const aiEngineUrl = runtime.getSetting?.("AI_ENGINE_URL") || "http://localhost:8000";
-      const text = message.content?.text?.toLowerCase() || "";
-      const pairMatch = text.match(/(eth\/usdc|btc\/usdt|sei\/usdc|atom\/sei)/);
-      const defaultPair = pairMatch ? pairMatch[1] : "eth/usdc";
-      const requestBody = {
-        vault_address: "0x1234567890123456789012345678901234567890",
-        current_price: defaultPair.includes("btc") ? 32000 : 2500,
-        volatility: 0.3,
-        volume_24h: 1e6,
-        liquidity: 500000,
-        timeframe: "1d",
-        chain_id: 713715
+      const managerStatus = {
+        isActive: true,
+        supportedPools: [],
+        activeStrategies: [],
+        lastUpdate: new Date().toISOString()
       };
-      let aiOptimization = null;
-      try {
-        const response = await fetch(`${aiEngineUrl}/predict/optimal-range`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(requestBody)
-        });
-        if (response.ok) {
-          aiOptimization = await response.json();
-        }
-      } catch (aiError) {
-        console.log("AI optimization unavailable, using fallback strategy");
-      }
-      const clob = runtime.seiClobProvider || {
-        placeRangeOrder: async () => ({ success: true, orderId: "mock-order-123" })
-      };
-      const manager = new AMMLayerManager(clob);
-      if (aiOptimization) {
-        const symbol = defaultPair.toUpperCase().replace("/", "/");
-        await manager.initPosition(symbol, aiOptimization.lower_tick, aiOptimization.upper_tick, 1000);
-        if (callback && typeof callback === "function") {
-          await callback({
-            text: `\uD83E\uDD16 AI-optimized AMM position created for ${symbol}
-
-\uD83D\uDCCA **AI Analysis:**
-• Lower Tick: ${aiOptimization.lower_tick}
-• Upper Tick: ${aiOptimization.upper_tick}
-• Confidence: ${(aiOptimization.confidence * 100).toFixed(1)}%
-• Expected APR: ${(aiOptimization.expected_apr * 100).toFixed(1)}%
-
-${aiOptimization.reasoning}`,
-            content: {
-              type: "amm_optimization",
-              optimization: aiOptimization
-            }
-          });
-        }
-      } else {
-        await manager.initPosition("ETH/USDC", 1800, 2200, 1000);
-        await manager.initPosition("BTC/USDT", 29000, 31000, 500);
-        await manager.rebalanceAll({ "ETH/USDC": 2500, "BTC/USDT": 32000 }, 2, 0.5, 0.02);
-        const analytics = Object.keys(manager["positions"]).map((symbol) => ({ symbol, ...manager.getAnalytics(symbol) }));
-        if (callback && typeof callback === "function") {
-          await callback({
-            text: `AMM optimization complete. Analytics: ${JSON.stringify(analytics)}`,
-            content: {
-              type: "amm_optimization",
-              analytics
-            }
-          });
-        }
-      }
-    } catch (error) {
-      const errorMessage = `Error optimizing AMM positions: ${error instanceof Error ? error.message : "Unknown error"}`;
-      console.error(errorMessage, error);
-      if (callback && typeof callback === "function") {
-        await callback({
-          text: errorMessage,
-          content: {
-            type: "error"
-          }
-        });
-      }
       return {
-        success: false,
-        error: errorMessage
+        text: `AMM Manager Status: ${JSON.stringify(managerStatus, null, 2)}`,
+        values: managerStatus,
+        data: {
+          provider: "AMM_MANAGER",
+          timestamp: Date.now()
+        }
+      };
+    } catch (error) {
+      return {
+        text: `AMM Manager unavailable: ${error instanceof Error ? error.message : String(error)}`,
+        values: { error: true },
+        data: {
+          provider: "AMM_MANAGER",
+          error: error instanceof Error ? error.message : String(error),
+          timestamp: Date.now()
+        }
       };
     }
-  },
-  examples: [
-    [
-      { name: "{{user1}}", content: { text: "Optimize my LP positions for ETH/USDC and BTC/USDT" } },
-      { name: "{{agentName}}", content: { action: "AMM_OPTIMIZE", text: "AMM optimization complete. Analytics: ..." } }
-    ]
-  ]
-};
-
-// node_modules/@elizaos/plugin-sei-yield-delta/src/actions/delta-neutral.ts
-var deltaNeutralAction = {
-  name: "DELTA_NEUTRAL",
-  description: "Execute delta neutral strategy combining LP positions with perpetual hedging",
-  validate: async (runtime, message) => {
-    const text = message.content?.text?.toLowerCase() || "";
-    return text.includes("delta") && text.includes("neutral") || text.includes("market") && text.includes("neutral") || text.includes("delta neutral");
-  },
-  handler: async (runtime, message, state, options, callback) => {
-    try {
-      const text = message.content?.text?.toLowerCase() || "";
-      if (text.includes("info") || text.includes("help") || text.includes("explain")) {
-        if (callback && typeof callback === "function") {
-          await callback({
-            text: `\uD83D\uDD04 **Delta Neutral Strategy Commands:**
-
-• **"execute delta neutral strategy for [PAIR]"** - Start delta neutral position
-• **"delta neutral optimization"** - Get AI-optimized parameters
-• **"market neutral LP for [PAIR]"** - Create market-neutral liquidity position
-
-**What is Delta Neutral?**
-A delta neutral strategy combines:
-1. **Concentrated LP positions** to earn fees
-2. **Perpetual hedging** to minimize price risk
-3. **AI optimization** for optimal parameters
-
-This strategy profits from volatility and fees while staying market-neutral.`,
-            content: { type: "help" }
-          });
-        }
-        return;
-      }
-      const pairMatch = text.match(/(eth\/usdc|btc\/usdt|sei\/usdc|atom\/sei)/);
-      const pair = pairMatch ? pairMatch[1].toUpperCase() : "ETH/USDC";
-      const aiEngineUrl = runtime.getSetting?.("AI_ENGINE_URL") || "http://localhost:8000";
-      const requestBody = {
-        pair,
-        position_size: 1e4,
-        current_price: pair.includes("BTC") ? 32000 : 2500,
-        volatility: 0.25,
-        market_conditions: {
-          funding_rate: 0.01,
-          liquidity_depth: 5000000
-        }
-      };
-      const response = await fetch(`${aiEngineUrl}/predict/delta-neutral-optimization`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody)
-      });
-      if (!response.ok) {
-        throw new Error(`AI optimization failed: ${response.status}`);
-      }
-      const optimization = await response.json();
-      if (callback && typeof callback === "function") {
-        await callback({
-          text: `\uD83C\uDFAF **Delta Neutral Strategy Executed for ${pair}**
-
-\uD83D\uDD04 **Strategy Details:**
-• Hedge Ratio: ${(optimization.hedge_ratio * 100).toFixed(1)}%
-• Market Neutrality: ${(optimization.expected_neutrality * 100).toFixed(1)}%
-• Expected APR: ${(optimization.expected_apr * 100).toFixed(1)}%
-
-\uD83D\uDCB0 **Revenue Breakdown:**
-• LP Fees: $${optimization.revenue_breakdown.lp_fees.toLocaleString()}
-• Funding Rates: $${optimization.revenue_breakdown.funding_rates.toLocaleString()}
-• Volatility Capture: $${optimization.revenue_breakdown.volatility_capture.toLocaleString()}
-
-\uD83D\uDCCA **Position Range:**
-• Lower Price: $${optimization.lower_price.toFixed(2)}
-• Upper Price: $${optimization.upper_price.toFixed(2)}
-
-\uD83E\uDD16 **AI Analysis:**
-${optimization.reasoning}`,
-          content: {
-            type: "delta_neutral_execution",
-            optimization
-          }
-        });
-      }
-    } catch (error) {
-      const errorMessage = `❌ Error executing delta neutral strategy: ${error instanceof Error ? error.message : "Unknown error"}
-
-\uD83D\uDCA1 **Troubleshooting:**
-• Check if AI engine is running on port 8000
-• Verify network connectivity
-• Try again with a simpler command like "delta neutral info"`;
-      console.error(errorMessage, error);
-      if (callback && typeof callback === "function") {
-        await callback({
-          text: errorMessage,
-          content: { type: "error" }
-        });
-      }
-      return {
-        success: false,
-        error: errorMessage
-      };
-    }
-  },
-  examples: [
-    [
-      { name: "user", content: { text: "execute delta neutral strategy for ETH/USDC" } },
-      { name: "agent", content: { action: "DELTA_NEUTRAL", text: "Delta Neutral Strategy Executed for ETH/USDC..." } }
-    ],
-    [
-      { name: "user", content: { text: "delta neutral info" } },
-      { name: "agent", content: { action: "DELTA_NEUTRAL", text: "Delta Neutral Strategy Commands..." } }
-    ]
-  ]
-};
+  }
+  getManager() {
+    return this.manager;
+  }
+}
+var AMMManagerProvider_Instance = new AMMManagerProvider;
 
 // node_modules/@elizaos/plugin-sei-yield-delta/src/index.ts
 console.log("SEI YIELD-DELTA PLUGIN IS BEING INITIALIZED");
 var seiYieldDeltaPlugin = {
   name: "sei-yield-delta",
-  description: "Vault query interface for Yield Delta protocol on SEI blockchain - check portfolio, vault metrics, APY, and projected returns",
+  description: "Yield Delta vault query interface for SEI blockchain - query portfolio, vault metrics, projections, and yield history",
   actions: [
     portfolioQueryAction,
-    vaultListAction,
     vaultMetricsAction,
-    projectedReturnsAction,
     yieldHistoryAction,
+    projectedReturnsAction,
+    vaultListAction,
     positionDetailsAction,
     optimalDepositAction,
-    priceQueryAction,
     transferAction,
-    yeiFinanceAction,
-    dragonSwapTradeAction,
-    fundingArbitrageAction,
-    perpsTradeAction,
-    rebalanceEvaluatorAction,
-    ilProtectionAction,
-    ammOptimizeAction,
-    deltaNeutralAction
+    priceQueryAction
   ],
   evaluators: [
-    ammRiskEvaluator
+    ammRiskEvaluator,
+    vaultMonitorEvaluator
   ],
   providers: [
     evmWalletProvider,
@@ -28006,15 +27780,15 @@ class Signature {
       if (bytes2.length === 64) {
         const r2 = hexlify(bytes2.slice(0, 32));
         const s2 = bytes2.slice(32, 64);
-        const v3 = s2[0] & 128 ? 28 : 27;
+        const v2 = s2[0] & 128 ? 28 : 27;
         s2[0] &= 127;
-        return new Signature(_guard3, r2, hexlify(s2), v3);
+        return new Signature(_guard3, r2, hexlify(s2), v2);
       }
       if (bytes2.length === 65) {
         const r2 = hexlify(bytes2.slice(0, 32));
         const s2 = hexlify(bytes2.slice(32, 64));
-        const v3 = Signature.getNormalizedV(bytes2[64]);
-        return new Signature(_guard3, r2, s2, v3);
+        const v2 = Signature.getNormalizedV(bytes2[64]);
+        return new Signature(_guard3, r2, s2, v2);
       }
       assertError(false, "invalid raw signature length");
     }
@@ -28038,10 +27812,10 @@ class Signature {
     }(sig.s, sig.yParityAndS);
     const { networkV, v } = function(_v, yParityAndS, yParity) {
       if (_v != null) {
-        const v3 = getBigInt(_v);
+        const v2 = getBigInt(_v);
         return {
-          networkV: v3 >= BN_35 ? v3 : undefined,
-          v: Signature.getNormalizedV(v3)
+          networkV: v2 >= BN_35 ? v2 : undefined,
+          v: Signature.getNormalizedV(v2)
         };
       }
       if (yParityAndS != null) {
@@ -29225,7 +28999,7 @@ function handleUint(_value, param) {
   assertArgument(value <= BN_MAX_UINT, "value exceeds uint size", param, value);
   return value;
 }
-function formatNumber2(_value, name) {
+function formatNumber(_value, name) {
   const value = getBigInt(_value, "value");
   const result = toBeArray(value);
   assertArgument(result.length <= 32, `value too large`, `tx.${name}`, value);
@@ -29237,10 +29011,10 @@ function formatAccessList(value) {
 function formatAuthorizationList3(value) {
   return value.map((a) => {
     return [
-      formatNumber2(a.chainId, "chainId"),
+      formatNumber(a.chainId, "chainId"),
       a.address,
-      formatNumber2(a.nonce, "nonce"),
-      formatNumber2(a.signature.yParity, "yParity"),
+      formatNumber(a.nonce, "nonce"),
+      formatNumber(a.signature.yParity, "yParity"),
       toBeArray(a.signature.r),
       toBeArray(a.signature.s)
     ];
@@ -29291,11 +29065,11 @@ function _parseLegacy(data) {
 }
 function _serializeLegacy(tx, sig) {
   const fields = [
-    formatNumber2(tx.nonce, "nonce"),
-    formatNumber2(tx.gasPrice || 0, "gasPrice"),
-    formatNumber2(tx.gasLimit, "gasLimit"),
+    formatNumber(tx.nonce, "nonce"),
+    formatNumber(tx.gasPrice || 0, "gasPrice"),
+    formatNumber(tx.gasLimit, "gasLimit"),
     tx.to || "0x",
-    formatNumber2(tx.value, "value"),
+    formatNumber(tx.value, "value"),
     tx.data
   ];
   let chainId = BN_07;
@@ -29366,18 +29140,18 @@ function _parseEip1559(data) {
 }
 function _serializeEip1559(tx, sig) {
   const fields = [
-    formatNumber2(tx.chainId, "chainId"),
-    formatNumber2(tx.nonce, "nonce"),
-    formatNumber2(tx.maxPriorityFeePerGas || 0, "maxPriorityFeePerGas"),
-    formatNumber2(tx.maxFeePerGas || 0, "maxFeePerGas"),
-    formatNumber2(tx.gasLimit, "gasLimit"),
+    formatNumber(tx.chainId, "chainId"),
+    formatNumber(tx.nonce, "nonce"),
+    formatNumber(tx.maxPriorityFeePerGas || 0, "maxPriorityFeePerGas"),
+    formatNumber(tx.maxFeePerGas || 0, "maxFeePerGas"),
+    formatNumber(tx.gasLimit, "gasLimit"),
     tx.to || "0x",
-    formatNumber2(tx.value, "value"),
+    formatNumber(tx.value, "value"),
     tx.data,
     formatAccessList(tx.accessList || [])
   ];
   if (sig) {
-    fields.push(formatNumber2(sig.yParity, "yParity"));
+    fields.push(formatNumber(sig.yParity, "yParity"));
     fields.push(toBeArray(sig.r));
     fields.push(toBeArray(sig.s));
   }
@@ -29405,17 +29179,17 @@ function _parseEip2930(data) {
 }
 function _serializeEip2930(tx, sig) {
   const fields = [
-    formatNumber2(tx.chainId, "chainId"),
-    formatNumber2(tx.nonce, "nonce"),
-    formatNumber2(tx.gasPrice || 0, "gasPrice"),
-    formatNumber2(tx.gasLimit, "gasLimit"),
+    formatNumber(tx.chainId, "chainId"),
+    formatNumber(tx.nonce, "nonce"),
+    formatNumber(tx.gasPrice || 0, "gasPrice"),
+    formatNumber(tx.gasLimit, "gasLimit"),
     tx.to || "0x",
-    formatNumber2(tx.value, "value"),
+    formatNumber(tx.value, "value"),
     tx.data,
     formatAccessList(tx.accessList || [])
   ];
   if (sig) {
-    fields.push(formatNumber2(sig.yParity, "recoveryParam"));
+    fields.push(formatNumber(sig.yParity, "recoveryParam"));
     fields.push(toBeArray(sig.r));
     fields.push(toBeArray(sig.s));
   }
@@ -29475,20 +29249,20 @@ function _parseEip4844(data) {
 }
 function _serializeEip4844(tx, sig, blobs) {
   const fields = [
-    formatNumber2(tx.chainId, "chainId"),
-    formatNumber2(tx.nonce, "nonce"),
-    formatNumber2(tx.maxPriorityFeePerGas || 0, "maxPriorityFeePerGas"),
-    formatNumber2(tx.maxFeePerGas || 0, "maxFeePerGas"),
-    formatNumber2(tx.gasLimit, "gasLimit"),
+    formatNumber(tx.chainId, "chainId"),
+    formatNumber(tx.nonce, "nonce"),
+    formatNumber(tx.maxPriorityFeePerGas || 0, "maxPriorityFeePerGas"),
+    formatNumber(tx.maxFeePerGas || 0, "maxFeePerGas"),
+    formatNumber(tx.gasLimit, "gasLimit"),
     tx.to || ZeroAddress,
-    formatNumber2(tx.value, "value"),
+    formatNumber(tx.value, "value"),
     tx.data,
     formatAccessList(tx.accessList || []),
-    formatNumber2(tx.maxFeePerBlobGas || 0, "maxFeePerBlobGas"),
+    formatNumber(tx.maxFeePerBlobGas || 0, "maxFeePerBlobGas"),
     formatHashes(tx.blobVersionedHashes || [], "blobVersionedHashes")
   ];
   if (sig) {
-    fields.push(formatNumber2(sig.yParity, "yParity"));
+    fields.push(formatNumber(sig.yParity, "yParity"));
     fields.push(toBeArray(sig.r));
     fields.push(toBeArray(sig.s));
     if (blobs) {
@@ -29530,19 +29304,19 @@ function _parseEip7702(data) {
 }
 function _serializeEip7702(tx, sig) {
   const fields = [
-    formatNumber2(tx.chainId, "chainId"),
-    formatNumber2(tx.nonce, "nonce"),
-    formatNumber2(tx.maxPriorityFeePerGas || 0, "maxPriorityFeePerGas"),
-    formatNumber2(tx.maxFeePerGas || 0, "maxFeePerGas"),
-    formatNumber2(tx.gasLimit, "gasLimit"),
+    formatNumber(tx.chainId, "chainId"),
+    formatNumber(tx.nonce, "nonce"),
+    formatNumber(tx.maxPriorityFeePerGas || 0, "maxPriorityFeePerGas"),
+    formatNumber(tx.maxFeePerGas || 0, "maxFeePerGas"),
+    formatNumber(tx.gasLimit, "gasLimit"),
     tx.to || "0x",
-    formatNumber2(tx.value, "value"),
+    formatNumber(tx.value, "value"),
     tx.data,
     formatAccessList(tx.accessList || []),
     formatAuthorizationList3(tx.authorizationList || [])
   ];
   if (sig) {
-    fields.push(formatNumber2(sig.yParity, "yParity"));
+    fields.push(formatNumber(sig.yParity, "yParity"));
     fields.push(toBeArray(sig.r));
     fields.push(toBeArray(sig.s));
   }
@@ -42937,7 +42711,7 @@ class SEIVaultManager extends Service {
 var sei_vault_manager_default = SEIVaultManager;
 
 // src/evaluators/vault-monitor.ts
-var vaultMonitorEvaluator = {
+var vaultMonitorEvaluator2 = {
   name: "VAULT_MONITOR",
   description: "Monitors vault health, triggers yield harvesting, and tracks strategy performance",
   similes: [
@@ -43147,7 +42921,7 @@ ${overallHealth ? "✅" : "❌"} Overall System Health: ${overallHealth ? "HEALT
     return true;
   }
 };
-var vault_monitor_default = vaultMonitorEvaluator;
+var vault_monitor_default = vaultMonitorEvaluator2;
 
 // src/vault-integration-plugin.ts
 var vaultIntegrationPlugin = {
@@ -43227,5 +43001,5 @@ export {
   character
 };
 
-//# debugId=87CBDE87EDDEFEAF64756E2164756E21
+//# debugId=6722C176ACB7F19064756E2164756E21
 //# sourceMappingURL=index.js.map
