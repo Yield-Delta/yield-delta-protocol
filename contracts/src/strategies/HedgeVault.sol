@@ -67,7 +67,7 @@ contract HedgeVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
         uint256 amount0,
         uint256 amount1,
         address recipient
-    ) external override nonReentrant onlySEI notPaused returns (uint256 shares) {
+    ) external payable override nonReentrant onlySEI notPaused returns (uint256 shares) {
         require(amount0 > 0 || amount1 > 0, "Invalid amounts");
         require(recipient != address(0), "Invalid recipient");
         

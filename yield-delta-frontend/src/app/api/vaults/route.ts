@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
         }
       },
       {
-        address: '0xe51b5c4dcf6869e572ecbf21694cfe4d116dddf3', // Delta Neutral Vault (DEPLOYED)
+        address: '0x22d5eEfCdBC03D9CFF8111bFE22463B96C730337', // Delta Neutral Vault (REDEPLOYED Nov 29 2025)
         name: 'Delta Neutral Vault',
         strategy: 'delta_neutral',
         tokenA: 'SEI',
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
         tvl: 0,
         apy: 0.07, // 7% realistic (fees minus hedging costs)
         chainId: 1328,
-        active: true, // DEPLOYED Nov 28 2025
+        active: true,
         performance: {
           totalReturn: 0.017, // 1.7% over 90 days
           sharpeRatio: 3.5, // High due to market-neutral approach
@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
         }
       },
       {
-        address: '0x6b86848a916c31c22bd63fc93959bc2387ac4afb', // Yield Farming Vault (DEPLOYED)
+        address: '0x3c46EaF03bbF479C0bc51a2c104a46782adBa6e0', // Yield Farming Vault (REDEPLOYED Nov 29 2025)
         name: 'Yield Farming Vault',
         strategy: 'yield_farming',
         tokenA: 'SEI',
@@ -121,7 +121,7 @@ export async function GET(request: NextRequest) {
         tvl: 0,
         apy: 0.1223,
         chainId: 1328,
-        active: true, // DEPLOYED Nov 28 2025
+        active: true,
         performance: {
           totalReturn: 0.0292,
           sharpeRatio: 91.70,
@@ -137,7 +137,7 @@ export async function GET(request: NextRequest) {
         }
       },
       {
-        address: '0x93816c0d8a71f74e31f7bb76c63e2ee259bddfd2', // Active Trading Vault (DEPLOYED)
+        address: '0xdE82F37088f99f675eE22eabF6CfF995716f5365', // Active Trading Vault (REDEPLOYED Nov 29 2025)
         name: 'Active Trading Vault',
         strategy: 'arbitrage',
         tokenA: 'SEI',
@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
         tvl: 0,
         apy: 0.103, // 10.3% from backtest (realistic without flash loans)
         chainId: 1328,
-        active: true, // DEPLOYED Nov 28 2025
+        active: true,
         performance: {
           totalReturn: 0.0247, // 2.47% over 90 days (from backtest)
           sharpeRatio: 10.73, // High due to consistent small wins

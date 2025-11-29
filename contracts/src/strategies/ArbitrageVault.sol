@@ -67,41 +67,122 @@ contract ArbitrageVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
         uint256 amount0,
         uint256 amount1,
         address recipient
-    ) external override nonReentrant onlySEI notPaused returns (uint256 shares) {
+    ) external payable override nonReentrant onlySEI notPaused returns (uint256 shares) {
         require(amount0 > 0 || amount1 > 0, "Invalid amounts");
         require(recipient != address(0), "Invalid recipient");
-        
-        // Calculate shares based on current vault value
+
         uint256 totalValue = _calculateTotalValue();
         uint256 currentSupply = totalSupply();
-        
+
         if (currentSupply == 0) {
             shares = _sqrt(amount0 * amount1);
             require(shares > 1000, "Insufficient initial liquidity");
-            shares -= 1000; // Burn minimum liquidity
+            shares -= 1000;
         } else {
-            uint256 value0 = (amount0 * totalValue) / _getToken0Balance();
-            uint256 value1 = (amount1 * totalValue) / _getToken1Balance();
+            uint256 token0Balance = _getToken0Balance();
+            uint256 token1Balance = _getToken1Balance();
+
+            uint256 value0 = 0;
+            uint256 value1 = 0;
+
+            if (amount0 > 0 && token0Balance > 0) {
+                value0 = (amount0 * totalValue) / token0Balance;
+            }
+            if (amount1 > 0 && token1Balance > 0) {
+                value1 = (amount1 * totalValue) / token1Balance;
+            }
+
             shares = ((value0 + value1) * currentSupply) / totalValue;
         }
-        
-        // Transfer tokens (SEI's parallel execution optimizes this)
+
         if (amount0 > 0) {
-            IERC20(vaultInfo.token0).transferFrom(msg.sender, address(this), amount0);
+            if (vaultInfo.token0 == address(0)) {
+                require(msg.value == amount0, "Must send SEI with transaction");
+            } else {
+                IERC20(vaultInfo.token0).transferFrom(msg.sender, address(this), amount0);
+            }
         }
         if (amount1 > 0) {
             IERC20(vaultInfo.token1).transferFrom(msg.sender, address(this), amount1);
         }
-        
-        // Mint shares
+
         _mint(recipient, shares);
-        
-        // Update vault info
         vaultInfo.totalSupply = totalSupply();
         vaultInfo.totalValueLocked = _calculateTotalValue();
-        
+
         return shares;
     }
+
+    /**
+     * @dev Optimized single-asset deposit function for SEI frontend compatibility
+     */
+    function seiOptimizedDeposit(
+        uint256 amount,
+        address recipient
+    ) external payable nonReentrant onlySEI notPaused returns (uint256 shares) {
+        require(recipient != address(0), "Invalid recipient");
+        require(amount > 0, "Amount must be greater than 0");
+
+        uint256 amount0 = 0;
+        uint256 amount1 = 0;
+
+        if (msg.value > 0) {
+            require(vaultInfo.token0 == address(0), "This vault does not accept native SEI");
+            require(amount == msg.value, "Amount must match msg.value");
+            amount0 = msg.value;
+        } else {
+            require(vaultInfo.token1 != address(0), "Invalid token configuration");
+            amount1 = amount;
+            IERC20(vaultInfo.token1).transferFrom(msg.sender, address(this), amount);
+        }
+
+        uint256 totalValue = _calculateTotalValue();
+        uint256 currentSupply = totalSupply();
+
+        if (currentSupply == 0) {
+            shares = amount0 + amount1;
+            require(shares > 1000, "Insufficient initial liquidity");
+            shares -= 1000;
+        } else {
+            uint256 token0Balance = _getToken0Balance();
+            uint256 token1Balance = _getToken1Balance();
+
+            uint256 value0 = 0;
+            uint256 value1 = 0;
+
+            if (amount0 > 0 && token0Balance > 0) {
+                uint256 preDepositBalance0 = token0Balance >= amount0 ? token0Balance - amount0 : 0;
+                if (preDepositBalance0 > 0) {
+                    value0 = (amount0 * totalValue) / preDepositBalance0;
+                } else {
+                    value0 = amount0;
+                }
+            }
+            if (amount1 > 0 && token1Balance > 0) {
+                uint256 preDepositBalance1 = token1Balance >= amount1 ? token1Balance - amount1 : 0;
+                if (preDepositBalance1 > 0) {
+                    value1 = (amount1 * totalValue) / preDepositBalance1;
+                } else {
+                    value1 = amount1;
+                }
+            }
+
+            if (totalValue > 0) {
+                shares = ((value0 + value1) * currentSupply) / totalValue;
+            } else {
+                shares = value0 + value1;
+            }
+        }
+
+        _mint(recipient, shares);
+        vaultInfo.totalSupply = totalSupply();
+        vaultInfo.totalValueLocked = _calculateTotalValue();
+
+        emit SEIOptimizedDeposit(msg.sender, amount0 + amount1, shares, block.timestamp);
+        return shares;
+    }
+
+    event SEIOptimizedDeposit(address indexed user, uint256 amount, uint256 shares, uint256 blockTime);
 
     function withdraw(
         uint256 shares,
@@ -214,8 +295,13 @@ contract ArbitrageVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
     }
 
     function _getToken0Balance() internal view returns (uint256) {
+        if (vaultInfo.token0 == address(0)) {
+            return address(this).balance;
+        }
         return IERC20(vaultInfo.token0).balanceOf(address(this));
     }
+
+    receive() external payable {}
 
     function _getToken1Balance() internal view returns (uint256) {
         return IERC20(vaultInfo.token1).balanceOf(address(this));

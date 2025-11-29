@@ -252,9 +252,9 @@ export function useEnhancedVaultDeposit(vaultData: {
       // DEPLOYED VAULTS - SEI Atlantic-2 Testnet (Chain ID 1328)
       '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Concentrated Liquidity Vault (DEPLOYED Nov 21 2025)
       '0xbCB883594435D92395fA72D87845f87BE78d202E', // Stable Max USDC Vault (DEPLOYED Nov 26 2025)
-      '0xe51b5c4dcf6869e572ecbf21694cfe4d116dddf3', // Delta Neutral Vault (DEPLOYED Nov 28 2025)
-      '0x6b86848a916c31c22bd63fc93959bc2387ac4afb', // Yield Farming Vault (DEPLOYED Nov 28 2025)
-      '0x93816c0d8a71f74e31f7bb76c63e2ee259bddfd2', // Active Trading Vault (DEPLOYED Nov 28 2025)
+      '0x22d5eEfCdBC03D9CFF8111bFE22463B96C730337', // Delta Neutral Vault (REDEPLOYED Nov 29 2025)
+      '0x3c46EaF03bbF479C0bc51a2c104a46782adBa6e0', // Yield Farming Vault (REDEPLOYED Nov 29 2025)
+      '0xdE82F37088f99f675eE22eabF6CfF995716f5365', // Active Trading Vault (REDEPLOYED Nov 29 2025)
     ];
 
     const isValidVault = validTestnetVaults.some(addr => 

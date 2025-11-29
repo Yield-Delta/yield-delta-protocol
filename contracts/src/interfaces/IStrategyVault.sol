@@ -36,7 +36,7 @@ interface IStrategyVault {
     event PositionRebalanced(int24 oldTickLower, int24 oldTickUpper, int24 newTickLower, int24 newTickUpper);
     event AIRebalanceExecuted(bytes32 indexed aiRequestId, uint256 gasUsed);
     
-    function deposit(uint256 amount0, uint256 amount1, address recipient) external returns (uint256 shares);
+    function deposit(uint256 amount0, uint256 amount1, address recipient) external payable returns (uint256 shares);
     function withdraw(uint256 shares, address recipient) external returns (uint256 amount0, uint256 amount1);
     function rebalance(AIRebalanceParams calldata params) external;
     function getVaultInfo() external view returns (VaultInfo memory);
