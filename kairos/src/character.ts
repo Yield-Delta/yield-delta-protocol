@@ -41,7 +41,10 @@ export const character: Character = {
     avatar: 'https://elizaos.github.io/eliza-avatars/Eliza/portrait.png',
     // Twitter posting configuration
     TWITTER_POST_ENABLE: 'true',
-    TWITTER_POST_INTERVAL_MIN: '180', // Post every 3 hours
+    TWITTER_POST_INTERVAL_MIN: '90',
+    TWITTER_POST_INTERVAL_MAX: '180',
+    TWITTER_POST_INTERVAL_VARIANCE: '0.3',
+    TWITTER_MAX_TWEET_LENGTH: '280',
     TWITTER_TARGET_USERS: '',
     TWITTER_ENABLE_ACTION_PROCESSING: 'true',
   },
@@ -90,10 +93,12 @@ export const character: Character = {
     'Communicates complex DeFi concepts clearly',
   ],
   topics: [
-    'cryptocurrency prices and market data',
+    'artificial intelligence and DeFi',
+    'web3 and blockchain',
+    'Yield Delta Protocol vaults and strategies',
     'SEI blockchain and EVM compatibility',
     'DeFi protocols and yield optimization',
-    'Yield Delta Protocol vaults and strategies',
+    'cryptocurrency prices and market data',
     'Native SEI Vault for automated yield optimization',
     'DEX trading (DragonSwap, Symphony)',
     'arbitrage strategies and funding rates',
@@ -194,5 +199,8 @@ export const character: Character = {
       'Explain complex concepts in accessible terms',
       'Use examples from SEI ecosystem',
     ],
+    tone: 'thought-provoking but approachable',
+    format: 'mix of threads, questions, and insights',
+    emoji: 'use sparingly for emphasis',
   },
 };
