@@ -17,6 +17,11 @@ contract YieldFarmingVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
     Position public currentPosition;
     address public aiOracle;
     mapping(bytes32 => bool) public executedAIRequests;
+
+    // Customer tracking for analytics
+    mapping(address => uint256) public customerTotalDeposited;
+    mapping(address => int256) public customerNetDeposited;
+    mapping(address => uint256) public customerDepositTime;
     
     // Fee configuration (optimized for SEI's low gas costs)
     uint256 public constant MANAGEMENT_FEE = 100; // 1%
@@ -107,6 +112,15 @@ contract YieldFarmingVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
         }
 
         _mint(recipient, shares);
+
+        // Track customer deposits for analytics
+        uint256 totalDeposit = amount0 + amount1;
+        customerTotalDeposited[recipient] += totalDeposit;
+        customerNetDeposited[recipient] += int256(totalDeposit);
+        if (customerDepositTime[recipient] == 0) {
+            customerDepositTime[recipient] = block.timestamp;
+        }
+
         vaultInfo.totalSupply = totalSupply();
         vaultInfo.totalValueLocked = _calculateTotalValue();
 
@@ -175,6 +189,15 @@ contract YieldFarmingVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
         }
 
         _mint(recipient, shares);
+
+        // Track customer deposits for analytics
+        uint256 totalDeposit = amount0 + amount1;
+        customerTotalDeposited[recipient] += totalDeposit;
+        customerNetDeposited[recipient] += int256(totalDeposit);
+        if (customerDepositTime[recipient] == 0) {
+            customerDepositTime[recipient] = block.timestamp;
+        }
+
         vaultInfo.totalSupply = totalSupply();
         vaultInfo.totalValueLocked = _calculateTotalValue();
 
@@ -196,17 +219,25 @@ contract YieldFarmingVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
         amount1 = (shares * _getToken1Balance()) / currentSupply;
         
         _burn(msg.sender, shares);
-        
+
+        // Track customer withdrawals for analytics
+        uint256 totalWithdrawal = amount0 + amount1;
+        customerNetDeposited[msg.sender] -= int256(totalWithdrawal);
+
         if (amount0 > 0) {
-            IERC20(vaultInfo.token0).transfer(recipient, amount0);
+            if (vaultInfo.token0 == address(0)) {
+                payable(recipient).transfer(amount0);
+            } else {
+                IERC20(vaultInfo.token0).transfer(recipient, amount0);
+            }
         }
         if (amount1 > 0) {
             IERC20(vaultInfo.token1).transfer(recipient, amount1);
         }
-        
+
         vaultInfo.totalSupply = totalSupply();
         vaultInfo.totalValueLocked = _calculateTotalValue();
-        
+
         return (amount0, amount1);
     }
 
@@ -298,11 +329,19 @@ contract YieldFarmingVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
             shareValue = 0;
         }
 
-        // For now, return 0 for deposit tracking (can be enhanced later with storage)
-        totalDeposited = 0;
-        totalWithdrawn = 0;
-        depositTime = 0;
-        lockTimeRemaining = 0;
+        // Return actual deposit tracking data
+        totalDeposited = customerTotalDeposited[customer];
+
+        // Calculate total withdrawn from net deposited
+        int256 netDeposited = customerNetDeposited[customer];
+        if (netDeposited < 0) {
+            totalWithdrawn = uint256(-netDeposited);
+        } else {
+            totalWithdrawn = totalDeposited > uint256(netDeposited) ? totalDeposited - uint256(netDeposited) : 0;
+        }
+
+        depositTime = customerDepositTime[customer];
+        lockTimeRemaining = 0; // No lock period for this vault
     }
 
     function _executeYieldFarmingRebalance(AIRebalanceParams calldata params) internal {
