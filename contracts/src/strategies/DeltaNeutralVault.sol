@@ -23,6 +23,13 @@ contract DeltaNeutralVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
     mapping(address => int256) public customerNetDeposited;
     mapping(address => uint256) public customerDepositTime;
 
+    // Testnet simulation for P&L
+    uint256 public simulatedPerformanceMultiplier = 1e18; // 1.0 in 18 decimals
+    uint256 public lastSimulationUpdate;
+    uint256 public constant TARGET_APY = 700; // 7% APY (in basis points)
+    uint256 public constant SIMULATION_INTERVAL = 1 days;
+    bool public simulationEnabled = true; // Enable for testnet
+
     // Fee configuration (optimized for SEI's low gas costs)
     uint256 public constant MANAGEMENT_FEE = 100; // 1%
     uint256 public constant PERFORMANCE_FEE = 1000; // 10%
@@ -65,6 +72,7 @@ contract DeltaNeutralVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
             isActive: true
         });
         aiOracle = _aiOracle;
+        lastSimulationUpdate = block.timestamp;
         transferOwnership(_initialOwner);
     }
 
@@ -357,11 +365,19 @@ contract DeltaNeutralVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
     ) {
         shares = balanceOf(customer);
 
-        // Calculate share value
+        // Calculate share value with simulated performance
         uint256 currentSupply = totalSupply();
         if (currentSupply > 0 && shares > 0) {
             uint256 totalValue = _calculateTotalValue();
-            shareValue = (shares * totalValue) / currentSupply;
+            uint256 baseShareValue = (shares * totalValue) / currentSupply;
+
+            // Apply simulated performance multiplier for testnet
+            if (simulationEnabled) {
+                uint256 currentMultiplier = _getSimulatedMultiplier();
+                shareValue = (baseShareValue * currentMultiplier) / 1e18;
+            } else {
+                shareValue = baseShareValue;
+            }
         } else {
             shareValue = 0;
         }
@@ -380,6 +396,71 @@ contract DeltaNeutralVault is IStrategyVault, ERC20, Ownable, ReentrancyGuard {
         depositTime = customerDepositTime[customer];
         lockTimeRemaining = 0; // No lock period for this vault
     }
+
+    /**
+     * @dev Update simulated performance for testnet (anyone can call to trigger daily updates)
+     */
+    function updateSimulation() external {
+        require(simulationEnabled, "Simulation disabled");
+
+        uint256 elapsed = block.timestamp - lastSimulationUpdate;
+        if (elapsed >= SIMULATION_INTERVAL) {
+            // Calculate daily yield: APY / 365
+            // TARGET_APY is in basis points (700 = 7%)
+            // Daily yield = (1 + APY/365) = 1 + (0.07/365) ≈ 1.0001918
+            uint256 dailyYield = 1e18 + ((TARGET_APY * 1e18) / (365 * 10000));
+
+            // Apply compounding for each day elapsed
+            uint256 daysElapsed = elapsed / SIMULATION_INTERVAL;
+            for (uint256 i = 0; i < daysElapsed && i < 30; i++) { // Max 30 days at once
+                simulatedPerformanceMultiplier = (simulatedPerformanceMultiplier * dailyYield) / 1e18;
+            }
+
+            lastSimulationUpdate = block.timestamp;
+            emit SimulationUpdated(simulatedPerformanceMultiplier, block.timestamp);
+        }
+    }
+
+    /**
+     * @dev Get current simulated multiplier (includes pending daily gains)
+     */
+    function _getSimulatedMultiplier() internal view returns (uint256) {
+        if (!simulationEnabled) return 1e18;
+
+        uint256 elapsed = block.timestamp - lastSimulationUpdate;
+        if (elapsed < SIMULATION_INTERVAL) {
+            return simulatedPerformanceMultiplier;
+        }
+
+        // Calculate pending gains
+        uint256 dailyYield = 1e18 + ((TARGET_APY * 1e18) / (365 * 10000));
+        uint256 daysElapsed = elapsed / SIMULATION_INTERVAL;
+
+        uint256 pendingMultiplier = simulatedPerformanceMultiplier;
+        for (uint256 i = 0; i < daysElapsed && i < 30; i++) {
+            pendingMultiplier = (pendingMultiplier * dailyYield) / 1e18;
+        }
+
+        return pendingMultiplier;
+    }
+
+    /**
+     * @dev Toggle simulation on/off (owner only)
+     */
+    function setSimulationEnabled(bool enabled) external onlyOwner {
+        simulationEnabled = enabled;
+    }
+
+    /**
+     * @dev Manually set performance multiplier for testing (owner only)
+     */
+    function setPerformanceMultiplier(uint256 multiplier) external onlyOwner {
+        require(multiplier >= 1e18 && multiplier <= 2e18, "Invalid multiplier");
+        simulatedPerformanceMultiplier = multiplier;
+        emit SimulationUpdated(multiplier, block.timestamp);
+    }
+
+    event SimulationUpdated(uint256 multiplier, uint256 timestamp);
 
     // Internal functions
     function _executeDeltaNeutralRebalance(AIRebalanceParams calldata params) internal {

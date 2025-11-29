@@ -288,9 +288,9 @@ export const useDepositToVault = (vaultAddress: string) => {
     const validTestnetVaults = [
       '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // Concentrated Liquidity Vault (DEPLOYED Nov 21 2025)
       '0xbCB883594435D92395fA72D87845f87BE78d202E', // Stable Max USDC Vault (DEPLOYED Nov 26 2025)
-      '0x6878C918a943def673609be09b384001Bf6f757A', // Delta Neutral Vault (REDEPLOYED Nov 29 2025 - with deposit tracking)
-      '0xC7f7FeE9661014A6BAA227de30B8B17917FdAC9a', // Yield Farming Vault (REDEPLOYED Nov 29 2025 - with deposit tracking)
-      '0x5048903A550D0dA3f2Af3581Ab0b3686701f5E98', // Active Trading Vault (REDEPLOYED Nov 29 2025 - with deposit tracking)
+      '0xB8Ab030551dabC4FA99864111AAbA7F82281EbD8', // Delta Neutral Vault (REDEPLOYED Nov 29 2025 - with P&L simulation)
+      '0x0Ea885EcA3c738be522b256261C4a13eF4225fD4', // Yield Farming Vault (REDEPLOYED Nov 29 2025 - with P&L simulation)
+      '0xa079a2881233B8bBBd185DdEA5c0a5f484cD4E7b', // Active Trading Vault (REDEPLOYED Nov 29 2025 - with P&L simulation)
     ]
 
     // Legacy/demo vault addresses have been removed - they were never deployed
