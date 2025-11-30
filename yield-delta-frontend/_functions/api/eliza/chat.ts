@@ -112,12 +112,12 @@ export async function onRequestGet(context: any) {
       headers['X-API-KEY'] = ELIZA_SERVER_AUTH_TOKEN
     }
 
-    // Check if agents endpoint is accessible with retry logic
+    // Check if agents endpoint is accessible with quick timeout
     const response = await fetchWithRetry(`${activeUrl}/api/agents`, {
       method: 'GET',
       headers,
-      signal: AbortSignal.timeout(5000)
-    }, 2)
+      signal: AbortSignal.timeout(2000)
+    }, 1)
 
     return new Response(JSON.stringify({
       success: true,
@@ -126,11 +126,12 @@ export async function onRequestGet(context: any) {
       agentUrl: activeUrl,
       activeAgent: ACTIVE_AGENT,
       capabilities: [
-        'vault_analysis',
-        'rebalance_recommendations',
-        'market_predictions',
-        'sei_optimizations',
+        'automated_vault_management',
+        'vault_performance_analysis',
         'real_time_price_data',
+        'daily_pnl_tracking',
+        'strategy_comparison',
+        'automated_rebalancing_info',
         'yield_delta_protocol_info'
       ],
       fallbackMode: !response.ok,
@@ -143,19 +144,20 @@ export async function onRequestGet(context: any) {
       }
     })
   } catch (error) {
+    // Return success=true but with offline status for proper frontend handling
     return new Response(JSON.stringify({
-      success: false,
+      success: true,
       agentStatus: 'offline',
       agentName: ACTIVE_AGENT === 'kairos' ? 'Kairos' : 'Liqui',
       agentUrl: activeUrl,
       activeAgent: ACTIVE_AGENT,
-      error: error instanceof Error ? error.message : 'Connection failed',
       fallbackMode: true,
-      fallbackCapabilities: [
-        'basic_vault_questions',
-        'rebalancing_guidance',
+      capabilities: [
+        'automated_vault_strategies',
+        'strategy_comparison',
+        'apy_information',
         'gas_cost_info',
-        'apy_calculations'
+        'vault_monitoring'
       ],
       timestamp: new Date().toISOString()
     }), {
