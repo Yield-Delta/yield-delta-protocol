@@ -17,9 +17,9 @@ NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
 NODE_ENV = "production"
 
 # AI Agent Configuration (Kairos)
-ELIZA_AGENT_URL = "https://fulfilling-empathy-production.up.railway.app"
-KAIROS_AGENT_URL = "https://fulfilling-empathy-production.up.railway.app"
-NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://fulfilling-empathy-production.up.railway.app/ws"
+ELIZA_AGENT_URL = "https://vibrant-harmony-production.up.railway.app"
+KAIROS_AGENT_URL = "https://vibrant-harmony-production.up.railway.app"
+NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://vibrant-harmony-production.up.railway.app/ws"
 ACTIVE_AGENT = "kairos"
 ELIZA_SERVER_AUTH_TOKEN = "egUaYvBLRmP9NYm7o2HCioQWyjfh4IvmZQVkHk5cGa0="
 
@@ -68,9 +68,9 @@ NEXT_PUBLIC_CLOUDFLARE_BUILD = "true"
 NODE_ENV = "preview"
 
 # AI Agent Configuration (Kairos - Preview)
-ELIZA_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
-KAIROS_AGENT_URL = "https://yield-delta-protocol-production.up.railway.app"
-NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://yield-delta-protocol-production.up.railway.app/ws"
+ELIZA_AGENT_URL = "https://vibrant-harmony-production.up.railway.app"
+KAIROS_AGENT_URL = "https://vibrant-harmony-production.up.railway.app"
+NEXT_PUBLIC_ELIZAOS_WS_URL = "wss://vibrant-harmony-production.up.railway.app/ws"
 ACTIVE_AGENT = "kairos"
 ELIZA_SERVER_AUTH_TOKEN = "egUaYvBLRmP9NYm7o2HCioQWyjfh4IvmZQVkHk5cGa0="
 
