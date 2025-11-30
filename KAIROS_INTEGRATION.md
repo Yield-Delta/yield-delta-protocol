@@ -57,23 +57,29 @@ ELIZA_SERVER_AUTH_TOKEN = "egUaYvBLRmP9NYm7o2HCioQWyjfh4IvmZQVkHk5cGa0="
 
 ## Key Features
 
+### Automated Vault Strategies
+Kairos manages three fully automated vault strategies:
+- **Delta Neutral** (7% APY): Market-neutral positions with automatic rebalancing
+- **Yield Farming** (12.23% APY): Optimized liquidity provision with hourly position management
+- **Arbitrage** (10.3% APY): Active DEX trading capturing price differences
+
+All strategies operate autonomously with:
+- Hourly automated rebalancing based on market conditions
+- Daily compounding of yields
+- No manual intervention required - just deposit and earn
+
 ### Real-time Price Data
-Kairos can fetch cryptocurrency prices using oracle providers:
+Kairos provides cryptocurrency prices using oracle providers:
 - YEI Finance Multi-Oracle
 - Pyth Network
 - Chainlink
 
-### DeFi Operations
-- Token transfers and DEX trading
-- Arbitrage strategy execution
-- Portfolio rebalancing
-- Yield optimization recommendations
-
-### Vault Management
+### Vault Monitoring
 - Native SEI Vault integration
 - Balance checking (requires wallet address)
-- Deposit/withdrawal guidance
-- APY calculations and projections
+- Daily P&L tracking
+- Performance metrics and APY projections
+- Rebalancing activity logs
 
 ### Twitter Integration
 - Automated posting every 3 hours
@@ -95,11 +101,12 @@ Response:
   "agentStatus": "online",
   "agentName": "Kairos",
   "capabilities": [
-    "vault_analysis",
-    "rebalance_recommendations",
-    "market_predictions",
-    "sei_optimizations",
+    "automated_vault_management",
+    "vault_performance_analysis",
     "real_time_price_data",
+    "daily_pnl_tracking",
+    "strategy_comparison",
+    "automated_rebalancing_info",
     "yield_delta_protocol_info"
   ]
 }
@@ -111,7 +118,7 @@ POST /api/eliza/chat
 Content-Type: application/json
 
 {
-  "message": "What's the current price of SEI?",
+  "message": "How does the rebalancing work?",
   "vaultAddress": "0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565",
   "context": {
     "currentPage": "vaults"
@@ -125,10 +132,14 @@ Response:
 {
   "success": true,
   "data": {
-    "message": "The current price of SEI is $0.1384",
+    "message": "Our vaults rebalance automatically every hour! The AI monitors market conditions, liquidity depth, and volatility to optimize positions without any manual intervention. Simply deposit your assets and the vault handles everything.",
     "confidence": 0.95,
     "actions": [],
-    "suggestions": ["Show AI predictions", "Check gas costs"],
+    "suggestions": [
+      "What strategies are running?",
+      "Show my vault performance",
+      "How does automatic rebalancing work?"
+    ],
     "metadata": {
       "processingSource": "kairos-agent",
       "agentName": "Kairos"
@@ -169,14 +180,15 @@ The frontend automatically deploys via Cloudflare Pages with wrangler.toml confi
 
 ## Fallback Mode
 
-When Kairos agent is offline, the system provides intelligent fallback responses:
+When Kairos agent is offline, the system provides intelligent fallback responses emphasizing the automated nature of the vaults:
 
-- **Rebalancing queries**: Gas cost estimates, utilization recommendations
+- **Rebalancing queries**: Explains automatic hourly rebalancing by AI-driven strategies
+- **Strategy questions**: Details on Delta Neutral, Yield Farming, and Arbitrage vaults
+- **APY questions**: Current simulated APY rates (7-12%) with daily compounding
 - **Price queries**: Instructions to check dashboard
-- **APY questions**: General yield optimization guidance
-- **Help requests**: Feature overview and capabilities
+- **Help requests**: Feature overview emphasizing set-and-forget automation
 
-Fallback responses include smart suggestions to guide users to relevant features.
+All fallback responses stress that users don't need to manually manage positions - vaults handle everything automatically.
 
 ## Testing
 
