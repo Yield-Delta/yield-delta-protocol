@@ -321,7 +321,16 @@ export default function AIChat({
         // Initialize welcome message if empty
         if (messages.length === 0) {
           const welcomeMessage = initialMessage ||
-            `Welcome to Yield Delta! I'm ${data.agentName || 'Kairos'}, your AI assistant. Our vaults automatically rebalance every hour and compound yields daily - just deposit and earn. How can I help you today?`
+            `Welcome to Yield Delta! I'm ${data.agentName || 'Kairos'}, your AI assistant for automated DeFi yield optimization on SEI.
+
+**What is Yield Delta?**
+We offer automated vault strategies that handle everything for you - no manual trading needed! Our vaults rebalance hourly and compound daily.
+
+**Try asking:**
+• "What vault strategies do you offer?"
+• "How does automated rebalancing work?"
+• "What are the current APY rates?"
+• "Explain the Delta Neutral strategy"`
 
           setMessages([{
             id: '1',
@@ -329,6 +338,12 @@ export default function AIChat({
             sender: 'ai',
             timestamp: new Date(),
             confidence: 1.0,
+            suggestions: [
+              'What vault strategies do you offer?',
+              'How does automated rebalancing work?',
+              'What are the APY rates?',
+              'Explain Delta Neutral strategy'
+            ],
             metadata: {
               agentName: data.agentName || 'Kairos'
             }
@@ -342,7 +357,16 @@ export default function AIChat({
       // Still initialize message even if agent is offline
       if (messages.length === 0) {
         const welcomeMessage = initialMessage ||
-          "Welcome to Yield Delta! I'm Kairos, your AI assistant. Our vaults automatically rebalance every hour and compound yields daily - just deposit and earn. How can I help you today?"
+          `Welcome to Yield Delta! I'm Kairos, your AI assistant for automated DeFi yield optimization on SEI.
+
+**What is Yield Delta?**
+We offer automated vault strategies that handle everything for you - no manual trading needed! Our vaults rebalance hourly and compound daily.
+
+**Try asking:**
+• "What vault strategies do you offer?"
+• "How does automated rebalancing work?"
+• "What are the current APY rates?"
+• "Explain the Delta Neutral strategy"`
 
         setMessages([{
           id: '1',
@@ -350,6 +374,12 @@ export default function AIChat({
           sender: 'ai',
           timestamp: new Date(),
           confidence: 1.0,
+          suggestions: [
+            'What vault strategies do you offer?',
+            'How does automated rebalancing work?',
+            'What are the APY rates?',
+            'Explain Delta Neutral strategy'
+          ],
           metadata: {
             agentName: 'Kairos',
             processingSource: 'cloudflare-function'

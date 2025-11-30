@@ -180,9 +180,10 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>) {
       confidence: 0.6,
       actions: [],
       suggestions: [
-        'Check vault analytics on the dashboard',
-        'Review AI predictions for optimal ranges',
-        'Consider rebalancing if utilization is low'
+        'What vault strategies do you offer?',
+        'How does automated rebalancing work?',
+        'What are the current APY rates?',
+        'Explain Delta Neutral strategy'
       ],
       metadata: {
         model: 'fallback-responses',
@@ -200,19 +201,73 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>) {
  */
 function generateFallbackResponse(message: string, vaultAddress?: string): string {
   const lowerMessage = message.toLowerCase()
-  
-  if (lowerMessage.includes('rebalance')) {
-    return `🎯 Our vaults ${vaultAddress ? `(including ${vaultAddress.slice(0, 6)}...${vaultAddress.slice(-4)})` : ''} automatically rebalance every hour! The AI monitors utilization rates and adjusts positions to maximize fee capture. With SEI's 400ms finality and ~$0.15 transaction costs, hourly rebalancing is extremely cost-effective.`
+
+  // Educational responses about what Yield Delta is
+  if (lowerMessage.includes('what is') || lowerMessage.includes('what are') || lowerMessage.includes('explain')) {
+    if (lowerMessage.includes('yield delta')) {
+      return `**Yield Delta** is an automated DeFi vault platform on SEI blockchain.
+
+**How it works:**
+1. You deposit assets (SEI, USDC, etc.) into a vault
+2. Our AI automatically manages positions 24/7
+3. Vaults rebalance hourly to optimize yields
+4. Earnings compound daily - no manual work needed!
+
+**Why SEI?**
+400ms finality and ~$0.15 gas costs make frequent rebalancing profitable. Try asking about our vault strategies!`
+    }
+
+    if (lowerMessage.includes('delta neutral')) {
+      return `**Delta Neutral Strategy** (~7% APY)
+
+This is our **safest strategy** - it protects you from price volatility!
+
+**How it works:**
+• Maintains balanced long/short positions
+• Earns from trading fees, not price movements
+• Minimizes impermanent loss risk
+• Perfect for risk-averse users
+
+The vault handles everything automatically - you just deposit and earn steady yields!`
+    }
   }
-  
-  if (lowerMessage.includes('predict') || lowerMessage.includes('range') || lowerMessage.includes('strategy') || lowerMessage.includes('strategies')) {
-    return `📊 We offer three automated strategies:
 
-• **Delta Neutral** (~7% APY) - Safest option, minimizes impermanent loss
-• **Yield Farming** (~12.23% APY) - Balanced risk/reward
-• **Arbitrage** (~10.3% APY) - Exploits SEI's fast 400ms finality
+  if (lowerMessage.includes('rebalance') || lowerMessage.includes('automated') || lowerMessage.includes('automatic')) {
+    return `🤖 **Automated Rebalancing Explained**
 
-All strategies automatically rebalance hourly and compound daily. Just deposit and earn!`
+Our vaults ${vaultAddress ? `(including ${vaultAddress.slice(0, 6)}...${vaultAddress.slice(-4)})` : ''} work completely on autopilot:
+
+⏰ **Hourly Rebalancing:** AI monitors market conditions and adjusts positions
+💰 **Daily Compounding:** Earnings are reinvested automatically
+📊 **Smart Optimization:** Maximizes fee capture based on liquidity depth
+
+**You do:** Deposit once
+**Vault does:** Everything else
+
+SEI's 400ms finality and ~$0.15 gas costs make this profitable!`
+  }
+
+  if (lowerMessage.includes('strategy') || lowerMessage.includes('strategies') || lowerMessage.includes('vault')) {
+    return `📊 **Yield Delta Vault Strategies**
+
+Choose your risk/reward profile:
+
+🛡️ **Delta Neutral** (~7% APY)
+• Lowest risk, market-neutral positions
+• Protects against volatility
+• Steady, predictable yields
+
+🌾 **Yield Farming** (~12.23% APY)
+• Balanced risk/reward
+• Optimized liquidity provision
+• Best for most users
+
+⚡ **Arbitrage** (~10.3% APY)
+• Active DEX trading strategy
+• Exploits SEI's 400ms finality
+• Higher frequency trades
+
+All vaults rebalance hourly and compound daily automatically!`
   }
   
   if (lowerMessage.includes('gas') || lowerMessage.includes('cost')) {
