@@ -112,12 +112,12 @@ export async function onRequestGet(context: any) {
       headers['X-API-KEY'] = ELIZA_SERVER_AUTH_TOKEN
     }
 
-    // Check if agents endpoint is accessible with retry logic
+    // Check if agents endpoint is accessible with quick timeout
     const response = await fetchWithRetry(`${activeUrl}/api/agents`, {
       method: 'GET',
       headers,
-      signal: AbortSignal.timeout(5000)
-    }, 2)
+      signal: AbortSignal.timeout(2000)
+    }, 1)
 
     return new Response(JSON.stringify({
       success: true,
@@ -126,11 +126,12 @@ export async function onRequestGet(context: any) {
       agentUrl: activeUrl,
       activeAgent: ACTIVE_AGENT,
       capabilities: [
-        'vault_analysis',
-        'rebalance_recommendations',
-        'market_predictions',
-        'sei_optimizations',
+        'automated_vault_management',
+        'vault_performance_analysis',
         'real_time_price_data',
+        'daily_pnl_tracking',
+        'strategy_comparison',
+        'automated_rebalancing_info',
         'yield_delta_protocol_info'
       ],
       fallbackMode: !response.ok,
@@ -143,19 +144,20 @@ export async function onRequestGet(context: any) {
       }
     })
   } catch (error) {
+    // Return success=true but with offline status for proper frontend handling
     return new Response(JSON.stringify({
-      success: false,
+      success: true,
       agentStatus: 'offline',
       agentName: ACTIVE_AGENT === 'kairos' ? 'Kairos' : 'Liqui',
       agentUrl: activeUrl,
       activeAgent: ACTIVE_AGENT,
-      error: error instanceof Error ? error.message : 'Connection failed',
       fallbackMode: true,
-      fallbackCapabilities: [
-        'basic_vault_questions',
-        'rebalancing_guidance',
+      capabilities: [
+        'automated_vault_strategies',
+        'strategy_comparison',
+        'apy_information',
         'gas_cost_info',
-        'apy_calculations'
+        'vault_monitoring'
       ],
       timestamp: new Date().toISOString()
     }), {
@@ -277,41 +279,49 @@ function generateSmartSuggestions(message: string): string[] {
 
   if (lowerMessage.includes('rebalance')) {
     return [
-      'Show me current vault utilization',
-      'What are the gas costs for rebalancing?',
-      'When should I rebalance my position?'
+      'How does automatic rebalancing work?',
+      'Show my vault performance',
+      'What strategies are running?'
     ]
   }
 
   if (lowerMessage.includes('predict') || lowerMessage.includes('range')) {
     return [
-      'Show AI predictions for optimal ranges',
-      'What is the current market volatility?',
-      'Help me set liquidity ranges'
+      'How do vaults optimize ranges automatically?',
+      'Show current vault positions',
+      'What is the rebalancing frequency?'
     ]
   }
 
   if (lowerMessage.includes('apy') || lowerMessage.includes('yield')) {
     return [
-      'Show historical APY trends',
-      'Compare APY across different strategies',
-      'How can I improve my yield?'
+      'Compare vault strategies',
+      'Show my daily P&L',
+      'Which strategy fits my risk profile?'
     ]
   }
 
   if (lowerMessage.includes('gas') || lowerMessage.includes('cost') || lowerMessage.includes('fee')) {
     return [
-      'Show current gas costs on SEI',
-      'Compare SEI vs Ethereum gas fees',
-      'Estimate transaction costs'
+      'How much does automated rebalancing cost?',
+      'Compare SEI vs Ethereum costs',
+      'Show vault transaction history'
+    ]
+  }
+
+  if (lowerMessage.includes('strategy') || lowerMessage.includes('strategies')) {
+    return [
+      'Explain Delta Neutral strategy',
+      'Compare all three vaults',
+      'Show current APY for each vault'
     ]
   }
 
   // Default suggestions
   return [
-    'Analyze my vault performance',
-    'Show AI predictions for optimal ranges',
-    'What are the current gas costs?'
+    'What vault strategies are available?',
+    'How does automatic rebalancing work?',
+    'Show current APY rates'
   ]
 }
 
@@ -322,11 +332,11 @@ function generateFallbackResponse(message: string, vaultAddress?: string, agentN
   const lowerMessage = message.toLowerCase()
 
   if (lowerMessage.includes('rebalance')) {
-    return `🎯 For rebalancing ${vaultAddress ? `vault ${vaultAddress}` : 'your vault'}, I recommend checking the current utilization rate. If it's below 60%, rebalancing could improve fee capture. SEI's 400ms finality makes rebalancing cost-effective at ~$0.15 per transaction.`
+    return `🤖 Our vaults handle rebalancing automatically! ${vaultAddress ? `Vault ${vaultAddress.slice(0, 6)}...${vaultAddress.slice(-4)}` : 'Your vault'} uses AI-driven strategies that rebalance positions hourly based on market conditions. No manual intervention needed - just deposit and let the vault optimize your yields. SEI's 400ms finality and ~$0.15 gas costs make frequent automated rebalancing highly efficient.`
   }
 
   if (lowerMessage.includes('predict') || lowerMessage.includes('range')) {
-    return `📊 For optimal range predictions, consider current market volatility and liquidity depth. SEI's fast finality allows for frequent adjustments. Check the AI predictions tab for detailed range recommendations.`
+    return `📊 Our vaults automatically optimize liquidity ranges using AI predictions! The system monitors market volatility and adjusts positions to maximize fee capture while minimizing impermanent loss. You can view the vault's current strategy and performance on your dashboard.`
   }
 
   if (lowerMessage.includes('gas') || lowerMessage.includes('cost')) {
@@ -334,16 +344,20 @@ function generateFallbackResponse(message: string, vaultAddress?: string, agentN
   }
 
   if (lowerMessage.includes('apy') || lowerMessage.includes('yield')) {
-    return `💰 Vault APY depends on fee capture efficiency, range tightness, and rebalancing frequency. Concentrated liquidity can achieve 15-25% APY in optimal conditions on SEI.`
+    return `💰 Our vaults currently show simulated 7-12% APY through automated strategies: Delta Neutral (7%), Yield Farming (12.23%), and Arbitrage (10.3%). Each vault automatically rebalances to optimize fee capture and maintain target APY. Check your dashboard to see daily P&L updates!`
   }
 
   if (lowerMessage.includes('price') || lowerMessage.includes('sei')) {
-    return `📈 You can check real-time SEI price data on the dashboard. The ${agentName} agent can provide detailed market analysis and price predictions when online.`
+    return `📈 You can check real-time SEI price data on your dashboard at yielddelta.xyz. I can help explain market trends and how they affect your vault positions!`
   }
 
   if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
-    return `👋 I'm ${agentName}, your Yield Delta AI assistant. I can help with vault optimization, rebalancing recommendations, market predictions, gas cost analysis, and APY strategies. Currently running in fallback mode - some features may be limited.`
+    return `👋 I'm ${agentName}, your Yield Delta AI assistant. I monitor your automated vaults and can explain their strategies, show performance metrics, answer questions about APY, gas costs, and how our hourly rebalancing works. What would you like to know?`
   }
 
-  return `🤖 I'm ${agentName}, your SEI DLP AI assistant running in fallback mode. I can help with basic vault optimization questions. For advanced AI analysis powered by real-time data, the agent needs to be online. Try asking about rebalancing, gas costs, or APY optimization!`
+  if (lowerMessage.includes('strategy') || lowerMessage.includes('strategies')) {
+    return `📋 Yield Delta offers three automated vault strategies:\n\n🛡️ **Delta Neutral** (7% APY): Market-neutral positions that earn from funding rates while protecting against volatility\n🌾 **Yield Farming** (12.23% APY): Optimized liquidity provision with automated position management\n⚡ **Arbitrage** (10.3% APY): Active trading across DEXs to capture price differences\n\nAll strategies rebalance automatically every hour - no manual management required!`
+  }
+
+  return `🤖 I'm ${agentName}, your SEI DLP AI assistant. I monitor automated vault strategies and can answer questions about performance, yields, gas costs, and how our hourly rebalancing works. Try asking about vault strategies, current APY, or how rebalancing works!`
 }

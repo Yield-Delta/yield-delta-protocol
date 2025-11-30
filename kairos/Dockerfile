@@ -47,6 +47,10 @@ RUN chown -R node:node /app
 # Create node user's bun directory
 RUN mkdir -p /home/node/.bun && chown -R node:node /home/node/.bun
 
+# Create startup script that sets SERVER_PORT from Railway's PORT variable
+RUN echo '#!/bin/bash\nexport SERVER_PORT=${PORT:-${SERVER_PORT:-3000}}\nexec elizaos start "$@"' > /usr/local/bin/start.sh && \
+    chmod +x /usr/local/bin/start.sh
+
 # Switch to non-root user
 USER node
 
@@ -56,6 +60,5 @@ USER node
 # Expose port (adjust if needed based on your application)
 EXPOSE 3000
 
-
 # Start the application
-CMD ["elizaos", "start"]
+CMD ["/usr/local/bin/start.sh"]
