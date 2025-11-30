@@ -348,16 +348,16 @@ function generateFallbackResponse(message: string, vaultAddress?: string, agentN
   }
 
   if (lowerMessage.includes('price') || lowerMessage.includes('sei')) {
-    return `📈 You can check real-time SEI price data on the dashboard. The ${agentName} agent can provide detailed market analysis and price predictions when online.`
+    return `📈 You can check real-time SEI price data on your dashboard at yielddelta.xyz. I can help explain market trends and how they affect your vault positions!`
   }
 
   if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
-    return `👋 I'm ${agentName}, your Yield Delta AI assistant. I monitor your automated vaults and can explain their strategies, show performance metrics, provide price data, and answer questions about gas costs and yields. Currently running in fallback mode - some features may be limited.`
+    return `👋 I'm ${agentName}, your Yield Delta AI assistant. I monitor your automated vaults and can explain their strategies, show performance metrics, answer questions about APY, gas costs, and how our hourly rebalancing works. What would you like to know?`
   }
 
   if (lowerMessage.includes('strategy') || lowerMessage.includes('strategies')) {
-    return `📋 Yield Delta offers three automated vault strategies:\n\n🛡️ **Delta Neutral** (7% APY): Market-neutral positions that earn from funding rates while protecting against volatility\n🌾 **Yield Farming** (12.23% APY): Optimized liquidity provision with automated position management\n⚡ **Arbitrage** (10.3% APY): Active trading across DEXs to capture price differences\n\nAll strategies rebalance automatically - no manual management required!`
+    return `📋 Yield Delta offers three automated vault strategies:\n\n🛡️ **Delta Neutral** (7% APY): Market-neutral positions that earn from funding rates while protecting against volatility\n🌾 **Yield Farming** (12.23% APY): Optimized liquidity provision with automated position management\n⚡ **Arbitrage** (10.3% APY): Active trading across DEXs to capture price differences\n\nAll strategies rebalance automatically every hour - no manual management required!`
   }
 
-  return `🤖 I'm ${agentName}, your SEI DLP AI assistant running in fallback mode. I monitor automated vault strategies and can answer questions about performance, yields, and gas costs. Try asking about vault strategies, current APY, or how rebalancing works!`
+  return `🤖 I'm ${agentName}, your SEI DLP AI assistant. I monitor automated vault strategies and can answer questions about performance, yields, gas costs, and how our hourly rebalancing works. Try asking about vault strategies, current APY, or how rebalancing works!`
 }
