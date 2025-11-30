@@ -111,33 +111,52 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>) {
 
     await messageResponse.json()
 
-    // Get the agent's response from the session messages
-    const messagesResponse = await fetch(
-      `${ELIZA_AGENT_URL}/api/messaging/sessions/${sessionId}/messages`,
-      {
-        method: 'GET',
-        signal: AbortSignal.timeout(5000)
-      }
-    )
-
-    if (!messagesResponse.ok) {
-      throw new Error(`Failed to get messages: ${messagesResponse.status}`)
-    }
-
+    // Wait for agent to process and respond (retry with exponential backoff)
     interface Message {
       authorId: string
       content: string
+      isAgent?: boolean
     }
 
-    const messages = await messagesResponse.json() as Message[]
+    interface MessagesResponse {
+      messages: Message[]
+    }
 
-    // Find the agent's response (last message from agent)
-    const agentMessages = messages.filter((msg) => msg.authorId === AGENT_ID)
-    const latestResponse = agentMessages[agentMessages.length - 1]
+    let agentResponse: Message | null = null
+    const maxRetries = 6 // Try up to 6 times
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      // Wait before checking (increasing delays: 2s, 3s, 4s, 5s, 6s, 7s)
+      const waitTime = 2000 + (attempt * 1000)
+      await new Promise(resolve => setTimeout(resolve, waitTime))
+
+      const messagesResponse = await fetch(
+        `${ELIZA_AGENT_URL}/api/messaging/sessions/${sessionId}/messages`,
+        {
+          method: 'GET',
+          signal: AbortSignal.timeout(5000)
+        }
+      )
+
+      if (!messagesResponse.ok) {
+        throw new Error(`Failed to get messages: ${messagesResponse.status}`)
+      }
+
+      const data = await messagesResponse.json() as MessagesResponse
+      const messages = data.messages || []
+
+      // Find the agent's response (last message from agent)
+      const agentMessages = messages.filter((msg) => msg.authorId === AGENT_ID || msg.isAgent)
+
+      if (agentMessages.length > 0) {
+        agentResponse = agentMessages[agentMessages.length - 1]
+        break
+      }
+    }
 
     return {
-      message: latestResponse?.content || 'The AI agent is processing your request...',
-      confidence: 0.9,
+      message: agentResponse?.content || 'The AI agent is processing your request. This may take a moment...',
+      confidence: agentResponse ? 0.95 : 0.6,
       actions: [],
       suggestions: [
         'Ask about specific vault strategies',
