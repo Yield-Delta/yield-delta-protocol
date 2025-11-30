@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import { Send, Bot, User, Loader2, AlertCircle } from 'lucide-react'
+import { Send, Bot, User, Loader2 } from 'lucide-react'
 
 // Enhanced CSS for animations, interactions, and accessibility
 const chatScrollbarStyles = `

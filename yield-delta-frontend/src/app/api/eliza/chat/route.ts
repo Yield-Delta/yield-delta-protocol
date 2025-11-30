@@ -109,7 +109,7 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>) {
       throw new Error(`Message failed: ${messageResponse.status}`)
     }
 
-    const messageData = await messageResponse.json()
+    await messageResponse.json()
 
     // Get the agent's response from the session messages
     const messagesResponse = await fetch(
@@ -124,10 +124,15 @@ async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>) {
       throw new Error(`Failed to get messages: ${messagesResponse.status}`)
     }
 
-    const messages = await messagesResponse.json()
+    interface Message {
+      authorId: string
+      content: string
+    }
+
+    const messages = await messagesResponse.json() as Message[]
 
     // Find the agent's response (last message from agent)
-    const agentMessages = messages.filter((msg: any) => msg.authorId === AGENT_ID)
+    const agentMessages = messages.filter((msg) => msg.authorId === AGENT_ID)
     const latestResponse = agentMessages[agentMessages.length - 1]
 
     return {
