@@ -321,7 +321,7 @@ export default function AIChat({
         // Initialize welcome message if empty
         if (messages.length === 0) {
           const welcomeMessage = initialMessage ||
-            `Hello! I'm ${data.agentName || 'Kairos'}, your Yield Delta AI assistant. How can I help optimize your vault today?`
+            `Welcome to Yield Delta! I'm ${data.agentName || 'Kairos'}, your AI assistant. Our vaults automatically rebalance every hour and compound yields daily - just deposit and earn. How can I help you today?`
 
           setMessages([{
             id: '1',
@@ -342,7 +342,7 @@ export default function AIChat({
       // Still initialize message even if agent is offline
       if (messages.length === 0) {
         const welcomeMessage = initialMessage ||
-          "Hello! I'm Kairos, your Yield Delta AI assistant. I manage automated vaults that handle rebalancing hourly. How can I help you today?"
+          "Welcome to Yield Delta! I'm Kairos, your AI assistant. Our vaults automatically rebalance every hour and compound yields daily - just deposit and earn. How can I help you today?"
 
         setMessages([{
           id: '1',
@@ -895,7 +895,7 @@ export default function AIChat({
               e.target.style.background = 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.06) 100%)';
               e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08)';
             }}
-            placeholder="Ask about vault optimization, rebalancing, predictions..."
+            placeholder="Ask about automated strategies, APY rates, vault performance..."
             className={`ai-chat-input flex-1 rounded-lg px-4 py-3 transition-all duration-300 ${isInputFocused ? 'input-focused' : ''}`}
             style={{
               background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.06) 100%) !important',
