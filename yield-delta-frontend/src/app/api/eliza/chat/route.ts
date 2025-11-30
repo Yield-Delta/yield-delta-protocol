@@ -60,72 +60,96 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// Agent and session cache (in-memory for edge runtime)
+const AGENT_ID = 'a823d035-4008-0c15-a813-b5e540c102ef' // Kairos agent ID
+const USER_ID = '123e4567-e89b-12d3-a456-426614174000' // Default dashboard user UUID
+
 /**
- * Call Eliza agent with user message
+ * Call Eliza agent with user message using session-based messaging
  */
 async function callElizaAgent(data: z.infer<typeof ChatRequestSchema>) {
-  const ELIZA_AGENT_URL = process.env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
-  
+  const ELIZA_AGENT_URL = process.env.ELIZA_AGENT_URL || 'https://vibrant-harmony-production.up.railway.app'
+
   try {
-    // First check if the agent is reachable
-    const healthCheck = await fetch(`${ELIZA_AGENT_URL}/health`, {
-      method: 'GET',
-      signal: AbortSignal.timeout(3000) // 3 second timeout for health check
-    })
-    
-    if (!healthCheck.ok) {
-      throw new Error(`Eliza agent health check failed: ${healthCheck.status}`)
-    }
-
-    // Format message for Eliza (correct UIMessage format)
-    const elizaMessage = {
-      content: {
-        text: data.message,
-        source: 'sei-dlp-dashboard'
-      },
-      user: 'dashboard-user',
-      room: data.vaultAddress ? `vault-${data.vaultAddress}` : 'general-chat',
-      context: {
-        chainId: data.chainId,
-        vaultAddress: data.vaultAddress,
-        currentPage: data.context?.currentPage || 'vaults',
-        timestamp: new Date().toISOString(),
-        ...data.context
-      }
-    }
-
-    // Send to Eliza agent
-    const response = await fetch(`${ELIZA_AGENT_URL}/api/chat`, {
+    // Create a new session for each message (sessions auto-renew for 30 min)
+    const sessionResponse = await fetch(`${ELIZA_AGENT_URL}/api/messaging/sessions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Source': 'sei-dlp-dashboard'
       },
-      body: JSON.stringify(elizaMessage),
-      signal: AbortSignal.timeout(15000) // 15 second timeout for AI processing
+      body: JSON.stringify({
+        agentId: AGENT_ID,
+        userId: USER_ID
+      }),
+      signal: AbortSignal.timeout(5000)
     })
 
-    if (!response.ok) {
-      throw new Error(`Eliza agent error: ${response.status} ${response.statusText}`)
+    if (!sessionResponse.ok) {
+      throw new Error(`Failed to create session: ${sessionResponse.status}`)
     }
 
-    const elizaData = await response.json()
-    
+    const { sessionId } = await sessionResponse.json()
+
+    // Send message to the session
+    const messageResponse = await fetch(
+      `${ELIZA_AGENT_URL}/api/messaging/sessions/${sessionId}/messages`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: data.message
+        }),
+        signal: AbortSignal.timeout(30000) // 30 second timeout for AI processing
+      }
+    )
+
+    if (!messageResponse.ok) {
+      throw new Error(`Message failed: ${messageResponse.status}`)
+    }
+
+    const messageData = await messageResponse.json()
+
+    // Get the agent's response from the session messages
+    const messagesResponse = await fetch(
+      `${ELIZA_AGENT_URL}/api/messaging/sessions/${sessionId}/messages`,
+      {
+        method: 'GET',
+        signal: AbortSignal.timeout(5000)
+      }
+    )
+
+    if (!messagesResponse.ok) {
+      throw new Error(`Failed to get messages: ${messagesResponse.status}`)
+    }
+
+    const messages = await messagesResponse.json()
+
+    // Find the agent's response (last message from agent)
+    const agentMessages = messages.filter((msg: any) => msg.authorId === AGENT_ID)
+    const latestResponse = agentMessages[agentMessages.length - 1]
+
     return {
-      message: elizaData.response || elizaData.content?.text || 'No response from AI agent',
-      confidence: elizaData.confidence || 0.8,
-      actions: elizaData.actions || [],
-      suggestions: elizaData.suggestions || [],
+      message: latestResponse?.content || 'The AI agent is processing your request...',
+      confidence: 0.9,
+      actions: [],
+      suggestions: [
+        'Ask about specific vault strategies',
+        'Request current APY rates',
+        'Inquire about rebalancing frequency'
+      ],
       metadata: {
-        model: 'liqui-ai-agent',
-        responseTime: elizaData.responseTime || '~1s',
+        model: 'kairos-eliza-agent',
+        responseTime: '~2s',
         processingSource: 'eliza-agent',
-        chainOptimized: 'SEI'
+        chainOptimized: 'SEI',
+        sessionId: sessionId
       }
     }
   } catch (error) {
     console.error('Failed to call Eliza agent, using fallback response:', error)
-    
+
     // Fallback response if Eliza is unavailable
     return {
       message: generateFallbackResponse(data.message, data.vaultAddress),
@@ -154,22 +178,34 @@ function generateFallbackResponse(message: string, vaultAddress?: string): strin
   const lowerMessage = message.toLowerCase()
   
   if (lowerMessage.includes('rebalance')) {
-    return `🎯 For rebalancing ${vaultAddress ? `vault ${vaultAddress}` : 'your vault'}, I recommend checking the current utilization rate. If it's below 60%, rebalancing could improve fee capture. SEI's 400ms finality makes rebalancing cost-effective at ~$0.15 per transaction.`
+    return `🎯 Our vaults ${vaultAddress ? `(including ${vaultAddress.slice(0, 6)}...${vaultAddress.slice(-4)})` : ''} automatically rebalance every hour! The AI monitors utilization rates and adjusts positions to maximize fee capture. With SEI's 400ms finality and ~$0.15 transaction costs, hourly rebalancing is extremely cost-effective.`
   }
   
-  if (lowerMessage.includes('predict') || lowerMessage.includes('range')) {
-    return `📊 For optimal range predictions, consider current market volatility and liquidity depth. SEI's fast finality allows for frequent adjustments. Check the AI predictions tab for detailed range recommendations.`
+  if (lowerMessage.includes('predict') || lowerMessage.includes('range') || lowerMessage.includes('strategy') || lowerMessage.includes('strategies')) {
+    return `📊 We offer three automated strategies:
+
+• **Delta Neutral** (~7% APY) - Safest option, minimizes impermanent loss
+• **Yield Farming** (~12.23% APY) - Balanced risk/reward
+• **Arbitrage** (~10.3% APY) - Exploits SEI's fast 400ms finality
+
+All strategies automatically rebalance hourly and compound daily. Just deposit and earn!`
   }
   
   if (lowerMessage.includes('gas') || lowerMessage.includes('cost')) {
     return `⚡ SEI's advantages: 400ms finality, ~$0.15 gas costs, and parallel execution make it ideal for active liquidity management compared to Ethereum's $50+ rebalancing costs.`
   }
   
-  if (lowerMessage.includes('apy') || lowerMessage.includes('yield')) {
-    return `💰 Vault APY depends on fee capture efficiency, range tightness, and rebalancing frequency. Concentrated liquidity can achieve 15-25% APY in optimal conditions on SEI.`
+  if (lowerMessage.includes('apy') || lowerMessage.includes('yield') || lowerMessage.includes('earn')) {
+    return `💰 Current vault APYs (automatically compounded daily):
+
+• Delta Neutral: ~7% APY (lowest risk)
+• Yield Farming: ~12.23% APY (balanced)
+• Arbitrage: ~10.3% APY (SEI-optimized)
+
+Higher APYs are possible during high-volume periods. Our automated rebalancing maximizes fee capture without any manual intervention!`
   }
   
-  return `🤖 I'm a SEI DLP AI assistant running in fallback mode. I can help with basic vault optimization questions. For advanced AI analysis, please ensure the Eliza agent is running at localhost:3000 or set the ELIZA_AGENT_URL environment variable.`
+  return `🤖 I'm here to help with vault optimization questions! Our vaults automatically rebalance every hour and compound yields daily. Ask me about APY rates, strategy comparisons, or how our automated rebalancing works.`
 }
 
 /**
@@ -177,23 +213,31 @@ function generateFallbackResponse(message: string, vaultAddress?: string): strin
  * GET /api/eliza/chat - Check if Eliza agent is available
  */
 export async function GET() {
-  const ELIZA_AGENT_URL = process.env.ELIZA_AGENT_URL || 'https://www.yielddelta.xyz'
-  
+  const ELIZA_AGENT_URL = process.env.ELIZA_AGENT_URL || 'https://vibrant-harmony-production.up.railway.app'
+
   try {
-    const response = await fetch(`${ELIZA_AGENT_URL}/health`, {
+    // Check if agent is available via /api/agents endpoint
+    const response = await fetch(`${ELIZA_AGENT_URL}/api/agents`, {
       method: 'GET',
-      signal: AbortSignal.timeout(3000) // Reduced timeout for faster fallback
+      signal: AbortSignal.timeout(3000)
     })
-    
+
+    const agentsData = response.ok ? await response.json() : null
+    const agentInfo = agentsData?.data?.agents?.[0]
+
     return NextResponse.json({
       success: true,
       agentStatus: response.ok ? 'online' : 'error',
+      agentId: agentInfo?.id || AGENT_ID,
+      agentName: agentInfo?.name || 'Kairos',
       agentUrl: ELIZA_AGENT_URL,
       capabilities: [
-        'vault_analysis',
-        'rebalance_recommendations', 
-        'market_predictions',
-        'sei_optimizations'
+        'automated_vault_strategies',
+        'hourly_rebalancing',
+        'daily_compounding',
+        'apy_optimization',
+        'market_analysis',
+        'session_based_chat'
       ],
       fallbackMode: !response.ok,
       timestamp: new Date().toISOString()
@@ -202,14 +246,15 @@ export async function GET() {
     return NextResponse.json({
       success: false,
       agentStatus: 'offline',
+      agentName: 'Kairos',
       agentUrl: ELIZA_AGENT_URL,
       error: error instanceof Error ? error.message : 'Connection failed',
       fallbackMode: true,
       fallbackCapabilities: [
-        'basic_vault_questions',
-        'rebalancing_guidance',
-        'gas_cost_info',
-        'apy_calculations'
+        'automated_strategies_info',
+        'apy_rates',
+        'rebalancing_info',
+        'vault_comparisons'
       ],
       timestamp: new Date().toISOString()
     })
