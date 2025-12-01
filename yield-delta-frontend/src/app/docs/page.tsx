@@ -160,7 +160,7 @@ export default function DocsHomePage() {
       <ul className="space-y-2 mb-8">
         <li><strong>Discord</strong>: <a href="https://discord.gg/sei" className="text-primary hover:text-primary/80">Join our community</a></li>
         <li><strong>GitHub</strong>: <a href="https://github.com/yield-delta/yield-delta-protocol" className="text-primary hover:text-primary/80">Contribute to the project</a></li>
-        <li><strong>Twitter</strong>: <a href="https://twitter.com/yielddelta" className="text-primary hover:text-primary/80">@SEI_DLP</a></li>
+        <li><strong>Twitter</strong>: <a href="https://x.com/yielddelta" className="text-primary hover:text-primary/80">@yielddelta</a></li>
       </ul>
 
       <hr className="my-8" />

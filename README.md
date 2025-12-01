@@ -216,7 +216,7 @@ This is an **open-source project** built for the SEI ecosystem. We welcome contr
 
 ### **Join the Community**
 - **Discord**: [Join SEI AI Builders](https://discord.gg/sei)
-- **Twitter**: [@YieldDelta](https://twitter.com/yielddelta)
+- **Twitter**: [@yielddelta](https://x.com/yielddelta)
 - **GitHub**: Star this repo and follow updates
 
 ---

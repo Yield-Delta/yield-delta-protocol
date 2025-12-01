@@ -325,7 +325,7 @@ bun update`}</code>
       <ul className="space-y-2 mb-8">
         <li><a href="https://discord.gg/sei" className="text-primary hover:text-primary/80">Discord</a> - Join the community</li>
         <li><a href="https://github.com/yield-delta/yield-delta-protocol" className="text-primary hover:text-primary/80">GitHub</a> - View source code</li>
-        <li><a href="https://twitter.com/yielddelta" className="text-primary hover:text-primary/80">Twitter</a> - Follow updates</li>
+        <li><a href="https://x.com/yielddelta" className="text-primary hover:text-primary/80">Twitter</a> - Follow updates</li>
       </ul>
 
       <hr className="my-8" />
