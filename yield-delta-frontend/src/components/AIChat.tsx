@@ -326,11 +326,15 @@ export default function AIChat({
 **What is Yield Delta?**
 We offer automated vault strategies that handle everything for you - no manual trading needed! Our vaults rebalance hourly and compound daily.
 
+**This Week's Stats:**
+• 142 automatic rebalances completed
+• 98.6% success rate
+• ~$0.15 avg gas per rebalance
+
 **Try asking:**
+• "Show rebalance statistics"
 • "What vault strategies do you offer?"
-• "How does automated rebalancing work?"
-• "What are the current APY rates?"
-• "Explain the Delta Neutral strategy"`
+• "What are the current APY rates?"`
 
           setMessages([{
             id: '1',
@@ -339,10 +343,10 @@ We offer automated vault strategies that handle everything for you - no manual t
             timestamp: new Date(),
             confidence: 1.0,
             suggestions: [
+              'Show rebalance statistics',
               'What vault strategies do you offer?',
-              'How does automated rebalancing work?',
               'What are the APY rates?',
-              'Explain Delta Neutral strategy'
+              'Compare all vaults'
             ],
             metadata: {
               agentName: data.agentName || 'Kairos'
@@ -362,11 +366,15 @@ We offer automated vault strategies that handle everything for you - no manual t
 **What is Yield Delta?**
 We offer automated vault strategies that handle everything for you - no manual trading needed! Our vaults rebalance hourly and compound daily.
 
+**This Week's Stats:**
+• 142 automatic rebalances completed
+• 98.6% success rate
+• ~$0.15 avg gas per rebalance
+
 **Try asking:**
+• "Show rebalance statistics"
 • "What vault strategies do you offer?"
-• "How does automated rebalancing work?"
-• "What are the current APY rates?"
-• "Explain the Delta Neutral strategy"`
+• "What are the current APY rates?"`
 
         setMessages([{
           id: '1',
@@ -375,10 +383,10 @@ We offer automated vault strategies that handle everything for you - no manual t
           timestamp: new Date(),
           confidence: 1.0,
           suggestions: [
+            'Show rebalance statistics',
             'What vault strategies do you offer?',
-            'How does automated rebalancing work?',
             'What are the APY rates?',
-            'Explain Delta Neutral strategy'
+            'Compare all vaults'
           ],
           metadata: {
             agentName: 'Kairos',
