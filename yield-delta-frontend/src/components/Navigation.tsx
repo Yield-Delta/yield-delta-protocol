@@ -223,6 +223,12 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
             >
               Deploy
             </Link>
+            <Link
+              href="/docs"
+              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
+            >
+              Docs
+            </Link>
           </div>
         )}
 
@@ -338,7 +344,8 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
                 { href: '/market-sentiment', label: 'Sentiment', icon: '🎯' },
                 { href: '/dashboard', label: 'Portfolio', icon: '📊' },
                 { href: '/portfolio/rebalance', label: 'Rebalance', icon: '⚖️' },
-                { href: '/vaults/deploy', label: 'Deploy', icon: '🚀' }
+                { href: '/vaults/deploy', label: 'Deploy', icon: '🚀' },
+                { href: '/docs', label: 'Docs', icon: '📚' }
               ].map((item, index) => (
                 <Link
                   key={item.href}
