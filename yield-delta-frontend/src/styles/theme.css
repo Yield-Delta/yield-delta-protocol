@@ -1,0 +1,78 @@
+/**
+ * Theme Variables & Design Tokens
+ * Contains CSS custom properties for colors, spacing, and design system tokens
+ */
+
+:root {
+  /* Border Radius System */
+  --radius: 0.625rem;
+
+  /* Dashboard Variables */
+  --dashboard-card-bg: rgb(30 41 59 / 0.6);
+  --dashboard-hover-bg: rgb(51 65 85 / 0.5);
+
+  /* Core Color Tokens - Light/Default Theme */
+  --background: 216 100% 4%;
+  --foreground: 180 100% 90%;
+
+  --card: 216 50% 8%;
+  --card-foreground: 180 100% 90%;
+
+  --popover: 216 50% 8%;
+  --popover-foreground: 180 100% 90%;
+
+  --primary: 180 100% 48%;
+  --primary-foreground: 216 100% 4%;
+  --primary-glow: 180 100% 70%;
+
+  --secondary: 262 80% 60%;
+  --secondary-foreground: 216 100% 4%;
+
+  --accent: 326 100% 74%;
+  --accent-foreground: 216 100% 4%;
+
+  --muted: 216 30% 15%;
+  --muted-foreground: 180 20% 70%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 20% 98%;
+
+  --border: 216 30% 18%;
+  --input: 216 30% 18%;
+  --ring: 180 100% 48%;
+
+  /* SEI DLP Cyber Theme Variables - Chain ID 713715 */
+  --gradient-primary: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%));
+  --gradient-vault: linear-gradient(135deg, hsl(216 50% 8%), hsl(216 30% 15%), hsl(216 30% 18%));
+  --glow-primary: 0 0 20px hsl(180 100% 48% / 0.3), 0 0 40px hsl(180 100% 48% / 0.1);
+}
+
+/* Dark Theme Overrides */
+.dark {
+  --background: 216 100% 4%;
+  --foreground: 180 100% 90%;
+
+  --card: 216 50% 8%;
+  --card-foreground: 180 100% 90%;
+
+  --primary: 180 100% 70%;
+  --primary-foreground: 216 100% 4%;
+  --primary-glow: 180 100% 85%;
+
+  --secondary: 262 80% 60%;
+  --secondary-foreground: 216 100% 4%;
+
+  --accent: 326 100% 74%;
+  --accent-foreground: 216 100% 4%;
+
+  --muted: 216 30% 15%;
+  --muted-foreground: 180 20% 70%;
+
+  --border: 216 30% 18%;
+  --ring: 180 100% 70%;
+
+  /* Dark Theme Gradients & Effects */
+  --gradient-primary: linear-gradient(135deg, hsl(180 100% 70%), hsl(262 80% 60%));
+  --gradient-vault: linear-gradient(135deg, hsl(216 50% 8%), hsl(216 30% 15%), hsl(216 30% 18%));
+  --glow-primary: 0 0 20px hsl(180 100% 70% / 0.4), 0 0 40px hsl(180 100% 70% / 0.2);
+}

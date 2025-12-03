@@ -1,0 +1,296 @@
+/**
+ * Component Styles
+ * Reusable component classes and patterns
+ */
+
+@layer components {
+  /* === Mobile Responsive Components === */
+
+  .mobile-responsive-text {
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+    line-height: 1.6;
+  }
+
+  .mobile-responsive-heading {
+    font-size: clamp(1.75rem, 6vw, 4rem);
+    line-height: 1.1;
+    word-break: break-word;
+    hyphens: auto;
+    letter-spacing: -0.02em;
+  }
+
+  .mobile-responsive-subheading {
+    font-size: clamp(1rem, 3.5vw, 1.75rem);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+  }
+
+  .mobile-responsive-button {
+    font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+    padding: clamp(0.75rem, 3vw, 1rem) clamp(1rem, 4vw, 1.5rem);
+    min-height: clamp(44px, 6vw, 56px);
+    line-height: 1.2;
+  }
+
+  /* === Mobile Layout Utilities === */
+
+  .mobile-container {
+    max-width: 100%;
+    padding-left: clamp(1rem, 4vw, 2rem);
+    padding-right: clamp(1rem, 4vw, 2rem);
+  }
+
+  .mobile-section-spacing {
+    padding-top: clamp(2rem, 8vw, 4rem);
+    padding-bottom: clamp(2rem, 8vw, 4rem);
+  }
+
+  .mobile-grid-gap {
+    gap: clamp(1rem, 4vw, 2rem);
+  }
+
+  .mobile-safe-padding {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  /* === iPad-specific responsive utilities === */
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    .mobile-responsive-button {
+      min-width: 140px;
+      padding: 0.875rem 1.25rem;
+    }
+
+    .mobile-responsive-heading {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+    }
+
+    .mobile-responsive-subheading {
+      font-size: clamp(1.25rem, 3vw, 1.5rem);
+    }
+  }
+
+  /* === Demo Banner Components === */
+
+  .demo-banner-container {
+    animation: slideDown 0.3s ease-out;
+  }
+
+  .demo-banner-alert {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  /* === Mobile Menu Components === */
+
+  .mobile-menu-overlay {
+    animation: mobileMenuFadeIn 0.3s ease-out;
+  }
+
+  .mobile-menu-item {
+    animation: mobileMenuItemSlide 0.4s ease-out;
+    animation-fill-mode: both;
+  }
+
+  .mobile-menu-item:hover {
+    transform: translateY(-2px) scale(1.02);
+  }
+
+  /* === Dashboard Components === */
+
+  .dashboard-stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
+  }
+
+  @media (min-width: 768px) {
+    .dashboard-stats-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .dashboard-stats-grid {
+      grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    }
+  }
+
+  .dashboard-positions {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  .dashboard-card-bg {
+    background-color: rgba(30, 41, 59, 0.6) !important;
+    background-color: rgb(30 41 59 / 0.6) !important;
+    backdrop-filter: blur(24px) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    border: 1px solid rgba(51, 65, 85, 0.5) !important;
+  }
+
+  /* === Card Components === */
+
+  .card-hover-glow {
+    transition: all 0.3s ease;
+  }
+
+  .card-hover-glow:hover {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+    transform: translateY(-2px);
+  }
+
+  /* === Glass Card Effect === */
+  /* Note: Enhanced .glass-card is defined in vault.css for vault-specific styling */
+
+  .glass-card-simple {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius);
+  }
+
+  /* === Button Components === */
+
+  .btn-cyber {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%));
+    color: hsl(216 100% 4%);
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 300ms ease-in-out;
+    box-shadow:
+      0 0 20px hsl(180 100% 48% / 0.3),
+      0 0 40px hsl(180 100% 48% / 0.1),
+      0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn-cyber:hover {
+    transform: translateY(-2px) scale(1.02);
+    background: linear-gradient(135deg, hsl(180 100% 50%), hsl(262 80% 62%));
+    box-shadow:
+      0 0 30px hsl(180 100% 48% / 0.4),
+      0 0 60px hsl(180 100% 48% / 0.2),
+      0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .btn-cyber:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 150ms;
+  }
+
+  /* === Gradient Text Effect === */
+
+  .gradient-text {
+    background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: gradient-shift 4s ease-in-out infinite;
+    color: hsl(180 100% 48%); /* Fallback */
+  }
+
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    .gradient-text {
+      color: transparent;
+    }
+  }
+
+  .gradient-text-fallback {
+    background: linear-gradient(45deg, #00f5d4, #9b5de5, #ff206e, #fbae3c, #00f5d4, #9b5de5) !important;
+    background-size: 400% 400% !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: gradient-shift 3s ease-in-out infinite !important;
+    font-weight: 800 !important;
+    display: inline-block !important;
+    color: transparent !important;
+  }
+
+  /* === Badge Components === */
+
+  .badge-risk-low {
+    background-color: hsl(142 76% 36% / 0.15);
+    color: hsl(142 76% 45%);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .badge-risk-medium {
+    background-color: hsl(38 92% 50% / 0.15);
+    color: hsl(38 92% 55%);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .badge-risk-high {
+    background-color: hsl(0 84% 60% / 0.15);
+    color: hsl(0 84% 65%);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* === Loading States === */
+
+  .loading-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .loading-skeleton {
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--muted) / 0.8) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s ease-in-out infinite;
+  }
+
+  /* Note: shimmer keyframe is defined in animations.css */
+
+  /* === Scrollbar Styling === */
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary) / 0.3) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.3);
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.5);
+  }
+}
