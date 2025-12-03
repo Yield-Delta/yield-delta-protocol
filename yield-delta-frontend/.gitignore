@@ -54,3 +54,6 @@ node_modules
 
 .claude/
 .crush/
+
+# package lock files
+package-lock.json
