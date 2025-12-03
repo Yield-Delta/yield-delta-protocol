@@ -184,9 +184,9 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
           </div>
         </div>
 
-        {/* CENTER - App Navigation Links (only show when inside app) */}
+        {/* CENTER - App Navigation Links (only show when inside app, hidden on mobile via CSS) */}
         {!showLaunchApp && (
-          <div className="nav-center-links hidden md:flex items-center space-x-6">
+          <div className="nav-center-links">
             <Link 
               href="/vaults"
               className="text-foreground hover:text-primary transition-colors no-underline font-medium"
@@ -250,11 +250,11 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
             </div>
           )}
 
-          {/* Mobile Menu Button (hamburger - only show when inside app) */}
+          {/* Mobile Menu Button (hamburger - only show when inside app, visibility controlled by CSS) */}
           {!showLaunchApp && (
             <button
               onClick={() => mobileMenuOpen ? closeMobileMenu() : setMobileMenuOpen(true)}
-              className="mobile-menu-btn md:hidden"
+              className="mobile-menu-btn"
               aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? (
@@ -269,7 +269,7 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
       
       {/* Full-Screen Mobile Menu Overlay */}
       {!showLaunchApp && mobileMenuOpen && (
-        <div ref={mobileMenuRef} className="md:hidden fixed inset-0 z-50 flex items-center justify-center mobile-menu-overlay">
+        <div ref={mobileMenuRef} className="fixed inset-0 z-50 flex items-center justify-center mobile-menu-overlay">
           {/* Backdrop with glass morphism */}
           <div 
             className="absolute inset-0 mobile-menu-backdrop"
