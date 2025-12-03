@@ -116,8 +116,17 @@ contract VaultFactory is Ownable, ReentrancyGuard {
 
     /**
      * @dev Withdraw accumulated fees
+     * @notice Uses call instead of transfer for gas limit safety
      */
-    function withdrawFees() external onlyOwner {
-        payable(owner()).transfer(address(this).balance);
+    function withdrawFees() external onlyOwner nonReentrant {
+        uint256 balance = address(this).balance;
+        require(balance > 0, "No fees to withdraw");
+
+        (bool success, ) = payable(owner()).call{value: balance}("");
+        require(success, "Transfer failed");
+
+        emit FeesWithdrawn(owner(), balance);
     }
+
+    event FeesWithdrawn(address indexed to, uint256 amount);
 }
