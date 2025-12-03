@@ -242,17 +242,19 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               <span>Launch App</span>
             </Link>
           )}
+
+          {/* Wallet Connect - Always visible */}
           {showWallet && (
             <div className="wallet-container">
               <WalletConnectButton />
             </div>
           )}
-          
-          {/* Mobile Menu Button (only show when inside app) */}
+
+          {/* Mobile Menu Button (hamburger - only show when inside app) */}
           {!showLaunchApp && (
             <button
               onClick={() => mobileMenuOpen ? closeMobileMenu() : setMobileMenuOpen(true)}
-              className="md:hidden text-foreground hover:text-primary ml-2"
+              className="mobile-menu-btn md:hidden"
               aria-label="Toggle mobile menu"
             >
               {mobileMenuOpen ? (
