@@ -141,15 +141,11 @@
   }
 
   /* === Glass Card Effect === */
-  /* Note: Enhanced .glass-card is defined in vault.css for vault-specific styling */
-
-  .glass-card-simple {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius);
-  }
+  /* 
+   * Note: Glass card styles are defined in vault.css for vault-specific pages.
+   * Component-based glass effects use GlassCard.module.css via the <GlassCard> component.
+   * Do not define .glass-card here to avoid conflicts with vault.css.
+   */
 
   /* === Button Components === */
 
