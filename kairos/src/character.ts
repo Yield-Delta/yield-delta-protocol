@@ -98,6 +98,12 @@ export const character: ExtendedCharacter = {
     INSTAGRAM_ACTION_INTERVAL: '5',
     INSTAGRAM_MAX_ACTIONS_PROCESSING: '3',
     INSTAGRAM_DRY_RUN: process.env.NODE_ENV === 'development' ? 'true' : 'false',
+
+    // Image generation settings (uses DALL-E via OpenAI plugin)
+    IMAGE_GENERATION_ENABLED: 'true',
+    IMAGE_GENERATION_MODEL: 'dall-e-3',
+    IMAGE_GENERATION_SIZE: '1024x1024',
+    IMAGE_GENERATION_STYLE: 'Create a professional, modern DeFi-themed image with futuristic blue and purple gradients, blockchain visualizations, and financial charts. Style: clean, minimal, tech-forward. Brand: Yield Delta Protocol on SEI blockchain.',
   },
   postExamples: [
     "🚀 Yield Delta Protocol is live on SEI Atlantic-2 testnet! Deposit SEI into our strategy vaults and watch your daily P&L grow with simulated 3.83-12.23% APY 📊\n\nTry it now: Delta Neutral (7%), Yield Farming (12.23%), or Active Trading (10.3%)\n\n#DeFi #SEI #YieldOptimization",
