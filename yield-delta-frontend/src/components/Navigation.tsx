@@ -94,7 +94,7 @@ const NAV_LINKS: readonly NavLink[] = [
   },
 ] as const;
 
-// Premium mobile menu item component with enhanced design
+// Premium mobile menu item component - horizontal full-width design
 const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onClose }) => {
   const IconComponent = item.icon;
 
@@ -102,10 +102,10 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
     <Link
       href={item.href}
       onClick={onClose}
-      className="mobile-menu-item group block"
+      className="mobile-menu-item group block w-full"
     >
       <div
-        className="relative flex flex-col items-center justify-center p-5 rounded-2xl transition-all duration-300 h-full overflow-hidden group-active:scale-[0.97]"
+        className="relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 overflow-hidden group-active:scale-[0.98]"
         style={{
           background: item.gradient,
           border: `1px solid ${item.borderColor}`,
@@ -126,7 +126,7 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
 
         {/* Icon container with glow */}
         <div
-          className="relative mb-3 p-3 rounded-xl transition-all duration-300 group-active:scale-110"
+          className="relative flex-shrink-0 p-3 rounded-xl transition-all duration-300 group-active:scale-110"
           style={{
             background: `linear-gradient(135deg, ${item.iconColor}15 0%, ${item.iconColor}08 100%)`,
             border: `1px solid ${item.iconColor}30`,
@@ -139,21 +139,31 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
           />
         </div>
 
-        {/* Label with better typography */}
-        <span
-          className="text-white font-semibold text-sm tracking-tight mb-0.5 relative z-10"
-          style={{ letterSpacing: '-0.01em' }}
-        >
-          {item.label}
-        </span>
+        {/* Text content - aligned left */}
+        <div className="flex flex-col flex-1 relative z-10">
+          <span
+            className="text-white font-semibold text-base tracking-tight"
+            style={{ letterSpacing: '-0.01em' }}
+          >
+            {item.label}
+          </span>
+          <span
+            className="text-[12px] font-medium leading-tight"
+            style={{ color: 'rgba(255, 255, 255, 0.5)' }}
+          >
+            {item.desc}
+          </span>
+        </div>
 
-        {/* Description with subtle styling */}
-        <span
-          className="text-[11px] font-medium relative z-10 text-center leading-tight"
-          style={{ color: 'rgba(255, 255, 255, 0.45)' }}
+        {/* Arrow indicator */}
+        <div
+          className="flex-shrink-0 relative z-10 transition-transform duration-300 group-active:translate-x-1"
+          style={{ color: item.iconColor, opacity: 0.6 }}
         >
-          {item.desc}
-        </span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6"/>
+          </svg>
+        </div>
 
         {/* Subtle shine effect */}
         <div
@@ -771,15 +781,15 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               </p>
             </div>
 
-            {/* Main Menu Items - Premium Cards */}
+            {/* Main Menu Items - Vertical Full-Width Stack */}
             <nav
-              className="flex-1 flex items-center justify-center"
+              className="flex-1 flex flex-col justify-start pt-2 overflow-y-auto"
               aria-label="Mobile menu navigation"
               onClick={(e) => {
                 if (e.target === e.currentTarget) closeMobileMenu();
               }}
             >
-              <div className="grid grid-cols-2 gap-3 w-full max-w-md">
+              <div className="flex flex-col gap-3 w-full">
                 {NAV_LINKS.map((item) => (
                   <MobileMenuItem key={item.href} item={item} onClose={closeMobileMenu} />
                 ))}
