@@ -61,7 +61,7 @@ export const vaultMonitorEvaluator: Evaluator = {
       // 4. Check if APY is below target (should be 14-16%)
       if (currentAPY < 14) {
         console.warn(`⚠️ APY below target (${currentAPY.toFixed(2)}% < 14%)`);
-        console.warn('   Consider rebalancing strategies or adjusting allocations');
+        console.warn('   Consider rebalancing or adjusting allocations');
       } else if (currentAPY > 16) {
         console.log(`🎉 APY above target (${currentAPY.toFixed(2)}% > 16%)`);
       } else {
