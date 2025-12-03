@@ -385,12 +385,13 @@ const DashboardPage = () => {
                           <div className={styles.metricLabel}>APY</div>
                           <div className={`${styles.metricValue} ${styles.blue}`}>{position.apy.toFixed(1)}%</div>
                         </div>
-                        <div className={styles.metric}>
+                        {/* HIDDEN: Share count display - shares not calculated as expected */}
+                        {/* <div className={styles.metric}>
                           <div className={styles.metricLabel}>Shares</div>
                           <div className={`${styles.metricValue} ${styles.green}`}>
                             {parseFloat(formatUnits(BigInt(position.shares), decimals)).toFixed(decimals === 6 ? 2 : 4)}
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </Link>
                   )})}

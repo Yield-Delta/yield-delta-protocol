@@ -29,7 +29,7 @@ contract EnhancedVaultCustomerTest is Test {
     
     function setUp() public {
         // Set SEI chain ID
-        vm.chainId(713715);
+        vm.chainId(1328);
         
         // Deploy mock tokens
         token0 = new MockERC20("USDC", "USDC");

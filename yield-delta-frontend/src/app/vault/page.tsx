@@ -877,8 +877,9 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                         Your Position
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="p-3 rounded-xl" style={{
+                    <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {/* HIDDEN: Share count display - shares not calculated as expected */}
+                      {/* <div className="p-3 rounded-xl" style={{
                         background: 'rgba(255, 255, 255, 0.05)',
                         border: '1px solid rgba(255, 255, 255, 0.1)'
                       }}>
@@ -886,7 +887,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                         <span className="font-bold text-white text-lg">
                           {parseFloat(formatUnits(BigInt(position.shares), tvlDecimals)).toFixed(tvlDecimals === 6 ? 2 : 4)}
                         </span>
-                      </div>
+                      </div> */}
                       <div className="p-3 rounded-xl" style={{
                         background: 'rgba(255, 255, 255, 0.05)',
                         border: '1px solid rgba(255, 255, 255, 0.1)'

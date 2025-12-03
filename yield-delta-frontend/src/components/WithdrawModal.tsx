@@ -507,11 +507,12 @@ export default function WithdrawModal({
               padding: '1rem',
               marginBottom: '1rem'
             }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+                {/* HIDDEN: Share count display - shares not calculated as expected */}
+                {/* <div>
                   <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Your Shares</p>
                   <p style={{ fontSize: '1.125rem', fontWeight: '700', color: '#ffffff' }}>{userSharesDisplay}</p>
-                </div>
+                </div> */}
                 <div>
                   <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.6)', marginBottom: '0.25rem' }}>Current Value (SEI)</p>
                   <p style={{ fontSize: '1.125rem', fontWeight: '700', color: vaultColor }}>{userValueDisplay} SEI</p>

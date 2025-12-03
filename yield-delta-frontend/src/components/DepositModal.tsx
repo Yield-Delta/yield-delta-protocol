@@ -1165,18 +1165,19 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     <div className="text-sm opacity-60 mt-2">Balance: {currentUserBalance.amount.toFixed(4)} {selectedToken || 'SEI'}</div>
                   </div>
 
+                  {/* SHARE CALCULATION UI HIDDEN - Share calculations not working as expected */}
                   {/* Arrow - Centered between sections */}
-                  <div className="transaction-flow-arrow-wrapper flex justify-center py-2">
+                  {/* <div className="transaction-flow-arrow-wrapper flex justify-center py-2">
                     <div className="arrow-container w-10 h-10 rounded-full flex items-center justify-center" style={{
                       backgroundColor: `${vaultColor}20`,
                       border: `1px solid ${vaultColor}40`
                     }}>
                       <ArrowRight className="w-5 h-5" style={{ color: vaultColor }} />
                     </div>
-                  </div>
+                  </div> */}
 
-                  {/* You will receive */}
-                  <div className="transaction-side p-6 rounded-2xl" style={{
+                  {/* You will receive - HIDDEN: Share calculations not displaying as expected */}
+                  {/* <div className="transaction-side p-6 rounded-2xl" style={{
                     background: 'rgba(255, 255, 255, 0.08) !important',
                     border: '1px solid rgba(255, 255, 255, 0.12) !important',
                     backdropFilter: 'blur(8px) !important',
@@ -1206,7 +1207,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                     <div className="text-sm opacity-60 mt-2">
                       Rate: 1 {primaryToken?.symbol || 'Token'} ≈ 1 share
                     </div>
-                  </div>
+                  </div> */}
 
                 </div>
               </div>
@@ -1264,13 +1265,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
                       }}>
                         {amount} {selectedToken || primaryToken?.symbol || 'SEI'}
                       </div>
-                      <div className="quick-deposit-shares" style={{
+                      {/* HIDDEN: Share preview not displaying correctly */}
+                      {/* <div className="quick-deposit-shares" style={{
                         color: '#ffffff',
                         opacity: '0.6',
                         fontSize: '0.8rem'
                       }}>
                         ~{amount.toLocaleString()} shares
-                      </div>
+                      </div> */}
                     </button>
                   ))}
                 </div>

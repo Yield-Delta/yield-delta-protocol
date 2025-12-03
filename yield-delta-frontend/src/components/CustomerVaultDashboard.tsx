@@ -310,7 +310,8 @@ const CustomerVaultDashboard: React.FC<CustomerVaultDashboardProps> = ({ vaultAd
 
         {/* Portfolio Metrics Grid */}
         <div className={styles.metricsGrid}>
-          <div className={`${styles.metricCard} ${styles.fadeInUp}`}>
+          {/* HIDDEN: Share count display - shares not calculated as expected */}
+          {/* <div className={`${styles.metricCard} ${styles.fadeInUp}`}>
             <div className={styles.cardHeader}>
               <div className={styles.cardIcon}>
                 <Wallet size={24} />
@@ -329,7 +330,7 @@ const CustomerVaultDashboard: React.FC<CustomerVaultDashboardProps> = ({ vaultAd
             <p className={styles.secondaryValue}>
               Value: ${shareValue ? Number(formatUnits(shareValue, 18)).toFixed(2) : '0.00'}
             </p>
-          </div>
+          </div> */}
 
           <div className={`${styles.metricCard} ${styles.fadeInUp}`}>
             <div className={styles.cardHeader}>
