@@ -108,13 +108,17 @@ nav .nav-right-simple {
 
 /* === Wallet Container === */
 
+/* Merged: wallet-container-override - combines flex layout + z-index/isolation */
 .wallet-container-override,
 nav .wallet-container {
+  position: relative !important;
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
   flex-shrink: 0 !important;
   margin-left: auto !important;
+  z-index: 99999 !important;
+  isolation: isolate !important;
 }
 
 /* Force right-side positioning for navigation buttons */
