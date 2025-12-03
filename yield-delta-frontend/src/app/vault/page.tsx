@@ -71,6 +71,205 @@ const getVaultColor = (strategy: string) => {
   return colors[strategy as keyof typeof colors] || '#00f5d4'
 }
 
+// Detailed strategy descriptions for each vault type
+const getStrategyDetails = (strategy: string, tokenA: string, tokenB: string) => {
+  const strategies: Record<string, { description: string; features: string[]; riskFactors: string[]; rebalanceFrequency: string }> = {
+    concentrated_liquidity: {
+      description: `This vault uses concentrated liquidity positions on DEXes to maximize capital efficiency. By focusing liquidity within a tight price range around the ${tokenA}-${tokenB} pair's current price, the strategy earns significantly higher fees compared to traditional full-range positions. Our AI continuously monitors price movements and adjusts ranges to maintain optimal positioning.`,
+      features: [
+        'AI-optimized price range selection',
+        'Dynamic range adjustment based on volatility',
+        'Automatic position rebalancing every hour',
+        'MEV-protected transactions',
+        'Gas-optimized batch operations'
+      ],
+      riskFactors: [
+        'Impermanent loss during high volatility',
+        'Range may go out of bounds requiring rebalancing',
+        'Smart contract risk'
+      ],
+      rebalanceFrequency: 'Every 1-4 hours based on market conditions'
+    },
+    yield_farming: {
+      description: `The Yield Farming vault actively seeks the highest yield opportunities across multiple DeFi protocols for ${tokenA}-${tokenB}. It automatically compounds rewards, harvests incentive tokens, and reallocates capital to maximize APY while managing risk through diversification across protocols.`,
+      features: [
+        'Multi-protocol yield optimization',
+        'Auto-compounding every 24 hours',
+        'Reward token harvesting and conversion',
+        'Protocol risk diversification',
+        'Gas-efficient batch harvesting'
+      ],
+      riskFactors: [
+        'Protocol-specific smart contract risks',
+        'Reward token price volatility',
+        'Impermanent loss on LP positions'
+      ],
+      rebalanceFrequency: 'Daily compounding with weekly strategy rebalancing'
+    },
+    arbitrage: {
+      description: `This vault captures price discrepancies between different DEXes and liquidity pools for ${tokenA}-${tokenB}. Using high-frequency monitoring and instant execution, it profits from temporary price inefficiencies while maintaining delta-neutral exposure to minimize directional risk.`,
+      features: [
+        'Cross-DEX price monitoring',
+        'Sub-second execution capability',
+        'Flash loan integration for capital efficiency',
+        'Slippage protection algorithms',
+        'Profit-locking mechanisms'
+      ],
+      riskFactors: [
+        'Execution risk during high volatility',
+        'MEV competition from other arbitrageurs',
+        'Network congestion delays'
+      ],
+      rebalanceFrequency: 'Continuous monitoring with instant execution'
+    },
+    delta_neutral: {
+      description: `The Delta Neutral vault maintains market-neutral positions by hedging ${tokenA} exposure through perpetual futures or options. This strategy generates yield from funding rates and basis trades while eliminating directional market risk, making it ideal for risk-averse investors.`,
+      features: [
+        'Perpetual futures hedging',
+        'Funding rate optimization',
+        'Basis trade capture',
+        'Automated hedge rebalancing',
+        'Market-neutral exposure maintenance'
+      ],
+      riskFactors: [
+        'Funding rate reversal risk',
+        'Basis convergence timing risk',
+        'Liquidation risk on leveraged positions'
+      ],
+      rebalanceFrequency: 'Every 8 hours or when hedge ratio deviates >2%'
+    },
+    stable_max: {
+      description: `Designed for capital preservation, this vault focuses on ${tokenA}-${tokenB} stablecoin pairs to generate consistent yields with minimal volatility. It optimizes across lending protocols, stablecoin pools, and low-risk yield opportunities while maintaining high liquidity.`,
+      features: [
+        'Stablecoin-focused strategies',
+        'Multi-protocol diversification',
+        'High liquidity maintenance',
+        'Minimal impermanent loss risk',
+        'Conservative position sizing'
+      ],
+      riskFactors: [
+        'Stablecoin depeg risk',
+        'Lower yields compared to volatile pairs',
+        'Protocol risk from lending platforms'
+      ],
+      rebalanceFrequency: 'Weekly optimization with daily monitoring'
+    },
+    sei_hypergrowth: {
+      description: `An aggressive growth strategy targeting high-yield opportunities in the SEI ecosystem. This vault actively participates in new protocol launches, liquidity mining incentives, and high-APY farms for ${tokenA}-${tokenB}, accepting higher risk for potentially higher returns.`,
+      features: [
+        'Early access to SEI ecosystem launches',
+        'High-yield farm participation',
+        'Aggressive position sizing',
+        'Quick capital rotation',
+        'Incentive token optimization'
+      ],
+      riskFactors: [
+        'High volatility exposure',
+        'New protocol smart contract risks',
+        'Impermanent loss on volatile pairs',
+        'Rug pull risk from new projects'
+      ],
+      rebalanceFrequency: 'Multiple times daily based on opportunities'
+    },
+    blue_chip: {
+      description: `A conservative strategy focusing on established, battle-tested protocols for ${tokenA}-${tokenB}. This vault prioritizes security and reliability over maximum yields, investing only in protocols with proven track records and significant TVL.`,
+      features: [
+        'Top-tier protocol selection only',
+        'Extensive due diligence process',
+        'Lower but consistent yields',
+        'Battle-tested smart contracts',
+        'Institutional-grade security'
+      ],
+      riskFactors: [
+        'Lower yields than aggressive strategies',
+        'Still subject to market-wide risks',
+        'Protocol governance changes'
+      ],
+      rebalanceFrequency: 'Monthly rebalancing with continuous monitoring'
+    },
+    hedge: {
+      description: `This vault employs sophisticated hedging techniques to protect ${tokenA}-${tokenB} positions against market downturns. It uses options, perpetuals, and dynamic position sizing to maintain upside exposure while limiting downside risk.`,
+      features: [
+        'Options-based downside protection',
+        'Dynamic hedge ratio adjustment',
+        'Tail risk management',
+        'Volatility harvesting',
+        'Portfolio insurance mechanisms'
+      ],
+      riskFactors: [
+        'Hedging costs reduce overall returns',
+        'Options premium decay',
+        'Imperfect hedge correlation'
+      ],
+      rebalanceFrequency: 'Every 4 hours or on significant price moves'
+    }
+  };
+
+  return strategies[strategy] || {
+    description: `This vault optimizes liquidity provision for ${tokenA}-${tokenB} using advanced AI algorithms to maximize returns while managing risk.`,
+    features: ['AI-driven optimization', 'Automatic rebalancing', 'MEV protection', 'Gas optimization'],
+    riskFactors: ['Smart contract risk', 'Market volatility', 'Impermanent loss'],
+    rebalanceFrequency: 'Varies based on market conditions'
+  };
+}
+
+// Strategy-specific trading statistics and metrics
+const getStrategyTradingStats = (strategy: string, tvl: number, winRate: number, sharpeRatio: number, maxDrawdown: number) => {
+  // Base calculations
+  const baseTradesPerDay = {
+    concentrated_liquidity: 6,  // Rebalances frequently
+    yield_farming: 2,           // Daily compounds
+    arbitrage: 50,              // High frequency
+    delta_neutral: 4,           // Hedge adjustments
+    stable_max: 1,              // Minimal rebalancing
+    sei_hypergrowth: 8,         // Active rotation
+    blue_chip: 0.5,             // Monthly
+    hedge: 6                    // Frequent hedging
+  };
+
+  const volatilityMultiplier = {
+    concentrated_liquidity: 1.2,
+    yield_farming: 0.9,
+    arbitrage: 0.3,
+    delta_neutral: 0.5,
+    stable_max: 0.2,
+    sei_hypergrowth: 1.8,
+    blue_chip: 0.6,
+    hedge: 0.7
+  };
+
+  const avgTradeReturn = {
+    concentrated_liquidity: { best: 2.5, worst: -1.8 },
+    yield_farming: { best: 1.8, worst: -0.8 },
+    arbitrage: { best: 0.5, worst: -0.2 },
+    delta_neutral: { best: 0.8, worst: -0.4 },
+    stable_max: { best: 0.3, worst: -0.1 },
+    sei_hypergrowth: { best: 8.0, worst: -5.0 },
+    blue_chip: { best: 1.2, worst: -0.6 },
+    hedge: { best: 1.5, worst: -1.0 }
+  };
+
+  const tradesPerDay = baseTradesPerDay[strategy as keyof typeof baseTradesPerDay] || 2;
+  const volatility = volatilityMultiplier[strategy as keyof typeof volatilityMultiplier] || 1;
+  const tradeReturns = avgTradeReturn[strategy as keyof typeof avgTradeReturn] || { best: 2, worst: -1 };
+
+  // Calculate estimated metrics
+  const totalTrades = Math.floor(tvl > 0 ? tradesPerDay * 30 * (tvl / 10000 + 1) : 0);
+  const avgTradeSize = tvl > 0 ? (tvl / Math.max(totalTrades, 1) * 10) : 0;
+  const bestTrade = tradeReturns.best * (1 + winRate) * (sharpeRatio / 2);
+  const worstTrade = Math.abs(tradeReturns.worst) * (1 + maxDrawdown);
+
+  return {
+    totalTrades,
+    avgTradeSize,
+    bestTrade: bestTrade.toFixed(2),
+    worstTrade: worstTrade.toFixed(2),
+    tradesPerDay,
+    volatility: (volatility * 12.5).toFixed(1),
+    strategyType: strategy.replace('_', ' ').toUpperCase()
+  };
+}
+
 interface VaultDetailPageProps {
   vaultAddress: string | null;
   activeTab: string;
@@ -868,12 +1067,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   }}>
                     <CardHeader className="pb-4">
                       <CardTitle className="flex items-center gap-3 text-green-400 text-xl font-bold">
-                        <div className="p-2 rounded-lg" style={{
-                          background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.15))',
-                          border: '1px solid rgba(34, 197, 94, 0.4)'
-                        }}>
-                          <Coins className="w-5 h-5 text-green-400" />
-                        </div>
+                        <Coins className="w-5 h-5 text-green-400" />
                         Your Position
                       </CardTitle>
                     </CardHeader>
@@ -956,12 +1150,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 }}>
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-3 text-vault-primary text-xl font-bold">
-                      <div className="p-2 rounded-lg" style={{
-                        background: `linear-gradient(135deg, ${vaultColor}30, ${vaultColor}15)`,
-                        border: `1px solid ${vaultColor}40`
-                      }}>
-                        <TrendingUp className="w-5 h-5" style={{ color: vaultColor }} />
-                      </div>
+                      <TrendingUp className="w-5 h-5" style={{ color: vaultColor }} />
                       Performance Metrics
                     </CardTitle>
                   </CardHeader>
@@ -1027,12 +1216,7 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                 }}>
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-3 text-vault-primary text-xl font-bold">
-                      <div className="p-2 rounded-lg" style={{
-                        background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(34, 197, 94, 0.15))',
-                        border: '1px solid rgba(34, 197, 94, 0.4)'
-                      }}>
-                        <Shield className="w-5 h-5 text-green-400" />
-                      </div>
+                      <Shield className="w-5 h-5 text-green-400" />
                       Risk Analysis
                     </CardTitle>
                   </CardHeader>
@@ -1132,50 +1316,58 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   </CardContent>
                 </Card>
 
-                {/* Trading Stats */}
+                {/* Trading Stats - Strategy Specific */}
                 <Card className="vault-solid-card relative z-10">
                   <CardHeader>
                     <CardTitle className="text-vault-primary">Trading Statistics</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {(() => {
-                      // Calculate trading stats based on vault performance metrics
-                      const winRate = vault.performance.winRate;
-                      const maxDrawdown = vault.performance.maxDrawdown;
-                      const sharpeRatio = vault.performance.sharpeRatio;
-
-                      // Estimate trades based on TVL and strategy
-                      const estimatedTrades = Math.floor(onChainTVL > 0 ? onChainTVL * 10 : 0);
-                      const avgTradeSize = onChainTVL > 0 ? (onChainTVL / Math.max(estimatedTrades, 1)).toFixed(4) : '0';
-
-                      // Best/worst trade based on performance metrics
-                      const bestTrade = (winRate * sharpeRatio * 5).toFixed(1);
-                      const worstTrade = (maxDrawdown * 100).toFixed(1);
+                      // Get strategy-specific trading stats
+                      const tradingStats = getStrategyTradingStats(
+                        vault.strategy,
+                        onChainTVL,
+                        vault.performance.winRate,
+                        vault.performance.sharpeRatio,
+                        vault.performance.maxDrawdown
+                      );
 
                       return (
                         <>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Total Trades</span>
+                            <span className="text-muted-foreground">Total Rebalances</span>
                             <span className="font-bold text-enhanced-glow text-blue-400">
-                              {estimatedTrades > 0 ? estimatedTrades.toLocaleString() : 'N/A'}
+                              {tradingStats.totalTrades > 0 ? tradingStats.totalTrades.toLocaleString() : 'N/A'}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Avg Trade Size</span>
+                            <span className="text-muted-foreground">Rebalances/Day</span>
+                            <span className="font-bold text-enhanced-glow text-purple-400">
+                              ~{tradingStats.tradesPerDay}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Avg Position Size</span>
                             <span className="font-bold text-enhanced-glow text-cyan-400">
-                              {onChainTVL > 0 ? `${avgTradeSize} ${tvlTokenSymbol}` : 'N/A'}
+                              {onChainTVL > 0 ? `${tradingStats.avgTradeSize.toFixed(2)} ${tvlTokenSymbol}` : 'N/A'}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Best Trade</span>
+                            <span className="text-muted-foreground">Best Rebalance</span>
                             <span className="font-bold text-green-400 text-enhanced-glow">
-                              {onChainTVL > 0 ? `+${bestTrade}%` : 'N/A'}
+                              {onChainTVL > 0 ? `+${tradingStats.bestTrade}%` : 'N/A'}
                             </span>
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-muted-foreground">Worst Trade</span>
+                            <span className="text-muted-foreground">Worst Rebalance</span>
                             <span className="font-bold text-red-400 text-enhanced-glow">
-                              {onChainTVL > 0 ? `-${worstTrade}%` : 'N/A'}
+                              {onChainTVL > 0 ? `-${tradingStats.worstTrade}%` : 'N/A'}
+                            </span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Strategy Volatility</span>
+                            <span className="font-bold text-orange-400 text-enhanced-glow">
+                              {tradingStats.volatility}%
                             </span>
                           </div>
                         </>
@@ -1196,48 +1388,63 @@ function VaultDetailPageContent({ vaultAddress, activeTab, action, searchParams 
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div>
-                    <h3 className="text-xl font-semibold mb-2">
-                      {vault.strategy.replace('_', ' ').toUpperCase()} Strategy
-                    </h3>
-                    <p className="text-muted-foreground">
-                      This strategy employs advanced AI algorithms to optimize liquidity provision 
-                      in the {vault.tokenA}-{vault.tokenB} pair, automatically adjusting positions 
-                      based on market conditions and volatility patterns.
-                    </p>
-                  </div>
-                  
-                  <div className="grid md:grid-cols-2 gap-8">
-                    <div>
-                      <h4 className="font-semibold mb-3 text-lg">Key Features</h4>
-                      <ul className="space-y-2 text-sm text-muted-foreground list-none">
-                        <li className="flex items-start gap-2">
-                          <span className="text-primary mt-0.5">•</span>
-                          <span>AI-driven range optimization</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-primary mt-0.5">•</span>
-                          <span>Automatic rebalancing</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-primary mt-0.5">•</span>
-                          <span>MEV protection</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="text-primary mt-0.5">•</span>
-                          <span>Gas optimization</span>
-                        </li>
-                      </ul>
-                    </div>
-                    
-                    <div>
-                      <h4 className="font-semibold mb-3 text-lg">Token Pair</h4>
-                      <div className="flex items-center justify-start md:justify-center py-2">
-                        {/* Modern token pair display */}
-                        <TokenPairDisplay tokenA={vault.tokenA} tokenB={vault.tokenB} size={48} />
-                      </div>
-                    </div>
-                  </div>
+                  {(() => {
+                    const strategyDetails = getStrategyDetails(vault.strategy, vault.tokenA, vault.tokenB);
+                    return (
+                      <>
+                        <div>
+                          <h3 className="text-xl font-semibold mb-2">
+                            {vault.strategy.replace('_', ' ').toUpperCase()} Strategy
+                          </h3>
+                          <p className="text-muted-foreground leading-relaxed">
+                            {strategyDetails.description}
+                          </p>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                          <div>
+                            <h4 className="font-semibold mb-3 text-lg text-primary">Key Features</h4>
+                            <ul className="space-y-2 text-sm text-muted-foreground list-none">
+                              {strategyDetails.features.map((feature, index) => (
+                                <li key={index} className="flex items-start gap-2">
+                                  <span className="text-primary mt-0.5">✓</span>
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          <div>
+                            <h4 className="font-semibold mb-3 text-lg text-yellow-500">Risk Factors</h4>
+                            <ul className="space-y-2 text-sm text-muted-foreground list-none">
+                              {strategyDetails.riskFactors.map((risk, index) => (
+                                <li key={index} className="flex items-start gap-2">
+                                  <span className="text-yellow-500 mt-0.5">⚠</span>
+                                  <span>{risk}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-8 pt-4 border-t border-border/50">
+                          <div>
+                            <h4 className="font-semibold mb-3 text-lg">Rebalance Frequency</h4>
+                            <p className="text-sm text-muted-foreground bg-muted/30 rounded-lg p-3">
+                              {strategyDetails.rebalanceFrequency}
+                            </p>
+                          </div>
+
+                          <div>
+                            <h4 className="font-semibold mb-3 text-lg">Token Pair</h4>
+                            <div className="flex items-center justify-start md:justify-center py-2">
+                              <TokenPairDisplay tokenA={vault.tokenA} tokenB={vault.tokenB} size={48} />
+                            </div>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })()}
                 </CardContent>
               </Card>
               </div>
