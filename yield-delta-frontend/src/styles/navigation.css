@@ -219,8 +219,10 @@ nav .mobile-menu-btn:hover {
 /* === Content Spacing Below Navigation === */
 
 /* Ensure content doesn't overlap with fixed navigation */
-body {
-  padding-top: 3.5rem;
+@layer base {
+  body {
+    padding-top: 3.5rem;
+  }
 }
 
 /* Prevent navigation from affecting page containers */
