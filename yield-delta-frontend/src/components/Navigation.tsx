@@ -269,138 +269,195 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
       
       {/* Full-Screen Mobile Menu Overlay */}
       {!showLaunchApp && mobileMenuOpen && (
-        <div ref={mobileMenuRef} className="fixed inset-0 z-50 flex items-center justify-center mobile-menu-overlay">
-          {/* Backdrop with glass morphism */}
-          <div 
+        <div
+          ref={mobileMenuRef}
+          className="fixed inset-0 z-[99999] flex items-center justify-center"
+          style={{
+            width: '100vw',
+            height: '100vh',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+          }}
+        >
+          {/* Full-screen backdrop with gradient */}
+          <div
             className="absolute inset-0 mobile-menu-backdrop"
             onClick={closeMobileMenu}
             style={{
-              background: 'linear-gradient(135deg, hsl(216 100% 4% / 0.95), hsl(216 50% 8% / 0.95))',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+              width: '100%',
+              height: '100%',
+              background: 'linear-gradient(135deg, #0a0a12 0%, #0d1117 25%, #161b22 50%, #0d1117 75%, #0a0a12 100%)',
             }}
           />
-          
-          {/* Animated grid background */}
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute inset-0" style={{
-              backgroundImage: `
-                linear-gradient(rgba(0, 245, 212, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 245, 212, 0.1) 1px, transparent 1px)
+
+          {/* Animated mesh gradient background */}
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: `
+                radial-gradient(ellipse 80% 50% at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(ellipse 50% 30% at 50% 50%, rgba(6, 182, 212, 0.1) 0%, transparent 50%)
               `,
-              backgroundSize: '50px 50px',
-              animation: 'slideDown 20s linear infinite'
-            }} />
-          </div>
-          
-          {/* Animated particles */}
-          <div className="absolute inset-0 pointer-events-none">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-1 h-1 rounded-full"
-                style={{
-                  background: i % 2 === 0 ? 'hsl(180 100% 48%)' : 'hsl(262 80% 60%)',
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  opacity: 0.4,
-                  animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
-                  animationDelay: `${Math.random() * 2}s`,
-                  boxShadow: `0 0 ${2 + Math.random() * 4}px currentColor`
-                }}
-              />
-            ))}
-          </div>
-          
-          {/* Floating orbs for ambiance */}
-          <div className="absolute inset-0 pointer-events-none">
-            <div 
-              className="absolute w-32 h-32 rounded-full opacity-20 mobile-menu-orb"
+              animation: 'meshMove 15s ease-in-out infinite',
+            }}
+          />
+
+          {/* Animated grid lines */}
+          <div
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style={{
+              backgroundImage: `
+                linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px)
+              `,
+              backgroundSize: '60px 60px',
+            }}
+          />
+
+          {/* Floating orbs */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div
+              className="absolute mobile-menu-orb"
               style={{
-                background: 'radial-gradient(circle, hsl(180 100% 48% / 0.6), transparent)',
-                top: '20%',
-                left: '10%',
+                width: '300px',
+                height: '300px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(6, 182, 212, 0.3) 0%, transparent 70%)',
+                top: '10%',
+                left: '-5%',
+                filter: 'blur(60px)',
+                animation: 'floatOrb 8s ease-in-out infinite',
+              }}
+            />
+            <div
+              className="absolute mobile-menu-orb"
+              style={{
+                width: '250px',
+                height: '250px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%)',
+                bottom: '15%',
+                right: '-5%',
+                filter: 'blur(50px)',
+                animation: 'floatOrb 10s ease-in-out infinite reverse',
+              }}
+            />
+            <div
+              className="absolute mobile-menu-orb"
+              style={{
+                width: '200px',
+                height: '200px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%)',
+                top: '50%',
+                right: '20%',
                 filter: 'blur(40px)',
-                animation: 'float 6s ease-in-out infinite'
-              }}
-            />
-            <div 
-              className="absolute w-24 h-24 rounded-full opacity-30 mobile-menu-orb"
-              style={{
-                background: 'radial-gradient(circle, hsl(262 80% 60% / 0.5), transparent)',
-                bottom: '30%',
-                right: '15%',
-                filter: 'blur(30px)',
-                animation: 'float 8s ease-in-out infinite reverse'
+                animation: 'floatOrb 12s ease-in-out infinite',
+                animationDelay: '-3s',
               }}
             />
           </div>
-          
-          {/* Menu Content */}
-          <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-sm mx-auto px-8">
-            {/* Menu Items */}
-            <div className="flex flex-col space-y-8 text-center">
+
+          {/* Close button */}
+          <button
+            onClick={closeMobileMenu}
+            className="absolute top-6 right-6 z-10 p-3 rounded-full mobile-menu-item"
+            style={{
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              backdropFilter: 'blur(10px)',
+            }}
+            aria-label="Close menu"
+          >
+            <X className="w-6 h-6 text-white" />
+          </button>
+
+          {/* Menu Content - Centered */}
+          <div className="relative z-10 flex flex-col items-center justify-center w-full h-full px-6 py-20">
+            {/* Logo/Brand at top */}
+            <div className="mobile-menu-item mb-8">
+              <h2
+                className="text-3xl font-bold text-center"
+                style={{
+                  background: 'linear-gradient(135deg, #06b6d4, #8b5cf6, #6366f1)',
+                  WebkitBackgroundClip: 'text',
+                  backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Yield Delta
+              </h2>
+              <p className="text-gray-500 text-sm text-center mt-1">DeFi Yield Optimization</p>
+            </div>
+
+            {/* Menu Items - Grid layout for better mobile UX */}
+            <div className="grid grid-cols-2 gap-4 w-full max-w-sm">
               {[
-                { href: '/vaults', label: 'Vaults', icon: '🏦' },
-                { href: '/market', label: 'Market', icon: '📈' },
-                { href: '/market-sentiment', label: 'Sentiment', icon: '🎯' },
-                { href: '/dashboard', label: 'Portfolio', icon: '📊' },
-                { href: '/portfolio/rebalance', label: 'Rebalance', icon: '⚖️' },
-                { href: '/vaults/deploy', label: 'Deploy', icon: '🚀' },
-                { href: '/docs', label: 'Docs', icon: '📚' }
+                { href: '/vaults', label: 'Vaults', icon: '🏦', desc: 'Earn yield' },
+                { href: '/market', label: 'Market', icon: '📈', desc: 'Live prices' },
+                { href: '/market-sentiment', label: 'Sentiment', icon: '🎯', desc: 'Market mood' },
+                { href: '/dashboard', label: 'Portfolio', icon: '📊', desc: 'Your assets' },
+                { href: '/portfolio/rebalance', label: 'Rebalance', icon: '⚖️', desc: 'Optimize' },
+                { href: '/docs', label: 'Docs', icon: '📚', desc: 'Learn more' },
               ].map((item, index) => (
                 <Link
                   key={item.href}
                   href={item.href}
                   onClick={closeMobileMenu}
-                  className="group relative mobile-menu-item"
-                  style={{
-                    animationDelay: `${index * 0.1}s`
-                  }}
+                  className="mobile-menu-item group"
+                  style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <div 
-                    className="flex flex-col items-center space-y-2 p-4 rounded-2xl transition-all duration-300"
+                  <div
+                    className="flex flex-col items-center justify-center p-5 rounded-2xl transition-all duration-300 h-full"
                     style={{
-                      background: 'linear-gradient(135deg, hsl(216 50% 8% / 0.6), hsl(216 30% 15% / 0.6))',
+                      background: 'linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)',
+                      border: '1px solid rgba(255,255,255,0.06)',
                       backdropFilter: 'blur(10px)',
-                      WebkitBackdropFilter: 'blur(10px)',
-                      border: '1px solid hsl(216 30% 18% / 0.5)',
-                      boxShadow: '0 8px 32px hsl(180 100% 48% / 0.1)'
                     }}
                   >
-                    <span className="text-2xl mb-1">{item.icon}</span>
-                    <span 
-                      className="text-lg font-semibold"
-                      style={{
-                        background: 'linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%))',
-                        WebkitBackgroundClip: 'text',
-                        backgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        color: 'transparent'
-                      }}
-                    >
-                      {item.label}
-                    </span>
+                    <span className="text-3xl mb-2">{item.icon}</span>
+                    <span className="text-white font-semibold text-base">{item.label}</span>
+                    <span className="text-gray-500 text-xs mt-1">{item.desc}</span>
                   </div>
-                  
-                  {/* Hover glow effect */}
-                  <div 
-                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                    style={{
-                      background: 'linear-gradient(135deg, hsl(180 100% 48% / 0.1), hsl(262 80% 60% / 0.1))',
-                      boxShadow: '0 0 20px hsl(180 100% 48% / 0.3), inset 0 1px 0 hsl(180 100% 48% / 0.2)'
-                    }}
-                  />
                 </Link>
               ))}
             </div>
-            
-            {/* Close button hint */}
-            <div className="mt-12 text-center">
-              <p className="text-sm opacity-60" style={{ color: 'hsl(180 100% 48%)' }}>
-                Tap anywhere to close
-              </p>
-            </div>
+
+            {/* Deploy button - Full width CTA */}
+            <Link
+              href="/vaults/deploy"
+              onClick={closeMobileMenu}
+              className="mobile-menu-item w-full max-w-sm mt-6"
+            >
+              <div
+                className="flex items-center justify-center gap-3 p-4 rounded-2xl transition-all duration-300"
+                style={{
+                  background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
+                  border: '1px solid rgba(6, 182, 212, 0.3)',
+                }}
+              >
+                <span className="text-2xl">🚀</span>
+                <span
+                  className="font-bold text-lg"
+                  style={{
+                    background: 'linear-gradient(135deg, #06b6d4, #8b5cf6)',
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Deploy Your Vault
+                </span>
+              </div>
+            </Link>
+
+            {/* Bottom hint */}
+            <p className="text-gray-600 text-xs mt-8 mobile-menu-item">
+              Tap anywhere to close
+            </p>
           </div>
         </div>
       )}
