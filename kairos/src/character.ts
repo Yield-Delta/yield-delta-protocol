@@ -14,7 +14,10 @@ interface ExtendedCharacter extends Character {
  */
 export const character: ExtendedCharacter = {
   name: 'Kairos',
-  clients: ['twitter'],
+  clients: [
+    'twitter',
+    ...(process.env.INSTAGRAM_USERNAME?.trim() ? ['instagram'] : []),
+  ],
   plugins: [
     // Core plugins first
     '@elizaos/plugin-sql',
@@ -39,6 +42,9 @@ export const character: ExtendedCharacter = {
       ? ['@elizaos/plugin-twitter']
       : []),
     ...(process.env.TELEGRAM_BOT_TOKEN?.trim() ? ['@elizaos/plugin-telegram'] : []),
+    ...(process.env.INSTAGRAM_USERNAME?.trim() && process.env.INSTAGRAM_PASSWORD?.trim()
+      ? ['@elizaos/plugin-instagram']
+      : []),
 
     // Bootstrap plugin
     ...(!process.env.IGNORE_BOOTSTRAP ? ['@elizaos/plugin-bootstrap'] : []),
@@ -77,6 +83,21 @@ export const character: ExtendedCharacter = {
     // Safety settings
     TWITTER_RETRY_LIMIT: '3',
     TWITTER_DRY_RUN: process.env.NODE_ENV === 'development' ? 'true' : 'false',
+
+    // Instagram credentials from environment
+    INSTAGRAM_USERNAME: process.env.INSTAGRAM_USERNAME || '',
+    INSTAGRAM_PASSWORD: process.env.INSTAGRAM_PASSWORD || '',
+    INSTAGRAM_APP_ID: process.env.INSTAGRAM_APP_ID || '',
+    INSTAGRAM_APP_SECRET: process.env.INSTAGRAM_APP_SECRET || '',
+    INSTAGRAM_BUSINESS_ACCOUNT_ID: process.env.INSTAGRAM_BUSINESS_ACCOUNT_ID || '',
+
+    // Instagram posting schedule
+    INSTAGRAM_POST_INTERVAL_MIN: '120',  // 2 hours minimum
+    INSTAGRAM_POST_INTERVAL_MAX: '240',  // 4 hours maximum
+    INSTAGRAM_ENABLE_ACTION_PROCESSING: 'true',
+    INSTAGRAM_ACTION_INTERVAL: '5',
+    INSTAGRAM_MAX_ACTIONS_PROCESSING: '3',
+    INSTAGRAM_DRY_RUN: process.env.NODE_ENV === 'development' ? 'true' : 'false',
   },
   postExamples: [
     "🚀 Yield Delta Protocol is live on SEI Atlantic-2 testnet! Deposit SEI into our strategy vaults and watch your daily P&L grow with simulated 3.83-12.23% APY 📊\n\nTry it now: Delta Neutral (7%), Yield Farming (12.23%), or Active Trading (10.3%)\n\n#DeFi #SEI #YieldOptimization",
