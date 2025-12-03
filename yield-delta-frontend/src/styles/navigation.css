@@ -3,20 +3,61 @@
  * All navigation, header, and menu-related styles
  */
 
-@layer components {
-  /* === Core Navigation Styles === */
+/* === Core Navigation Styles === */
+/* Note: These styles are outside @layer to ensure they load with higher priority */
 
-  nav {
-    z-index: 99999 !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    isolation: isolate !important;
-  }
+nav {
+  z-index: 99999 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  isolation: isolate !important;
+  background-color: hsl(var(--background) / 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid hsl(var(--border) / 0.3);
+}
+
+nav .simple-nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 3.5rem;
+  padding: 0 1rem;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+nav .nav-left-simple {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+nav .nav-right-simple {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+nav .nav-center-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex: 1;
+  justify-content: center;
+  margin: 0 2rem;
+}
+
+@layer components {
 
   /* Navigation Link Styling */
   nav a {
@@ -27,19 +68,6 @@
   nav a:visited,
   nav a:active {
     text-decoration: none !important;
-  }
-
-  /* === Main Navigation Container === */
-
-  nav .simple-nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 3.5rem;
-    padding: 0 1rem;
-    margin: 0;
-    box-sizing: border-box;
   }
 
   /* === Navigation Sections === */
@@ -56,16 +84,6 @@ nav .wallet-container {
   z-index: 99999 !important;
   isolation: isolate !important;
 }
-
-  /* Center - App Navigation Links */
-  nav .nav-center-links {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex: 1;
-    justify-content: center;
-    margin: 0 2rem;
-  }
 
   nav .nav-center-links a {
     position: relative;
@@ -101,15 +119,6 @@ nav .wallet-container {
     display: flex;
     flex-direction: column;
     line-height: 1.2;
-  }
-
-  /* Right side - Action buttons */
-  nav .nav-right-simple {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    flex-shrink: 0;
-    margin-left: auto;
   }
 
   /* === Wallet Container === */
