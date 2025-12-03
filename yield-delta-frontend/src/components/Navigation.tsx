@@ -5,7 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Logo from './Logo';
 import { gsap } from 'gsap';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Vault, TrendingUp, Target, PieChart, RefreshCw, BookOpen, Rocket } from 'lucide-react';
 
 const WalletConnectButton = dynamic(
   () => import('./WalletConnectButton').then(mod => ({ default: mod.WalletConnectButton })),
@@ -29,56 +29,144 @@ interface NavigationProps {
 interface NavLink {
   href: string;
   label: string;
-  icon: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   desc: string;
-  color: string;
+  gradient: string;
+  iconColor: string;
+  borderColor: string;
 }
 
-// Memoized navigation links to prevent recreation on every render
+// Memoized navigation links with Lucide icons and custom gradients
 const NAV_LINKS: readonly NavLink[] = [
-  { href: '/vaults', label: 'Vaults', icon: '🏦', desc: 'Earn yield', color: 'rgba(6, 182, 212, 0.08)' },
-  { href: '/market', label: 'Market', icon: '📈', desc: 'Live prices', color: 'rgba(139, 92, 246, 0.08)' },
-  { href: '/market-sentiment', label: 'Sentiment', icon: '🎯', desc: 'Market mood', color: 'rgba(99, 102, 241, 0.08)' },
-  { href: '/dashboard', label: 'Portfolio', icon: '📊', desc: 'Your assets', color: 'rgba(6, 182, 212, 0.08)' },
-  { href: '/portfolio/rebalance', label: 'Rebalance', icon: '⚖️', desc: 'Optimize', color: 'rgba(139, 92, 246, 0.08)' },
-  { href: '/docs', label: 'Docs', icon: '📚', desc: 'Learn more', color: 'rgba(99, 102, 241, 0.08)' },
+  {
+    href: '/vaults',
+    label: 'Vaults',
+    icon: Vault,
+    desc: 'Earn automated yield',
+    gradient: 'linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(6, 182, 212, 0.04) 100%)',
+    iconColor: '#06b6d4',
+    borderColor: 'rgba(6, 182, 212, 0.25)',
+  },
+  {
+    href: '/market',
+    label: 'Market',
+    icon: TrendingUp,
+    desc: 'Live price feeds',
+    gradient: 'linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0.04) 100%)',
+    iconColor: '#10b981',
+    borderColor: 'rgba(16, 185, 129, 0.25)',
+  },
+  {
+    href: '/market-sentiment',
+    label: 'Sentiment',
+    icon: Target,
+    desc: 'Market analysis',
+    gradient: 'linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(139, 92, 246, 0.04) 100%)',
+    iconColor: '#8b5cf6',
+    borderColor: 'rgba(139, 92, 246, 0.25)',
+  },
+  {
+    href: '/dashboard',
+    label: 'Portfolio',
+    icon: PieChart,
+    desc: 'Track your assets',
+    gradient: 'linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(99, 102, 241, 0.04) 100%)',
+    iconColor: '#6366f1',
+    borderColor: 'rgba(99, 102, 241, 0.25)',
+  },
+  {
+    href: '/portfolio/rebalance',
+    label: 'Rebalance',
+    icon: RefreshCw,
+    desc: 'AI optimization',
+    gradient: 'linear-gradient(135deg, rgba(236, 72, 153, 0.12) 0%, rgba(236, 72, 153, 0.04) 100%)',
+    iconColor: '#ec4899',
+    borderColor: 'rgba(236, 72, 153, 0.25)',
+  },
+  {
+    href: '/docs',
+    label: 'Documentation',
+    icon: BookOpen,
+    desc: 'Learn & explore',
+    gradient: 'linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.04) 100%)',
+    iconColor: '#f59e0b',
+    borderColor: 'rgba(245, 158, 11, 0.25)',
+  },
 ] as const;
 
-// Memoized mobile menu item component for better performance
-const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onClose }) => (
-  <Link
-    href={item.href}
-    onClick={onClose}
-    className="mobile-menu-item group"
-  >
-    <div
-      className="relative flex flex-col items-center justify-center p-6 rounded-3xl transition-all duration-500 h-full overflow-hidden"
-      style={{
-        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.02) 100%)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-        willChange: 'transform, opacity'
-      }}
-    >
-      {/* Hover gradient overlay */}
-      <div
-        className="absolute inset-0 opacity-0 group-active:opacity-100 transition-opacity duration-300 pointer-events-none"
-        style={{
-          background: item.color,
-        }}
-        aria-hidden="true"
-      />
+// Premium mobile menu item component with enhanced design
+const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onClose }) => {
+  const IconComponent = item.icon;
 
-      <span className="text-4xl mb-3 transform group-active:scale-110 transition-transform duration-300" aria-hidden="true">
-        {item.icon}
-      </span>
-      <span className="text-white font-semibold text-base mb-1 relative z-10">{item.label}</span>
-      <span className="text-gray-400 text-xs relative z-10">{item.desc}</span>
-    </div>
-  </Link>
-));
+  return (
+    <Link
+      href={item.href}
+      onClick={onClose}
+      className="mobile-menu-item group block"
+    >
+      <div
+        className="relative flex flex-col items-center justify-center p-5 rounded-2xl transition-all duration-300 h-full overflow-hidden group-active:scale-[0.97]"
+        style={{
+          background: item.gradient,
+          border: `1px solid ${item.borderColor}`,
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          boxShadow: `0 4px 24px rgba(0, 0, 0, 0.15), 0 0 0 1px ${item.borderColor}, inset 0 1px 0 rgba(255, 255, 255, 0.06)`,
+          willChange: 'transform, opacity',
+        }}
+      >
+        {/* Glow effect on active */}
+        <div
+          className="absolute inset-0 opacity-0 group-active:opacity-100 transition-opacity duration-200 pointer-events-none rounded-2xl"
+          style={{
+            boxShadow: `inset 0 0 30px ${item.borderColor}, 0 0 20px ${item.borderColor}`,
+          }}
+          aria-hidden="true"
+        />
+
+        {/* Icon container with glow */}
+        <div
+          className="relative mb-3 p-3 rounded-xl transition-all duration-300 group-active:scale-110"
+          style={{
+            background: `linear-gradient(135deg, ${item.iconColor}15 0%, ${item.iconColor}08 100%)`,
+            border: `1px solid ${item.iconColor}30`,
+            boxShadow: `0 4px 16px ${item.iconColor}20`,
+          }}
+        >
+          <IconComponent
+            className="w-6 h-6 transition-all duration-300"
+            style={{ color: item.iconColor }}
+          />
+        </div>
+
+        {/* Label with better typography */}
+        <span
+          className="text-white font-semibold text-sm tracking-tight mb-0.5 relative z-10"
+          style={{ letterSpacing: '-0.01em' }}
+        >
+          {item.label}
+        </span>
+
+        {/* Description with subtle styling */}
+        <span
+          className="text-[11px] font-medium relative z-10 text-center leading-tight"
+          style={{ color: 'rgba(255, 255, 255, 0.45)' }}
+        >
+          {item.desc}
+        </span>
+
+        {/* Subtle shine effect */}
+        <div
+          className="absolute inset-x-0 top-0 h-px opacity-50"
+          style={{
+            background: `linear-gradient(90deg, transparent 0%, ${item.iconColor}40 50%, transparent 100%)`,
+          }}
+          aria-hidden="true"
+        />
+      </div>
+    </Link>
+  );
+});
 
 MobileMenuItem.displayName = 'MobileMenuItem';
 
@@ -709,40 +797,78 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               <Link
                 href="/vaults/deploy"
                 onClick={closeMobileMenu}
-                className="mobile-menu-item block w-full max-w-md mx-auto"
+                className="mobile-menu-item block w-full max-w-md mx-auto group"
               >
                 <div
-                  className="relative flex items-center justify-center gap-3 p-5 rounded-2xl transition-all duration-500 overflow-hidden group"
+                  className="relative flex items-center justify-center gap-4 p-4 rounded-2xl transition-all duration-300 overflow-hidden group-active:scale-[0.98]"
                   style={{
-                    background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%)',
-                    border: '1px solid rgba(6, 182, 212, 0.3)',
+                    background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(139, 92, 246, 0.18) 50%, rgba(99, 102, 241, 0.18) 100%)',
+                    border: '1px solid rgba(6, 182, 212, 0.35)',
                     backdropFilter: 'blur(20px)',
                     WebkitBackdropFilter: 'blur(20px)',
-                    boxShadow: '0 8px 32px rgba(6, 182, 212, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
-                    willChange: 'transform'
+                    boxShadow: '0 8px 32px rgba(6, 182, 212, 0.2), 0 0 0 1px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
                   }}
                 >
-                  {/* Animated gradient overlay */}
+                  {/* Animated glow overlay */}
                   <div
-                    className="absolute inset-0 opacity-0 group-active:opacity-100 transition-opacity duration-300"
+                    className="absolute inset-0 opacity-0 group-active:opacity-100 transition-opacity duration-200 rounded-2xl"
                     style={{
-                      background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%)',
+                      boxShadow: 'inset 0 0 40px rgba(6, 182, 212, 0.3), 0 0 30px rgba(139, 92, 246, 0.25)',
                     }}
                     aria-hidden="true"
                   />
 
-                  <span className="text-2xl relative z-10 group-active:scale-110 transition-transform duration-300" aria-hidden="true">🚀</span>
-                  <span
-                    className="font-bold text-lg relative z-10"
+                  {/* Icon container */}
+                  <div
+                    className="relative p-2.5 rounded-xl transition-all duration-300 group-active:scale-110"
                     style={{
-                      background: 'linear-gradient(135deg, #06b6d4, #8b5cf6)',
-                      WebkitBackgroundClip: 'text',
-                      backgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
+                      background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(139, 92, 246, 0.2) 100%)',
+                      border: '1px solid rgba(6, 182, 212, 0.3)',
+                      boxShadow: '0 4px 16px rgba(6, 182, 212, 0.2)',
                     }}
                   >
-                    Deploy Your Vault
-                  </span>
+                    <Rocket className="w-5 h-5" style={{ color: '#06b6d4' }} />
+                  </div>
+
+                  <div className="flex flex-col relative z-10">
+                    <span
+                      className="font-bold text-base tracking-tight"
+                      style={{
+                        background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #6366f1 100%)',
+                        WebkitBackgroundClip: 'text',
+                        backgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        letterSpacing: '-0.01em',
+                      }}
+                    >
+                      Deploy Your Vault
+                    </span>
+                    <span
+                      className="text-[11px] font-medium"
+                      style={{ color: 'rgba(255, 255, 255, 0.45)' }}
+                    >
+                      Launch a custom strategy
+                    </span>
+                  </div>
+
+                  {/* Arrow indicator */}
+                  <div
+                    className="ml-auto relative z-10 transition-transform duration-300 group-active:translate-x-1"
+                    style={{ color: 'rgba(6, 182, 212, 0.6)' }}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                  </div>
+
+                  {/* Top shine */}
+                  <div
+                    className="absolute inset-x-0 top-0 h-px opacity-60"
+                    style={{
+                      background: 'linear-gradient(90deg, transparent 0%, rgba(6, 182, 212, 0.5) 30%, rgba(139, 92, 246, 0.5) 70%, transparent 100%)',
+                    }}
+                    aria-hidden="true"
+                  />
                 </div>
               </Link>
 
