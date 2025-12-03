@@ -44,13 +44,18 @@
 
   /* === Navigation Sections === */
 
-  /* Left side - Logo and brand */
-  nav .nav-left-simple {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-shrink: 0;
-  }
+/* Merged: wallet-container-override - combines flex layout + z-index/isolation */
+.wallet-container-override,
+nav .wallet-container {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-shrink: 0 !important;
+  margin-left: auto !important;
+  z-index: 99999 !important;
+  isolation: isolate !important;
+}
 
   /* Center - App Navigation Links */
   nav .nav-center-links {

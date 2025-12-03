@@ -194,6 +194,72 @@
     border: 1px solid hsl(var(--border) / 0.5);
   }
 
+  /* === Vault Detail Header Card (Merged) === */
+
+  .vault-detail-header-card-optimized {
+    position: relative !important;
+    z-index: 10 !important;
+    max-width: calc(64rem - 2rem);
+    margin: 0 auto;
+    box-sizing: border-box;
+    backdrop-filter: blur(24px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+    border: 2px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow:
+      0 25px 50px rgba(0, 0, 0, 0.5),
+      0 12px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.15) inset,
+      0 0 40px rgba(0, 245, 212, 0.08) !important;
+  }
+
+  /* === Tabs Container Compact (Merged) === */
+
+  .tabs-container-compact {
+    container-type: inline-size;
+    background: rgba(15, 23, 42, 0.85) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(25px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(25px) saturate(180%) !important;
+    box-shadow:
+      0 15px 40px rgba(0, 0, 0, 0.6),
+      0 6px 20px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+  }
+
+  @container (max-width: 768px) {
+    .tabs-container-compact {
+      height: 2.5rem !important;
+      margin-bottom: 0.5rem !important;
+      padding: 0.1875rem !important;
+    }
+  }
+
+  /* === Risk Badge Custom (Merged) === */
+
+  .risk-badge-custom {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 16px;
+    padding: 8px 20px;
+    min-width: 90px;
+    height: 32px;
+    cursor: default;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.75px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px solid currentColor;
+    box-shadow:
+      0 4px 12px rgba(0, 0, 0, 0.25),
+      0 0 20px currentColor,
+      0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  }
+
   /* === Vault Button Styles === */
 
   .btn-vault-primary {

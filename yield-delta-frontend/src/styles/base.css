@@ -45,24 +45,24 @@
       font-size: 4.5rem;
     }
   }
-}
 
-/* Smooth Scroll Behavior */
-html {
-  scroll-behavior: smooth;
-}
+  /* Smooth Scroll Behavior */
+  html {
+    scroll-behavior: smooth;
+  }
 
-/* Global Link Reset - Prevent unwanted underlines */
-a {
-  text-decoration: none;
-}
+  /* Global Link Reset - Prevent unwanted underlines */
+  a {
+    text-decoration: none;
+  }
 
-a:hover {
-  text-decoration: none;
-}
+  a:hover {
+    text-decoration: none;
+  }
 
-/* Override any default browser styling for links */
-a, a:visited, a:hover, a:active {
-  text-decoration: none;
-  outline: none;
+  /* Override any default browser styling for links */
+  a, a:visited, a:hover, a:active {
+    text-decoration: none;
+    outline: none;
+  }
 }

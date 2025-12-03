@@ -196,28 +196,30 @@
 
 /* === Animation Classes === */
 
-.animate-slide-down {
-  animation: slideDown 0.3s ease-out;
-}
+@layer utilities {
+  .animate-slide-down {
+    animation: slideDown 0.3s ease-out;
+  }
 
-.animate-glow {
-  animation: glow 2s ease-in-out infinite alternate;
-}
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
 
-.animate-pulse-glow {
-  animation: pulseGlow 2s ease-in-out infinite;
-}
+  .animate-pulse-glow {
+    animation: pulseGlow 2s ease-in-out infinite;
+  }
 
-.animate-gradient-shift {
-  animation: gradient-shift 3s ease infinite;
-}
+  .animate-gradient-shift {
+    animation: gradient-shift 3s ease infinite;
+  }
 
-.animate-stream-flow {
-  animation: streamFlow 2s linear infinite;
+  .animate-stream-flow {
+    animation: streamFlow 2s linear infinite;
+  }
 }
 
 /* Motion Reduction Support */
