@@ -2934,52 +2934,44 @@ html body div.vault-page {
 
 /* Ensure tabs match header and content width */
 .vault-page .vault-tabs-clean {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
+  display: flex !important;
   width: 100% !important;
-  max-width: 80rem !important; /* Match header card exactly */
-  height: 4.5rem !important;
-  margin: 2.5rem auto 1.5rem auto !important; /* Increased top margin from 2rem to 2.5rem for better separation */
-  padding: 0.5rem !important;
-  gap: 0.75rem !important; /* Increased from 0.5rem to 0.75rem for more spacing between tabs */
-  border-radius: 0.75rem !important;
-  background-color: rgba(15, 23, 42, 0.8) !important;
-  border: none !important;
+  max-width: 64rem !important;
+  height: 4rem !important;
+  margin: 2rem auto 1.5rem auto !important;
+  padding: 0.375rem !important;
+  gap: 0.5rem !important;
+  border-radius: 1rem !important;
+  background-color: rgba(15, 23, 42, 0.85) !important;
+  border: 1px solid rgba(51, 65, 85, 0.6) !important;
   outline: none !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
-  box-shadow: none !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
   box-sizing: border-box !important;
 }
 
 /* Tab Trigger Base Styles */
 .vault-page .tab-trigger-clean {
-  height: 3.5rem !important;
-  font-size: 1.05rem !important; /* Increased from 1rem for better readability */
-  font-weight: 700 !important;
-  padding: 0 3rem !important; /* Increased from 2rem to 3rem for wider tabs with more breathing room */
-  padding-left: 3rem !important; /* Override Tailwind px-2 class */
-  padding-right: 3rem !important; /* Override Tailwind px-2 class */
-  width: 100% !important;
-  flex: 1 !important;
-  min-width: 0 !important;
-  border-radius: 0.5rem !important;
+  flex: 1 1 0 !important;
+  height: 100% !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  border-radius: 0.625rem !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   transition: all 0.25s ease !important;
-  letter-spacing: 0.5px !important; /* Increased from 0.375px for better spacing */
-  text-transform: uppercase !important;
   text-decoration: none !important;
   position: relative !important;
   overflow: hidden !important;
+  white-space: nowrap !important;
 }
 
-/* Higher specificity override for Radix UI data-slot attribute to beat Tailwind px-2 */
+/* Higher specificity override for Radix UI data-slot attribute */
 .vault-page .tab-trigger-clean[data-slot="tabs-trigger"] {
-  padding-left: 3rem !important;
-  padding-right: 3rem !important;
+  flex: 1 1 0 !important;
 }
 
 /* Tab Inactive State */
@@ -3022,50 +3014,40 @@ html body div.vault-page {
 /* Responsive Tab Styles */
 @media (max-width: 768px) {
   .vault-page .vault-tabs-clean {
-    height: 4rem !important;
-    margin: 2rem auto 1.25rem auto !important; /* Increased top margin from 1.5rem to 2rem for better separation */
-    padding: 0.375rem !important;
-    gap: 0.5rem !important; /* Increased from 0.375rem for better spacing */
+    height: 3.5rem !important;
+    margin: 1.5rem auto 1rem auto !important;
+    padding: 0.25rem !important;
+    gap: 0.375rem !important;
   }
 
   .vault-page .tab-trigger-clean {
-    height: 3rem !important;
-    font-size: 0.95rem !important; /* Increased from 0.9rem for better readability */
-    padding: 0 1.75rem !important; /* Increased from 1.25rem for more horizontal padding */
-    padding-left: 1.75rem !important; /* Override Tailwind px-2 on mobile */
-    padding-right: 1.75rem !important; /* Override Tailwind px-2 on mobile */
-    letter-spacing: 0.4px !important;
+    font-size: 0.875rem !important;
   }
 }
 
 @media (max-width: 480px) {
   .vault-page .vault-tabs-clean {
-    height: 3.5rem !important;
-    margin: 1.5rem auto 1rem auto !important; /* Increased top margin from 1.25rem for better separation */
-    padding: 0.25rem !important;
-    gap: 0.375rem !important; /* Increased from 0.25rem for better spacing */
+    height: 3rem !important;
+    margin: 1rem auto 0.75rem auto !important;
+    padding: 0.1875rem !important;
+    gap: 0.25rem !important;
   }
 
   .vault-page .tab-trigger-clean {
-    height: 2.75rem !important;
-    font-size: 0.85rem !important; /* Increased from 0.8rem for better readability */
-    padding: 0 1rem !important; /* Increased from 0.75rem for more horizontal padding */
-    padding-left: 1rem !important; /* Override Tailwind px-2 on small mobile */
-    padding-right: 1rem !important; /* Override Tailwind px-2 on small mobile */
-    letter-spacing: 0.3px !important; /* Increased from 0.25px for better spacing */
+    font-size: 0.75rem !important;
   }
 }
 
 .vault-page .container,
 .vault-page .max-w-5xl,
 .vault-page [class*="max-w"] {
-  max-width: 80rem !important; /* Changed from 64rem to match header */
+  max-width: 64rem !important;
 }
 
 /* NUCLEAR FIX 23: Grid and flexbox layout fixes */
 .vault-page .grid,
 .vault-page .flex {
-  max-width: 80rem; /* Changed from 64rem to match header */
+  max-width: 64rem;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
@@ -3294,11 +3276,9 @@ body:has(.deposit-modal-container) [class*="container"] {
   margin: 0 auto !important;
 }
 
-/* Ensure tab buttons fill their containers */
+/* Ensure tab buttons fill their containers - consistent flex */
 .vault-page .tab-trigger-clean {
-  width: 100% !important;
-  flex: 1 !important;
-  min-width: 0 !important;
+  flex: 1 1 0 !important;
   box-sizing: border-box !important;
 }
 

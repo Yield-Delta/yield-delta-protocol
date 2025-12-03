@@ -12,7 +12,6 @@ import DepositModal from '@/components/DepositModal';
 import { MessageCircle, X, Loader2 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import * as THREE from 'three';
 import { useSeiMarketData } from '@/hooks/useMarketData';
 import { useVaultStore, VaultData } from '@/stores/vaultStore';
 import { useVaultTVL } from '@/hooks/useVaultTVL';
@@ -111,10 +110,8 @@ const getRiskBadgeStyle = (riskLevel: 'Low' | 'Medium' | 'High') => {
 
 export default function VaultsPage() {
   const router = useRouter();
-  const mountRef = useRef<HTMLDivElement>(null);
   const vaultCardsRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
-  const [scene, setScene] = useState<THREE.Scene | null>(null);
   const [showChat, setShowChat] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [depositVault, setDepositVault] = useState<VaultData | null>(null);
@@ -293,119 +290,6 @@ export default function VaultsPage() {
     router.push(`/vault?address=${vault.address}&tab=analytics`)
   }
 
-  // Three.js Setup
-  useEffect(() => {
-    const currentMount = mountRef.current;
-    if (!currentMount || scene) return; // Prevent multiple scene creations
-
-    // Scene setup
-    const newScene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 0);
-    currentMount.appendChild(renderer.domElement);
-
-    // Particle system
-    const particleCount = 1000;
-    const particles = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    const colors = new Float32Array(particleCount * 3);
-
-    for (let i = 0; i < particleCount * 3; i += 3) {
-      positions[i] = (Math.random() - 0.5) * 100;
-      positions[i + 1] = (Math.random() - 0.5) * 100;
-      positions[i + 2] = (Math.random() - 0.5) * 100;
-
-      // Colors for particles
-      const color = new THREE.Color();
-      color.setHSL(Math.random() * 0.3 + 0.5, 0.7, 0.5);
-      colors[i] = color.r;
-      colors[i + 1] = color.g;
-      colors[i + 2] = color.b;
-    }
-
-    particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    particles.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-
-    const particleMaterial = new THREE.PointsMaterial({
-      size: 1,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.2,
-    });
-
-    const particleSystem = new THREE.Points(particles, particleMaterial);
-    newScene.add(particleSystem);
-
-    // Geometric shapes for depth
-    const geometries = [
-      new THREE.TetrahedronGeometry(2),
-      new THREE.OctahedronGeometry(1.5),
-      new THREE.IcosahedronGeometry(1),
-    ];
-
-    geometries.forEach((geometry, index) => {
-      const material = new THREE.MeshBasicMaterial({
-        color: [0x00f5d4, 0x9b5de5, 0xff206e][index],
-        wireframe: true,
-        transparent: true,
-        opacity: 0.1,
-      });
-      
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.position.set(
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50,
-        (Math.random() - 0.5) * 50
-      );
-      newScene.add(mesh);
-    });
-
-    camera.position.z = 30;
-    setScene(newScene);
-    console.log('[VaultsPage] Three.js scene created with', newScene.children.length, 'objects');
-
-    // Animation loop
-    const animate = () => {
-      requestAnimationFrame(animate);
-      
-      // Rotate particles
-      particleSystem.rotation.x += 0.001;
-      particleSystem.rotation.y += 0.002;
-
-      // Rotate geometric shapes
-      newScene.children.forEach((child) => {
-        if (child instanceof THREE.Mesh) {
-          child.rotation.x += 0.01;
-          child.rotation.y += 0.01;
-        }
-      });
-
-      renderer.render(newScene, camera);
-    };
-
-    animate();
-
-    // Handle resize
-    const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    };
-
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      if (currentMount && renderer.domElement) {
-        currentMount.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
-    };
-  }, [scene]); // Add scene as dependency to prevent recreation
-
   // GSAP Animations
   useEffect(() => {
     if (vaultCardsRef.current) {
@@ -456,18 +340,6 @@ export default function VaultsPage() {
 
   return (
     <div className="min-h-screen bg-background relative">
-      {/* Three.js Background */}
-      <div 
-        ref={mountRef} 
-        className="fixed inset-0 z-0"
-        style={{ 
-          background: 'radial-gradient(ellipse at center, rgba(155, 93, 229, 0.15) 0%, rgba(0, 245, 212, 0.05) 50%, transparent 100%)'
-        }}
-      />
-      
-      {/* Background overlay to reduce 3D visual interference */}
-      <div className="fixed inset-0 z-5 bg-gradient-to-b from-background/70 via-background/60 to-background/70 pointer-events-none" />
-
       {/* Navigation */}
       <Navigation variant="dark" showWallet={true} showLaunchApp={false} />
       
