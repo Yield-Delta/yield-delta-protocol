@@ -671,10 +671,10 @@ export default function VaultsPage() {
                       </div>
                     </div>
 
-                    {/* Action Buttons - Enhanced Spacing and Sizing */}
-                    <div className="vault-action-buttons">  
-                      <Button 
-                        className="w-44 font-bold text-sm h-11 px-8 btn-vault-primary transition-all duration-300 border-2 border-transparent hover:scale-105 active:scale-95 relative z-20 shadow-lg"
+                    {/* Action Buttons - Centered and Prominent */}
+                    <div className="vault-action-buttons flex justify-center gap-4 mt-6">
+                      <Button
+                        className="flex-1 max-w-[180px] font-bold text-base h-12 btn-vault-primary transition-all duration-300 hover:scale-105 active:scale-95 relative z-20"
                         onClick={(e) => {
                           console.log('[BUTTON CLICK] Deposit button clicked - IMMEDIATE', new Date().toISOString());
                           e.preventDefault();
@@ -693,10 +693,10 @@ export default function VaultsPage() {
                       >
                         Deposit
                       </Button>
-                      <Button 
-                        variant="outline" 
-                        className="w-44 font-bold text-sm h-11 px-8 btn-vault-secondary transition-all duration-300 border-2 hover:scale-105 active:scale-95 relative z-20 shadow-lg"
-                        onClick={(e) => { 
+                      <Button
+                        variant="outline"
+                        className="flex-1 max-w-[180px] font-bold text-base h-12 btn-vault-secondary transition-all duration-300 hover:scale-105 active:scale-95 relative z-20"
+                        onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
                           console.log('[VaultsPage] Analytics button clicked for vault:', vault.name);

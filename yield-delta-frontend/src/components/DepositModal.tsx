@@ -673,15 +673,16 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 8px !important;
+            padding: 12px !important;
             align-items: flex-start !important;
-            padding-top: 16px !important;
+            padding-top: 20px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 16px) !important;
-            max-width: calc(100vw - 16px) !important;
+            width: calc(100vw - 24px) !important;
+            max-width: calc(100vw - 24px) !important;
             min-width: 280px !important;
-            max-height: 92vh !important;
+            max-height: 90vh !important;
+            border-radius: 20px !important;
           }
 
           /* Reduce header padding on mobile */
@@ -804,10 +805,15 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         }
 
         @media (max-width: 375px) {
+          .deposit-modal-container {
+            padding: 10px !important;
+            padding-top: 16px !important;
+          }
           .deposit-modal-content {
-            width: calc(100vw - 12px) !important;
-            max-width: calc(100vw - 12px) !important;
-            max-height: 94vh !important;
+            width: calc(100vw - 20px) !important;
+            max-width: calc(100vw - 20px) !important;
+            max-height: 92vh !important;
+            border-radius: 16px !important;
           }
 
           .modal-title {

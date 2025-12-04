@@ -5,7 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Logo from './Logo';
 import { gsap } from 'gsap';
-import { Menu, X, Vault, TrendingUp, Target, PieChart, RefreshCw, BookOpen, Rocket } from 'lucide-react';
+import { Menu, X, Vault, TrendingUp, Target, PieChart, RefreshCw, BookOpen, Rocket, CandlestickChart } from 'lucide-react';
 
 const WalletConnectButton = dynamic(
   () => import('./WalletConnectButton').then(mod => ({ default: mod.WalletConnectButton })),
@@ -57,6 +57,15 @@ const NAV_LINKS: readonly NavLink[] = [
     borderColor: 'rgba(16, 185, 129, 0.25)',
   },
   {
+    href: '/charts',
+    label: 'Charts',
+    icon: CandlestickChart,
+    desc: 'Technical analysis',
+    gradient: 'linear-gradient(135deg, rgba(251, 146, 60, 0.12) 0%, rgba(251, 146, 60, 0.04) 100%)',
+    iconColor: '#fb923c',
+    borderColor: 'rgba(251, 146, 60, 0.25)',
+  },
+  {
     href: '/market-sentiment',
     label: 'Sentiment',
     icon: Target,
@@ -94,7 +103,7 @@ const NAV_LINKS: readonly NavLink[] = [
   },
 ] as const;
 
-// Premium mobile menu item component - horizontal full-width design
+// Premium mobile menu item component - large centered box design
 const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onClose }) => {
   const IconComponent = item.icon;
 
@@ -105,13 +114,13 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
       className="mobile-menu-item group block w-full"
     >
       <div
-        className="relative flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 overflow-hidden group-active:scale-[0.98]"
+        className="relative flex items-center gap-5 p-5 rounded-2xl transition-all duration-300 overflow-hidden group-active:scale-[0.97]"
         style={{
           background: item.gradient,
-          border: `1px solid ${item.borderColor}`,
+          border: `1.5px solid ${item.borderColor}`,
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: `0 4px 24px rgba(0, 0, 0, 0.15), 0 0 0 1px ${item.borderColor}, inset 0 1px 0 rgba(255, 255, 255, 0.06)`,
+          boxShadow: `0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px ${item.borderColor}, inset 0 1px 0 rgba(255, 255, 255, 0.08)`,
           willChange: 'transform, opacity',
         }}
       >
@@ -119,57 +128,57 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
         <div
           className="absolute inset-0 opacity-0 group-active:opacity-100 transition-opacity duration-200 pointer-events-none rounded-2xl"
           style={{
-            boxShadow: `inset 0 0 30px ${item.borderColor}, 0 0 20px ${item.borderColor}`,
+            boxShadow: `inset 0 0 40px ${item.borderColor}, 0 0 30px ${item.borderColor}`,
           }}
           aria-hidden="true"
         />
 
-        {/* Icon container with glow */}
+        {/* Icon container with glow - larger */}
         <div
-          className="relative flex-shrink-0 p-3 rounded-xl transition-all duration-300 group-active:scale-110"
+          className="relative flex-shrink-0 p-4 rounded-xl transition-all duration-300 group-active:scale-110"
           style={{
-            background: `linear-gradient(135deg, ${item.iconColor}15 0%, ${item.iconColor}08 100%)`,
-            border: `1px solid ${item.iconColor}30`,
-            boxShadow: `0 4px 16px ${item.iconColor}20`,
+            background: `linear-gradient(135deg, ${item.iconColor}20 0%, ${item.iconColor}10 100%)`,
+            border: `1px solid ${item.iconColor}40`,
+            boxShadow: `0 6px 20px ${item.iconColor}25`,
           }}
         >
           <IconComponent
-            className="w-6 h-6 transition-all duration-300"
+            className="w-7 h-7 transition-all duration-300"
             style={{ color: item.iconColor }}
           />
         </div>
 
-        {/* Text content - aligned left */}
+        {/* Text content - aligned left, larger */}
         <div className="flex flex-col flex-1 relative z-10">
           <span
-            className="text-white font-semibold text-base tracking-tight"
+            className="text-white font-bold text-lg tracking-tight"
             style={{ letterSpacing: '-0.01em' }}
           >
             {item.label}
           </span>
           <span
-            className="text-[12px] font-medium leading-tight"
-            style={{ color: 'rgba(255, 255, 255, 0.5)' }}
+            className="text-[13px] font-medium leading-tight mt-0.5"
+            style={{ color: 'rgba(255, 255, 255, 0.55)' }}
           >
             {item.desc}
           </span>
         </div>
 
-        {/* Arrow indicator */}
+        {/* Arrow indicator - larger */}
         <div
           className="flex-shrink-0 relative z-10 transition-transform duration-300 group-active:translate-x-1"
-          style={{ color: item.iconColor, opacity: 0.6 }}
+          style={{ color: item.iconColor, opacity: 0.7 }}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6"/>
           </svg>
         </div>
 
         {/* Subtle shine effect */}
         <div
-          className="absolute inset-x-0 top-0 h-px opacity-50"
+          className="absolute inset-x-0 top-0 h-px opacity-60"
           style={{
-            background: `linear-gradient(90deg, transparent 0%, ${item.iconColor}40 50%, transparent 100%)`,
+            background: `linear-gradient(90deg, transparent 0%, ${item.iconColor}50 50%, transparent 100%)`,
           }}
           aria-hidden="true"
         />
@@ -544,6 +553,12 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               Market
             </Link>
             <Link
+              href="/charts"
+              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
+            >
+              Charts
+            </Link>
+            <Link
               href="/market-sentiment"
               className="text-foreground hover:text-primary transition-colors no-underline font-medium"
             >
@@ -632,14 +647,14 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
           aria-modal="true"
           aria-labelledby="mobile-menu-title"
         >
-          {/* Premium backdrop with advanced blur */}
+          {/* Premium backdrop with advanced blur - fully opaque to hide content behind */}
           <div
             className="absolute inset-0 mobile-menu-backdrop"
             onClick={closeMobileMenu}
             style={{
               width: '100%',
               height: '100%',
-              background: 'linear-gradient(180deg, rgba(10, 10, 18, 0.97) 0%, rgba(13, 17, 23, 0.98) 50%, rgba(10, 10, 18, 0.97) 100%)',
+              background: 'linear-gradient(180deg, rgb(10, 10, 18) 0%, rgb(13, 17, 23) 50%, rgb(10, 10, 18) 100%)',
               backdropFilter: 'blur(40px) saturate(180%)',
               WebkitBackdropFilter: 'blur(40px) saturate(180%)',
             }}
@@ -756,16 +771,16 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               }
             }}
           >
-            {/* Header Section */}
+            {/* Header Section - Compact */}
             <div
-              className="mobile-menu-header flex-shrink-0 pt-4 pb-8"
+              className="mobile-menu-header flex-shrink-0 pt-2 pb-4"
               onClick={(e) => {
                 if (e.target === e.currentTarget) closeMobileMenu();
               }}
             >
               <h2
                 id="mobile-menu-title"
-                className="text-4xl font-bold text-center mb-2"
+                className="text-2xl font-bold text-center mb-1"
                 style={{
                   background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #6366f1 100%)',
                   WebkitBackgroundClip: 'text',
@@ -776,20 +791,20 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               >
                 Yield Delta
               </h2>
-              <p className="text-gray-400 text-sm text-center font-medium tracking-wide">
+              <p className="text-gray-400 text-xs text-center font-medium tracking-wide">
                 DeFi Yield Optimization
               </p>
             </div>
 
-            {/* Main Menu Items - Vertical Full-Width Stack */}
+            {/* Main Menu Items - Centered Vertical Stack */}
             <nav
-              className="flex-1 flex flex-col justify-start pt-2 overflow-y-auto"
+              className="flex-1 flex flex-col justify-center items-center overflow-y-auto"
               aria-label="Mobile menu navigation"
               onClick={(e) => {
                 if (e.target === e.currentTarget) closeMobileMenu();
               }}
             >
-              <div className="flex flex-col gap-3 w-full">
+              <div className="flex flex-col gap-4 w-full max-w-sm px-2">
                 {NAV_LINKS.map((item) => (
                   <MobileMenuItem key={item.href} item={item} onClose={closeMobileMenu} />
                 ))}
@@ -798,7 +813,7 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
 
             {/* Footer Section - Premium CTA */}
             <div
-              className="mobile-menu-footer flex-shrink-0 pt-6 pb-8 space-y-4"
+              className="mobile-menu-footer flex-shrink-0 pt-4 pb-6 space-y-3"
               onClick={(e) => {
                 if (e.target === e.currentTarget) closeMobileMenu();
               }}
