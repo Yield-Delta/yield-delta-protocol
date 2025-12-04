@@ -564,35 +564,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           to { transform: rotate(360deg); }
         }
         
-        /* ULTIMATE MODAL WIDTH OVERRIDE - All possible constraints */
-        html, body {
-          max-width: none !important;
-        }
-        
-        /* Reset any container constraints globally when modal is open */
-        .deposit-modal-container ~ *,
-        .deposit-modal-container ~ * *,
-        .deposit-modal-container {
-          max-width: none !important;
-        }
-        
-        /* Target all possible CSS framework containers */
-        .container,
-        [class*="container"],
-        [class*="max-w"],
-        .max-w-xl,
-        .max-w-2xl,
-        .max-w-3xl,
-        .max-w-4xl,
-        .max-w-5xl,
-        .max-w-6xl,
-        .max-w-7xl {
-          max-width: none !important;
-        }
-        
         /* ENHANCED MODAL SIZING - Force consistent width across all scenarios */
         .deposit-modal-container {
-          width: 100vw !important;
+          width: 100% !important;
           height: 100vh !important;
           position: fixed !important;
           top: 0 !important;
@@ -605,6 +579,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           justify-content: center !important;
           margin: 0 !important;
           padding: 24px !important;
+          padding-left: max(24px, env(safe-area-inset-left)) !important;
+          padding-right: max(24px, env(safe-area-inset-right)) !important;
           max-width: none !important;
           max-height: none !important;
           transform: none !important;
@@ -628,42 +604,6 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           flex-shrink: 0 !important;
         }
         
-        /* Override any parent container constraints */
-        html body .deposit-modal-container,
-        html body .deposit-modal-container *,
-        html body div.deposit-modal-container,
-        html body div.deposit-modal-container * {
-          max-width: none !important;
-        }
-        
-        /* Removed conflicting CSS rules that set 560px width */
-        
-        /* NUCLEAR OPTION: Ultimate width enforcement */
-        .deposit-modal-container > .deposit-modal-content,
-        div.deposit-modal-container > div.deposit-modal-content {
-          width: 500px !important;
-          max-width: 500px !important;
-          min-width: 320px !important;
-          max-height: 85vh !important;
-          flex: none !important;
-          flex-basis: 500px !important;
-          flex-grow: 0 !important;
-          flex-shrink: 0 !important;
-        }
-        
-        /* Override CSS framework utilities */
-        body:has(.deposit-modal-container) .container {
-          max-width: none !important;
-        }
-        
-        /* Prevent Tailwind container class interference */
-        .deposit-modal-container .container,
-        .deposit-modal-container [class*="max-w-"],
-        .deposit-modal-container [class*="w-"] {
-          max-width: none !important;
-          width: auto !important;
-        }
-        
         /* Restore modal content width specifically */
         .deposit-modal-container .deposit-modal-content {
           width: 500px !important;
@@ -675,13 +615,15 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         @media (max-width: 600px) {
           .deposit-modal-container {
             padding: 12px !important;
+            padding-left: max(12px, env(safe-area-inset-left)) !important;
+            padding-right: max(12px, env(safe-area-inset-right)) !important;
             padding-top: 20px !important;
             align-items: flex-start !important;
             justify-content: center !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 24px) !important;
-            max-width: calc(100vw - 24px) !important;
+            width: calc(100% - 24px) !important;
+            max-width: calc(100% - 24px) !important;
             min-width: 280px !important;
             max-height: 90vh !important;
             border-radius: 20px !important;
@@ -689,9 +631,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
             overflow: hidden !important;
           }
 
-          /* Ensure scrollable content has proper padding - minimum 20px on each side */
+          /* Ensure scrollable content has proper padding - reduced for mobile */
           .modal-scrollable-content {
-            padding: 1rem 1.25rem 0.5rem 1.25rem !important;
+            padding: 0.75rem 0.5rem 0 0.5rem !important;
             max-height: calc(85vh - 160px) !important;
             box-sizing: border-box !important;
           }
@@ -838,18 +780,20 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         @media (max-width: 375px) {
           .deposit-modal-container {
             padding: 8px !important;
+            padding-left: max(8px, env(safe-area-inset-left)) !important;
+            padding-right: max(8px, env(safe-area-inset-right)) !important;
             padding-top: 16px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 16px) !important;
-            max-width: calc(100vw - 16px) !important;
+            width: calc(100% - 16px) !important;
+            max-width: calc(100% - 16px) !important;
             max-height: 92vh !important;
             border-radius: 16px !important;
             margin: 0 auto !important;
           }
 
           .modal-scrollable-content {
-            padding: 0.75rem 0.875rem 0.5rem 0.875rem !important;
+            padding: 0.625rem 0.5rem 0.5rem 0.5rem !important;
             max-height: calc(92vh - 140px) !important;
           }
 
@@ -875,20 +819,6 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           }
         }
 
-        /* Reduce content padding on mobile - FIXED: Ensure proper horizontal padding */
-        @media (max-width: 600px) {
-          .modal-scrollable-content {
-            padding: 0.75rem 1rem 0 1rem !important;
-            max-height: calc(90vh - 130px) !important;
-          }
-        }
-
-        @media (max-width: 375px) {
-          .modal-scrollable-content {
-            padding: 0.625rem 0.75rem 0 0.75rem !important;
-            max-height: calc(92vh - 120px) !important;
-          }
-        }
 
         /* Trust indicators on mobile */
         @media (max-width: 600px) {
@@ -962,7 +892,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         display: 'flex',
         pointerEvents: 'auto',
         zIndex: 10000,
-        width: '100vw',
+        width: '100%',
         height: '100dvh',
         margin: '0',
         padding: '12px',
