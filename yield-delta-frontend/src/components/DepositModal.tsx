@@ -673,21 +673,27 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 12px !important;
+            padding: 16px !important;
             align-items: flex-start !important;
-            padding-top: 20px !important;
+            padding-top: 24px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 24px) !important;
-            max-width: calc(100vw - 24px) !important;
+            width: calc(100vw - 32px) !important;
+            max-width: calc(100vw - 32px) !important;
             min-width: 280px !important;
-            max-height: 90vh !important;
+            max-height: 88vh !important;
             border-radius: 20px !important;
+            margin: 0 auto !important;
+          }
+
+          /* Ensure scrollable content has proper padding */
+          .modal-scrollable-content {
+            padding: 1rem 1.25rem 0 1.25rem !important;
           }
 
           /* Reduce header padding on mobile */
           .modal-header-section {
-            padding: 1rem 0.875rem !important;
+            padding: 1rem !important;
             margin-bottom: 0.5rem !important;
           }
 
@@ -795,25 +801,50 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
 
           /* Compact footer */
           .modal-footer {
-            padding: 0.625rem 0.875rem 0.875rem 0.875rem !important;
+            padding: 0.75rem 1.25rem 1rem 1.25rem !important;
           }
 
           .modal-footer button {
             height: 44px !important;
             font-size: 0.9375rem !important;
           }
+
+          /* Ensure transaction section has proper padding */
+          .transaction-side {
+            padding: 1rem 1rem !important;
+          }
+
+          /* Quick deposit section padding */
+          .quick-deposit-section {
+            padding: 0 !important;
+          }
+
+          /* Important notice padding */
+          .important-notice {
+            padding: 1rem !important;
+          }
+
+          /* APY info section padding */
+          .apy-info-section {
+            padding: 1rem !important;
+          }
         }
 
         @media (max-width: 375px) {
           .deposit-modal-container {
-            padding: 10px !important;
-            padding-top: 16px !important;
+            padding: 12px !important;
+            padding-top: 20px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 20px) !important;
-            max-width: calc(100vw - 20px) !important;
-            max-height: 92vh !important;
+            width: calc(100vw - 24px) !important;
+            max-width: calc(100vw - 24px) !important;
+            max-height: 90vh !important;
             border-radius: 16px !important;
+            margin: 0 auto !important;
+          }
+
+          .modal-scrollable-content {
+            padding: 0.875rem 1rem 0 1rem !important;
           }
 
           .modal-title {
