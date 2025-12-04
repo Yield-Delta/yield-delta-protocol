@@ -1,6 +1,33 @@
+'use client'
+
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+
 export default function DocsHomePage() {
   return (
     <div className="docs-content">
+      {/* Back to Vaults Navigation */}
+      <div className="mb-6">
+        <Link href="/vaults">
+          <Button
+            variant="outline"
+            className="gap-2 hover:gap-3 transition-all duration-300 group"
+            style={{
+              background: 'linear-gradient(135deg, rgba(155, 93, 229, 0.08) 0%, rgba(0, 245, 212, 0.06) 100%)',
+              border: '1px solid rgba(155, 93, 229, 0.3)',
+              backdropFilter: 'blur(10px)',
+              minHeight: '44px',
+              minWidth: '44px',
+              padding: '0.75rem 1.25rem',
+            }}
+          >
+            <ArrowLeft className="w-5 h-5 transition-transform duration-300 group-hover:-translate-x-1" />
+            <span className="font-semibold">Back to Vaults</span>
+          </Button>
+        </Link>
+      </div>
+
       <h1 className="text-4xl font-bold mb-8">Yield Delta Documentation</h1>
       
       <p className="text-lg text-muted-foreground mb-8">
@@ -171,8 +198,3 @@ export default function DocsHomePage() {
     </div>
   );
 }
-
-export const metadata = {
-  title: 'Yield Delta Documentation',
-  description: 'Complete guide to Yield Delta - AI-powered yield optimization on SEI Network',
-};

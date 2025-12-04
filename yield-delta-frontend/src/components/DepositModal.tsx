@@ -689,10 +689,11 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
             overflow: hidden !important;
           }
 
-          /* Ensure scrollable content has proper padding */
+          /* Ensure scrollable content has proper padding - minimum 20px on each side */
           .modal-scrollable-content {
             padding: 1rem 1.25rem 0.5rem 1.25rem !important;
             max-height: calc(85vh - 160px) !important;
+            box-sizing: border-box !important;
           }
 
           /* Reduce header padding on mobile */
@@ -874,17 +875,17 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           }
         }
 
-        /* Reduce content padding on mobile */
+        /* Reduce content padding on mobile - FIXED: Ensure minimum 20px horizontal padding */
         @media (max-width: 600px) {
           .modal-scrollable-content {
-            padding: 0.75rem 0.875rem 0 0.875rem !important;
+            padding: 0.75rem 1.25rem 0 1.25rem !important;
             max-height: calc(92vh - 140px) !important;
           }
         }
 
         @media (max-width: 375px) {
           .modal-scrollable-content {
-            padding: 0.625rem 0.75rem 0 0.75rem !important;
+            padding: 0.625rem 1.125rem 0 1.125rem !important;
             max-height: calc(94vh - 140px) !important;
           }
         }
@@ -1015,7 +1016,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           style={{
             flex: '1',
             overflow: 'auto',
-            padding: '1rem 1rem 0 1rem',
+            padding: '1rem 1.25rem 0 1.25rem',
             minHeight: '0',
             maxHeight: 'calc(80vh - 200px)'
           }}
