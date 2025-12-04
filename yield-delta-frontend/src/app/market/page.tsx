@@ -219,28 +219,30 @@ const MarketPage = () => {
                   Live vault data on SEI Atlantic-2 Testnet (Chain ID 1328)
                 </p>
               </div>
-              <div className="flex items-center gap-6">
+              <div className="flex items-center gap-4">
                 <div
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                  className="flex items-center gap-3 px-5 py-3 rounded-full"
                   style={{
-                    background: 'rgba(16, 185, 129, 0.15)',
-                    border: '1px solid rgba(16, 185, 129, 0.3)',
-                    backdropFilter: 'blur(10px)'
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%)',
+                    border: '1px solid rgba(16, 185, 129, 0.4)',
+                    backdropFilter: 'blur(12px)',
+                    boxShadow: '0 4px 20px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
                   }}
                 >
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" style={{ boxShadow: '0 0 10px rgba(16, 185, 129, 0.8)' }}></div>
-                  <span className="text-green-300 font-semibold">Live Data</span>
+                  <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse" style={{ boxShadow: '0 0 12px rgba(16, 185, 129, 0.9)' }}></div>
+                  <span className="text-green-300 font-semibold text-sm">Live Data</span>
                 </div>
                 <div
-                  className="text-center px-4 py-3 rounded-xl"
+                  className="flex items-center gap-3 px-5 py-3 rounded-full"
                   style={{
-                    background: 'rgba(59, 130, 246, 0.15)',
-                    border: '1px solid rgba(59, 130, 246, 0.3)',
-                    backdropFilter: 'blur(10px)'
+                    background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%)',
+                    border: '1px solid rgba(59, 130, 246, 0.4)',
+                    backdropFilter: 'blur(12px)',
+                    boxShadow: '0 4px 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
                   }}
                 >
-                  <div className="text-sm text-blue-300 font-medium">Chain ID</div>
-                  <div className="text-2xl font-bold text-blue-400">1328</div>
+                  <span className="text-blue-300 font-medium text-sm">Chain ID</span>
+                  <span className="text-blue-400 font-bold">1328</span>
                 </div>
               </div>
             </div>
@@ -299,11 +301,12 @@ const MarketPage = () => {
               <div className="flex items-center justify-between mb-6">
                 <stat.icon className={`w-10 h-10 text-${stat.color}-400 group-hover:scale-110 transition-transform duration-300`} style={{ filter: 'drop-shadow(0 0 8px currentColor)' }} />
                 <div
-                  className={`text-sm font-bold text-${stat.color}-300 px-3 py-2 rounded-xl`}
+                  className={`text-xs font-bold text-${stat.color}-300 px-3 py-1.5 rounded-full`}
                   style={{
                     background: `rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : '139, 92, 246'}, 0.2)`,
-                    border: `1px solid rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : '139, 92, 246'}, 0.3)`,
-                    backdropFilter: 'blur(8px)'
+                    border: `1px solid rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : '139, 92, 246'}, 0.4)`,
+                    backdropFilter: 'blur(8px)',
+                    boxShadow: `0 2px 10px rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : '139, 92, 246'}, 0.15)`
                   }}
                 >
                   {stat.change}
@@ -403,11 +406,12 @@ const MarketPage = () => {
                       </td>
                       <td className="p-6 text-right">
                         <div
-                          className="inline-block px-3 py-1 rounded-lg text-xs font-bold"
+                          className="inline-block px-4 py-1.5 rounded-full text-xs font-bold"
                           style={{
-                            background: 'rgba(139, 92, 246, 0.2)',
+                            background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(59, 130, 246, 0.15) 100%)',
                             border: '1px solid rgba(139, 92, 246, 0.4)',
-                            color: '#c4b5fd'
+                            color: '#c4b5fd',
+                            boxShadow: '0 2px 10px rgba(139, 92, 246, 0.2)'
                           }}
                         >
                           {vault.strategy.replace('_', ' ').toUpperCase()}

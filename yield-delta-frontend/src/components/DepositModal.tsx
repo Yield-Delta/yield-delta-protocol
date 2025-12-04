@@ -674,16 +674,16 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 20px !important;
-            padding-top: 32px !important;
+            padding: 12px !important;
+            padding-top: 20px !important;
             align-items: flex-start !important;
             justify-content: center !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 40px) !important;
-            max-width: calc(100vw - 40px) !important;
+            width: calc(100vw - 24px) !important;
+            max-width: calc(100vw - 24px) !important;
             min-width: 280px !important;
-            max-height: 85vh !important;
+            max-height: 90vh !important;
             border-radius: 20px !important;
             margin: 0 auto !important;
             overflow: hidden !important;
@@ -837,20 +837,20 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
 
         @media (max-width: 375px) {
           .deposit-modal-container {
-            padding: 16px !important;
-            padding-top: 24px !important;
+            padding: 8px !important;
+            padding-top: 16px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 32px) !important;
-            max-width: calc(100vw - 32px) !important;
-            max-height: 88vh !important;
+            width: calc(100vw - 16px) !important;
+            max-width: calc(100vw - 16px) !important;
+            max-height: 92vh !important;
             border-radius: 16px !important;
             margin: 0 auto !important;
           }
 
           .modal-scrollable-content {
-            padding: 0.875rem 1rem 0.5rem 1rem !important;
-            max-height: calc(88vh - 150px) !important;
+            padding: 0.75rem 0.875rem 0.5rem 0.875rem !important;
+            max-height: calc(92vh - 140px) !important;
           }
 
           .modal-title {
@@ -862,7 +862,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           }
 
           .modal-footer {
-            padding: 0.75rem 1rem !important;
+            padding: 0.625rem 0.875rem !important;
           }
         }
         
@@ -875,18 +875,18 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           }
         }
 
-        /* Reduce content padding on mobile - FIXED: Ensure minimum 20px horizontal padding */
+        /* Reduce content padding on mobile - FIXED: Ensure proper horizontal padding */
         @media (max-width: 600px) {
           .modal-scrollable-content {
-            padding: 0.75rem 1.25rem 0 1.25rem !important;
-            max-height: calc(92vh - 140px) !important;
+            padding: 0.75rem 1rem 0 1rem !important;
+            max-height: calc(90vh - 130px) !important;
           }
         }
 
         @media (max-width: 375px) {
           .modal-scrollable-content {
-            padding: 0.625rem 1.125rem 0 1.125rem !important;
-            max-height: calc(94vh - 140px) !important;
+            padding: 0.625rem 0.75rem 0 0.75rem !important;
+            max-height: calc(92vh - 120px) !important;
           }
         }
 
@@ -963,10 +963,12 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         pointerEvents: 'auto',
         zIndex: 10000,
         width: '100vw',
-        height: '100vh',
+        height: '100dvh',
         margin: '0',
+        padding: '12px',
         transform: 'none',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        overflow: 'hidden'
       }}
       onClick={(e) => {
         console.log('[DepositModal] Backdrop clicked');
@@ -985,12 +987,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           borderTop: `3px solid ${vaultColor}60`,
           borderLeft: `1px solid ${vaultColor}20`,
           borderRight: `1px solid ${vaultColor}20`,
-          maxHeight: '85vh',
+          maxHeight: '90dvh',
           height: 'auto',
+          width: '100%',
+          maxWidth: '500px',
           minWidth: '280px',
           zIndex: 10001,
           position: 'relative',
-          margin: '0',
+          margin: '0 auto',
           boxShadow: `0 32px 80px ${vaultColor}20, 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.1)`,
           color: '#ffffff',
           borderRadius: '24px',
@@ -1003,7 +1007,8 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           display: 'flex',
           flexDirection: 'column',
           boxSizing: 'border-box',
-          flexShrink: 0
+          flexShrink: 0,
+          overflow: 'hidden'
         }}
         onClick={(e) => {
           console.log('[DepositModal] Modal content clicked - preventing propagation');
@@ -1016,9 +1021,11 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           style={{
             flex: '1',
             overflow: 'auto',
-            padding: '1rem 1.25rem 0 1.25rem',
+            overflowX: 'hidden',
+            padding: '1rem 1.25rem 0.5rem 1.25rem',
             minHeight: '0',
-            maxHeight: 'calc(80vh - 200px)'
+            maxHeight: 'calc(90dvh - 100px)',
+            boxSizing: 'border-box'
           }}
         >
             {/* Enhanced Modal Header */}

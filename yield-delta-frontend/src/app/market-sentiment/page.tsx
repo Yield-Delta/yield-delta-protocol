@@ -284,28 +284,30 @@ const MarketSentimentPage = () => {
                 </h1>
                 <p className="text-gray-300 text-lg font-medium">AI-driven sentiment analysis and market psychology insights</p>
               </div>
-              <div className="flex items-center gap-6">
-                <div 
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl"
+              <div className="flex items-center gap-4">
+                <div
+                  className="flex items-center gap-3 px-5 py-3 rounded-full"
                   style={{
-                    background: 'rgba(16, 185, 129, 0.15)',
-                    border: '1px solid rgba(16, 185, 129, 0.3)',
-                    backdropFilter: 'blur(10px)'
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(16, 185, 129, 0.1) 100%)',
+                    border: '1px solid rgba(16, 185, 129, 0.4)',
+                    backdropFilter: 'blur(12px)',
+                    boxShadow: '0 4px 20px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
                   }}
                 >
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse" style={{ boxShadow: '0 0 10px rgba(16, 185, 129, 0.8)' }}></div>
-                  <span className="text-green-300 font-semibold">AI Powered</span>
+                  <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse" style={{ boxShadow: '0 0 12px rgba(16, 185, 129, 0.9)' }}></div>
+                  <span className="text-green-300 font-semibold text-sm">AI Powered</span>
                 </div>
                 <div
-                  className="text-center px-4 py-3 rounded-xl"
+                  className="flex items-center gap-3 px-5 py-3 rounded-full"
                   style={{
-                    background: 'rgba(139, 92, 246, 0.15)',
-                    border: '1px solid rgba(139, 92, 246, 0.3)',
-                    backdropFilter: 'blur(10px)'
+                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.15) 100%)',
+                    border: '1px solid rgba(139, 92, 246, 0.4)',
+                    backdropFilter: 'blur(12px)',
+                    boxShadow: '0 4px 20px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
                   }}
                 >
-                  <div className="text-sm text-purple-300 font-medium">Confidence</div>
-                  <div className="text-2xl font-bold text-purple-400">{marketStats.confidenceLevel}%</div>
+                  <span className="text-purple-300 font-medium text-sm">Confidence</span>
+                  <span className="text-purple-400 font-bold">{marketStats.confidenceLevel}%</span>
                 </div>
               </div>
             </div>
@@ -337,11 +339,12 @@ const MarketSentimentPage = () => {
               <div className="flex items-center justify-between mb-6">
                 <stat.icon className={`w-10 h-10 text-${stat.color}-400 group-hover:scale-110 transition-transform duration-300`} style={{ filter: 'drop-shadow(0 0 8px currentColor)' }} />
                 <div
-                  className={`text-sm font-bold text-${stat.color}-300 px-3 py-2 rounded-xl`}
+                  className={`text-xs font-bold text-${stat.color}-300 px-3 py-1.5 rounded-full`}
                   style={{
                     background: `rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : stat.color === 'purple' ? '139, 92, 246' : stat.color === 'cyan' ? '6, 182, 212' : '245, 158, 11'}, 0.2)`,
-                    border: `1px solid rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : stat.color === 'purple' ? '139, 92, 246' : stat.color === 'cyan' ? '6, 182, 212' : '245, 158, 11'}, 0.3)`,
-                    backdropFilter: 'blur(8px)'
+                    border: `1px solid rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : stat.color === 'purple' ? '139, 92, 246' : stat.color === 'cyan' ? '6, 182, 212' : '245, 158, 11'}, 0.4)`,
+                    backdropFilter: 'blur(8px)',
+                    boxShadow: `0 2px 10px rgba(${stat.color === 'blue' ? '59, 130, 246' : stat.color === 'green' ? '16, 185, 129' : stat.color === 'purple' ? '139, 92, 246' : stat.color === 'cyan' ? '6, 182, 212' : '245, 158, 11'}, 0.15)`
                   }}
                 >
                   {stat.change}
@@ -354,14 +357,14 @@ const MarketSentimentPage = () => {
         </div>
 
         {/* Timeframe Selector */}
-        <div className="flex items-center gap-6 mb-8">
-          <span className="text-gray-300 text-lg font-semibold">Analysis Period:</span>
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-8">
+          <span className="text-gray-300 text-base font-semibold whitespace-nowrap">Analysis Period:</span>
+          <div className="flex items-center gap-2 flex-wrap">
             {['1h', '24h', '7d', '30d'].map((timeframe) => (
               <button
                 key={timeframe}
                 onClick={() => setSelectedTimeframe(timeframe)}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 ${
+                className={`px-5 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 min-w-[60px] ${
                   selectedTimeframe === timeframe
                     ? 'text-white shadow-lg'
                     : 'text-gray-400 hover:text-white'
@@ -373,9 +376,9 @@ const MarketSentimentPage = () => {
                   backdropFilter: 'blur(10px)',
                   border: selectedTimeframe === timeframe
                     ? '1px solid rgba(16, 185, 129, 0.5)'
-                    : '1px solid rgba(255, 255, 255, 0.1)',
+                    : '1px solid rgba(255, 255, 255, 0.15)',
                   boxShadow: selectedTimeframe === timeframe
-                    ? '0 0 20px rgba(16, 185, 129, 0.4)'
+                    ? '0 4px 20px rgba(16, 185, 129, 0.4)'
                     : '0 4px 15px rgba(0, 0, 0, 0.1)'
                 }}
               >
@@ -386,9 +389,9 @@ const MarketSentimentPage = () => {
         </div>
 
         {/* Category Tabs */}
-        <div className="flex items-center gap-6 mb-12">
-          <span className="text-gray-300 text-lg font-semibold">Analysis Type:</span>
-          <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-12">
+          <span className="text-gray-300 text-base font-semibold whitespace-nowrap">Analysis Type:</span>
+          <div className="flex items-center gap-2 flex-wrap">
             {[
               { value: 'all' as const, label: 'All Metrics', icon: Activity },
               { value: 'technical' as const, label: 'Technical', icon: Target },
@@ -398,7 +401,7 @@ const MarketSentimentPage = () => {
               <button
                 key={category.value}
                 onClick={() => setSelectedCategory(category.value)}
-                className={`px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
+                className={`px-5 py-2.5 rounded-full font-semibold transition-all duration-300 hover:scale-105 flex items-center gap-2 ${
                   selectedCategory === category.value
                     ? 'text-white shadow-lg'
                     : 'text-gray-400 hover:text-white'
@@ -410,9 +413,9 @@ const MarketSentimentPage = () => {
                   backdropFilter: 'blur(10px)',
                   border: selectedCategory === category.value
                     ? '1px solid rgba(6, 182, 212, 0.5)'
-                    : '1px solid rgba(255, 255, 255, 0.1)',
+                    : '1px solid rgba(255, 255, 255, 0.15)',
                   boxShadow: selectedCategory === category.value
-                    ? '0 0 20px rgba(6, 182, 212, 0.4)'
+                    ? '0 4px 20px rgba(6, 182, 212, 0.4)'
                     : '0 4px 15px rgba(0, 0, 0, 0.1)'
                 }}
               >
