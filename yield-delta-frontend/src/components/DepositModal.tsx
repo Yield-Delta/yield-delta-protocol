@@ -604,11 +604,12 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           align-items: center !important;
           justify-content: center !important;
           margin: 0 !important;
-          padding: 20px !important;
+          padding: 24px !important;
           max-width: none !important;
           max-height: none !important;
           transform: none !important;
           box-sizing: border-box !important;
+          overflow: hidden !important;
         }
         
         .deposit-modal-content {
@@ -673,22 +674,25 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 16px !important;
+            padding: 20px !important;
+            padding-top: 32px !important;
             align-items: flex-start !important;
-            padding-top: 24px !important;
+            justify-content: center !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 32px) !important;
-            max-width: calc(100vw - 32px) !important;
+            width: calc(100vw - 40px) !important;
+            max-width: calc(100vw - 40px) !important;
             min-width: 280px !important;
-            max-height: 88vh !important;
+            max-height: 85vh !important;
             border-radius: 20px !important;
             margin: 0 auto !important;
+            overflow: hidden !important;
           }
 
           /* Ensure scrollable content has proper padding */
           .modal-scrollable-content {
-            padding: 1rem 1.25rem 0 1.25rem !important;
+            padding: 1rem 1.25rem 0.5rem 1.25rem !important;
+            max-height: calc(85vh - 160px) !important;
           }
 
           /* Reduce header padding on mobile */
@@ -832,27 +836,32 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
 
         @media (max-width: 375px) {
           .deposit-modal-container {
-            padding: 12px !important;
-            padding-top: 20px !important;
+            padding: 16px !important;
+            padding-top: 24px !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 24px) !important;
-            max-width: calc(100vw - 24px) !important;
-            max-height: 90vh !important;
+            width: calc(100vw - 32px) !important;
+            max-width: calc(100vw - 32px) !important;
+            max-height: 88vh !important;
             border-radius: 16px !important;
             margin: 0 auto !important;
           }
 
           .modal-scrollable-content {
-            padding: 0.875rem 1rem 0 1rem !important;
+            padding: 0.875rem 1rem 0.5rem 1rem !important;
+            max-height: calc(88vh - 150px) !important;
           }
 
           .modal-title {
-            font-size: 1.25rem !important;
+            font-size: 1.125rem !important;
           }
 
           .apy-display-large {
-            font-size: 1.75rem !important;
+            font-size: 1.5rem !important;
+          }
+
+          .modal-footer {
+            padding: 0.75rem 1rem !important;
           }
         }
         
@@ -941,7 +950,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           }
         }
       `}</style>
-      <div 
+      <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center deposit-modal-container"
       style={{
         position: 'fixed',
@@ -950,14 +959,11 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         right: '0',
         bottom: '0',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
         pointerEvents: 'auto',
         zIndex: 10000,
         width: '100vw',
         height: '100vh',
         margin: '0',
-        padding: '20px',
         transform: 'none',
         boxSizing: 'border-box'
       }}
