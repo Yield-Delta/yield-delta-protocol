@@ -114,14 +114,16 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
       className="mobile-menu-item group block w-full"
     >
       <div
-        className="relative flex items-center gap-5 p-5 rounded-2xl transition-all duration-300 overflow-hidden group-active:scale-[0.97]"
+        className="relative flex items-center gap-4 rounded-2xl transition-all duration-300 overflow-hidden group-active:scale-[0.98]"
         style={{
           background: item.gradient,
-          border: `1.5px solid ${item.borderColor}`,
+          border: `2px solid ${item.borderColor}`,
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: `0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px ${item.borderColor}, inset 0 1px 0 rgba(255, 255, 255, 0.08)`,
+          boxShadow: `0 8px 32px rgba(0, 0, 0, 0.25), 0 0 0 1px ${item.borderColor}, inset 0 1px 0 rgba(255, 255, 255, 0.1)`,
           willChange: 'transform, opacity',
+          padding: '16px 18px',
+          minHeight: '72px',
         }}
       >
         {/* Glow effect on active */}
@@ -135,30 +137,31 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
 
         {/* Icon container with glow - larger */}
         <div
-          className="relative flex-shrink-0 p-4 rounded-xl transition-all duration-300 group-active:scale-110"
+          className="relative flex-shrink-0 rounded-xl transition-all duration-300 group-active:scale-110"
           style={{
-            background: `linear-gradient(135deg, ${item.iconColor}20 0%, ${item.iconColor}10 100%)`,
-            border: `1px solid ${item.iconColor}40`,
-            boxShadow: `0 6px 20px ${item.iconColor}25`,
+            background: `linear-gradient(135deg, ${item.iconColor}25 0%, ${item.iconColor}12 100%)`,
+            border: `1.5px solid ${item.iconColor}50`,
+            boxShadow: `0 6px 20px ${item.iconColor}30`,
+            padding: '14px',
           }}
         >
           <IconComponent
-            className="w-7 h-7 transition-all duration-300"
-            style={{ color: item.iconColor }}
+            className="transition-all duration-300"
+            style={{ color: item.iconColor, width: '26px', height: '26px' }}
           />
         </div>
 
         {/* Text content - aligned left, larger */}
         <div className="flex flex-col flex-1 relative z-10">
           <span
-            className="text-white font-bold text-lg tracking-tight"
-            style={{ letterSpacing: '-0.01em' }}
+            className="text-white font-bold tracking-tight"
+            style={{ letterSpacing: '-0.01em', fontSize: '1.125rem' }}
           >
             {item.label}
           </span>
           <span
-            className="text-[13px] font-medium leading-tight mt-0.5"
-            style={{ color: 'rgba(255, 255, 255, 0.55)' }}
+            className="font-medium leading-tight mt-1"
+            style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.875rem' }}
           >
             {item.desc}
           </span>
@@ -167,18 +170,18 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
         {/* Arrow indicator - larger */}
         <div
           className="flex-shrink-0 relative z-10 transition-transform duration-300 group-active:translate-x-1"
-          style={{ color: item.iconColor, opacity: 0.7 }}
+          style={{ color: item.iconColor, opacity: 0.8 }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M9 18l6-6-6-6"/>
           </svg>
         </div>
 
         {/* Subtle shine effect */}
         <div
-          className="absolute inset-x-0 top-0 h-px opacity-60"
+          className="absolute inset-x-0 top-0 h-px opacity-70"
           style={{
-            background: `linear-gradient(90deg, transparent 0%, ${item.iconColor}50 50%, transparent 100%)`,
+            background: `linear-gradient(90deg, transparent 0%, ${item.iconColor}60 50%, transparent 100%)`,
           }}
           aria-hidden="true"
         />
@@ -763,7 +766,8 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
 
           {/* Menu Content - Premium Layout */}
           <div
-            className="relative z-10 flex flex-col h-full px-6 py-8 safe-area-inset"
+            className="relative z-10 flex flex-col h-full px-5 safe-area-inset"
+            style={{ paddingTop: '60px', paddingBottom: '20px' }}
             onClick={(e) => {
               // Close menu when clicking on empty space (not on links/buttons)
               if (e.target === e.currentTarget) {
@@ -773,14 +777,14 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
           >
             {/* Header Section - Compact */}
             <div
-              className="mobile-menu-header flex-shrink-0 pt-2 pb-4"
+              className="mobile-menu-header flex-shrink-0 pb-5"
               onClick={(e) => {
                 if (e.target === e.currentTarget) closeMobileMenu();
               }}
             >
               <h2
                 id="mobile-menu-title"
-                className="text-2xl font-bold text-center mb-1"
+                className="text-3xl font-bold text-center mb-2"
                 style={{
                   background: 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #6366f1 100%)',
                   WebkitBackgroundClip: 'text',
@@ -791,20 +795,20 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               >
                 Yield Delta
               </h2>
-              <p className="text-gray-400 text-xs text-center font-medium tracking-wide">
+              <p className="text-gray-400 text-sm text-center font-medium tracking-wide">
                 DeFi Yield Optimization
               </p>
             </div>
 
-            {/* Main Menu Items - Centered Vertical Stack */}
+            {/* Main Menu Items - Scrollable list that fills available space */}
             <nav
-              className="flex-1 flex flex-col justify-center items-center overflow-y-auto"
+              className="flex-1 flex flex-col items-center overflow-y-auto py-2"
               aria-label="Mobile menu navigation"
               onClick={(e) => {
                 if (e.target === e.currentTarget) closeMobileMenu();
               }}
             >
-              <div className="flex flex-col gap-4 w-full max-w-sm px-2">
+              <div className="flex flex-col gap-3 w-full max-w-md px-1">
                 {NAV_LINKS.map((item) => (
                   <MobileMenuItem key={item.href} item={item} onClose={closeMobileMenu} />
                 ))}
