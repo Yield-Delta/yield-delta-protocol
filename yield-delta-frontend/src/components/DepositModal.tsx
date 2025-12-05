@@ -329,7 +329,6 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         // Lock body scroll on mobile
         document.body.style.overflow = 'hidden';
         document.body.style.position = 'fixed';
-        document.body.style.width = '100%';
       } else {
         console.error('❌ [DepositModal] ERROR: Modal is open but vault is null!');
       }
@@ -338,14 +337,12 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       // Unlock body scroll
       document.body.style.overflow = '';
       document.body.style.position = '';
-      document.body.style.width = '';
     }
 
     // Cleanup on unmount
     return () => {
       document.body.style.overflow = '';
       document.body.style.position = '';
-      document.body.style.width = '';
     };
   }, [isOpen, vault]);
 
@@ -587,7 +584,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           box-sizing: border-box !important;
           overflow: hidden !important;
         }
-        
+
         .deposit-modal-content {
           width: 500px !important;
           max-width: 500px !important;
@@ -603,27 +600,27 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           box-sizing: border-box !important;
           flex-shrink: 0 !important;
         }
-        
+
         /* Restore modal content width specifically */
         .deposit-modal-container .deposit-modal-content {
           width: 500px !important;
           max-width: 500px !important;
           max-height: 85vh !important;
         }
-        
+
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 12px !important;
-            padding-left: max(12px, env(safe-area-inset-left)) !important;
-            padding-right: max(12px, env(safe-area-inset-right)) !important;
+            padding: 24px !important;
+            padding-left: max(24px, env(safe-area-inset-left)) !important;
+            padding-right: max(24px, env(safe-area-inset-right)) !important;
             padding-top: 20px !important;
             align-items: flex-start !important;
             justify-content: center !important;
           }
           .deposit-modal-content {
-            width: calc(100% - 24px) !important;
-            max-width: calc(100% - 24px) !important;
+            width: calc(100vw - max(48px, env(safe-area-inset-left) + env(safe-area-inset-right) + 48px)) !important;
+            max-width: calc(100vw - max(48px, env(safe-area-inset-left) + env(safe-area-inset-right) + 48px)) !important;
             min-width: 280px !important;
             max-height: 90vh !important;
             border-radius: 20px !important;
@@ -779,14 +776,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
 
         @media (max-width: 375px) {
           .deposit-modal-container {
-            padding: 8px !important;
-            padding-left: max(8px, env(safe-area-inset-left)) !important;
-            padding-right: max(8px, env(safe-area-inset-right)) !important;
+            padding: 16px !important;
+            padding-left: max(16px, env(safe-area-inset-left)) !important;
+            padding-right: max(16px, env(safe-area-inset-right)) !important;
             padding-top: 16px !important;
           }
           .deposit-modal-content {
-            width: calc(100% - 16px) !important;
-            max-width: calc(100% - 16px) !important;
+            width: calc(100vw - max(32px, env(safe-area-inset-left) + env(safe-area-inset-right) + 32px)) !important;
+            max-width: calc(100vw - max(32px, env(safe-area-inset-left) + env(safe-area-inset-right) + 32px)) !important;
             max-height: 92vh !important;
             border-radius: 16px !important;
             margin: 0 auto !important;
@@ -883,23 +880,6 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
       `}</style>
       <div
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center deposit-modal-container"
-      style={{
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        right: '0',
-        bottom: '0',
-        display: 'flex',
-        pointerEvents: 'auto',
-        zIndex: 10000,
-        width: '100%',
-        height: '100dvh',
-        margin: '0',
-        padding: '12px',
-        transform: 'none',
-        boxSizing: 'border-box',
-        overflow: 'hidden'
-      }}
       onClick={(e) => {
         console.log('[DepositModal] Backdrop clicked');
         if (e.target === e.currentTarget) {
@@ -917,28 +897,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           borderTop: `3px solid ${vaultColor}60`,
           borderLeft: `1px solid ${vaultColor}20`,
           borderRight: `1px solid ${vaultColor}20`,
-          maxHeight: '90dvh',
-          height: 'auto',
-          width: '100%',
-          maxWidth: '500px',
-          minWidth: '280px',
-          zIndex: 10001,
-          position: 'relative',
-          margin: '0 auto',
           boxShadow: `0 32px 80px ${vaultColor}20, 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.1)`,
           color: '#ffffff',
-          borderRadius: '24px',
-          transform: 'none',
-          left: 'auto',
-          right: 'auto',
-          top: 'auto',
-          bottom: 'auto',
-          animation: 'modalEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-          display: 'flex',
-          flexDirection: 'column',
-          boxSizing: 'border-box',
-          flexShrink: 0,
-          overflow: 'hidden'
+          animation: 'modalEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1)'
         }}
         onClick={(e) => {
           console.log('[DepositModal] Modal content clicked - preventing propagation');
@@ -954,7 +915,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
             overflowX: 'hidden',
             padding: '1rem 1.25rem 0.5rem 1.25rem',
             minHeight: '0',
-            maxHeight: 'calc(90dvh - 100px)',
+            maxHeight: 'calc(90vh - 100px)',
             boxSizing: 'border-box'
           }}
         >
