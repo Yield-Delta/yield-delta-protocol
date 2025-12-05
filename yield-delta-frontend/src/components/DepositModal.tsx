@@ -326,23 +326,40 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
     if (isOpen) {
       if (vault) {
         console.log('✅ [DepositModal] Modal opened for vault:', vault.name);
-        // Lock body scroll on mobile
+        // Lock body scroll - use overflow hidden instead of position fixed to prevent layout shifts
+        const scrollY = window.scrollY;
         document.body.style.overflow = 'hidden';
         document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = '100%';
+        // Store scroll position for restoration
+        document.body.dataset.scrollY = String(scrollY);
       } else {
         console.error('❌ [DepositModal] ERROR: Modal is open but vault is null!');
       }
     } else {
       console.log('🛑 [DepositModal] Modal closed');
-      // Unlock body scroll
+      // Unlock body scroll and restore position
+      const scrollY = document.body.dataset.scrollY;
       document.body.style.overflow = '';
       document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY));
+      }
     }
 
     // Cleanup on unmount
     return () => {
+      const scrollY = document.body.dataset.scrollY;
       document.body.style.overflow = '';
       document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY));
+      }
     };
   }, [isOpen, vault]);
 
@@ -565,6 +582,7 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         .deposit-modal-container {
           width: 100% !important;
           height: 100vh !important;
+          height: 100dvh !important; /* Use dynamic viewport height for mobile browsers */
           position: fixed !important;
           top: 0 !important;
           left: 0 !important;
@@ -575,23 +593,27 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           align-items: center !important;
           justify-content: center !important;
           margin: 0 !important;
-          padding: 24px !important;
-          padding-left: max(24px, env(safe-area-inset-left)) !important;
-          padding-right: max(24px, env(safe-area-inset-right)) !important;
+          padding: 20px !important;
+          padding-left: env(safe-area-inset-left, 20px) !important;
+          padding-right: env(safe-area-inset-right, 20px) !important;
+          padding-top: env(safe-area-inset-top, 20px) !important;
+          padding-bottom: env(safe-area-inset-bottom, 20px) !important;
           max-width: none !important;
           max-height: none !important;
           transform: none !important;
           box-sizing: border-box !important;
           overflow: hidden !important;
+          -webkit-overflow-scrolling: touch !important;
         }
 
         .deposit-modal-content {
           width: 500px !important;
           max-width: 500px !important;
           min-width: 320px !important;
-          max-height: 85vh !important;
+          max-height: 90vh !important;
+          max-height: 90dvh !important; /* Use dynamic viewport height */
           position: relative !important;
-          margin: 0 !important;
+          margin: 0 auto !important;
           transform: none !important;
           left: auto !important;
           right: auto !important;
@@ -599,40 +621,51 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
           bottom: auto !important;
           box-sizing: border-box !important;
           flex-shrink: 0 !important;
+          display: flex !important;
+          flex-direction: column !important;
         }
 
         /* Restore modal content width specifically */
         .deposit-modal-container .deposit-modal-content {
           width: 500px !important;
           max-width: 500px !important;
-          max-height: 85vh !important;
+          max-height: 90vh !important;
+          max-height: 90dvh !important;
         }
 
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 24px !important;
-            padding-left: max(24px, env(safe-area-inset-left)) !important;
-            padding-right: max(24px, env(safe-area-inset-right)) !important;
-            padding-top: 20px !important;
-            align-items: flex-start !important;
+            padding: 12px !important;
+            padding-left: env(safe-area-inset-left, 12px) !important;
+            padding-right: env(safe-area-inset-right, 12px) !important;
+            padding-top: env(safe-area-inset-top, 12px) !important;
+            padding-bottom: env(safe-area-inset-bottom, 12px) !important;
+            align-items: center !important;
             justify-content: center !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - max(48px, env(safe-area-inset-left) + env(safe-area-inset-right) + 48px)) !important;
-            max-width: calc(100vw - max(48px, env(safe-area-inset-left) + env(safe-area-inset-right) + 48px)) !important;
+            width: calc(100% - 24px) !important;
+            max-width: calc(100vw - 24px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) !important;
             min-width: 280px !important;
-            max-height: 90vh !important;
+            max-height: calc(100vh - 24px) !important;
+            max-height: calc(100dvh - 24px) !important;
             border-radius: 20px !important;
             margin: 0 auto !important;
             overflow: hidden !important;
+            box-sizing: border-box !important;
           }
 
           /* Ensure scrollable content has proper padding - reduced for mobile */
           .modal-scrollable-content {
-            padding: 0.75rem 0.5rem 0 0.5rem !important;
-            max-height: calc(85vh - 160px) !important;
+            padding: 1rem 1rem 0 1rem !important;
+            max-height: calc(100vh - 180px) !important;
+            max-height: calc(100dvh - 180px) !important;
             box-sizing: border-box !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
           }
 
           /* Reduce header padding on mobile */
@@ -776,22 +809,26 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
 
         @media (max-width: 375px) {
           .deposit-modal-container {
-            padding: 16px !important;
-            padding-left: max(16px, env(safe-area-inset-left)) !important;
-            padding-right: max(16px, env(safe-area-inset-right)) !important;
-            padding-top: 16px !important;
+            padding: 10px !important;
+            padding-left: env(safe-area-inset-left, 10px) !important;
+            padding-right: env(safe-area-inset-right, 10px) !important;
+            padding-top: env(safe-area-inset-top, 10px) !important;
+            padding-bottom: env(safe-area-inset-bottom, 10px) !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - max(32px, env(safe-area-inset-left) + env(safe-area-inset-right) + 32px)) !important;
-            max-width: calc(100vw - max(32px, env(safe-area-inset-left) + env(safe-area-inset-right) + 32px)) !important;
+            width: calc(100% - 20px) !important;
+            max-width: calc(100vw - 20px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) !important;
             max-height: 92vh !important;
+            max-height: 92dvh !important;
             border-radius: 16px !important;
             margin: 0 auto !important;
+            box-sizing: border-box !important;
           }
 
           .modal-scrollable-content {
             padding: 0.625rem 0.5rem 0.5rem 0.5rem !important;
             max-height: calc(92vh - 140px) !important;
+            max-height: calc(92dvh - 140px) !important;
           }
 
           .modal-title {
