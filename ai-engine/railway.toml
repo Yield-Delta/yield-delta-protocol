@@ -28,3 +28,5 @@ LOG_LEVEL = { default = "INFO" }
 MODEL_CACHE_TTL = { default = "3600" }
 MAX_BATCH_SIZE = { default = "32" }
 MODEL_TIMEOUT = { default = "30" }
+TRAIN_ON_START = { default = "false", description = "Train models on container start" }
+SKIP_MODEL_TRAINING = { default = "false", description = "Skip model training entirely" }

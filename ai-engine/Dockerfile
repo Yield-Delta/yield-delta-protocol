@@ -64,12 +64,30 @@ RUN mkdir -p models/rl models/lstm models/il_predictor tensorboard && \
 # Switch to non-root user
 USER mluser
 
+# Run model initialization (training or loading)
+# This can be skipped with SKIP_MODEL_TRAINING=true
+RUN python init_models.py || echo "Model initialization failed, continuing..."
+
 # Expose FastAPI port
 EXPOSE 8000
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=5 \
     CMD curl -f http://localhost:8000/health || exit 1
 
-# Start the API server
-CMD ["python", "api_server.py"]
+# Create entrypoint script
+USER root
+RUN echo '#!/bin/bash\n\
+if [ "$TRAIN_ON_START" = "true" ]; then\n\
+  echo "Running model training..."\n\
+  python init_models.py\n\
+fi\n\
+echo "Starting API server..."\n\
+exec python api_server.py' > /app/entrypoint.sh && \
+    chmod +x /app/entrypoint.sh && \
+    chown mluser:mluser /app/entrypoint.sh
+
+USER mluser
+
+# Use entrypoint for flexibility
+ENTRYPOINT ["/app/entrypoint.sh"]
