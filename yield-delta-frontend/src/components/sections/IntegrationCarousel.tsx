@@ -88,6 +88,56 @@ const integrations: Integration[] = [
         color: '#00F5D4',
         gradient: 'linear-gradient(135deg, #00F5D4 0%, #00B4A0 100%)',
         link: 'https://yei.finance'
+    },
+    {
+        id: 'dragonswap',
+        name: 'DragonSwap',
+        logo: (
+            <svg viewBox="0 0 100 100" className={styles.partnerLogo}>
+                <defs>
+                    <linearGradient id="dragonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#FF6B6B" />
+                        <stop offset="50%" stopColor="#FF8E53" />
+                        <stop offset="100%" stopColor="#FE5196" />
+                    </linearGradient>
+                </defs>
+                <circle cx="50" cy="50" r="45" fill="url(#dragonGradient)" opacity="0.1"/>
+                {/* Dragon-inspired design */}
+                <path
+                    d="M25 50 Q35 30, 50 35 T75 50 Q65 70, 50 65 T25 50"
+                    fill="none"
+                    stroke="url(#dragonGradient)"
+                    strokeWidth="3"
+                />
+                <path
+                    d="M35 45 Q40 40, 45 42 M55 42 Q60 40, 65 45"
+                    fill="none"
+                    stroke="url(#dragonGradient)"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                />
+                <circle cx="40" cy="48" r="3" fill="url(#dragonGradient)"/>
+                <circle cx="60" cy="48" r="3" fill="url(#dragonGradient)"/>
+                <path
+                    d="M45 55 Q50 58, 55 55"
+                    fill="none"
+                    stroke="url(#dragonGradient)"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                />
+            </svg>
+        ),
+        tagline: 'Premier SEI DEX',
+        description: 'Seamless integration with DragonSwap, SEI\'s leading decentralized exchange. Our vaults leverage concentrated liquidity positions to maximize trading fees and optimize capital efficiency.',
+        features: [
+            'Concentrated liquidity pools',
+            'Automated range optimization',
+            'MEV protection',
+            'Cross-pool arbitrage'
+        ],
+        color: '#FF6B6B',
+        gradient: 'linear-gradient(135deg, #FF6B6B 0%, #FE5196 100%)',
+        link: 'https://dragonswap.app'
     }
 ];
 

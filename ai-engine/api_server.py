@@ -17,6 +17,10 @@ import json
 import os
 from datetime import datetime, timedelta
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Import ML models
 from sei_dlp_ai.models.rl_agent import DeFiRLAgent
@@ -189,14 +193,14 @@ async def startup_event():
     logger.info("Starting ML API server...")
     load_models()
 
-    # Initialize monitoring with Redis Labs
+    # Initialize monitoring with Redis from environment
     performance_monitor = PerformanceMonitor(
-        window_size=1000,
-        drift_threshold=0.1,
-        redis_host=os.getenv("REDIS_HOST", "redis-12049.c12.us-east-1-4.ec2.cloud.redislabs.com"),
-        redis_port=int(os.getenv("REDIS_PORT", "12049")),
-        redis_username=os.getenv("REDIS_USERNAME", "default"),
-        redis_password=os.getenv("REDIS_PASSWORD", "t9H5tKrB72iVrATk2jlcjwZRuQUgF5B5")
+        window_size=int(os.getenv("MONITORING_WINDOW_SIZE", "1000")),
+        drift_threshold=float(os.getenv("DRIFT_THRESHOLD", "0.1")),
+        redis_host=os.getenv("REDIS_HOST"),
+        redis_port=int(os.getenv("REDIS_PORT", "6379")) if os.getenv("REDIS_PORT") else 6379,
+        redis_username=os.getenv("REDIS_USERNAME"),
+        redis_password=os.getenv("REDIS_PASSWORD")
     )
 
     model_evaluator = ModelEvaluator()
@@ -624,7 +628,7 @@ if __name__ == "__main__":
     uvicorn.run(
         "api_server:app",
         host="0.0.0.0",
-        port=8000,
-        reload=True,
-        log_level="info"
+        port=int(os.getenv("PORT", "8000")),
+        reload=os.getenv("RELOAD", "false").lower() == "true",
+        log_level=os.getenv("LOG_LEVEL", "info").lower()
     )
