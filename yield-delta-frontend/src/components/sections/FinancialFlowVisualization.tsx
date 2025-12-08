@@ -9,7 +9,6 @@ export default function FinancialFlowVisualization() {
     const yieldNodesRef = useRef<(SVGGElement | null)[]>([]);
     const flowLinesRef = useRef<(SVGPathElement | null)[]>([]);
     const particlesRef = useRef<(SVGCircleElement | null)[]>([]);
-    const orbitalRingsRef = useRef<(SVGCircleElement | null)[]>([]);
 
     useEffect(() => {
         if (!svgRef.current) return;
@@ -145,26 +144,7 @@ export default function FinancialFlowVisualization() {
                 });
         });
 
-        // Orbital rings animation
-        orbitalRingsRef.current.forEach((ring, index) => {
-            if (!ring) return;
-
-            gsap.to(ring, {
-                rotation: index % 2 === 0 ? 360 : -360,
-                duration: 20 + index * 5,
-                repeat: -1,
-                ease: "none",
-                transformOrigin: "center center"
-            });
-
-            gsap.to(ring, {
-                opacity: 0.1 + index * 0.05,
-                duration: 2,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut"
-            });
-        });
+        // Orbital rings animation - removed as rings are no longer displayed
 
         // Data flow pulse animation
         const pulseAnimation = () => {
@@ -203,8 +183,7 @@ export default function FinancialFlowVisualization() {
                 centralNodeRef.current,
                 ...yieldNodesRef.current,
                 ...flowLinesRef.current,
-                ...particlesRef.current,
-                ...orbitalRingsRef.current
+                ...particlesRef.current
             ]);
         };
     }, []);
@@ -271,22 +250,7 @@ export default function FinancialFlowVisualization() {
                 </filter>
             </defs>
 
-            {/* Background orbital rings */}
-            <g className="orbital-rings" opacity="0.2">
-                {[80, 120, 160].map((radius, i) => (
-                    <circle
-                        key={`ring-${i}`}
-                        ref={el => { orbitalRingsRef.current[i] = el; }}
-                        cx="0"
-                        cy="0"
-                        r={radius}
-                        fill="none"
-                        stroke="url(#centralGradient)"
-                        strokeWidth="0.5"
-                        strokeDasharray="5 15"
-                    />
-                ))}
-            </g>
+            {/* Background orbital rings - removed for cleaner look */}
 
             {/* Flow lines from yield nodes to center */}
             <g className="flow-lines">
@@ -332,14 +296,7 @@ export default function FinancialFlowVisualization() {
                                 filter="url(#blur)"
                             />
 
-                            {/* Node outer ring */}
-                            <circle
-                                r="18"
-                                fill="none"
-                                stroke={`url(#${gradient})`}
-                                strokeWidth="1"
-                                opacity="0.6"
-                            />
+                            {/* Node outer ring - removed for cleaner look */}
 
                             {/* Node core */}
                             <circle
@@ -390,44 +347,19 @@ export default function FinancialFlowVisualization() {
                     opacity="0.4"
                 />
 
-                {/* Outer ring */}
-                <circle
-                    r="45"
-                    fill="none"
-                    stroke="url(#centralGradient)"
-                    strokeWidth="2"
-                    opacity="0.8"
-                />
-
-                {/* Middle ring */}
-                <circle
-                    className="central-inner"
-                    r="35"
-                    fill="none"
-                    stroke="url(#centralGradient)"
-                    strokeWidth="1"
-                    strokeDasharray="10 5"
-                    opacity="0.6"
-                />
+                {/* Outer ring - removed for cleaner look */}
+                {/* Middle ring - removed for cleaner look */}
 
                 {/* Core container */}
                 <circle
                     className="central-core"
                     r="25"
                     fill="hsl(var(--background) / 0.9)"
-                    stroke="url(#centralGradient)"
-                    strokeWidth="2"
                 />
 
                 {/* Protocol symbol - abstract geometric shape */}
                 <g className="protocol-symbol" filter="url(#glow)">
-                    {/* Hexagon shape */}
-                    <path
-                        d="M -15 0 L -7.5 -13 L 7.5 -13 L 15 0 L 7.5 13 L -7.5 13 Z"
-                        fill="none"
-                        stroke="url(#centralGradient)"
-                        strokeWidth="2"
-                    />
+                    {/* Hexagon shape - removed stroke for cleaner look */}
 
                     {/* Inner triangle */}
                     <path
