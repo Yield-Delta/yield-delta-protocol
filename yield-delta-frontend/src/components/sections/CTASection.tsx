@@ -74,7 +74,7 @@ export default function CTASection() {
                 <div className="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-16 items-center max-w-7xl mx-auto">
                     <div className="text-center lg:text-left order-2 lg:order-1">
                         {/* Trust Badge */}
-                        <div className="inline-flex items-center gap-2 mb-4 sm:mb-6 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30 backdrop-blur-sm">
+                        <div className="inline-flex items-center gap-2 mb-4 sm:mb-6 px-4 py-2 rounded-full bg-gradient-to-r from-primary/20 to-secondary/20 backdrop-blur-sm">
                             <div className={styles.pulsingDot}></div>
                             <span className="text-xs sm:text-sm font-semibold text-primary">
                                 Live on SEI Network
@@ -272,22 +272,19 @@ export default function CTASection() {
                         <div className={`${styles.ctaVisualContainer} relative w-full max-w-md lg:max-w-lg xl:max-w-xl`}>
                             {/* Main Container with Enhanced Glass Morphism */}
                             <div
-                                className="aspect-square w-full shadow-2xl border backdrop-blur-md flex items-center justify-center relative overflow-hidden cursor-pointer transition-all duration-500 ease-out"
+                                className="aspect-square w-full shadow-2xl backdrop-blur-md flex items-center justify-center relative overflow-hidden cursor-pointer transition-all duration-500 ease-out"
                                 style={{
                                     borderRadius: '2.5rem',
                                     background: 'linear-gradient(135deg, hsl(var(--primary) / 0.18), hsl(var(--secondary) / 0.15), hsl(var(--accent) / 0.20))',
-                                    borderColor: 'hsl(var(--primary) / 0.5)',
-                                    boxShadow: '0 25px 50px hsl(var(--primary) / 0.2), 0 0 80px hsl(var(--primary) / 0.15), inset 0 2px 0 hsl(var(--border) / 0.4)'
+                                    boxShadow: '0 25px 50px hsl(var(--primary) / 0.2), 0 0 80px hsl(var(--primary) / 0.15)'
                                 }}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.transform = 'scale(1.05) rotateY(5deg)';
-                                    e.currentTarget.style.boxShadow = '0 35px 70px hsl(var(--primary) / 0.3), 0 0 100px hsl(var(--primary) / 0.2), inset 0 2px 0 hsl(var(--border) / 0.5)';
-                                    e.currentTarget.style.borderColor = 'hsl(var(--primary) / 0.7)';
+                                    e.currentTarget.style.boxShadow = '0 35px 70px hsl(var(--primary) / 0.3), 0 0 100px hsl(var(--primary) / 0.2)';
                                 }}
                                 onMouseLeave={(e) => {
                                     e.currentTarget.style.transform = 'scale(1) rotateY(0deg)';
-                                    e.currentTarget.style.boxShadow = '0 25px 50px hsl(var(--primary) / 0.2), 0 0 80px hsl(var(--primary) / 0.15), inset 0 2px 0 hsl(var(--border) / 0.4)';
-                                    e.currentTarget.style.borderColor = 'hsl(var(--primary) / 0.5)';
+                                    e.currentTarget.style.boxShadow = '0 25px 50px hsl(var(--primary) / 0.2), 0 0 80px hsl(var(--primary) / 0.15)';
                                 }}
                             >
                                 {/* Animated Background Orbs */}
