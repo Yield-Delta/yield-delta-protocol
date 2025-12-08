@@ -455,13 +455,31 @@
     }
 }
 
-/* Performance optimizations */
+/* Performance optimizations for this module's animations */
 @media (prefers-reduced-motion: reduce) {
-    :global(*),
-    :global(*::before),
-    :global(*::after) {
+    .float,
+    .rocketPulse,
+    .trailFade,
+    .gradientShift,
+    .textGlow,
+    .particleFloat,
+    .shimmer,
+    .wave,
+    .pulsingDot,
+    .numberCounter,
+    .trendingUp,
+    .pulsingIndicator,
+    .liveDot,
+    .arrowIcon,
+    .buttonShimmer,
+    .performanceDot {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
+    }
+
+    .statCard,
+    .partnerBadge,
+    .flowVisualizationContainer {
         transition-duration: 0.01ms !important;
     }
 }
