@@ -4,6 +4,7 @@ import VerticalRays from '@/components/VerticalRays';
 import HeroSection from '@/components/sections/HeroSection';
 import VaultShowcase from '@/components/sections/VaultShowcase';
 import FeatureHighlight from '@/components/sections/FeatureHighlight';
+import IntegrationCarousel from '@/components/sections/IntegrationCarousel';
 import AIWorkflow from '@/components/AIWorkflow';
 import PerformanceMetrics from '@/components/sections/PerformanceMetrics';
 import CTASection from '@/components/sections/CTASection';
@@ -23,6 +24,9 @@ export default function DLPLanding() {
             </div>
             <div id="features" className="mobile-section-spacing">
                 <FeatureHighlight />
+            </div>
+            <div id="integrations" className="mobile-section-spacing">
+                <IntegrationCarousel />
             </div>
             <div id="ai-workflow" className="mobile-section-spacing">
                 <AIWorkflow />
