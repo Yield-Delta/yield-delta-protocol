@@ -15,7 +15,7 @@ export default function FinancialFlowVisualization() {
         if (!svgRef.current) return;
 
         // GSAP Timeline for orchestrated animations
-        const tl = gsap.timeline({ repeat: -1 });
+        // const tl = gsap.timeline({ repeat: -1 }); // Unused for now, but can be used for complex sequenced animations
 
         // Central node pulsing animation
         if (centralNodeRef.current) {
@@ -41,7 +41,7 @@ export default function FinancialFlowVisualization() {
             if (!node) return;
 
             const angle = (index * 360 / 8); // 8 yield nodes
-            const radius = 140;
+            // const radius = 140; // Unused - radius is handled in SVG directly
 
             // Create orbital motion
             gsap.to(node, {
@@ -108,7 +108,7 @@ export default function FinancialFlowVisualization() {
             const nodeIndex = Math.floor(index / 3); // 3 particles per yield node
             const angle = (nodeIndex * 360 / 8) * Math.PI / 180;
             const startRadius = 140;
-            const endRadius = 0;
+            // const endRadius = 0; // Unused - end position is always center (0, 0)
 
             // Create path from yield node to center
             const path = {
@@ -276,7 +276,7 @@ export default function FinancialFlowVisualization() {
                 {[80, 120, 160].map((radius, i) => (
                     <circle
                         key={`ring-${i}`}
-                        ref={el => orbitalRingsRef.current[i] = el}
+                        ref={el => { orbitalRingsRef.current[i] = el; }}
                         cx="0"
                         cy="0"
                         r={radius}
@@ -298,7 +298,7 @@ export default function FinancialFlowVisualization() {
                     return (
                         <path
                             key={`flow-${i}`}
-                            ref={el => flowLinesRef.current[i] = el}
+                            ref={el => { flowLinesRef.current[i] = el; }}
                             d={`M ${x} ${y} Q ${x/2} ${y/2} 0 0`}
                             stroke="url(#flowGradient)"
                             strokeWidth="1.5"
@@ -320,7 +320,7 @@ export default function FinancialFlowVisualization() {
                     return (
                         <g
                             key={`yield-${i}`}
-                            ref={el => yieldNodesRef.current[i] = el}
+                            ref={el => { yieldNodesRef.current[i] = el; }}
                             transform={`translate(${x}, ${y})`}
                         >
                             {/* Node glow */}
@@ -372,7 +372,7 @@ export default function FinancialFlowVisualization() {
                 {[...Array(24)].map((_, i) => (
                     <circle
                         key={`particle-${i}`}
-                        ref={el => particlesRef.current[i] = el}
+                        ref={el => { particlesRef.current[i] = el; }}
                         r="2"
                         fill="hsl(180 100% 48%)"
                         opacity="0"
