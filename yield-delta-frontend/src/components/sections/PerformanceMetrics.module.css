@@ -1,0 +1,35 @@
+/* Performance Metrics Grid Layout */
+.metricsGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    justify-content: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+/* Tablet - 2 columns */
+@media (min-width: 640px) {
+    .metricsGrid {
+        grid-template-columns: repeat(2, minmax(280px, 350px));
+        gap: 1.75rem;
+        justify-content: center;
+    }
+}
+
+/* Tablet landscape / Small desktop - 3 columns */
+@media (min-width: 900px) {
+    .metricsGrid {
+        grid-template-columns: repeat(3, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+}
+
+/* Large desktop - 4 columns */
+@media (min-width: 1200px) {
+    .metricsGrid {
+        grid-template-columns: repeat(4, minmax(280px, 1fr));
+        gap: 2rem;
+    }
+}

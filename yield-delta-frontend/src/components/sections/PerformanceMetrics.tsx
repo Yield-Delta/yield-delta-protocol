@@ -2,6 +2,7 @@
 
 import PerformanceCard from '@/components/PerformanceCard';
 import { useVaultStats } from '@/hooks/useVaultStats';
+import styles from './PerformanceMetrics.module.css';
 
 export default function PerformanceMetrics() {
     const { totalTVL, averageAPY, activeVaultsCount, isLoading } = useVaultStats();
@@ -45,9 +46,7 @@ export default function PerformanceMetrics() {
                     </p>
                 </div>
                 
-                <div
-                    className="flex flex-col md:flex-row md:flex-wrap gap-6 md:gap-8 lg:gap-10 max-w-7xl mx-auto px-4 sm:px-6 justify-center items-center md:items-stretch"
-                >
+                <div className={styles.metricsGrid}>
                     <PerformanceCard
                         metric={isLoading ? 'Loading...' : `${(averageAPY * 100).toFixed(1)}%`}
                         description="Average APY"
