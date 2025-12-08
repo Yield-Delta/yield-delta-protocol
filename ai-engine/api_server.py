@@ -189,11 +189,14 @@ async def startup_event():
     logger.info("Starting ML API server...")
     load_models()
 
-    # Initialize monitoring
+    # Initialize monitoring with Redis Labs
     performance_monitor = PerformanceMonitor(
         window_size=1000,
         drift_threshold=0.1,
-        redis_host=os.getenv("REDIS_HOST", None)
+        redis_host=os.getenv("REDIS_HOST", "redis-12049.c12.us-east-1-4.ec2.cloud.redislabs.com"),
+        redis_port=int(os.getenv("REDIS_PORT", "12049")),
+        redis_username=os.getenv("REDIS_USERNAME", "default"),
+        redis_password=os.getenv("REDIS_PASSWORD", "t9H5tKrB72iVrATk2jlcjwZRuQUgF5B5")
     )
 
     model_evaluator = ModelEvaluator()

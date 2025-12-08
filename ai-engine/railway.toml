@@ -1,0 +1,30 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "./Dockerfile"
+
+[deploy]
+startCommand = "python api_server.py"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+healthcheckPath = "/health"
+healthcheckTimeout = 10
+region = "us-west1"
+
+[[services]]
+name = "ml-api"
+port = 8000
+
+[services.ml-api]
+healthcheckPath = "/health"
+healthcheckInterval = 30
+
+# Environment variable schema for Railway UI
+[env]
+REDIS_HOST = { default = "redis-12049.c12.us-east-1-4.ec2.cloud.redislabs.com" }
+REDIS_PORT = { default = "12049" }
+REDIS_USERNAME = { default = "default" }
+REDIS_PASSWORD = { default = "t9H5tKrB72iVrATk2jlcjwZRuQUgF5B5" }
+LOG_LEVEL = { default = "INFO" }
+MODEL_CACHE_TTL = { default = "3600" }
+MAX_BATCH_SIZE = { default = "32" }
+MODEL_TIMEOUT = { default = "30" }

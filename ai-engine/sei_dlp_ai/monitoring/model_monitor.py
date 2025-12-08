@@ -71,7 +71,9 @@ class PerformanceMonitor:
                  window_size: int = 1000,
                  drift_threshold: float = 0.1,
                  redis_host: Optional[str] = None,
-                 redis_port: int = 6379):
+                 redis_port: int = 6379,
+                 redis_username: Optional[str] = None,
+                 redis_password: Optional[str] = None):
         """
         Initialize performance monitor
 
@@ -80,6 +82,8 @@ class PerformanceMonitor:
             drift_threshold: Threshold for detecting drift
             redis_host: Redis host for caching metrics
             redis_port: Redis port
+            redis_username: Redis username for auth
+            redis_password: Redis password for auth
         """
         self.window_size = window_size
         self.drift_threshold = drift_threshold
@@ -97,13 +101,22 @@ class PerformanceMonitor:
         self.redis_client = None
         if redis_host:
             try:
-                self.redis_client = redis.StrictRedis(
-                    host=redis_host,
-                    port=redis_port,
-                    decode_responses=False
-                )
+                # Configure Redis connection with authentication
+                redis_config = {
+                    'host': redis_host,
+                    'port': redis_port,
+                    'decode_responses': False
+                }
+
+                # Add authentication if provided
+                if redis_username:
+                    redis_config['username'] = redis_username
+                if redis_password:
+                    redis_config['password'] = redis_password
+
+                self.redis_client = redis.StrictRedis(**redis_config)
                 self.redis_client.ping()
-                logger.info("Connected to Redis for metrics storage")
+                logger.info(f"Connected to Redis at {redis_host}:{redis_port} for metrics storage")
             except Exception as e:
                 logger.warning(f"Redis connection failed: {e}. Using in-memory storage.")
                 self.redis_client = None
