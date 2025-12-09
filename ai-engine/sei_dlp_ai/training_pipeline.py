@@ -50,7 +50,7 @@ class MLTrainingPipeline:
         self.il_predictor = None
 
         # Data storage
-        self.historical_data = {}
+        self.historical_data = None  # Will be populated with DataFrame after fetch
         self.processed_data = {}
 
     def _load_config(self, config_path: Optional[str]) -> Dict[str, Any]:
@@ -141,8 +141,8 @@ class MLTrainingPipeline:
         if all_data:
             # Combine all dataframes
             combined_df = pd.concat(all_data, axis=1)
-            combined_df.fillna(method='ffill', inplace=True)
-            combined_df.fillna(method='bfill', inplace=True)
+            combined_df.ffill(inplace=True)
+            combined_df.bfill(inplace=True)
 
             # Save to disk
             data_file = self.data_path / f"historical_data_{datetime.now().strftime('%Y%m%d')}.csv"
@@ -161,7 +161,7 @@ class MLTrainingPipeline:
         Returns:
             Numpy array with price and volume data
         """
-        if self.historical_data.empty:
+        if self.historical_data is None or self.historical_data.empty:
             raise ValueError("No historical data available. Run fetch_historical_data first.")
 
         # Extract SEI data for RL environment
@@ -197,7 +197,7 @@ class MLTrainingPipeline:
         Returns:
             DataFrame with features for LSTM
         """
-        if self.historical_data.empty:
+        if self.historical_data is None or self.historical_data.empty:
             raise ValueError("No historical data available. Run fetch_historical_data first.")
 
         # Select relevant features for LSTM
@@ -237,7 +237,7 @@ class MLTrainingPipeline:
         Returns:
             DataFrame with IL features
         """
-        if self.historical_data.empty:
+        if self.historical_data is None or self.historical_data.empty:
             raise ValueError("No historical data available. Run fetch_historical_data first.")
 
         il_data = pd.DataFrame()
@@ -321,6 +321,11 @@ class MLTrainingPipeline:
         """Train the Reinforcement Learning agent"""
         logger.info("Starting RL agent training...")
 
+        # Fetch historical data if not available
+        if self.historical_data is None:
+            logger.info("Fetching historical data...")
+            await self.fetch_historical_data()
+
         # Prepare data
         rl_data = self.prepare_rl_data()
 
@@ -350,6 +355,11 @@ class MLTrainingPipeline:
     async def train_lstm_forecaster(self):
         """Train the LSTM forecasting model"""
         logger.info("Starting LSTM forecaster training...")
+
+        # Fetch historical data if not available
+        if self.historical_data is None:
+            logger.info("Fetching historical data...")
+            await self.fetch_historical_data()
 
         # Prepare data
         lstm_data = self.prepare_lstm_data()
@@ -392,6 +402,11 @@ class MLTrainingPipeline:
     async def train_il_predictor(self):
         """Train the Impermanent Loss predictor"""
         logger.info("Starting IL predictor training...")
+
+        # Fetch historical data if not available
+        if self.historical_data is None:
+            logger.info("Fetching historical data...")
+            await self.fetch_historical_data()
 
         # Prepare data
         il_data = self.prepare_il_data()
