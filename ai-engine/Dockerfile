@@ -73,19 +73,28 @@ RUN python init_models.py || echo "Model initialization failed, continuing..."
 # Expose FastAPI port
 EXPOSE 8000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=5 \
-    CMD curl -f http://localhost:8000/health || exit 1
+# Health check with dynamic port
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=10 \
+    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
 
 # Create entrypoint script
 USER root
 RUN echo '#!/bin/bash\n\
+\n\
+echo "========================================"\n\
+echo "Container starting..."\n\
+echo "PORT environment variable: ${PORT:-not set}"\n\
+echo "Python version: $(python --version)"\n\
+echo "Current directory: $(pwd)"\n\
+echo "========================================"\n\
+\n\
 if [ "$TRAIN_ON_START" = "true" ]; then\n\
   echo "Running model training..."\n\
-  python init_models.py\n\
+  python init_models.py || echo "Model training failed, continuing anyway"\n\
 fi\n\
-echo "Starting API server..."\n\
-exec python api_server.py' > /app/entrypoint.sh && \
+\n\
+echo "Starting API server on port ${PORT:-8000}..."\n\
+exec python -u start_server.py' > /app/entrypoint.sh && \
     chmod +x /app/entrypoint.sh && \
     chown mluser:mluser /app/entrypoint.sh
 

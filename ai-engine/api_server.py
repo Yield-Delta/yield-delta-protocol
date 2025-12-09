@@ -39,22 +39,36 @@ async def lifespan(_app: FastAPI):
     global performance_monitor, model_evaluator, monitoring_api
 
     logger.info("Starting ML API server...")
-    load_models()
 
-    # Initialize monitoring with Redis from environment
-    performance_monitor = PerformanceMonitor(
-        window_size=int(os.getenv("MONITORING_WINDOW_SIZE", "1000")),
-        drift_threshold=float(os.getenv("DRIFT_THRESHOLD", "0.1")),
-        redis_host=os.getenv("REDIS_HOST"),
-        redis_port=int(os.getenv("REDIS_PORT", "6379")) if os.getenv("REDIS_PORT") else 6379,
-        redis_username=os.getenv("REDIS_USERNAME"),
-        redis_password=os.getenv("REDIS_PASSWORD")
-    )
+    # Try to load models, but don't fail if they're not available
+    try:
+        load_models()
+        logger.info("Models loaded successfully")
+    except Exception as e:
+        logger.warning(f"Failed to load models: {e}")
+        logger.warning("API will start without pre-loaded models")
 
-    model_evaluator = ModelEvaluator()
-    monitoring_api = MonitoringAPI(performance_monitor, model_evaluator)
+    # Try to initialize monitoring, but don't fail if Redis is not available
+    try:
+        performance_monitor = PerformanceMonitor(
+            window_size=int(os.getenv("MONITORING_WINDOW_SIZE", "1000")),
+            drift_threshold=float(os.getenv("DRIFT_THRESHOLD", "0.1")),
+            redis_host=os.getenv("REDIS_HOST"),
+            redis_port=int(os.getenv("REDIS_PORT", "6379")) if os.getenv("REDIS_PORT") else 6379,
+            redis_username=os.getenv("REDIS_USERNAME"),
+            redis_password=os.getenv("REDIS_PASSWORD")
+        )
+        model_evaluator = ModelEvaluator()
+        monitoring_api = MonitoringAPI(performance_monitor, model_evaluator)
+        logger.info("Monitoring enabled successfully")
+    except Exception as e:
+        logger.warning(f"Failed to initialize monitoring: {e}")
+        logger.warning("API will start without monitoring features")
+        performance_monitor = None
+        model_evaluator = None
+        monitoring_api = None
 
-    logger.info("ML API server ready with monitoring enabled!")
+    logger.info("ML API server ready!")
 
     yield
 
@@ -640,10 +654,12 @@ async def health_check():
 # ============ Main Entry Point ============
 
 if __name__ == "__main__":
+    port = int(os.getenv("PORT", "8000"))
+    logger.info(f"Starting API server on port {port}")
     uvicorn.run(
         "api_server:app",
         host="0.0.0.0",
-        port=int(os.getenv("PORT", "8000")),
+        port=port,
         reload=os.getenv("RELOAD", "false").lower() == "true",
         log_level=os.getenv("LOG_LEVEL", "info").lower()
     )
