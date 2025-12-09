@@ -9,6 +9,9 @@ import logger from '../utils/logger';
 export class AIEngineService {
   private client: AxiosInstance;
   private config: ServiceConfig;
+  private lastMarketData: any = null;
+  private lastMarketDataTimestamp: number = 0;
+  private marketDataCacheDuration: number = 60000; // 1 minute cache
 
   constructor(config: ServiceConfig) {
     this.config = config;
@@ -21,8 +24,9 @@ export class AIEngineService {
       },
     });
 
-    logger.info('AI Engine service initialized', {
+    logger.info('AI Engine service initialized with ML models', {
       baseUrl: config.aiEngineUrl,
+      models: ['rl_agent', 'lstm_forecaster', 'il_predictor'],
     });
   }
 
@@ -196,6 +200,233 @@ export class AIEngineService {
     } catch (error: any) {
       logger.error('Failed to get model info', { error: error.message });
       return null;
+    }
+  }
+
+  /**
+   * Get RL agent strategy recommendation
+   */
+  async getRLAgentRecommendation(vaultState: VaultState): Promise<any> {
+    try {
+      const request = {
+        vault_address: vaultState.address,
+        current_position: {
+          lower_tick: vaultState.currentTickLower,
+          upper_tick: vaultState.currentTickUpper,
+          liquidity: vaultState.totalLiquidity,
+        },
+        market_data: await this.getCachedMarketData(),
+      };
+
+      logger.debug('Requesting RL agent recommendation', { vault: vaultState.address });
+      const response = await this.client.post('/predict/rl_strategy', request);
+
+      return {
+        action: response.data.action,
+        confidence: response.data.confidence,
+        expectedReward: response.data.expected_reward,
+        optimalRange: response.data.optimal_range,
+      };
+    } catch (error: any) {
+      logger.error('Failed to get RL agent recommendation', {
+        vault: vaultState.address,
+        error: error.message,
+      });
+      return null;
+    }
+  }
+
+  /**
+   * Get LSTM price forecast
+   */
+  async getLSTMPriceForecast(symbol: string = 'SEI-USD'): Promise<any> {
+    try {
+      const request = {
+        symbol: symbol,
+        horizon: 24, // 24 hour forecast
+        confidence_level: 0.95,
+      };
+
+      logger.debug('Requesting LSTM price forecast', { symbol });
+      const response = await this.client.post('/predict/price_forecast', request);
+
+      return {
+        predictions: response.data.predictions,
+        confidence: response.data.confidence_intervals,
+        trend: response.data.trend,
+        volatility: response.data.volatility_forecast,
+      };
+    } catch (error: any) {
+      logger.error('Failed to get LSTM price forecast', { error: error.message });
+      return null;
+    }
+  }
+
+  /**
+   * Get Impermanent Loss risk assessment
+   */
+  async getILRiskAssessment(vaultState: VaultState): Promise<any> {
+    try {
+      const request = {
+        vault_address: vaultState.address,
+        current_position: {
+          lower_tick: vaultState.currentTickLower,
+          upper_tick: vaultState.currentTickUpper,
+          token0_balance: vaultState.token0Balance,
+          token1_balance: vaultState.token1Balance,
+        },
+        time_horizon: 24, // 24 hours
+      };
+
+      logger.debug('Requesting IL risk assessment', { vault: vaultState.address });
+      const response = await this.client.post('/predict/il_risk', request);
+
+      return {
+        expectedIL: response.data.expected_il,
+        riskScore: response.data.risk_score,
+        mitigation: response.data.mitigation_strategy,
+        optimalRebalanceTime: response.data.optimal_rebalance_time,
+      };
+    } catch (error: any) {
+      logger.error('Failed to get IL risk assessment', {
+        vault: vaultState.address,
+        error: error.message,
+      });
+      return null;
+    }
+  }
+
+  /**
+   * Get comprehensive ML analysis combining all models
+   */
+  async getComprehensiveAnalysis(vaultState: VaultState): Promise<RebalanceRecommendation | null> {
+    try {
+      logger.info('Requesting comprehensive ML analysis', { vault: vaultState.address });
+
+      // Parallel requests to all ML models
+      const [rlRecommendation, priceForecast, ilRisk] = await Promise.all([
+        this.getRLAgentRecommendation(vaultState),
+        this.getLSTMPriceForecast(),
+        this.getILRiskAssessment(vaultState),
+      ]);
+
+      if (!rlRecommendation && !priceForecast && !ilRisk) {
+        logger.warn('No ML models returned results');
+        return await this.analyzeVault(vaultState); // Fallback to basic analysis
+      }
+
+      // Combine insights from all models
+      let newTickLower = vaultState.currentTickLower;
+      let newTickUpper = vaultState.currentTickUpper;
+      let confidence = 5000; // Default 50% confidence
+      let urgency: 'low' | 'medium' | 'high' | 'critical' = 'medium';
+      let reasoning = [];
+
+      // Use RL agent's optimal range if available
+      if (rlRecommendation?.optimalRange) {
+        newTickLower = rlRecommendation.optimalRange.lower;
+        newTickUpper = rlRecommendation.optimalRange.upper;
+        confidence = Math.floor(rlRecommendation.confidence * 10000);
+        reasoning.push(`RL Agent suggests action: ${rlRecommendation.action}`);
+      }
+
+      // Adjust based on price forecast
+      if (priceForecast) {
+        if (priceForecast.trend === 'bullish') {
+          // Shift range slightly upward for bullish trend
+          const adjustment = Math.floor((newTickUpper - newTickLower) * 0.05);
+          newTickLower += adjustment;
+          newTickUpper += adjustment;
+          reasoning.push('LSTM forecasts bullish trend, adjusting range upward');
+        } else if (priceForecast.trend === 'bearish') {
+          // Shift range slightly downward for bearish trend
+          const adjustment = Math.floor((newTickUpper - newTickLower) * 0.05);
+          newTickLower -= adjustment;
+          newTickUpper -= adjustment;
+          reasoning.push('LSTM forecasts bearish trend, adjusting range downward');
+        }
+
+        // Widen range if high volatility expected
+        if (priceForecast.volatility > 0.5) {
+          const widening = Math.floor((newTickUpper - newTickLower) * 0.1);
+          newTickLower -= widening;
+          newTickUpper += widening;
+          reasoning.push('High volatility expected, widening range');
+        }
+      }
+
+      // Adjust urgency based on IL risk
+      if (ilRisk) {
+        if (ilRisk.riskScore > 0.8) {
+          urgency = 'critical';
+          reasoning.push(`Critical IL risk detected: ${(ilRisk.expectedIL * 100).toFixed(2)}%`);
+        } else if (ilRisk.riskScore > 0.6) {
+          urgency = 'high';
+          reasoning.push(`High IL risk: ${(ilRisk.expectedIL * 100).toFixed(2)}%`);
+        } else if (ilRisk.riskScore > 0.3) {
+          urgency = 'medium';
+        } else {
+          urgency = 'low';
+        }
+
+        // Boost confidence if all models agree
+        if (rlRecommendation && priceForecast && confidence < 8000) {
+          confidence = Math.min(confidence + 1500, 10000);
+          reasoning.push('All ML models in agreement');
+        }
+      }
+
+      const recommendation: RebalanceRecommendation = {
+        vault: vaultState.address,
+        newTickLower,
+        newTickUpper,
+        confidence,
+        urgency,
+        expectedReturns: rlRecommendation?.expectedReward || 0.05,
+        currentUtilization: (Number(vaultState.totalLiquidity) / (Number(vaultState.token0Balance) + Number(vaultState.token1Balance))) * 100,
+        optimalUtilization: 85, // Target utilization
+        reasoning: reasoning.join('; '),
+      };
+
+      logger.info('ML analysis complete', {
+        vault: vaultState.address,
+        confidence: recommendation.confidence,
+        urgency: recommendation.urgency,
+        reasoning: recommendation.reasoning,
+      });
+
+      return recommendation;
+    } catch (error: any) {
+      logger.error('Comprehensive analysis failed', {
+        vault: vaultState.address,
+        error: error.message,
+      });
+      // Fallback to basic analysis
+      return await this.analyzeVault(vaultState);
+    }
+  }
+
+  /**
+   * Get cached market data or fetch new if cache expired
+   */
+  private async getCachedMarketData(): Promise<any> {
+    const now = Date.now();
+    if (this.lastMarketData && (now - this.lastMarketDataTimestamp) < this.marketDataCacheDuration) {
+      return this.lastMarketData;
+    }
+
+    try {
+      const response = await this.client.get('/market/latest');
+      this.lastMarketData = response.data;
+      this.lastMarketDataTimestamp = now;
+      return this.lastMarketData;
+    } catch (error: any) {
+      logger.error('Failed to fetch market data', { error: error.message });
+      return {
+        price: 1.0,
+        volume_24h: 1000000,
+        volatility: 0.3,
+      };
     }
   }
 }

@@ -89,8 +89,8 @@ export class RebalanceSubmitter {
       return;
     }
 
-    // Get AI recommendation
-    const recommendation = await this.aiEngine.analyzeVault(vaultState);
+    // Get comprehensive ML-powered recommendation
+    const recommendation = await this.aiEngine.getComprehensiveAnalysis(vaultState);
     if (!recommendation) {
       logger.debug('No recommendation received', { vault: vaultState.address });
       return;
