@@ -24,23 +24,7 @@ const integrations: Integration[] = [
         id: 'pyth',
         name: 'Pyth Network',
         logo: (
-            <svg viewBox="0 0 100 100" className={styles.partnerLogo}>
-                <defs>
-                    <linearGradient id="pythGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#E6DAFE" />
-                        <stop offset="100%" stopColor="#6B47ED" />
-                    </linearGradient>
-                </defs>
-                <circle cx="50" cy="50" r="45" fill="url(#pythGradient)" opacity="0.1"/>
-                <path
-                    d="M50 15 L75 35 L75 65 L50 85 L25 65 L25 35 Z"
-                    fill="none"
-                    stroke="url(#pythGradient)"
-                    strokeWidth="3"
-                />
-                <circle cx="50" cy="50" r="15" fill="url(#pythGradient)"/>
-                <text x="50" y="55" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold">P</text>
-            </svg>
+            <img src="/pyth-logo.svg" alt="Pyth Network" className={styles.partnerLogo} />
         ),
         tagline: 'Real-Time Oracle Data',
         description: 'Powered by Pyth Network\'s high-fidelity, low-latency price feeds. Our vaults leverage real-time market data from 450+ price feeds across crypto, equities, and commodities.',
@@ -58,24 +42,7 @@ const integrations: Integration[] = [
         id: 'yei',
         name: 'Yei Finance',
         logo: (
-            <svg viewBox="0 0 100 100" className={styles.partnerLogo}>
-                <defs>
-                    <linearGradient id="yeiGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#00F5D4" />
-                        <stop offset="100%" stopColor="#00B4A0" />
-                    </linearGradient>
-                </defs>
-                <circle cx="50" cy="50" r="45" fill="url(#yeiGradient)" opacity="0.1"/>
-                <path
-                    d="M30 30 L50 50 L70 30 M50 50 L50 75"
-                    fill="none"
-                    stroke="url(#yeiGradient)"
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                />
-                <circle cx="50" cy="75" r="5" fill="url(#yeiGradient)"/>
-            </svg>
+            <img src="/yei-logo.jpeg" alt="Yei Finance" className={styles.partnerLogo} />
         ),
         tagline: 'SEI Native Lending',
         description: 'Deep integration with Yei Finance, the leading lending protocol on SEI. Our strategies optimize borrowing and lending positions to maximize capital efficiency.',
@@ -93,39 +60,7 @@ const integrations: Integration[] = [
         id: 'dragonswap',
         name: 'DragonSwap',
         logo: (
-            <svg viewBox="0 0 100 100" className={styles.partnerLogo}>
-                <defs>
-                    <linearGradient id="dragonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#FF6B6B" />
-                        <stop offset="50%" stopColor="#FF8E53" />
-                        <stop offset="100%" stopColor="#FE5196" />
-                    </linearGradient>
-                </defs>
-                <circle cx="50" cy="50" r="45" fill="url(#dragonGradient)" opacity="0.1"/>
-                {/* Dragon-inspired design */}
-                <path
-                    d="M25 50 Q35 30, 50 35 T75 50 Q65 70, 50 65 T25 50"
-                    fill="none"
-                    stroke="url(#dragonGradient)"
-                    strokeWidth="3"
-                />
-                <path
-                    d="M35 45 Q40 40, 45 42 M55 42 Q60 40, 65 45"
-                    fill="none"
-                    stroke="url(#dragonGradient)"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                />
-                <circle cx="40" cy="48" r="3" fill="url(#dragonGradient)"/>
-                <circle cx="60" cy="48" r="3" fill="url(#dragonGradient)"/>
-                <path
-                    d="M45 55 Q50 58, 55 55"
-                    fill="none"
-                    stroke="url(#dragonGradient)"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                />
-            </svg>
+            <img src="/drago.png" alt="DragonSwap" className={styles.partnerLogo} />
         ),
         tagline: 'Premier SEI DEX',
         description: 'Seamless integration with DragonSwap, SEI\'s leading decentralized exchange. Our vaults leverage concentrated liquidity positions to maximize trading fees and optimize capital efficiency.',
