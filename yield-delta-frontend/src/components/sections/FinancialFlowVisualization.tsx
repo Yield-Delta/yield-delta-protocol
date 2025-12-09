@@ -13,6 +13,12 @@ export default function FinancialFlowVisualization() {
     useEffect(() => {
         if (!svgRef.current) return;
 
+        // Capture refs at the beginning to use in cleanup
+        const centralNode = centralNodeRef.current;
+        const yieldNodes = [...yieldNodesRef.current];
+        const flowLines = [...flowLinesRef.current];
+        const particles = [...particlesRef.current];
+
         // GSAP Timeline for orchestrated animations
         // const tl = gsap.timeline({ repeat: -1 }); // Unused for now, but can be used for complex sequenced animations
 
@@ -180,10 +186,10 @@ export default function FinancialFlowVisualization() {
         return () => {
             clearInterval(pulseInterval);
             gsap.killTweensOf([
-                centralNodeRef.current,
-                ...yieldNodesRef.current,
-                ...flowLinesRef.current,
-                ...particlesRef.current
+                centralNode,
+                ...yieldNodes,
+                ...flowLines,
+                ...particles
             ]);
         };
     }, []);

@@ -9,29 +9,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   LineChart,
   Line,
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell
+  ResponsiveContainer
 } from 'recharts';
 import {
-  AlertCircle,
   Activity,
   Brain,
-  TrendingUp,
   Clock,
-  Database,
   RefreshCw,
   Download,
   Settings,
-  ChevronRight,
   AlertTriangle,
   CheckCircle
 } from 'lucide-react';
@@ -95,7 +86,7 @@ export default function MLMonitoringPage() {
   const [metrics, setMetrics] = useState<ModelMetrics | null>(null);
   const [driftStatus, setDriftStatus] = useState<DriftStatus | null>(null);
   const [modelStatuses, setModelStatuses] = useState<ModelStatus[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null);
 
@@ -206,7 +197,7 @@ export default function MLMonitoringPage() {
         clearInterval(refreshInterval);
       }
     };
-  }, [autoRefresh, selectedModel]);
+  }, [autoRefresh, selectedModel, refreshInterval]);
 
   // Initial fetch
   useEffect(() => {

@@ -399,7 +399,7 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
       document.removeEventListener('keydown', handleTabKey);
       document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, [mobileMenuOpen]); // Temporary - will add closeMobileMenu to dependencies after defining it
+  }, [mobileMenuOpen]); // closeMobileMenu is defined below but uses only stable refs
 
   // Mobile menu close handler with premium animation - memoized to prevent recreation
   const closeMobileMenu = useCallback(() => {

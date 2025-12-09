@@ -9,7 +9,6 @@ import {
   CheckCircle2,
   AlertCircle,
   ArrowLeft,
-  Wallet,
   TrendingUp,
   DollarSign,
   PlusCircle,

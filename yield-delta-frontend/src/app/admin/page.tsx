@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -9,18 +9,15 @@ import {
   Brain,
   Activity,
   AlertCircle,
-  TrendingUp,
   Clock,
   Database,
   ChevronRight,
   CheckCircle,
   XCircle,
   RefreshCw,
-  Cpu,
-  HardDrive,
   Zap
 } from 'lucide-react';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const ML_API_BASE = process.env.NEXT_PUBLIC_ML_API_URL || 'http://localhost:8000';
 
@@ -51,7 +48,7 @@ interface RecentAlert {
 }
 
 export default function AdminDashboard() {
-  const [systemStats, setSystemStats] = useState<SystemStats>({
+  const [systemStats, setSystemStats] = useState<SystemStats>({ // eslint-disable-line @typescript-eslint/no-unused-vars
     models_loaded: 3,
     total_predictions: 1247,
     avg_latency: 145,
@@ -60,7 +57,7 @@ export default function AdminDashboard() {
     redis_connected: true
   });
 
-  const [models, setModels] = useState<ModelOverview[]>([
+  const [models, setModels] = useState<ModelOverview[]>([ // eslint-disable-line @typescript-eslint/no-unused-vars
     {
       name: 'RL Strategy Agent',
       status: 'active',
@@ -87,7 +84,7 @@ export default function AdminDashboard() {
     }
   ]);
 
-  const [recentAlerts, setRecentAlerts] = useState<RecentAlert[]>([
+  const [recentAlerts, setRecentAlerts] = useState<RecentAlert[]>([ // eslint-disable-line @typescript-eslint/no-unused-vars
     {
       id: '1',
       model: 'lstm_forecaster',

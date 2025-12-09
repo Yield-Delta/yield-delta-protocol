@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+// Alert components removed - not used
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,31 +21,21 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   AlertCircle,
   Bell,
-  BellOff,
-  Filter,
   Search,
   Trash2,
   Eye,
   CheckCircle,
   XCircle,
-  AlertTriangle,
-  Info,
-  Calendar,
-  Clock,
   TrendingUp,
-  TrendingDown,
   Activity,
   Mail,
   MessageSquare,
   Send
 } from 'lucide-react';
-
-const ML_API_BASE = process.env.NEXT_PUBLIC_ML_API_URL || 'http://localhost:8000';
 
 interface MLAlert {
   id: string;
@@ -702,10 +692,10 @@ export default function MLAlertsPage() {
               <label className="text-sm text-gray-600">Minimum Severity</label>
               <Select
                 value={notificationSettings.threshold_severity}
-                onValueChange={(value: any) =>
+                onValueChange={(value: string) =>
                   setNotificationSettings(prev => ({
                     ...prev,
-                    threshold_severity: value
+                    threshold_severity: value as 'low' | 'medium' | 'high' | 'critical'
                   }))
                 }
               >
