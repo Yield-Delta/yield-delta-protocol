@@ -47,9 +47,11 @@ ENV PATH="/opt/venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
     TF_CPP_MIN_LOG_LEVEL=2
 
-# Create non-root user
+# Create non-root user with home directory
 RUN groupadd -g 1001 mluser && \
-    useradd -r -u 1001 -g mluser mluser
+    useradd -r -u 1001 -g mluser -m -d /home/mluser mluser && \
+    mkdir -p /home/mluser/.config && \
+    chown -R mluser:mluser /home/mluser
 
 # Set working directory
 WORKDIR /app

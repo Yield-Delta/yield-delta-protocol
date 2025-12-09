@@ -45,27 +45,42 @@ async def train_missing_models():
         return
 
     logger.info(f"Training missing models: {missing_models}")
-    pipeline = MLTrainingPipeline()
 
-    # Configure lighter training for Docker deployment
-    training_config = {
-        'rl': {
+    # Create a lighter config for Docker deployment
+    import json
+    import tempfile
+
+    docker_config = {
+        'rl_config': {
             'total_timesteps': 10000,  # Reduced for faster initial training
             'eval_freq': 1000,
             'save_freq': 5000
         },
-        'lstm': {
+        'lstm_config': {
             'epochs': 10,  # Reduced epochs
             'batch_size': 32,
             'sequence_length': 168,
             'prediction_horizon': 24
         },
-        'il': {
+        'il_config': {
             'n_estimators': 50,  # Reduced trees
             'max_depth': 10,
             'test_size': 0.2
         }
     }
+
+    # Write config to temp file and initialize pipeline with it
+    with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
+        json.dump(docker_config, f)
+        config_path = f.name
+
+    try:
+        pipeline = MLTrainingPipeline(config_path=config_path)
+    finally:
+        # Clean up temp file
+        import os as temp_os
+        if temp_os.path.exists(config_path):
+            temp_os.unlink(config_path)
 
     # Train each missing model
     for model_name in missing_models:
@@ -74,21 +89,11 @@ async def train_missing_models():
             start_time = time.time()
 
             if model_name == 'rl_agent':
-                await pipeline.train_rl_agent(
-                    total_timesteps=training_config['rl']['total_timesteps'],
-                    eval_freq=training_config['rl']['eval_freq'],
-                    save_freq=training_config['rl']['save_freq']
-                )
+                await pipeline.train_rl_agent()
             elif model_name == 'lstm_forecaster':
-                await pipeline.train_lstm_forecaster(
-                    epochs=training_config['lstm']['epochs'],
-                    batch_size=training_config['lstm']['batch_size']
-                )
+                await pipeline.train_lstm_forecaster()
             elif model_name == 'il_predictor':
-                await pipeline.train_il_predictor(
-                    n_estimators=training_config['il']['n_estimators'],
-                    max_depth=training_config['il']['max_depth']
-                )
+                await pipeline.train_il_predictor()
 
             elapsed_time = time.time() - start_time
             logger.info(f"✓ {model_name} trained successfully in {elapsed_time:.2f}s")
