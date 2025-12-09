@@ -57,9 +57,9 @@ WORKDIR /app
 # Copy application code
 COPY --chown=mluser:mluser . .
 
-# Create directories for models and logs
-RUN mkdir -p models/rl models/lstm models/il_predictor tensorboard && \
-    chown -R mluser:mluser models tensorboard
+# Create directories for models, data, and logs
+RUN mkdir -p models/rl models/lstm models/il_predictor tensorboard data && \
+    chown -R mluser:mluser models tensorboard data /app
 
 # Switch to non-root user
 USER mluser
