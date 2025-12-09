@@ -7,17 +7,15 @@ from fastapi import FastAPI, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
-from typing import Optional, List, Dict, Any, Union
+from typing import Optional, List, Dict, Any
+from contextlib import asynccontextmanager
 import numpy as np
 import pandas as pd
 import uvicorn
 import logging
-import asyncio
-import json
 import os
 from datetime import datetime, timedelta
-from pathlib import Path
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # type: ignore
 
 # Load environment variables
 load_dotenv()
@@ -34,13 +32,43 @@ from sei_dlp_ai.monitoring.model_monitor import PerformanceMonitor, ModelEvaluat
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Lifespan context manager for startup and shutdown
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    # Startup
+    global performance_monitor, model_evaluator, monitoring_api
+
+    logger.info("Starting ML API server...")
+    load_models()
+
+    # Initialize monitoring with Redis from environment
+    performance_monitor = PerformanceMonitor(
+        window_size=int(os.getenv("MONITORING_WINDOW_SIZE", "1000")),
+        drift_threshold=float(os.getenv("DRIFT_THRESHOLD", "0.1")),
+        redis_host=os.getenv("REDIS_HOST"),
+        redis_port=int(os.getenv("REDIS_PORT", "6379")) if os.getenv("REDIS_PORT") else 6379,
+        redis_username=os.getenv("REDIS_USERNAME"),
+        redis_password=os.getenv("REDIS_PASSWORD")
+    )
+
+    model_evaluator = ModelEvaluator()
+    monitoring_api = MonitoringAPI(performance_monitor, model_evaluator)
+
+    logger.info("ML API server ready with monitoring enabled!")
+
+    yield
+
+    # Shutdown - cleanup resources if needed
+    logger.info("Shutting down ML API server...")
+
 # Initialize FastAPI app
 app = FastAPI(
     title="SEI DLP ML API",
     description="Machine Learning API for DeFi Vault Optimization",
     version="2.0.0",
     docs_url="/api/docs",
-    redoc_url="/api/redoc"
+    redoc_url="/api/redoc",
+    lifespan=lifespan
 )
 
 # CORS configuration
@@ -53,18 +81,18 @@ app.add_middleware(
 )
 
 # Global model instances
-models = {
+models: Dict[str, Any] = {
     'rl_agent': None,
     'lstm_forecaster': None,
     'il_predictor': None
 }
 
 # Training pipeline instance
-training_pipeline = None
+training_pipeline: Optional[MLTrainingPipeline] = None
 
 # Monitoring instances
-performance_monitor = None
-model_evaluator = None
+performance_monitor: Optional[Any] = None
+model_evaluator: Optional[Any] = None
 monitoring_api = None
 
 
@@ -185,30 +213,7 @@ def load_models():
 
 # ============ API Endpoints ============
 
-@app.on_event("startup")
-async def startup_event():
-    """Initialize models and monitoring on startup"""
-    global performance_monitor, model_evaluator, monitoring_api
-
-    logger.info("Starting ML API server...")
-    load_models()
-
-    # Initialize monitoring with Redis from environment
-    performance_monitor = PerformanceMonitor(
-        window_size=int(os.getenv("MONITORING_WINDOW_SIZE", "1000")),
-        drift_threshold=float(os.getenv("DRIFT_THRESHOLD", "0.1")),
-        redis_host=os.getenv("REDIS_HOST"),
-        redis_port=int(os.getenv("REDIS_PORT", "6379")) if os.getenv("REDIS_PORT") else 6379,
-        redis_username=os.getenv("REDIS_USERNAME"),
-        redis_password=os.getenv("REDIS_PASSWORD")
-    )
-
-    model_evaluator = ModelEvaluator()
-    monitoring_api = MonitoringAPI(performance_monitor, model_evaluator)
-
-    logger.info("ML API server ready with monitoring enabled!")
-
-
+# API endpoints start here
 @app.get("/")
 async def root():
     """Root endpoint with API information"""
@@ -272,7 +277,7 @@ async def predict_rl_action(request: RLPredictionRequest):
                 model_name="rl_agent",
                 prediction=action,
                 features=observation,
-                metadata={"vault_state": request.vault_state.dict()}
+                metadata={"vault_state": request.vault_state.model_dump()}
             )
 
         # Prepare response
@@ -339,8 +344,8 @@ async def predict_lstm_price(request: LSTMPredictionRequest):
         trend = "BULLISH" if predictions[-1] > predictions[0] else "BEARISH"
 
         # Calculate support/resistance levels
-        support_levels = [np.percentile(predictions, q) for q in [10, 25]]
-        resistance_levels = [np.percentile(predictions, q) for q in [75, 90]]
+        support_levels = [float(np.percentile(predictions, q)) for q in [10, 25]]
+        resistance_levels = [float(np.percentile(predictions, q)) for q in [75, 90]]
 
         # Generate timestamps
         current_time = datetime.now()
@@ -445,6 +450,9 @@ async def trigger_training(background_tasks: BackgroundTasks, request: TrainingR
 
     async def run_training():
         try:
+            if training_pipeline is None:
+                raise ValueError("Training pipeline not initialized")
+
             if request.model_type == "all":
                 await training_pipeline.run_complete_pipeline()
             elif request.model_type == "rl":
@@ -470,7 +478,7 @@ async def trigger_training(background_tasks: BackgroundTasks, request: TrainingR
 # ============ Monitoring Endpoints ============
 
 @app.get("/api/monitoring/metrics/{model_name}")
-async def get_model_metrics(model_name: str, hours: int = 24):
+async def get_model_metrics(model_name: str, _hours: int = 24):
     """Get metrics for a specific model"""
     if monitoring_api is None:
         raise HTTPException(status_code=503, detail="Monitoring not initialized")
@@ -542,8 +550,10 @@ async def trigger_model_evaluation(
         try:
             # Load test data if path provided
             test_data = None
+            if model_evaluator is None:
+                raise HTTPException(status_code=500, detail="Model evaluator not initialized")
+
             if test_data_path:
-                import pandas as pd
                 test_data = pd.read_csv(test_data_path)
 
             # Run evaluation based on model type
@@ -581,7 +591,12 @@ async def trigger_model_evaluation(
             else:
                 raise ValueError(f"Unknown model: {model_name}")
 
-            logger.info(f"Evaluation completed for {model_name}")
+            # Store or log the evaluation results
+            logger.info(f"Evaluation completed for {model_name}: {result}")
+
+            # Optionally store results in performance monitor
+            if performance_monitor:
+                performance_monitor.track_evaluation(model_name, result)
 
         except Exception as e:
             logger.error(f"Evaluation error for {model_name}: {e}")
