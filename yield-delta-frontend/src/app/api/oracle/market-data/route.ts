@@ -144,14 +144,14 @@ async function fetchCoinbasePrice(asset: string): Promise<{ price: number; volum
  * Get market data in ai-engine compatible format
  */
 async function getMarketDataForAssets(assets: string[]) {
-  // Fallback data in case Pyth is unavailable
+  // Fallback data in case Pyth is unavailable (Dec 2024 prices)
   const fallbackData: Record<string, {
     price: number;
     volume_24h: number;
     price_change_24h: number;
     funding_rate: number | null;
   }> = {
-    'SEI': { price: 0.187, volume_24h: 14200000, price_change_24h: 2.3, funding_rate: 0.024 },
+    'SEI': { price: 0.42, volume_24h: 14200000, price_change_24h: 2.3, funding_rate: 0.024 },
     'USDC': { price: 1.0, volume_24h: 50000000, price_change_24h: 0.01, funding_rate: null },
     'ETH': { price: 2340.50, volume_24h: 8100000000, price_change_24h: -1.2, funding_rate: -0.012 },
     'BTC': { price: 43250.00, volume_24h: 12400000000, price_change_24h: 3.1, funding_rate: 0.018 },

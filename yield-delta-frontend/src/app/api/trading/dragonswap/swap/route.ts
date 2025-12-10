@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     // Mock swap execution
     const fromAmount = parseFloat(validatedData.amount)
     const mockPrices: Record<string, number> = {
-      'SEI': 0.187,
+      'SEI': 0.42,
       'USDC': 1.0,
       'ETH': 2340.50,
       'BTC': 43250.00,

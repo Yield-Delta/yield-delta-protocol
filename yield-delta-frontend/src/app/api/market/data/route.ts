@@ -281,11 +281,12 @@ async function getSEINetworkMetrics() {
 
 /**
  * Fallback data when APIs are unavailable
+ * Updated: Dec 2024 - Using realistic SEI price range (~$0.40-0.50)
  */
 function getFallbackData(symbols: string[]) {
   const fallbackPrices: Record<string, number> = {
-    'SEI': 0.187,
-    'SEI-USDC': 0.187,
+    'SEI': 0.42,
+    'SEI-USDC': 0.42,
     'ETH': 2340.50,
     'BTC': 43250.00,
     'SOL': 95.30,
@@ -329,11 +330,11 @@ async function getHistoricalMarketData(symbols: string[], timeframe: string, lim
     timeframe,
     data: Array.from({ length: limit }, (_, i) => {
       const timestamp = new Date(now.getTime() - (i * timeframeMs))
-      // Use exact contract prices for historical data
+      // Use consistent prices matching fallback data (Dec 2024)
       const basePrices: { [key: string]: number } = {
-        'SEI-USDC': 0.50,   // $0.50 SEI
-        'ATOM-SEI': 8.00,   // $8.00 ATOM  
-        'WETH-SEI': 2500.00, // $2,500 ETH
+        'SEI-USDC': 0.42,    // SEI price
+        'ATOM-SEI': 8.00,    // $8.00 ATOM
+        'WETH-SEI': 2340.50, // ETH price
         'OSMO-SEI': 1.20     // $1.20 OSMO
       }
       const basePrice = basePrices[symbol] || 1.00

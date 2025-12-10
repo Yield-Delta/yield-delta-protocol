@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Mock prices
     const mockPrices: Record<string, number> = {
-      'SEI': 0.187,
+      'SEI': 0.42,
       'ETH': 2340.50,
       'BTC': 43250.00,
       'ATOM': 8.00

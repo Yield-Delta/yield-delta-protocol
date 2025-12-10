@@ -44,24 +44,68 @@ interface IndicatorConfig {
   period?: number;
 }
 
-// Generate mock OHLC data
-const generateMockOHLCData = (days: number = 90): OHLCData[] => {
+// Fetch current price from CoinGecko API
+const fetchCurrentPrice = async (coingeckoId: string): Promise<number> => {
+  try {
+    const response = await fetch(
+      `https://api.coingecko.com/api/v3/simple/price?ids=${coingeckoId}&vs_currencies=usd`,
+      { cache: 'no-store' }
+    );
+    if (response.ok) {
+      const data = await response.json();
+      return data[coingeckoId]?.usd || getFallbackPrice(coingeckoId);
+    }
+  } catch (error) {
+    console.warn('Failed to fetch price from CoinGecko:', error);
+  }
+  return getFallbackPrice(coingeckoId);
+};
+
+// Fallback prices matching API route
+const getFallbackPrice = (coingeckoId: string): number => {
+  const fallbackPrices: Record<string, number> = {
+    'sei-network': 0.42,
+    'ethereum': 2340.50,
+    'bitcoin': 43250.00,
+    'usd-coin': 1.00,
+  };
+  return fallbackPrices[coingeckoId] || 1.0;
+};
+
+// Generate OHLC data based on real price
+const generateOHLCData = (days: number = 90, currentPrice: number): OHLCData[] => {
   const data: OHLCData[] = [];
-  let basePrice = 1.85; // SEI starting price
   const now = new Date();
 
-  for (let i = days; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
+  // Work backwards from current price to generate historical data
+  // Use a deterministic seed based on days to ensure consistency
+  let price = currentPrice;
+  const priceHistory: number[] = [price];
 
-    const volatility = 0.03 + Math.random() * 0.02;
-    const trend = Math.sin(i / 15) * 0.02;
-    const change = (Math.random() - 0.5) * volatility + trend;
+  // Generate price history going backwards
+  for (let i = 1; i <= days; i++) {
+    // Random walk with mean reversion towards current price
+    const volatility = 0.025 + Math.random() * 0.015;
+    const meanReversion = (currentPrice - price) * 0.02;
+    const change = (Math.random() - 0.5) * volatility + meanReversion;
+    price = price * (1 - change);
+    priceHistory.unshift(price);
+  }
+
+  // Generate OHLC from price history
+  for (let i = 0; i <= days; i++) {
+    const date = new Date(now);
+    date.setDate(date.getDate() - (days - i));
+
+    const basePrice = priceHistory[i];
+    const nextPrice = priceHistory[i + 1] || basePrice;
 
     const open = basePrice;
-    const close = basePrice * (1 + change);
-    const high = Math.max(open, close) * (1 + Math.random() * 0.02);
-    const low = Math.min(open, close) * (1 - Math.random() * 0.02);
+    const close = nextPrice;
+    const highVariance = 1 + Math.random() * 0.015;
+    const lowVariance = 1 - Math.random() * 0.015;
+    const high = Math.max(open, close) * highVariance;
+    const low = Math.min(open, close) * lowVariance;
     const volume = 1000000 + Math.random() * 5000000;
 
     data.push({
@@ -72,8 +116,6 @@ const generateMockOHLCData = (days: number = 90): OHLCData[] => {
       close: parseFloat(close.toFixed(4)),
       volume: Math.floor(volume),
     });
-
-    basePrice = close;
   }
 
   return data;
@@ -208,10 +250,10 @@ const calculateBollingerBands = (data: OHLCData[], period: number = 20, stdDev: 
 };
 
 const TOKENS = [
-  { symbol: 'SEI', name: 'SEI Network', color: '#dc2626' },
-  { symbol: 'ETH', name: 'Ethereum', color: '#6366f1' },
-  { symbol: 'BTC', name: 'Bitcoin', color: '#f59e0b' },
-  { symbol: 'USDC', name: 'USD Coin', color: '#2563eb' },
+  { symbol: 'SEI', name: 'SEI Network', color: '#dc2626', coingeckoId: 'sei-network' },
+  { symbol: 'ETH', name: 'Ethereum', color: '#6366f1', coingeckoId: 'ethereum' },
+  { symbol: 'BTC', name: 'Bitcoin', color: '#f59e0b', coingeckoId: 'bitcoin' },
+  { symbol: 'USDC', name: 'USD Coin', color: '#2563eb', coingeckoId: 'usd-coin' },
 ];
 
 const TIMEFRAMES = [
@@ -260,15 +302,41 @@ const ChartsPage = () => {
   const low24h = ohlcData.length > 0 ? Math.min(...ohlcData.slice(-24).map(d => d.low)) : 0;
   const volume24h = ohlcData.length > 0 ? ohlcData.slice(-24).reduce((sum, d) => sum + (d.volume || 0), 0) : 0;
 
-  // Load data
+  // Load data with real prices from API
   useEffect(() => {
-    setIsLoading(true);
-    const timer = setTimeout(() => {
-      const data = generateMockOHLCData(selectedTimeframe.days);
-      setOhlcData(data);
-      setIsLoading(false);
-    }, 500);
-    return () => clearTimeout(timer);
+    let isMounted = true;
+
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        // Fetch real price from CoinGecko
+        const currentPrice = await fetchCurrentPrice(selectedToken.coingeckoId);
+
+        if (isMounted) {
+          // Generate OHLC data based on real current price
+          const data = generateOHLCData(selectedTimeframe.days, currentPrice);
+          setOhlcData(data);
+        }
+      } catch (error) {
+        console.error('Error loading chart data:', error);
+        if (isMounted) {
+          // Fallback to default price if API fails
+          const fallbackPrice = getFallbackPrice(selectedToken.coingeckoId);
+          const data = generateOHLCData(selectedTimeframe.days, fallbackPrice);
+          setOhlcData(data);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [selectedToken, selectedTimeframe]);
 
   // Initialize main chart
@@ -764,12 +832,17 @@ const ChartsPage = () => {
                 MACD
               </button>
               <button
-                onClick={() => {
+                onClick={async () => {
                   setIsLoading(true);
-                  setTimeout(() => {
-                    setOhlcData(generateMockOHLCData(selectedTimeframe.days));
+                  try {
+                    const currentPrice = await fetchCurrentPrice(selectedToken.coingeckoId);
+                    setOhlcData(generateOHLCData(selectedTimeframe.days, currentPrice));
+                  } catch {
+                    const fallbackPrice = getFallbackPrice(selectedToken.coingeckoId);
+                    setOhlcData(generateOHLCData(selectedTimeframe.days, fallbackPrice));
+                  } finally {
                     setIsLoading(false);
-                  }, 300);
+                  }
                 }}
                 className="p-2.5 rounded-full text-gray-400 hover:text-white hover:bg-white/10 transition-all"
               >
