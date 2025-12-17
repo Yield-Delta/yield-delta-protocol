@@ -1,5 +1,6 @@
 import Navigation from '@/components/Navigation';
 import DemoBanner from '@/components/DemoBanner';
+import TestnetBanner from '@/components/TestnetBanner';
 import VerticalRays from '@/components/VerticalRays';
 import HeroSection from '@/components/sections/HeroSection';
 import VaultShowcase from '@/components/sections/VaultShowcase';
@@ -14,6 +15,7 @@ export default function DLPLanding() {
     return (
         <div className="min-h-screen bg-background relative overflow-x-hidden mobile-safe-padding">
             <Navigation variant="transparent" showWallet={false} showLaunchApp={true} />
+            <TestnetBanner variant="banner" />
             <DemoBanner />
             <VerticalRays className="top-0 left-0 right-0" style={{ pointerEvents: 'none' }} />
             <div id="hero" className="mobile-section-spacing">

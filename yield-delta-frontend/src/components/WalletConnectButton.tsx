@@ -7,6 +7,7 @@ import { SeiWalletModal } from './SeiWalletModal'
 import { useSeiWallet } from '@/hooks/useSeiWallet'
 import { useBalance, useAccount } from 'wagmi'
 import { formatEther } from 'viem'
+import { isTestnetChain, getChainDisplayName } from '@/lib/chainUtils'
 
 export function WalletConnectButton() {
   const [showSeiModal, setShowSeiModal] = useState(false)
@@ -161,11 +162,12 @@ export function WalletConnectButton() {
 
                 return (
                   <div className="flex items-center gap-2">
-                    {/* Chain Button - Hidden on mobile */}
+                    {/* Chain Button - Hidden on mobile - Shows testnet status */}
                     <Button
                       onClick={openChainModal}
-                      className="btn-cyber-secondary hidden sm:flex"
+                      className={`${isTestnetChain(chain.id) ? 'btn-cyber-warning' : 'btn-cyber-secondary'} hidden sm:flex relative`}
                       type="button"
+                      title={isTestnetChain(chain.id) ? 'Testnet - Not real money' : chain.name}
                     >
                       {chain.hasIcon && (
                         <div
@@ -188,7 +190,13 @@ export function WalletConnectButton() {
                           )}
                         </div>
                       )}
-                      {chain.name}
+                      {getChainDisplayName(chain.id)}
+                      {isTestnetChain(chain.id) && (
+                        <div
+                          className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full border border-background animate-pulse"
+                          aria-label="Testnet indicator"
+                        />
+                      )}
                     </Button>
 
                     {/* Account Button - Responsive truncation */}

@@ -509,3 +509,100 @@ html body div.vault-page {
     font-size: clamp(0.875rem, 0.8rem + 0.5vw, 1rem);
   }
 }
+
+/* ========================================
+   TESTNET INDICATOR STYLES
+   Visual indicators for testnet environment
+   ======================================== */
+
+/* Testnet banner spacing adjustments */
+.testnet-banner-container + * {
+  margin-top: 0.5rem;
+}
+
+/* Animate shimmer effect for testnet banner */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Subtle pulse animation for testnet indicator */
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Warning button style for testnet chain display */
+.btn-cyber-warning {
+  position: relative;
+  padding: 0.5rem 1rem;
+  border: 1px solid rgba(251, 191, 36, 0.5);
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.1) 100%);
+  color: rgb(251, 191, 36);
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.btn-cyber-warning:hover {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, rgba(245, 158, 11, 0.2) 100%);
+  border-color: rgba(251, 191, 36, 0.7);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-cyber-warning:active {
+  transform: translateY(0);
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+}
+
+/* Mobile responsive adjustments for testnet indicators */
+@media (max-width: 640px) {
+  .testnet-banner-container {
+    font-size: 0.875rem;
+  }
+
+  .testnet-banner-alert {
+    padding: 0.5rem !important;
+  }
+
+  .testnet-banner-alert h5 {
+    font-size: 0.8125rem;
+  }
+
+  .testnet-banner-alert p {
+    font-size: 0.75rem;
+  }
+}
+
+/* Ensure testnet indicators don't interfere with page layout */
+.testnet-banner-container ~ .mobile-section-spacing:first-of-type,
+.testnet-banner-container ~ div:first-of-type {
+  padding-top: 1rem;
+}
+
+/* Dark mode enhancements for testnet warnings */
+@media (prefers-color-scheme: dark) {
+  .btn-cyber-warning {
+    border-color: rgba(251, 191, 36, 0.6);
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.15) 100%);
+  }
+}

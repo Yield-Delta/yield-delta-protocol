@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { Web3Provider } from '@/components/providers/Web3Provider'
 import { ThemeProvider } from 'next-themes'
+import TestnetBanner from '@/components/TestnetBanner'
 
 const inter = Inter({ subsets: ['latin'] })
 // Metadata for SEO and social sharing
@@ -58,6 +59,7 @@ export default function RootLayout({
         >
           {/* Client-side web3 and query providers */}
           <Web3Provider>
+            <TestnetBanner variant="badge" />
             {children}
           </Web3Provider>
         </ThemeProvider>
