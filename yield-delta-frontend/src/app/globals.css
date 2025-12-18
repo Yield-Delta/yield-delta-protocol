@@ -536,6 +536,25 @@ html body div.vault-page {
 
 /* Simplified testnet banner - removed complex animations for cleaner UX */
 
+/* Testnet banner integrated with navigation */
+.testnet-banner-active {
+  padding-top: 2rem !important;
+}
+
+/* Smooth animation for testnet banner */
+@keyframes testnet-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.animate-testnet-pulse {
+  animation: testnet-pulse 2s ease-in-out infinite;
+}
+
 /* Subtle pulse animation for testnet indicator */
 @keyframes pulse-subtle {
   0%, 100% {
