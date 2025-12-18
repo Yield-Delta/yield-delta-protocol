@@ -4,6 +4,8 @@ import React from 'react';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 import { AlertTriangle } from 'lucide-react';
+import { useAccount } from 'wagmi';
+import { isTestnetChain } from '@/lib/chainUtils';
 
 interface DemoBannerProps {
   className?: string;
@@ -11,6 +13,8 @@ interface DemoBannerProps {
 
 export function DemoBanner({ className }: DemoBannerProps) {
   const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+  const { chain } = useAccount();
+  const isTestnet = chain ? isTestnetChain(chain.id) : true;
 
   if (!isDemoMode) return null;
 
@@ -24,7 +28,7 @@ export function DemoBanner({ className }: DemoBannerProps) {
       )}
       style={{
         isolation: 'isolate',
-        top: '3.5rem'
+        top: isTestnet ? '5.5rem' : '3.5rem'
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
