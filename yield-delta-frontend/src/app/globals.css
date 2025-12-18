@@ -534,6 +534,36 @@ html body div.vault-page {
   animation: shimmer 3s ease-in-out infinite;
 }
 
+/* Slower shimmer for background patterns */
+@keyframes shimmer-slow {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer-slow {
+  animation: shimmer-slow 8s ease-in-out infinite;
+}
+
+/* Pulsing glow effect for testnet banner */
+@keyframes testnet-glow {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(251, 146, 60, 0.3),
+                0 0 40px rgba(251, 191, 36, 0.2);
+  }
+  50% {
+    box-shadow: 0 4px 30px rgba(251, 146, 60, 0.5),
+                0 0 60px rgba(251, 191, 36, 0.3);
+  }
+}
+
+.animate-testnet-glow {
+  animation: testnet-glow 3s ease-in-out infinite;
+}
+
 /* Subtle pulse animation for testnet indicator */
 @keyframes pulse-subtle {
   0%, 100% {
@@ -578,6 +608,8 @@ html body div.vault-page {
 @media (max-width: 640px) {
   .testnet-banner-container {
     font-size: 0.875rem;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
   }
 
   .testnet-banner-alert {
@@ -590,6 +622,26 @@ html body div.vault-page {
 
   .testnet-banner-alert p {
     font-size: 0.75rem;
+  }
+
+  /* Prevent banner text overlap on mobile */
+  .testnet-banner-container .flex {
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
+
+  /* Reduce glow intensity on mobile for better performance */
+  .animate-testnet-glow {
+    animation: none;
+    box-shadow: 0 2px 10px rgba(251, 146, 60, 0.3);
+  }
+}
+
+/* Tablet responsive adjustments */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .testnet-banner-container {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
   }
 }
 
