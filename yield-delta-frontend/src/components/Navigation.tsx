@@ -26,6 +26,7 @@ interface NavigationProps {
   className?: string;
   showWallet?: boolean;
   showLaunchApp?: boolean;
+  hideTestnetIndicator?: boolean;
 }
 
 interface NavLink {
@@ -194,7 +195,7 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
 
 MobileMenuItem.displayName = 'MobileMenuItem';
 
-export function Navigation({ variant = 'transparent', className = '', showWallet = true, showLaunchApp = true }: NavigationProps) {
+export function Navigation({ variant = 'transparent', className = '', showWallet = true, showLaunchApp = true, hideTestnetIndicator = false }: NavigationProps) {
   const logoRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -546,7 +547,7 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
           </div>
 
           {/* Testnet Indicator Badge - Compact for navbar */}
-          {isTestnet && (
+          {isTestnet && !hideTestnetIndicator && (
             <div
               className="ml-3 px-2 py-1 rounded-md bg-amber-500/20 border border-amber-500/40 flex items-center gap-1.5 backdrop-blur-sm"
               title="Connected to SEI Testnet"
