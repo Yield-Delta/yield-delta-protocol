@@ -5,9 +5,7 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Logo from './Logo';
 import { gsap } from 'gsap';
-import { Menu, X, Vault, TrendingUp, Target, PieChart, RefreshCw, BookOpen, Rocket, CandlestickChart, Network } from 'lucide-react';
-import { useAccount } from 'wagmi';
-import { isTestnetChain } from '@/lib/chainUtils';
+import { Menu, X, Vault, TrendingUp, Target, PieChart, RefreshCw, BookOpen, Rocket, CandlestickChart } from 'lucide-react';
 
 const WalletConnectButton = dynamic(
   () => import('./WalletConnectButton').then(mod => ({ default: mod.WalletConnectButton })),
@@ -26,7 +24,6 @@ interface NavigationProps {
   className?: string;
   showWallet?: boolean;
   showLaunchApp?: boolean;
-  hideTestnetIndicator?: boolean;
 }
 
 interface NavLink {
@@ -195,17 +192,13 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
 
 MobileMenuItem.displayName = 'MobileMenuItem';
 
-export function Navigation({ variant = 'transparent', className = '', showWallet = true, showLaunchApp = true, hideTestnetIndicator = false }: NavigationProps) {
+export function Navigation({ variant = 'transparent', className = '', showWallet = true, showLaunchApp = true }: NavigationProps) {
   const logoRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const hamburgerButtonRef = useRef<HTMLButtonElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
-
-  // Check if on testnet
-  const { chain } = useAccount();
-  const isTestnet = chain ? isTestnetChain(chain.id) : true; // Default to showing testnet warning
 
   const baseClasses = "fixed top-0 left-0 right-0 z-50 h-14 transition-all duration-300 m-0 p-0";
 
@@ -545,20 +538,6 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               Yield Delta
             </div>
           </div>
-
-          {/* Testnet Indicator Badge - Compact for navbar */}
-          {isTestnet && !hideTestnetIndicator && (
-            <div
-              className="ml-3 px-2 py-1 rounded-md bg-amber-500/20 border border-amber-500/40 flex items-center gap-1.5 backdrop-blur-sm"
-              title="Connected to SEI Testnet"
-            >
-              <Network className="h-3 w-3 text-amber-400" aria-hidden="true" />
-              <span className="text-amber-300 text-xs font-semibold hidden lg:inline">
-                Testnet
-              </span>
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" aria-hidden="true" />
-            </div>
-          )}
         </div>
 
         {/* CENTER - App Navigation Links (only show when inside app, hidden on mobile via CSS) */}

@@ -14,7 +14,7 @@ export default function DLPLanding() {
 
     return (
         <div className="min-h-screen bg-background relative overflow-x-hidden mobile-safe-padding">
-            <Navigation variant="transparent" showWallet={false} showLaunchApp={true} hideTestnetIndicator={true} />
+            <Navigation variant="transparent" showWallet={false} showLaunchApp={true} />
             <TestnetBanner variant="banner" />
             <DemoBanner />
             <VerticalRays className="top-0 left-0 right-0" style={{ pointerEvents: 'none' }} />
