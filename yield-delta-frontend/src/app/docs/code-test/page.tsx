@@ -3,8 +3,6 @@
  * Tests the enhanced code snippet styling implementation
  */
 
-'use client';
-
 import { CodeBlock, InlineCode } from '@/components/CodeBlock';
 
 export default function CodeTestPage() {
