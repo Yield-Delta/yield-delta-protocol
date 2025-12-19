@@ -8,6 +8,7 @@ import { gsap } from 'gsap';
 import { Menu, X, Vault, TrendingUp, Target, PieChart, RefreshCw, BookOpen, Rocket, CandlestickChart, AlertTriangle } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { isTestnetChain } from '@/lib/chainUtils';
+import { GooeyNavigation } from './GooeyNavigation';
 
 const WalletConnectButton = dynamic(
   () => import('./WalletConnectButton').then(mod => ({ default: mod.WalletConnectButton })),
@@ -568,57 +569,10 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
           </div>
         </div>
 
-        {/* CENTER - App Navigation Links (only show when inside app, hidden on mobile via CSS) */}
+        {/* CENTER - Gooey Navigation (only show when inside app, hidden on mobile via CSS) */}
         {!showLaunchApp && (
           <div className="nav-center-links">
-            <Link
-              href="/vaults"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Vaults
-            </Link>
-            <Link
-              href="/market"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Market
-            </Link>
-            <Link
-              href="/charts"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Charts
-            </Link>
-            <Link
-              href="/market-sentiment"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Sentiment
-            </Link>
-            <Link
-              href="/dashboard"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="/portfolio/rebalance"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Rebalance
-            </Link>
-            <Link
-              href="/vaults/deploy"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Deploy
-            </Link>
-            <Link
-              href="/docs"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Docs
-            </Link>
+            <GooeyNavigation />
           </div>
         )}
 

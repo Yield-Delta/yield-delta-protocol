@@ -66,45 +66,167 @@ export default function DocsHomePage() {
       <p className="mb-6">Choose your path to get started:</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-          <h3 className="text-lg font-semibold mb-2">🧪 Testnet Setup</h3>
-          <p className="text-muted-foreground mb-4">
-            Configure your wallet for SEI testnet and get started with Yield Delta.
-          </p>
-          <a href="/docs/testnet-setup" className="text-primary hover:text-primary/80 font-medium">
-            Setup Guide →
-          </a>
-        </div>
+        {/* Testnet Setup Card */}
+        <a
+          href="/docs/testnet-setup"
+          className="group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+          style={{
+            background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 51, 234, 0.05) 100%)',
+            border: '1px solid rgba(59, 130, 246, 0.1)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          {/* Gradient overlay on hover */}
+          <div
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{
+              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(147, 51, 234, 0.08) 100%)',
+            }}
+          />
 
-        <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-          <h3 className="text-lg font-semibold mb-2">📊 Understanding Metrics</h3>
-          <p className="text-muted-foreground mb-4">
-            Learn about Sharpe Ratio, APY, and other key metrics to evaluate vaults.
-          </p>
-          <a href="/docs/understanding-metrics" className="text-primary hover:text-primary/80 font-medium">
-            Metrics Guide →
-          </a>
-        </div>
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-500/10 group-hover:bg-blue-500/20 transition-colors">
+                <span className="text-xl">🧪</span>
+              </div>
+              <h3 className="text-lg font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                Testnet Setup
+              </h3>
+            </div>
+            <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+              Configure your wallet for SEI testnet and get started with Yield Delta.
+            </p>
+            <div className="flex items-center gap-2 text-sm font-medium text-blue-600 dark:text-blue-400">
+              <span>Setup Guide</span>
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </div>
+          </div>
 
-        <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-          <h3 className="text-lg font-semibold mb-2">🏗️ For Developers</h3>
-          <p className="text-muted-foreground mb-4">
-            Build on top of Yield Delta, integrate our APIs, or contribute to the protocol.
-          </p>
-          <a href="/docs/getting-started" className="text-primary hover:text-primary/80 font-medium">
-            Development Guide →
-          </a>
-        </div>
+          {/* Subtle shadow effect */}
+          <div className="absolute inset-0 rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ boxShadow: '0 8px 32px rgba(59, 130, 246, 0.15)' }}
+          />
+        </a>
 
-        <div className="border rounded-lg p-6 hover:shadow-lg transition-shadow">
-          <h3 className="text-lg font-semibold mb-2">💰 For Liquidity Providers</h3>
-          <p className="text-muted-foreground mb-4">
-            Learn how to provide liquidity and maximize your yields with AI optimization.
-          </p>
-          <a href="/docs/features" className="text-primary hover:text-primary/80 font-medium">
-            Features Overview →
-          </a>
-        </div>
+        {/* Understanding Metrics Card */}
+        <a
+          href="/docs/understanding-metrics"
+          className="group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+          style={{
+            background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%)',
+            border: '1px solid rgba(168, 85, 247, 0.1)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          <div
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{
+              background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(236, 72, 153, 0.08) 100%)',
+            }}
+          />
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-purple-500/10 group-hover:bg-purple-500/20 transition-colors">
+                <span className="text-xl">📊</span>
+              </div>
+              <h3 className="text-lg font-semibold group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                Understanding Metrics
+              </h3>
+            </div>
+            <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+              Learn about Sharpe Ratio, APY, and other key metrics to evaluate vaults.
+            </p>
+            <div className="flex items-center gap-2 text-sm font-medium text-purple-600 dark:text-purple-400">
+              <span>Metrics Guide</span>
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </div>
+          </div>
+
+          <div className="absolute inset-0 rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ boxShadow: '0 8px 32px rgba(168, 85, 247, 0.15)' }}
+          />
+        </a>
+
+        {/* For Developers Card */}
+        <a
+          href="/docs/getting-started"
+          className="group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+          style={{
+            background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.05) 0%, rgba(16, 185, 129, 0.05) 100%)',
+            border: '1px solid rgba(34, 197, 94, 0.1)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          <div
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{
+              background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)',
+            }}
+          />
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
+                <span className="text-xl">🏗️</span>
+              </div>
+              <h3 className="text-lg font-semibold group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
+                For Developers
+              </h3>
+            </div>
+            <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+              Build on top of Yield Delta, integrate our APIs, or contribute to the protocol.
+            </p>
+            <div className="flex items-center gap-2 text-sm font-medium text-green-600 dark:text-green-400">
+              <span>Development Guide</span>
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </div>
+          </div>
+
+          <div className="absolute inset-0 rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ boxShadow: '0 8px 32px rgba(34, 197, 94, 0.15)' }}
+          />
+        </a>
+
+        {/* For Liquidity Providers Card */}
+        <a
+          href="/docs/features"
+          className="group relative overflow-hidden rounded-xl p-6 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+          style={{
+            background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.05) 0%, rgba(234, 179, 8, 0.05) 100%)',
+            border: '1px solid rgba(249, 115, 22, 0.1)',
+            backdropFilter: 'blur(10px)',
+          }}
+        >
+          <div
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{
+              background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, rgba(234, 179, 8, 0.08) 100%)',
+            }}
+          />
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-orange-500/10 group-hover:bg-orange-500/20 transition-colors">
+                <span className="text-xl">💰</span>
+              </div>
+              <h3 className="text-lg font-semibold group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+                For Liquidity Providers
+              </h3>
+            </div>
+            <p className="text-muted-foreground mb-4 text-sm leading-relaxed">
+              Learn how to provide liquidity and maximize your yields with AI optimization.
+            </p>
+            <div className="flex items-center gap-2 text-sm font-medium text-orange-600 dark:text-orange-400">
+              <span>Features Overview</span>
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+            </div>
+          </div>
+
+          <div className="absolute inset-0 rounded-xl shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ boxShadow: '0 8px 32px rgba(249, 115, 22, 0.15)' }}
+          />
+        </a>
       </div>
 
       <h2 className="text-2xl font-semibold mb-4">Core Features</h2>

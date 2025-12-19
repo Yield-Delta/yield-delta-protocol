@@ -6,10 +6,19 @@
 :root {
   /* Border Radius System */
   --radius: 0.625rem;
+  --radius-code-block: 0.75rem; /* 12px - For code blocks */
+  --radius-inline-code: 0.375rem; /* 6px - For inline code */
 
   /* Dashboard Variables */
   --dashboard-card-bg: rgb(30 41 59 / 0.6);
   --dashboard-hover-bg: rgb(51 65 85 / 0.5);
+
+  /* Code Block Colors */
+  --code-block-bg: hsl(216 50% 8%);
+  --code-block-border: hsl(216 30% 18%);
+  --code-block-shadow: rgba(0, 0, 0, 0.3);
+  --code-inline-bg: rgba(0, 215, 255, 0.1);
+  --code-inline-border: rgba(0, 215, 255, 0.2);
 
   /* Core Color Tokens - Light/Default Theme */
   --background: 216 100% 4%;

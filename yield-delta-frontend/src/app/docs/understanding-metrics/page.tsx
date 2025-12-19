@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { DocsBackButton } from '@/components/docs/DocsBackButton'
 
 export default function UnderstandingMetricsPage() {
   return (
     <div className="docs-content">
+      <DocsBackButton />
+
       <h1 className="text-4xl font-bold mb-8">Understanding Vault Metrics</h1>
 
       <p className="text-lg text-muted-foreground mb-8">

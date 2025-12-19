@@ -1,6 +1,10 @@
+import { DocsBackButton } from '@/components/docs/DocsBackButton'
+
 export default function APIReferencePage() {
   return (
     <div className="docs-content">
+      <DocsBackButton />
+
       <h1 className="text-4xl font-bold mb-8">API Reference</h1>
 
       <p className="text-lg text-muted-foreground mb-8">

@@ -1,8 +1,11 @@
 import Link from 'next/link';
+import { DocsBackButton } from '@/components/docs/DocsBackButton'
 
 export default function TestnetSetupPage() {
   return (
     <div className="docs-content">
+      <DocsBackButton />
+
       <h1 className="text-4xl font-bold mb-8">SEI Testnet Setup Guide</h1>
 
       <div className="bg-blue-500/10 border-2 border-blue-500/30 p-6 rounded-lg mb-8">

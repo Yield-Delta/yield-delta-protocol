@@ -1,6 +1,10 @@
+import { DocsBackButton } from '@/components/docs/DocsBackButton'
+
 export default function VaultsPage() {
   return (
     <div className="docs-content">
+      <DocsBackButton href="/docs/features" label="Back to Features" />
+
       <h1 className="text-4xl font-bold mb-8">Vault Management</h1>
       
       <p className="text-lg text-muted-foreground mb-8">
