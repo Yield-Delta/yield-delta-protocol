@@ -82,10 +82,6 @@ nav .nav-center-links {
     cursor: pointer !important;
     color: hsl(var(--foreground)) !important;
     flex-shrink: 0 !important;
-  }
-
-  /* Show mobile menu button on mobile */
-  nav .mobile-menu-btn {
     display: flex !important;
   }
 
@@ -95,7 +91,8 @@ nav .nav-center-links {
   }
 }
 
-/* Hide mobile menu button on desktop (900px and above) */
+/* === Desktop Navigation Overrides (must come AFTER mobile rules) === */
+/* CRITICAL: Hide mobile menu button on desktop (900px and above) */
 @media (min-width: 900px) {
   nav .mobile-menu-btn {
     display: none !important;
@@ -186,7 +183,7 @@ nav .wallet-container {
   /* === Mobile Menu === */
 
   nav .mobile-menu-btn {
-    display: flex;
+    /* Base styles - display property controlled by media queries outside @layer */
     align-items: center;
     justify-content: center;
     width: 2rem;
@@ -279,13 +276,6 @@ nav .wallet-container {
       min-width: 0;
       max-width: 140px;
       font-size: 0.7rem;
-    }
-  }
-
-  /* Ensure hamburger menu is hidden on desktop */
-  @media (min-width: 900px) {
-    nav .mobile-menu-btn {
-      display: none !important;
     }
   }
 
