@@ -8,9 +8,42 @@ import {
 
 /**
  * API Middleware for SEI DLP Core
- * Handles CORS, rate limiting, authentication, and error handling
+ * Handles subdomain routing, CORS, rate limiting, authentication, and error handling
  */
 export async function middleware(request: NextRequest) {
+  const host = request.headers.get('host') || ''
+  const { pathname } = request.nextUrl
+
+  // ===================
+  // SUBDOMAIN ROUTING
+  // ===================
+  
+  // app.yielddelta.xyz → /vaults
+  if (host.startsWith('app.')) {
+    if (pathname === '/' || pathname === '') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/vaults'
+      return NextResponse.rewrite(url)
+    }
+  }
+  
+  // docs.yielddelta.xyz → /docs
+  if (host.startsWith('docs.')) {
+    if (pathname === '/' || pathname === '') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/docs'
+      return NextResponse.rewrite(url)
+    }
+  }
+
+  // ===================
+  // API MIDDLEWARE (only for /api routes)
+  // ===================
+  
+  if (!pathname.startsWith('/api')) {
+    return NextResponse.next()
+  }
+
   // Handle CORS preflight requests
   if (request.method === 'OPTIONS') {
     return new NextResponse(null, {
@@ -20,7 +53,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Skip middleware for health check
-  if (request.nextUrl.pathname === '/api/health') {
+  if (pathname === '/api/health') {
     return NextResponse.next()
   }
 
@@ -38,7 +71,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // API key validation (optional for public endpoints)
-  const isPublicEndpoint = isPublicPath(request.nextUrl.pathname)
+  const isPublicEndpoint = isPublicPath(pathname)
   if (!isPublicEndpoint && !validateApiKey(request)) {
     return createErrorResponse(
       'Invalid or missing API key',
@@ -65,16 +98,19 @@ export async function middleware(request: NextRequest) {
 function isPublicPath(pathname: string): boolean {
   const publicPaths = [
     '/api/health',
-    '/api/market/data', // Market data can be public
-    '/api/vaults', // Vault listing can be public
+    '/api/market/data',
+    '/api/vaults',
   ]
   
   return publicPaths.some(path => pathname.startsWith(path))
 }
 
 /**
- * Configure middleware to run on API routes
+ * Configure middleware to run on API routes AND root for subdomain handling
  */
 export const config = {
-  matcher: '/api/:path*'
+  matcher: [
+    '/',
+    '/api/:path*'
+  ]
 }
