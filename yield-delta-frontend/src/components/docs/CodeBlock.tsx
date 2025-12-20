@@ -80,7 +80,7 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
         {/* Copy button */}
         <button
           onClick={handleCopy}
-          className="absolute top-3 right-3 p-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 z-10"
+          className="absolute top-3 right-3 p-2 rounded-lg opacity-60 hover:opacity-100 transition-all duration-300 z-10"
           style={{
             background: copied
               ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.1))'
