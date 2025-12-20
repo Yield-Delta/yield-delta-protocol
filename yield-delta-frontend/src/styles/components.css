@@ -201,22 +201,37 @@
   /* Force cyan gradient on wallet buttons - override RainbowKit styles */
   button.btn-cyber,
   .wallet-container button.btn-cyber,
-  .wallet-container-override button.btn-cyber {
+  .wallet-container-override button.btn-cyber,
+  nav button.btn-cyber,
+  nav .wallet-container button.btn-cyber {
     background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%) !important;
     color: rgba(255, 255, 255, 0.95) !important;
     border: 1px solid rgba(6, 182, 212, 0.3) !important;
+    box-shadow:
+      0 0 20px rgba(6, 182, 212, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   }
 
   button.btn-cyber:hover,
   .wallet-container button.btn-cyber:hover,
-  .wallet-container-override button.btn-cyber:hover {
+  .wallet-container-override button.btn-cyber:hover,
+  nav button.btn-cyber:hover,
+  nav .wallet-container button.btn-cyber:hover {
     background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%) !important;
     border-color: rgba(6, 182, 212, 0.5) !important;
+    box-shadow:
+      0 0 30px rgba(6, 182, 212, 0.4),
+      0 0 60px rgba(20, 184, 166, 0.3),
+      0 8px 25px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
   }
 
   button.btn-cyber:disabled,
   .wallet-container button.btn-cyber:disabled,
-  .wallet-container-override button.btn-cyber:disabled {
+  .wallet-container-override button.btn-cyber:disabled,
+  nav button.btn-cyber:disabled,
+  nav .wallet-container button.btn-cyber:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%) !important;
