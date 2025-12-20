@@ -54,8 +54,8 @@ export function GooeyNavigation() {
         </defs>
       </svg>
 
-      {/* Desktop Navigation */}
-      <nav className="hidden lg:flex items-center justify-center gap-2 px-4">
+      {/* Desktop Navigation - Show at 900px+ */}
+      <nav className="hidden min-[900px]:flex items-center justify-center gap-2 px-4">
         <motion.div
           className="flex items-center gap-1 px-4 py-2 rounded-full backdrop-blur-xl"
           style={{
@@ -111,8 +111,8 @@ export function GooeyNavigation() {
         </motion.div>
       </nav>
 
-      {/* Mobile Floating Action Button */}
-      <div className="lg:hidden fixed bottom-6 right-6 z-50">
+      {/* Mobile Floating Action Button - Hide at 900px+ */}
+      <div className="max-[899px]:block hidden fixed bottom-6 right-6 z-50">
         <motion.button
           className="relative w-14 h-14 rounded-full flex items-center justify-center"
           style={{
