@@ -1,6 +1,6 @@
 # Impermanent Loss Protection: Methods & Results
 **Yield Delta Protocol | SEI Network**
-*Last Updated: December 2024*
+*Last Updated: December 2025*
 
 ---
 
@@ -167,7 +167,7 @@ Each rebalance (R1-R4) resets IL accumulation while maintaining fee generation.
 
 ### Current Limitations
 1. **Simulated Environment:** Backtests use historical data; actual performance may vary
-2. **SEI Mainnet Pending:** Currently on testnet (Atlantic-2); mainnet launch Q1 2025
+2. **SEI Mainnet Pending:** Currently on testnet (Atlantic-2); mainnet launch Q3 2026
 3. **Liquidity Assumptions:** Assumes sufficient DEX liquidity for rebalancing
 4. **No Black Swan Events:** Model doesn't account for 50%+ daily moves
 
@@ -199,9 +199,9 @@ Traditional LPs accepting 7-10% IL as "cost of business" are leaving money on th
 5. **Transparent Methodology:** Open-source backtesting framework
 
 ### Next Steps
-- **Mainnet Launch:** Q1 2025 on SEI mainnet
+- **Mainnet Launch:** Q3 2026 on SEI mainnet
 - **Live Dashboard:** Real-time IL tracking per vault
-- **Audit Completion:** Certik audit scheduled for January 2025
+- **Audit Completion:** Certik audit scheduled for February 2026
 - **TVL Target:** $1M within 30 days of mainnet launch
 
 ---
@@ -210,7 +210,7 @@ Traditional LPs accepting 7-10% IL as "cost of business" are leaving money on th
 
 ### View Backtest Code
 ```bash
-github.com/yield-delta/protocol/backtesting
+github.com/yield-delta/yield-delta-protocol/backtesting
 ```
 
 ### Test on SEI Testnet
@@ -220,9 +220,9 @@ Network: SEI Atlantic-2
 ```
 
 ### Contact & Resources
-- **Technical Docs:** docs.yielddelta.com/impermanent-loss
-- **Discord:** discord.gg/yielddelta
-- **Email:** investors@yielddelta.com
+- **Technical Docs:** docs.yielddelta.com/impermanent-loss-reduction
+- **Discord:** https://discord.gg/NMCb5CtG
+- **Email:** social@yielddelta.com
 
 ---
 
