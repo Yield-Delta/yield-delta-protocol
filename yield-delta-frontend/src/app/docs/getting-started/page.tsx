@@ -287,7 +287,7 @@ bun update`} />
       <h3 className="text-xl font-semibold mb-4">Explore Features</h3>
       <ul className="space-y-2 mb-6">
         <li><a href="/docs/features" className="text-primary hover:text-primary/80">Core Features</a> - Deep dive into platform capabilities</li>
-        <li><a href="/docs/api" className="text-primary hover:text-primary/80">API Reference</a> - Integrate with Yield Delta APIs</li>
+        <li><a href="/docs/api-reference" className="text-primary hover:text-primary/80">API Reference</a> - Integrate with Yield Delta APIs</li>
         <li><a href="/docs/smart-contracts" className="text-primary hover:text-primary/80">Smart Contracts</a> - Deploy your own vaults</li>
       </ul>
 
