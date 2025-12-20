@@ -71,7 +71,7 @@ export function GooeyNavigation() {
             const isActive = pathname === item.href;
 
             return (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} style={{ display: 'block' }}>
                 <motion.div
                   className="relative px-5 py-2.5 rounded-full cursor-pointer whitespace-nowrap"
                   whileHover={{ scale: 1.05 }}
