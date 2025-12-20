@@ -1,5 +1,3 @@
-'use client'
-
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 import { CodeBlock } from '@/components/docs/CodeBlock'
 
