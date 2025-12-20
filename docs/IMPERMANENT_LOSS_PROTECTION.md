@@ -1,6 +1,6 @@
 # Impermanent Loss Protection: Methods & Results
 **Yield Delta Protocol | SEI Network**
-*Last Updated: December 2024*
+*Last Updated: December 2025*
 
 ---
 
