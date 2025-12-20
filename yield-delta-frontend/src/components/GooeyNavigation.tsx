@@ -61,9 +61,9 @@ export function GooeyNavigation() {
           style={{
             filter: 'url(#gooey-effect)',
             background: 'rgba(15, 23, 42, 0.8)',
-            border: '1px solid rgba(6, 182, 212, 0.25)',
+            border: '2px solid rgba(6, 182, 212, 0.3)',
             overflow: 'visible',
-            gap: '3rem',
+            gap: '2.25rem',
           }}
           layout
         >
