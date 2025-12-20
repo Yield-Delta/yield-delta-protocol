@@ -1,6 +1,51 @@
 /**
  * Navigation Styles
  * All navigation, header, and menu-related styles
+ *
+ * CRITICAL BREAKPOINT: 900px
+ * - Below 900px: Mobile navigation (hamburger menu + mobile menu overlay)
+ * - At 900px and above: Desktop navigation (horizontal nav links, NO hamburger)
+ *
+ * DEFENSE IN DEPTH: HAMBURGER MENU HIDING STRATEGY
+ * ===================================================
+ * This file implements a NUCLEAR-GRADE hiding strategy for the hamburger menu
+ * at 900px+ to prevent ANY possibility of it appearing on tablets/desktop.
+ *
+ * LAYER 1: React Conditional Rendering (Navigation.tsx)
+ *   - Strict boolean check: isDesktop === false (not just falsy)
+ *   - State initializes to null to prevent hydration mismatch
+ *   - Immediate viewport check on mount (no debounce delay)
+ *
+ * LAYER 2: CSS Media Queries (THIS FILE)
+ *   - 6 independent selectors targeting the button from different angles
+ *   - ALL rules use !important to override any competing styles
+ *   - Rules placed OUTSIDE @layer for maximum specificity
+ *   - Multiple hiding techniques: display:none, visibility:hidden,
+ *     opacity:0, position:absolute, pointer-events:none
+ *
+ * LAYER 3: CSS Class-Based Targeting
+ *   - .mobile-menu-btn (atomic class selector)
+ *   - nav .mobile-menu-btn (scoped context)
+ *   - nav button.mobile-menu-btn (element + class)
+ *   - nav .nav-right-simple .mobile-menu-btn (container context)
+ *   - nav button[aria-controls="mobile-menu"] (ARIA attribute)
+ *   - nav button[aria-label*="mobile menu"] (ARIA label pattern)
+ *
+ * WHY THIS WORKS:
+ * - CSS rules apply regardless of React hydration state
+ * - Multiple selectors ensure button is caught even if class changes
+ * - Atomic .mobile-menu-btn rule catches button even outside nav context
+ * - ARIA selectors catch button even if className changes
+ * - position:absolute + left:-9999px physically removes from layout
+ * - React strict boolean check prevents rendering during hydration
+ *
+ * This ensures the hamburger is NEVER visible at 900px+ regardless of:
+ * - CSS loading order or race conditions
+ * - React hydration timing
+ * - Tailwind CSS conflicts
+ * - Browser rendering quirks
+ * - User agent stylesheets
+ * - JavaScript errors or failures
  */
 
 /* === Core Navigation Styles === */
@@ -93,9 +138,83 @@ nav .nav-center-links {
 
 /* === Desktop Navigation Overrides (must come AFTER mobile rules) === */
 /* CRITICAL: Hide mobile menu button on desktop (900px and above) */
+/* Multi-layered approach for bulletproof hiding - CSS ONLY, no dependency on React */
 @media (min-width: 900px) {
+  /* Layer 1: Target by class - ATOMIC RULE */
+  .mobile-menu-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Layer 2: Target within nav context */
   nav .mobile-menu-btn {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 3: Target by element + class with maximum specificity */
+  nav button.mobile-menu-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 4: Target within nav-right-simple container */
+  nav .nav-right-simple .mobile-menu-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 5: Nuclear option - target all buttons in nav-right that could be hamburger */
+  nav .nav-right-simple > button[aria-controls="mobile-menu"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 6: Target by ARIA label (catches any hamburger button) */
+  nav button[aria-label*="mobile menu" i] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* CRITICAL: Ensure desktop navigation links are VISIBLE at 900px+ */
+  nav .nav-center-links {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* Ensure brand is visible on desktop */
+  nav .nav-brand {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
 }
 

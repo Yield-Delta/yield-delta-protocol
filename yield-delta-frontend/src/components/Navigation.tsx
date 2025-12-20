@@ -203,9 +203,38 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
+  // Viewport detection to prevent hamburger rendering at 900px+
+  // CRITICAL: Initialize to null to prevent hydration mismatch
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+
   // Check if on testnet
   const { chain } = useAccount();
   const isTestnet = chain ? isTestnetChain(chain.id) : true;
+
+  // Viewport detection effect - runs on mount and resize
+  useEffect(() => {
+    // Check if viewport is 900px or wider (desktop breakpoint)
+    const checkViewport = () => {
+      setIsDesktop(window.innerWidth >= 900);
+    };
+
+    // IMMEDIATE check without debounce on mount
+    checkViewport();
+
+    // Add resize listener with debouncing for performance
+    let timeoutId: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkViewport, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const baseClasses = "fixed top-0 left-0 right-0 z-50 h-14 transition-all duration-300 m-0 p-0";
 
@@ -594,8 +623,8 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
             </div>
           )}
 
-          {/* Mobile Menu Button (hamburger - only show when inside app, visibility controlled by CSS) */}
-          {!showLaunchApp && (
+          {/* Mobile Menu Button (hamburger - HIDDEN at 900px+ via React AND CSS) */}
+          {!showLaunchApp && isDesktop === false && (
             <button
               ref={hamburgerButtonRef}
               onClick={toggleMobileMenu}
