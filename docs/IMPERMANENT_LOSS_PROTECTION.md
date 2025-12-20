@@ -210,7 +210,7 @@ Traditional LPs accepting 7-10% IL as "cost of business" are leaving money on th
 
 ### View Backtest Code
 ```bash
-github.com/yield-delta/protocol/backtesting
+github.com/yield-delta/yield-delta-protocol/backtesting
 ```
 
 ### Test on SEI Testnet
