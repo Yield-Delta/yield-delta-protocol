@@ -62,9 +62,9 @@ export default function PerformanceMetrics() {
                         positive={true}
                     />
                     <PerformanceCard
-                        metric="0.012%"
+                        metric="0.018%"
                         description="Impermanent Loss"
-                        comparison="-62% vs traditional AMMs"
+                        comparison="-52% vs traditional AMMs"
                         color="#ff206e"
                         positive={true}
                     />
@@ -90,16 +90,16 @@ export default function PerformanceMetrics() {
                         positive={true}
                     />
                     <PerformanceCard
-                        metric="1,247"
+                        metric="Coming Soon"
                         description="Active Users"
-                        comparison="+23% growth this month"
+                        comparison="Mainnet launch pending"
                         color="#00f5d4"
                         positive={true}
                     />
                     <PerformanceCard
-                        metric="$2.1M"
+                        metric="Coming Soon"
                         description="Daily Volume"
-                        comparison="Record high performance"
+                        comparison="Testnet data only"
                         color="#9b5de5"
                         positive={true}
                     />

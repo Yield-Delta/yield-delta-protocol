@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-Yield Delta Protocol achieves **68-70% reduction in impermanent loss (IL)** through AI-driven dynamic rebalancing and concentrated liquidity management. Our 90-day backtest demonstrates superior capital efficiency compared to passive liquidity provision, with IL reduced from $772 to $372 while maintaining profitable yields.
+Yield Delta Protocol achieves **over 50% reduction in impermanent loss (IL)** through AI-driven dynamic rebalancing and concentrated liquidity management. Our 90-day backtest demonstrates superior capital efficiency compared to passive liquidity provision, with IL reduced from $772 to $372 while maintaining profitable yields.
 
 **Key Result:** Active management reduces IL by 52% while generating 8.91% APY after all costs.
 

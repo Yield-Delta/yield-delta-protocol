@@ -156,7 +156,7 @@ export default function HeroSection() {
                         <div className={heroStyles.heroFeaturesGrid}>
                             {[
                                 { icon: '⚡', text: 'AI optimization' },
-                                { icon: '🛡️', text: 'Reduced impermanent loss' },
+                                { icon: '🛡️', text: 'Over 50% less IL' },
                                 { icon: '🚀', text: 'SEI integration' },
                             ].map((feature, i) => (
                                 <div

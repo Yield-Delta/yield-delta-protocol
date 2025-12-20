@@ -53,7 +53,7 @@ export default function DocsHomePage() {
         </li>
         <li className="flex items-center">
           <span className="mr-2">🛡️</span>
-          <strong>68-70% Impermanent Loss Reduction</strong> - Proven advanced hedging strategies minimize IL risk
+          <strong>Over 50% Impermanent Loss Reduction</strong> - Proven advanced hedging strategies minimize IL risk
         </li>
         <li className="flex items-center">
           <span className="mr-2">📊</span>
@@ -71,16 +71,16 @@ export default function DocsHomePage() {
         </div>
 
         <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
-          68-70% Reduction in Impermanent Loss
+          Over 50% Reduction in Impermanent Loss
         </h2>
 
         <p className="text-lg mb-6 text-muted-foreground">
-          Our proprietary AI-driven hedging mechanism has been proven to reduce impermanent loss by <strong className="text-cyan-400">68-70%</strong> compared to traditional AMM positions.
+          Our proprietary AI-driven hedging mechanism has been proven to reduce impermanent loss by <strong className="text-cyan-400">over 50%</strong> compared to traditional AMM positions.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 relative z-10">
           <div className="docs-metric-card">
-            <div className="text-2xl font-bold text-cyan-400 mb-1">68-70%</div>
+            <div className="text-2xl font-bold text-cyan-400 mb-1">Over 50%</div>
             <div className="text-sm text-muted-foreground">IL Reduction</div>
           </div>
           <div className="docs-metric-card">
@@ -128,7 +128,7 @@ export default function DocsHomePage() {
 
         <div className="docs-backtest-alert">
           <p className="text-sm">
-            <strong className="text-cyan-400">Backtested Performance:</strong> Over 6 months of historical data across major pairs (ETH/USDC, WBTC/ETH, etc.) shows consistent 68-70% IL reduction compared to standard V3 positions with identical capital allocation.
+            <strong className="text-cyan-400">Backtested Performance:</strong> Over 6 months of historical data across major pairs (ETH/USDC, WBTC/ETH, etc.) shows consistent 52% IL reduction compared to standard V3 positions with identical capital allocation.
           </p>
         </div>
 

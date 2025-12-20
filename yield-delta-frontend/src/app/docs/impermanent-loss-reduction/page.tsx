@@ -28,7 +28,7 @@ export default function ImpermanentLossReductionPage() {
       {/* Hero Section */}
       <div className="mb-12">
         <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent">
-          68-70% Impermanent Loss Reduction
+          Over 50% Impermanent Loss Reduction
         </h1>
         <p className="text-xl text-muted-foreground">
           Technical Analysis & Performance Metrics for Yield Delta&apos;s Proprietary IL Mitigation System
@@ -39,7 +39,7 @@ export default function ImpermanentLossReductionPage() {
       <div className="docs-content-section mb-8">
         <h2 className="text-2xl font-bold mb-4">Executive Summary</h2>
         <p className="text-lg leading-relaxed mb-4">
-          Yield Delta&apos;s AI-powered vault system achieves a <strong className="text-cyan-400">68-70% reduction in impermanent loss</strong> through a combination of:
+          Yield Delta&apos;s AI-powered vault system achieves <strong className="text-cyan-400">over 50% reduction in impermanent loss</strong> through a combination of:
         </p>
         <ul className="space-y-2 text-lg">
           <li>• <strong>Predictive ML models</strong> trained on 2+ years of DeFi market data</li>
@@ -200,10 +200,10 @@ export default function ImpermanentLossReductionPage() {
         <p className="mb-2 text-base">IL_yielddelta = IL_traditional * (1 - hedge_efficiency) * volatility_factor</p>
 
         <p className="mb-2 mt-4 font-sans text-base font-semibold text-white">Where:</p>
-        <p className="mb-2 ml-4 text-base">hedge_efficiency = 0.68-0.70 (68-70%)</p>
+        <p className="mb-2 ml-4 text-base">hedge_efficiency = 0.52-0.55 (52-55%)</p>
         <p className="mb-2 ml-4 text-base">volatility_factor = dynamic_range_adjustment(σ, μ, t)</p>
 
-        <p className="mt-6 text-green-400 font-sans text-base font-semibold">Result: 68-70% reduction in IL exposure</p>
+        <p className="mt-6 text-green-400 font-sans text-base font-semibold">Result: Over 50% reduction in IL exposure</p>
       </div>
 
       {/* Risk Disclosure */}

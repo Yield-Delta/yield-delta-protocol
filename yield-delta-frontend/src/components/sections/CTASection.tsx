@@ -5,52 +5,26 @@ import Link from 'next/link';
 import styles from './CTASection.module.css';
 import { useEffect, useState } from 'react';
 import FinancialFlowVisualization from './FinancialFlowVisualization';
+import { useVaultStats } from '@/hooks/useVaultStats';
 
 export default function CTASection() {
-    // Animated counter for APY
-    const [apy, setApy] = useState(0);
-    const [tvl, setTvl] = useState(0);
-    const [users, setUsers] = useState(0);
+    // Get real vault statistics
+    const { totalTVL, averageAPY, activeVaultsCount, isLoading } = useVaultStats();
     const [mounted, setMounted] = useState(false);
+
+    // Format numbers for display
+    const formatTVL = (amount: number) => {
+        if (amount >= 1000000) return (amount / 1000000).toFixed(1);
+        if (amount >= 1000) return (amount / 1000).toFixed(1);
+        return amount.toFixed(0);
+    };
+
+    const formatAPY = (apy: number) => {
+        return (apy * 100).toFixed(1);
+    };
 
     useEffect(() => {
         setMounted(true);
-
-        // Animate APY counter
-        const apyInterval = setInterval(() => {
-            setApy(prev => {
-                if (prev < 15.7) {
-                    return Math.min(prev + 0.3, 15.7);
-                }
-                return prev;
-            });
-        }, 30);
-
-        // Animate TVL counter
-        const tvlInterval = setInterval(() => {
-            setTvl(prev => {
-                if (prev < 2.4) {
-                    return Math.min(prev + 0.05, 2.4);
-                }
-                return prev;
-            });
-        }, 40);
-
-        // Animate Users counter
-        const usersInterval = setInterval(() => {
-            setUsers(prev => {
-                if (prev < 1250) {
-                    return Math.min(prev + 25, 1250);
-                }
-                return prev;
-            });
-        }, 30);
-
-        return () => {
-            clearInterval(apyInterval);
-            clearInterval(tvlInterval);
-            clearInterval(usersInterval);
-        };
     }, []);
 
     return (
@@ -101,7 +75,7 @@ export default function CTASection() {
                             {/* APY Stat */}
                             <div className={`${styles.statCard} group`}>
                                 <div className={`${styles.statValue} ${styles.numberCounter}`}>
-                                    {mounted ? apy.toFixed(1) : '0.0'}%
+                                    {mounted ? (isLoading ? '...' : formatAPY(averageAPY)) : '0.0'}%
                                 </div>
                                 <div className={styles.statLabel}>
                                     Avg APY
@@ -117,7 +91,7 @@ export default function CTASection() {
                             {/* TVL Stat */}
                             <div className={`${styles.statCard} group`}>
                                 <div className={`${styles.statValue} ${styles.numberCounter}`}>
-                                    ${mounted ? tvl.toFixed(1) : '0.0'}M
+                                    ${mounted ? (isLoading ? '...' : formatTVL(totalTVL)) : '0'}K
                                 </div>
                                 <div className={styles.statLabel}>
                                     Total TVL
@@ -127,13 +101,13 @@ export default function CTASection() {
                                 </div>
                             </div>
 
-                            {/* Users Stat */}
+                            {/* Vaults Stat */}
                             <div className={`${styles.statCard} group`}>
                                 <div className={`${styles.statValue} ${styles.numberCounter}`}>
-                                    {mounted ? users.toLocaleString() : '0'}+
+                                    {mounted ? (isLoading ? '...' : activeVaultsCount) : '0'}
                                 </div>
                                 <div className={styles.statLabel}>
-                                    Active Users
+                                    Active Vaults
                                 </div>
                                 <div className={styles.statIndicator}>
                                     <svg className={styles.usersIcon} width="16" height="16" viewBox="0 0 16 16" fill="none">

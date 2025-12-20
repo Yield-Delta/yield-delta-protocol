@@ -375,13 +375,14 @@
 .buttonContainer {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: center !important;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.75rem;
     margin-top: 0.5rem;
-    /* Ensure button container is not affected by parent text alignment */
-    text-align: initial;
+    /* Ensure button container is centered on all screens */
+    text-align: center !important;
+    width: 100%;
 }
 
 @media (min-width: 640px) {
@@ -398,8 +399,9 @@
 
 @media (min-width: 1024px) {
     .buttonContainer {
-        justify-content: center;
+        justify-content: flex-start !important;
         gap: 1.5rem;
+        text-align: left !important;
     }
 }
 
