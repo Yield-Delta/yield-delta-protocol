@@ -1097,14 +1097,15 @@
 .docs-investor-badge {
   margin-top: 2.5rem !important;
   margin-bottom: 1.5rem !important;
-  padding: 4rem !important;
+  padding: 3rem !important;
+  padding-top: 3.5rem !important;
 }
 
 /* Badge positioning with proper breathing room from container edges */
 .docs-investor-badge > div:first-child {
   /* Ensures the absolutely positioned badge has adequate spacing */
-  top: 2.5rem !important;
-  right: 2.5rem !important;
+  top: 1rem !important;
+  right: 1rem !important;
 }
 
 /* Responsive badge positioning for smaller screens */
@@ -1114,8 +1115,8 @@
   }
 
   .docs-investor-badge > div:first-child {
-    top: 1.5rem !important;
-    right: 1.5rem !important;
+    top: 1rem !important;
+    right: 1rem !important;
   }
 }
 
