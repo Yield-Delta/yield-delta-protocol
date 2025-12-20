@@ -167,7 +167,7 @@ Each rebalance (R1-R4) resets IL accumulation while maintaining fee generation.
 
 ### Current Limitations
 1. **Simulated Environment:** Backtests use historical data; actual performance may vary
-2. **SEI Mainnet Pending:** Currently on testnet (Atlantic-2); mainnet launch Q1 2025
+2. **SEI Mainnet Pending:** Currently on testnet (Atlantic-2); mainnet launch Q3 2026
 3. **Liquidity Assumptions:** Assumes sufficient DEX liquidity for rebalancing
 4. **No Black Swan Events:** Model doesn't account for 50%+ daily moves
 
