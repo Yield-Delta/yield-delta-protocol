@@ -210,11 +210,31 @@ nav .nav-center-links {
     opacity: 1 !important;
   }
 
-  /* Ensure brand is visible on desktop */
-  nav .nav-brand {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
+  /* CRITICAL FIX: Hide tablet brand text at desktop (900px+) */
+  /* The .nav-brand-tablet should NEVER show at 900px+ */
+  nav .nav-brand-tablet {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+
+  /* NUCLEAR: Force hide hamburger with maximum specificity */
+  nav .nav-right-simple button.mobile-menu-btn,
+  nav button.mobile-menu-btn[aria-controls="mobile-menu"],
+  nav button[data-mobile-only="true"],
+  button.mobile-menu-btn[data-mobile-only="true"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
   }
 }
 

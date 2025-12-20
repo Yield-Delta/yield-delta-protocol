@@ -624,6 +624,8 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
           )}
 
           {/* Mobile Menu Button (hamburger - HIDDEN at 900px+ via React AND CSS) */}
+          {/* CRITICAL: Only render if NOT desktop (isDesktop === false) AND not on launch page */}
+          {/* CSS provides additional defense-in-depth hiding at 900px+ */}
           {!showLaunchApp && isDesktop === false && (
             <button
               ref={hamburgerButtonRef}
@@ -632,6 +634,7 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
+              data-mobile-only="true"
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6" aria-hidden="true" />
