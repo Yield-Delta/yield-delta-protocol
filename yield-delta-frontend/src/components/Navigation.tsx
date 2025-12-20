@@ -8,6 +8,7 @@ import { gsap } from 'gsap';
 import { Menu, X, Vault, TrendingUp, Target, PieChart, RefreshCw, BookOpen, Rocket, CandlestickChart, AlertTriangle } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { isTestnetChain } from '@/lib/chainUtils';
+import { GooeyNavigation } from './GooeyNavigation';
 
 const WalletConnectButton = dynamic(
   () => import('./WalletConnectButton').then(mod => ({ default: mod.WalletConnectButton })),
@@ -202,9 +203,38 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
 
+  // Viewport detection to prevent hamburger rendering at 900px+
+  // CRITICAL: Initialize to null to prevent hydration mismatch
+  const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
+
   // Check if on testnet
   const { chain } = useAccount();
   const isTestnet = chain ? isTestnetChain(chain.id) : true;
+
+  // Viewport detection effect - runs on mount and resize
+  useEffect(() => {
+    // Check if viewport is 900px or wider (desktop breakpoint)
+    const checkViewport = () => {
+      setIsDesktop(window.innerWidth >= 900);
+    };
+
+    // IMMEDIATE check without debounce on mount
+    checkViewport();
+
+    // Add resize listener with debouncing for performance
+    let timeoutId: NodeJS.Timeout;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkViewport, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const baseClasses = "fixed top-0 left-0 right-0 z-50 h-14 transition-all duration-300 m-0 p-0";
 
@@ -534,27 +564,31 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
       <div className="simple-nav-container">
         {/* LEFT SIDE */}
         <div className="nav-left-simple">
-          <div
-            ref={logoRef}
-            className="logo-animation-gsap"
-            style={{
-              transformStyle: 'preserve-3d'
-            }}
-          >
-            <Logo
-              variant="horizontal-svg"
-              size={48}
-              animated={false}
-              className="flex-shrink-0 hidden md:block"
-            />
-            <Logo
-              variant="icon"
-              size={48}
-              animated={false}
-              className="flex-shrink-0 md:hidden"
-            />
-          </div>
-          <div className="nav-brand hidden sm:block md:hidden">
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <div
+              ref={logoRef}
+              className="logo-animation-gsap"
+              style={{
+                transformStyle: 'preserve-3d',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <Logo
+                variant="horizontal-svg"
+                size={48}
+                animated={false}
+                className="nav-logo-desktop"
+              />
+              <Logo
+                variant="icon"
+                size={48}
+                animated={false}
+                className="nav-logo-mobile"
+              />
+            </div>
+          </Link>
+          <div className="nav-brand nav-brand-tablet">
             <div
               className="font-bold gradient-text"
               style={{
@@ -568,57 +602,10 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
           </div>
         </div>
 
-        {/* CENTER - App Navigation Links (only show when inside app, hidden on mobile via CSS) */}
+        {/* CENTER - Gooey Navigation (only show when inside app, hidden on mobile via CSS) */}
         {!showLaunchApp && (
           <div className="nav-center-links">
-            <Link
-              href="/vaults"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Vaults
-            </Link>
-            <Link
-              href="/market"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Market
-            </Link>
-            <Link
-              href="/charts"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Charts
-            </Link>
-            <Link
-              href="/market-sentiment"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Sentiment
-            </Link>
-            <Link
-              href="/dashboard"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="/portfolio/rebalance"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Rebalance
-            </Link>
-            <Link
-              href="/vaults/deploy"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Deploy
-            </Link>
-            <Link
-              href="/docs"
-              className="text-foreground hover:text-primary transition-colors no-underline font-medium"
-            >
-              Docs
-            </Link>
+            <GooeyNavigation />
           </div>
         )}
 
@@ -640,8 +627,10 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
             </div>
           )}
 
-          {/* Mobile Menu Button (hamburger - only show when inside app, visibility controlled by CSS) */}
-          {!showLaunchApp && (
+          {/* Mobile Menu Button (hamburger - HIDDEN at 900px+ via React AND CSS) */}
+          {/* CRITICAL: Only render if NOT desktop (isDesktop === false) AND not on launch page */}
+          {/* CSS provides additional defense-in-depth hiding at 900px+ */}
+          {!showLaunchApp && isDesktop === false && (
             <button
               ref={hamburgerButtonRef}
               onClick={toggleMobileMenu}
@@ -649,6 +638,7 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-menu"
+              data-mobile-only="true"
             >
               {mobileMenuOpen ? (
                 <X className="w-6 h-6" aria-hidden="true" />

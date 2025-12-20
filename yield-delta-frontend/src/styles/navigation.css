@@ -1,6 +1,62 @@
 /**
  * Navigation Styles
  * All navigation, header, and menu-related styles
+ *
+ * CRITICAL BREAKPOINT: 900px
+ * - Below 900px: Mobile navigation (hamburger menu + mobile menu overlay)
+ * - At 900px and above: Desktop navigation (horizontal nav links, NO hamburger)
+ *
+ * DEFENSE IN DEPTH: HAMBURGER MENU HIDING STRATEGY
+ * ===================================================
+ * This file implements a NUCLEAR-GRADE hiding strategy for ALL hamburger menus
+ * at 900px+ to prevent ANY possibility of them appearing on tablets/desktop.
+ *
+ * TWO HAMBURGER MENUS TO HIDE:
+ * 1. Navigation.tsx hamburger (in nav header, top-right)
+ * 2. GooeyNavigation.tsx FAB (floating action button, bottom-right)
+ *
+ * LAYER 1: React Conditional Rendering (Navigation.tsx & GooeyNavigation.tsx)
+ *   - Strict boolean check: isDesktop === false (not just falsy)
+ *   - State initializes to null to prevent hydration mismatch
+ *   - Immediate viewport check on mount (no debounce delay)
+ *   - Tailwind breakpoint: max-[899px]:block for mobile FAB
+ *
+ * LAYER 2: CSS Media Queries (THIS FILE)
+ *   - Multiple independent selectors targeting both hamburgers
+ *   - ALL rules use !important to override any competing styles
+ *   - Rules placed OUTSIDE @layer for maximum specificity
+ *   - Multiple hiding techniques: display:none, visibility:hidden,
+ *     opacity:0, position:absolute, pointer-events:none
+ *
+ * LAYER 3: CSS Class-Based Targeting
+ *   Navigation hamburger:
+ *   - .mobile-menu-btn (atomic class selector)
+ *   - nav .mobile-menu-btn (scoped context)
+ *   - nav button.mobile-menu-btn (element + class)
+ *   - nav .nav-right-simple .mobile-menu-btn (container context)
+ *   - nav button[aria-controls="mobile-menu"] (ARIA attribute)
+ *   - nav button[aria-label*="mobile menu"] (ARIA label pattern)
+ *
+ *   GooeyNavigation FAB:
+ *   - Fixed positioned floating button at bottom-right
+ *   - Contains z-50 class
+ *   - Located at bottom-6 right-6
+ *
+ * WHY THIS WORKS:
+ * - CSS rules apply regardless of React hydration state
+ * - Multiple selectors ensure buttons are caught even if classes change
+ * - Atomic rules catch buttons even outside expected context
+ * - ARIA selectors catch buttons even if className changes
+ * - position:absolute + left:-9999px physically removes from layout
+ * - React strict boolean check prevents rendering during hydration
+ *
+ * This ensures ALL hamburgers are NEVER visible at 900px+ regardless of:
+ * - CSS loading order or race conditions
+ * - React hydration timing
+ * - Tailwind CSS conflicts
+ * - Browser rendering quirks
+ * - User agent stylesheets
+ * - JavaScript errors or failures
  */
 
 /* === Core Navigation Styles === */
@@ -16,10 +72,9 @@ nav {
   margin: 0 !important;
   padding: 0 !important;
   isolation: isolate !important;
-  background-color: hsl(var(--background) / 0.95) !important;
+  background-color: rgba(15, 23, 42, 0.95) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border-bottom: 1px solid hsl(var(--border) / 0.3);
 }
 
 nav .simple-nav-container {
@@ -27,10 +82,12 @@ nav .simple-nav-container {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  max-width: 100%;
   height: 3.5rem;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
   margin: 0;
   box-sizing: border-box;
+  gap: 1rem;
 }
 
 nav .nav-left-simple {
@@ -38,6 +95,8 @@ nav .nav-left-simple {
   align-items: center;
   gap: 0.75rem;
   flex-shrink: 0;
+  min-width: 200px;
+  z-index: 10;
 }
 
 nav .nav-right-simple {
@@ -46,21 +105,27 @@ nav .nav-right-simple {
   gap: 0.75rem;
   flex-shrink: 0;
   margin-left: auto;
+  min-width: 200px;
+  justify-content: flex-end;
+  z-index: 10;
 }
 
 nav .nav-center-links {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
-  flex: 1;
   justify-content: center;
-  margin: 0 2rem;
+  /* Gap is handled by GooeyNavigation component's inline style (2.5rem/40px) */
+  flex: 0 0 auto;
+  max-width: none;
+  overflow: visible;
+  position: relative;
+  z-index: 5;
 }
 
 /* === Mobile Navigation Overrides (outside @layer for higher specificity) === */
 
 /* Hide center links on mobile - must be outside @layer with !important */
-@media (max-width: 767px) {
+@media (max-width: 899px) {
   nav .nav-center-links {
     display: none !important;
   }
@@ -69,9 +134,8 @@ nav .nav-center-links {
     display: none !important;
   }
 
-  /* Mobile menu button - visible on mobile */
+  /* Mobile menu button styling (without display property) */
   nav .mobile-menu-btn {
-    display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     width: 2.25rem !important;
@@ -83,6 +147,7 @@ nav .nav-center-links {
     cursor: pointer !important;
     color: hsl(var(--foreground)) !important;
     flex-shrink: 0 !important;
+    display: flex !important;
   }
 
   /* Wallet container always visible on mobile */
@@ -91,10 +156,138 @@ nav .nav-center-links {
   }
 }
 
-/* Hide mobile menu button on desktop (768px and above = md: breakpoint) */
-@media (min-width: 768px) {
+/* === Desktop Navigation Overrides (must come AFTER mobile rules) === */
+/* CRITICAL: Hide mobile menu button on desktop (900px and above) */
+/* Multi-layered approach for bulletproof hiding - CSS ONLY, no dependency on React */
+@media (min-width: 900px) {
+  /* Layer 1: Target by class - ATOMIC RULE */
+  .mobile-menu-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Layer 2: Target within nav context */
   nav .mobile-menu-btn {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 3: Target by element + class with maximum specificity */
+  nav button.mobile-menu-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 4: Target within nav-right-simple container */
+  nav .nav-right-simple .mobile-menu-btn {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 5: Nuclear option - target all buttons in nav-right that could be hamburger */
+  nav .nav-right-simple > button[aria-controls="mobile-menu"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 6: Target by ARIA label (catches any hamburger button) */
+  nav button[aria-label*="mobile menu" i] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* CRITICAL: Ensure desktop navigation links are VISIBLE at 900px+ */
+  nav .nav-center-links {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  /* CRITICAL FIX: Hide tablet brand text at desktop (900px+) */
+  /* The .nav-brand-tablet should NEVER show at 900px+ */
+  nav .nav-brand-tablet {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+
+  /* NUCLEAR: Force hide hamburger with maximum specificity */
+  nav .nav-right-simple button.mobile-menu-btn,
+  nav button.mobile-menu-btn[aria-controls="mobile-menu"],
+  nav button[data-mobile-only="true"],
+  button.mobile-menu-btn[data-mobile-only="true"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+  }
+
+  /* CRITICAL: Hide GooeyNavigation FAB (Floating Action Button) at 900px+ */
+  /* This is the circular floating menu button at bottom-right from GooeyNavigation component */
+
+  /* Layer 1: Target fixed positioned div container */
+  .fixed.bottom-6.right-6.z-50,
+  div.fixed.bottom-6.right-6.z-50 {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 2: Target any fixed bottom-right positioned element that could be FAB */
+  div[class*="fixed"][class*="bottom"][class*="right"][class*="z-50"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    left: -9999px !important;
+  }
+
+  /* Layer 3: Nuclear option - hide ALL fixed bottom-right positioned elements at desktop */
+  /* This is safe because desktop shouldn't have floating action buttons */
+  .fixed[style*="bottom"][style*="right"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
   }
 }
 
@@ -109,6 +302,33 @@ nav .nav-center-links {
   nav a:visited,
   nav a:active {
     text-decoration: none !important;
+  }
+
+  /* Logo animation container - ensure visibility */
+  .logo-animation-gsap {
+    display: flex !important;
+    align-items: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 10 !important;
+  }
+
+  /* Logo image elements - size control only, display controlled by media queries */
+  .nav-logo-desktop,
+  .nav-logo-mobile {
+    width: auto !important;
+    height: auto !important;
+  }
+
+  .nav-logo-desktop img,
+  .nav-logo-mobile img,
+  .nav-logo-desktop svg,
+  .nav-logo-mobile svg {
+    display: block !important;
+    width: auto !important;
+    height: 48px !important;
+    max-height: 48px !important;
   }
 
   /* === Navigation Sections === */
@@ -129,7 +349,7 @@ nav .wallet-container {
   nav .nav-center-links a {
     position: relative;
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.9375rem;
     text-decoration: none;
     transition: all 0.3s ease;
     padding: 0.5rem 0;
@@ -182,7 +402,7 @@ nav .wallet-container {
   /* === Mobile Menu === */
 
   nav .mobile-menu-btn {
-    display: flex;
+    /* Base styles - display property controlled by media queries outside @layer */
     align-items: center;
     justify-content: center;
     width: 2rem;
@@ -200,7 +420,7 @@ nav .wallet-container {
 
   /* === Responsive Navigation === */
 
-  @media (max-width: 768px) {
+  @media (max-width: 899px) {
     nav .simple-nav-container {
       padding: 0 0.75rem;
     }
@@ -278,30 +498,7 @@ nav .wallet-container {
     }
   }
 
-  /* Ensure hamburger menu is hidden on desktop */
-  @media (min-width: 768px) {
-    nav .mobile-menu-btn {
-      display: none !important;
-    }
-  }
-
-  /* Mobile menu button styling */
-  nav .mobile-menu-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.25rem;
-    height: 2.25rem;
-    padding: 0.375rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 0.5rem;
-    cursor: pointer;
-    color: hsl(var(--foreground));
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-  }
-
+  /* Mobile menu button hover and active states only */
   nav .mobile-menu-btn:hover {
     background: linear-gradient(135deg, rgba(0, 245, 212, 0.15) 0%, rgba(155, 93, 229, 0.1) 100%);
     border-color: rgba(0, 245, 212, 0.3);
@@ -316,6 +513,83 @@ nav .wallet-container {
   main,
   .page-container {
     margin-top: 0;
+  }
+}
+
+/* === Custom breakpoint classes for 900px === */
+
+/* Desktop logo - show at 900px and above */
+@media (min-width: 900px) {
+  .nav-logo-desktop {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 160px !important;
+  }
+  .nav-logo-mobile {
+    display: none !important;
+  }
+  .nav-brand-tablet {
+    display: none !important;
+  }
+
+  /* Ensure proper spacing for navigation container */
+  nav .simple-nav-container {
+    padding: 0 2rem !important;
+    gap: 2rem !important;
+  }
+
+  /* Ensure logo container is visible */
+  nav .nav-left-simple {
+    min-width: 180px !important;
+  }
+
+  /* Ensure center navigation has proper space */
+  nav .nav-center-links {
+    flex: 0 0 auto !important;
+    max-width: none !important;
+    width: auto !important;
+  }
+}
+
+/* Large screens - ensure no compression at 1200px+ */
+@media (min-width: 1200px) {
+  nav .simple-nav-container {
+    padding: 0 3rem !important;
+    gap: 3rem !important;
+  }
+
+  nav .nav-left-simple {
+    min-width: 200px !important;
+  }
+
+  nav .nav-right-simple {
+    min-width: 220px !important;
+  }
+
+  nav .nav-center-links {
+    flex: 0 0 auto !important;
+    max-width: none !important;
+    width: auto !important;
+  }
+}
+
+/* Mobile logo - show below 900px */
+@media (max-width: 899px) {
+  .nav-logo-desktop {
+    display: none !important;
+  }
+  .nav-logo-mobile {
+    display: block !important;
+  }
+}
+
+/* Tablet brand text - show between 640px and 899px */
+@media (min-width: 640px) and (max-width: 899px) {
+  .nav-brand-tablet {
+    display: block !important;
   }
 }
 

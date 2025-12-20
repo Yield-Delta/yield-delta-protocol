@@ -21,7 +21,8 @@
     "api:test": "curl -s http://localhost:3000/api/health | jq .",
     "api:docs": "curl -s http://localhost:3000/api/docs | jq .title",
     "api:vaults": "curl -s http://localhost:3000/api/vaults | jq '.data | length'",
-    "api:market": "curl -s 'http://localhost:3000/api/market/data?symbols=SEI-USDC' | jq .data[0].price"
+    "api:market": "curl -s 'http://localhost:3000/api/market/data?symbols=SEI-USDC' | jq .data[0].price",
+    "deploy:cloudflare": "./deploy-cloudflare.sh"
   },
   "dependencies": {
     "@cosmos-kit/core": "^2.16.2",
@@ -114,6 +115,8 @@
     "@types/node-fetch": "^2.6.13",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.0",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.4.1",

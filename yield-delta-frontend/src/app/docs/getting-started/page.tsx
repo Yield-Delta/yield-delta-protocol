@@ -1,6 +1,11 @@
+import { DocsBackButton } from '@/components/docs/DocsBackButton'
+import { CodeBlock } from '@/components/docs/CodeBlock'
+
 export default function GettingStartedPage() {
   return (
     <div className="docs-content">
+      <DocsBackButton />
+
       <h1 className="text-4xl font-bold mb-8">Getting Started</h1>
       
       <p className="text-lg text-muted-foreground mb-8">
@@ -22,16 +27,13 @@ export default function GettingStartedPage() {
 
       <h3 className="text-xl font-semibold mb-4">1. Clone the Repository</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Clone with submodules for complete setup
+      <CodeBlock language="bash" code={`# Clone with submodules for complete setup
 git clone --recurse-submodules https://github.com/yield-delta/yield-delta-protocol.git
-cd sei-dlp-core`}</code>
-      </pre>
+cd sei-dlp-core`} />
 
       <h3 className="text-xl font-semibold mb-4">2. Install Dependencies</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Install all dependencies using bun
+      <CodeBlock language="bash" code={`# Install all dependencies using bun
 bun install
 
 # Install AI engine dependencies
@@ -42,23 +44,19 @@ cd ..
 # Install Kairos (ElizaOS) dependencies  
 cd kairos
 bun install
-cd ..`}</code>
-      </pre>
+cd ..`} />
 
       <h3 className="text-xl font-semibold mb-4">3. Environment Configuration</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Copy environment template
+      <CodeBlock language="bash" code={`# Copy environment template
 cp .env.example .env.local
 
 # Edit with your configuration
-nano .env.local`}</code>
-      </pre>
+nano .env.local`} />
 
       <p className="mb-4">Required environment variables:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Core Configuration
+      <CodeBlock language="bash" code={`# Core Configuration
 NEXT_PUBLIC_SEI_CHAIN_ID=1328
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 NEXT_PUBLIC_VAULT_ADDRESS=0xYourVaultAddress
@@ -71,27 +69,23 @@ OPENAI_API_KEY=sk-your-openai-key
 AI_ENGINE_URL=http://localhost:8000
 
 # ElizaOS Integration
-ELIZAOS_WS_URL=ws://localhost:8000/ws`}</code>
-      </pre>
+ELIZAOS_WS_URL=ws://localhost:8000/ws`} />
 
       <h3 className="text-xl font-semibold mb-4">4. Start Development</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Start all services
+      <CodeBlock language="bash" code={`# Start all services
 bun dev
 
 # Or start individual services:
 bun dev:frontend    # Next.js frontend on :3000
 bun dev:ai          # AI engine on :8000  
-bun dev:kairos       # ElizaOS agent on :3001`}</code>
-      </pre>
+bun dev:kairos       # ElizaOS agent on :3001`} />
 
       <h2 className="text-2xl font-semibold mb-4">🔧 Development Setup</h2>
 
       <h3 className="text-xl font-semibold mb-4">Project Structure</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`sei-dlp-core/
+      <CodeBlock language="bash" code={`sei-dlp-core/
 ├── src/                 # Frontend application
 │   ├── app/            # Next.js App Router
 │   ├── components/     # React components
@@ -100,27 +94,23 @@ bun dev:kairos       # ElizaOS agent on :3001`}</code>
 ├── contracts/          # Smart contracts (Solidity)
 ├── ai-engine/          # Python AI/ML engine
 ├── kairos/              # ElizaOS agent
-└── docs/               # Documentation`}</code>
-      </pre>
+└── docs/               # Documentation`} />
 
       <h3 className="text-xl font-semibold mb-4">Database Setup</h3>
       
       <p className="mb-4">Yield Delta uses SQLite for development and PostgreSQL for production:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# SQLite (automatic for development)
+      <CodeBlock language="bash" code={`# SQLite (automatic for development)
 # Database file: ./data/yield-delta.db
 
 # PostgreSQL (production)
-DATABASE_URL=postgresql://user:pass@localhost:5432/yielddelta`}</code>
-      </pre>
+DATABASE_URL=postgresql://user:pass@localhost:5432/yielddelta`} />
 
       <h3 className="text-xl font-semibold mb-4">Smart Contract Setup</h3>
       
       <p className="mb-4">Deploy contracts to SEI testnet:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`cd contracts
+      <CodeBlock language="bash" code={`cd contracts
 
 # Install Foundry dependencies
 forge install
@@ -134,8 +124,7 @@ forge script script/Deploy.s.sol \\
 # Verify contract
 forge verify-contract $CONTRACT_ADDRESS \\
   --chain-id 1328 \\
-  --etherscan-api-key $SEISCAN_API_KEY`}</code>
-      </pre>
+  --etherscan-api-key $SEISCAN_API_KEY`} />
 
       <h2 className="text-2xl font-semibold mb-4">🏗️ Architecture Overview</h2>
 
@@ -170,13 +159,11 @@ forge verify-contract $CONTRACT_ADDRESS \\
       
       <p className="mb-4">For safe testing, start with demo mode:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Add to .env.local
+      <CodeBlock language="bash" code={`# Add to .env.local
 NEXT_PUBLIC_DEMO_MODE=true
 
 # Restart development server
-bun dev`}</code>
-      </pre>
+bun dev`} />
 
       <h3 className="text-xl font-semibold mb-4">2. Access the Application</h3>
       
@@ -235,16 +222,14 @@ bun dev`}</code>
       
       <p className="mb-4">Verify all services are running:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Frontend health
+      <CodeBlock language="bash" code={`# Frontend health
 curl http://localhost:3000/api/health
 
 # AI engine health  
 curl http://localhost:8000/health
 
 # Check API documentation
-curl http://localhost:3000/api/docs`}</code>
-      </pre>
+curl http://localhost:3000/api/docs`} />
 
       <h3 className="text-xl font-semibold mb-4">Demo Mode Verification</h3>
       
@@ -257,45 +242,37 @@ curl http://localhost:3000/api/docs`}</code>
 
       <h3 className="text-xl font-semibold mb-4">Production Readiness</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-8 overflow-x-auto">
-        <code>{`# Build production version
+      <CodeBlock language="bash" code={`# Build production version
 bun run build
 
 # Start production server
 bun start
 
 # Run tests
-bun test`}</code>
-      </pre>
+bun test`} />
 
       <h2 className="text-2xl font-semibold mb-4">🚨 Common Issues</h2>
 
       <h3 className="text-xl font-semibold mb-4">Port Conflicts</h3>
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Kill processes on common ports
+      <CodeBlock language="bash" code={`# Kill processes on common ports
 lsof -ti:3000 | xargs kill -9  # Frontend
 lsof -ti:8000 | xargs kill -9  # AI Engine  
-lsof -ti:3001 | xargs kill -9  # ElizaOS`}</code>
-      </pre>
+lsof -ti:3001 | xargs kill -9  # ElizaOS`} />
 
       <h3 className="text-xl font-semibold mb-4">Environment Variables</h3>
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Verify environment loading
+      <CodeBlock language="bash" code={`# Verify environment loading
 bun run env-check
 
 # Debug environment in browser
-console.log(process.env)`}</code>
-      </pre>
+console.log(process.env)`} />
 
       <h3 className="text-xl font-semibold mb-4">Dependency Issues</h3>
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`# Clear cache and reinstall
+      <CodeBlock language="bash" code={`# Clear cache and reinstall
 rm -rf node_modules bun.lockb
 bun install
 
 # Update dependencies
-bun update`}</code>
-      </pre>
+bun update`} />
 
       <h3 className="text-xl font-semibold mb-4">Wallet Connection</h3>
       <ul className="space-y-2 mb-8">

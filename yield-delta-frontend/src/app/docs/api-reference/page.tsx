@@ -1,6 +1,11 @@
+import { DocsBackButton } from '@/components/docs/DocsBackButton'
+import { CodeBlock } from '@/components/docs/CodeBlock'
+
 export default function APIReferencePage() {
   return (
     <div className="docs-content">
+      <DocsBackButton />
+
       <h1 className="text-4xl font-bold mb-8">API Reference</h1>
 
       <p className="text-lg text-muted-foreground mb-8">
@@ -29,12 +34,10 @@ export default function APIReferencePage() {
         Some endpoints require API key authentication. Include your API key in the request headers:
       </p>
 
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`headers: {
+      <CodeBlock language="javascript" code={`headers: {
   'X-API-Key': 'your-api-key-here',
   'Content-Type': 'application/json'
-}`}</code>
-      </pre>
+`} />
 
       <p className="mb-6">
         <strong>Public endpoints</strong> (no authentication required): <code>/health</code>, <code>/market/data</code>, <code>/vaults</code>
@@ -63,8 +66,7 @@ export default function APIReferencePage() {
         <p className="mb-4">Check API and service health status.</p>
 
         <h4 className="font-semibold mb-2">Response</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "status": "healthy",
   "timestamp": "2024-01-23T15:30:00Z",
   "version": "1.0.0",
@@ -75,8 +77,7 @@ export default function APIReferencePage() {
     "ai_engine": "operational",
     "blockchain": "operational"
   }
-}`}</code>
-        </pre>
+`} />
       </div>
 
       <hr className="my-8" />
@@ -124,8 +125,7 @@ export default function APIReferencePage() {
         </div>
 
         <h4 className="font-semibold mb-2">Response</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "success": true,
   "data": [
     {
@@ -150,8 +150,7 @@ export default function APIReferencePage() {
   ],
   "count": 1,
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
       </div>
 
       <div className="mb-8">
@@ -159,8 +158,7 @@ export default function APIReferencePage() {
         <p className="mb-4">Create a new vault.</p>
 
         <h4 className="font-semibold mb-2">Request Body</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "name": "SEI-USDC Concentrated LP",
   "strategy": "concentrated_liquidity",
   "tokenA": "SEI",
@@ -168,8 +166,7 @@ export default function APIReferencePage() {
   "fee": 0.003,
   "tickSpacing": 60,
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
 
         <h4 className="font-semibold mb-2">Strategy Types</h4>
         <ul className="space-y-1 mb-4">
@@ -184,8 +181,7 @@ export default function APIReferencePage() {
         </ul>
 
         <h4 className="font-semibold mb-2">Response</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "success": true,
   "data": {
     "address": "0x1234567890123456789012345678901234567890",
@@ -202,8 +198,7 @@ export default function APIReferencePage() {
   },
   "message": "Vault created successfully",
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
       </div>
 
       <div className="mb-8">
@@ -216,8 +211,7 @@ export default function APIReferencePage() {
         </ul>
 
         <h4 className="font-semibold mb-2">Response</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "success": true,
   "data": {
     "address": "0xf6A791e4773A60083AA29aaCCDc3bA5E900974fE",
@@ -241,8 +235,7 @@ export default function APIReferencePage() {
     }
   },
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
       </div>
 
       <hr className="my-8" />
@@ -255,8 +248,7 @@ export default function APIReferencePage() {
         <p className="mb-4">Generate AI-powered liquidity range predictions.</p>
 
         <h4 className="font-semibold mb-2">Request Body</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "vaultAddress": "0xf6A791e4773A60083AA29aaCCDc3bA5E900974fE",
   "marketData": {
     "currentPrice": 0.485,
@@ -266,8 +258,7 @@ export default function APIReferencePage() {
   },
   "timeframe": "1d",
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
 
         <h4 className="font-semibold mb-2">Timeframe Options</h4>
         <ul className="space-y-1 mb-4">
@@ -279,8 +270,7 @@ export default function APIReferencePage() {
         </ul>
 
         <h4 className="font-semibold mb-2">Response</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "success": true,
   "data": {
     "vaultAddress": "0xf6A791e4773A60083AA29aaCCDc3bA5E900974fE",
@@ -333,8 +323,7 @@ export default function APIReferencePage() {
   },
   "timestamp": "2024-01-23T15:30:00Z",
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
       </div>
 
       <div className="mb-8">
@@ -342,8 +331,7 @@ export default function APIReferencePage() {
         <p className="mb-4">Trigger or schedule vault rebalancing.</p>
 
         <h4 className="font-semibold mb-2">Request Body</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "vaultAddress": "0xf6A791e4773A60083AA29aaCCDc3bA5E900974fE",
   "strategy": "threshold_based",
   "parameters": {
@@ -354,8 +342,7 @@ export default function APIReferencePage() {
     "deadline": 1706023800
   },
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
 
         <h4 className="font-semibold mb-2">Strategy Options</h4>
         <ul className="space-y-1 mb-4">
@@ -365,8 +352,7 @@ export default function APIReferencePage() {
         </ul>
 
         <h4 className="font-semibold mb-2">Response</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "success": true,
   "data": {
     "transactionHash": "0xabc123...",
@@ -381,8 +367,7 @@ export default function APIReferencePage() {
   },
   "timestamp": "2024-01-23T15:30:00Z",
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
       </div>
 
       <hr className="my-8" />
@@ -420,8 +405,7 @@ export default function APIReferencePage() {
         </div>
 
         <h4 className="font-semibold mb-2">Response</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "success": true,
   "data": [
     {
@@ -450,8 +434,7 @@ export default function APIReferencePage() {
   ],
   "timestamp": "2024-01-23T15:30:00Z",
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
       </div>
 
       <div className="mb-8">
@@ -459,18 +442,15 @@ export default function APIReferencePage() {
         <p className="mb-4">Get historical market data.</p>
 
         <h4 className="font-semibold mb-2">Request Body</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "symbols": ["SEI-USDC", "ATOM-SEI"],
   "timeframe": "1h",
   "limit": 100,
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
 
         <h4 className="font-semibold mb-2">Response</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "success": true,
   "data": [
     {
@@ -497,8 +477,7 @@ export default function APIReferencePage() {
   },
   "timestamp": "2024-01-23T15:30:00Z",
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
       </div>
 
       <div className="mb-8">
@@ -531,8 +510,7 @@ export default function APIReferencePage() {
         </div>
 
         <h4 className="font-semibold mb-2">Response</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-4 overflow-x-auto">
-          <code>{`{
+        <CodeBlock language="json" code={`{
   "success": true,
   "data": [
     {
@@ -556,8 +534,7 @@ export default function APIReferencePage() {
     "timestamp": "2024-01-23T15:30:00Z"
   },
   "chainId": 1328
-}`}</code>
-        </pre>
+`} />
       </div>
 
       <hr className="my-8" />
@@ -600,8 +577,7 @@ export default function APIReferencePage() {
         <h3 className="text-xl font-semibold mb-3">Core Functions</h3>
 
         <h4 className="font-semibold mb-2">StrategyVault</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-          <code>{`// Deposit tokens and mint vault shares
+        <CodeBlock language="javascript" code={`// Deposit tokens and mint vault shares
 function deposit(
   uint256 amount0,
   uint256 amount1,
@@ -619,12 +595,10 @@ function rebalance(
   int24 newTickLower,
   int24 newTickUpper,
   bytes calldata signature
-) external`}</code>
-        </pre>
+) external`} />
 
         <h4 className="font-semibold mb-2">VaultFactory</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-          <code>{`// Create a new strategy vault
+        <CodeBlock language="javascript" code={`// Create a new strategy vault
 function createVault(
   VaultCreationParams calldata params
 ) external payable returns (address vault)
@@ -633,12 +607,10 @@ function createVault(
 function getVault(bytes32 salt) external view returns (address)
 
 // Get total number of vaults
-function allVaultsLength() external view returns (uint256)`}</code>
-        </pre>
+function allVaultsLength() external view returns (uint256)`} />
 
         <h4 className="font-semibold mb-2">AIOracle</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-          <code>{`// Register AI model
+        <CodeBlock language="javascript" code={`// Register AI model
 function registerAIModel(
   string calldata model,
   address signer
@@ -651,8 +623,7 @@ function submitRebalanceRequest(
   int24 newTickUpper,
   uint256 confidence,
   uint256 deadline
-) external returns (bytes32 requestId)`}</code>
-        </pre>
+) external returns (bytes32 requestId)`} />
       </div>
 
       <hr className="my-8" />
@@ -768,8 +739,7 @@ function submitRebalanceRequest(
         <h3 className="text-xl font-semibold mb-3">JavaScript/TypeScript</h3>
 
         <h4 className="font-semibold mb-2">Fetching Vault Data</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-          <code>{`const response = await fetch('https://api.yielddelta.io/api/vaults', {
+        <CodeBlock language="javascript" code={`const response = await fetch('https://api.yielddelta.io/api/vaults', {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
@@ -777,12 +747,10 @@ function submitRebalanceRequest(
 });
 
 const { data } = await response.json();
-console.log('Vaults:', data);`}</code>
-        </pre>
+console.log('Vaults:', data);`} />
 
         <h4 className="font-semibold mb-2">Creating a Vault</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-          <code>{`const response = await fetch('https://api.yielddelta.io/api/vaults', {
+        <CodeBlock language="javascript" code={`const response = await fetch('https://api.yielddelta.io/api/vaults', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -800,12 +768,10 @@ console.log('Vaults:', data);`}</code>
 });
 
 const { data } = await response.json();
-console.log('Created vault:', data.address);`}</code>
-        </pre>
+console.log('Created vault:', data.address);`} />
 
         <h4 className="font-semibold mb-2">Getting AI Predictions</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-          <code>{`const response = await fetch('https://api.yielddelta.io/api/ai/predict', {
+        <CodeBlock language="javascript" code={`const response = await fetch('https://api.yielddelta.io/api/ai/predict', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -825,12 +791,10 @@ console.log('Created vault:', data.address);`}</code>
 });
 
 const { data } = await response.json();
-console.log('AI Prediction:', data.prediction);`}</code>
-        </pre>
+console.log('AI Prediction:', data.prediction);`} />
 
         <h4 className="font-semibold mb-2">Interacting with Smart Contracts (ethers.js)</h4>
-        <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-          <code>{`import { ethers } from 'ethers';
+        <CodeBlock language="javascript" code={`import { ethers } from 'ethers';
 
 const provider = new ethers.JsonRpcProvider('https://evm-rpc-arctic-1.sei-apis.com');
 const signer = new ethers.Wallet(privateKey, provider);
@@ -845,8 +809,7 @@ const amount1 = ethers.parseUnits('5', 6); // 5 USDC
 
 const tx = await vault.deposit(amount0, amount1, signer.address);
 await tx.wait();
-console.log('Deposited successfully!');`}</code>
-        </pre>
+console.log('Deposited successfully!');`} />
       </div>
 
       <hr className="my-8" />
