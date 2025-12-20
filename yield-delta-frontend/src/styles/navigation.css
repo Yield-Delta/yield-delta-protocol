@@ -114,9 +114,9 @@ nav .nav-center-links {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Gap is handled by GooeyNavigation component's inline style (2.25rem/36px) */
-  flex: 1;
-  max-width: 100%;
+  /* Gap is handled by GooeyNavigation component's inline style (3.5rem/56px) */
+  flex: 0 0 auto;
+  max-width: none;
   overflow: visible;
   position: relative;
   z-index: 5;
@@ -548,8 +548,9 @@ nav .wallet-container {
 
   /* Ensure center navigation has proper space */
   nav .nav-center-links {
-    flex: 1 !important;
+    flex: 0 0 auto !important;
     max-width: none !important;
+    width: auto !important;
   }
 }
 
@@ -569,7 +570,9 @@ nav .wallet-container {
   }
 
   nav .nav-center-links {
+    flex: 0 0 auto !important;
     max-width: none !important;
+    width: auto !important;
   }
 }
 
