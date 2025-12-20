@@ -549,7 +549,7 @@ nav .wallet-container {
   /* Ensure center navigation has proper space */
   nav .nav-center-links {
     flex: 1 !important;
-    max-width: calc(100% - 400px) !important;
+    max-width: none !important;
   }
 }
 
@@ -569,7 +569,7 @@ nav .wallet-container {
   }
 
   nav .nav-center-links {
-    max-width: calc(100% - 440px) !important;
+    max-width: none !important;
   }
 }
 
