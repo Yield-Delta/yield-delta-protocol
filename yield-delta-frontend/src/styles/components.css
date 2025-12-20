@@ -506,7 +506,7 @@
 /* Premium Highlight Card - For Investor/Key Info */
 .docs-premium-card {
   position: relative;
-  padding: 2.5rem;
+  padding: 3.5rem;
   border-radius: 1.25rem;
   background: linear-gradient(135deg,
     rgba(6, 182, 212, 0.12) 0%,
@@ -1066,6 +1066,7 @@
 .docs-investor-badge {
   margin-top: 2.5rem !important;
   margin-bottom: 1.5rem !important;
+  padding: 4rem !important;
 }
 
 /* Backtested Performance Alert Box */

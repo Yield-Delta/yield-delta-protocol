@@ -279,8 +279,8 @@ export default function ImpermanentLossReductionPage() {
       {/* Contact for Investors */}
       <div className="text-center text-muted-foreground">
         <p className="mb-2">For institutional inquiries and detailed performance data:</p>
-        <a href="mailto:investors@yielddelta.xyz" className="text-cyan-400 hover:text-cyan-300 font-medium">
-          investors@yielddelta.xyz
+        <a href="mailto:social@yielddelta.xyz" className="text-cyan-400 hover:text-cyan-300 font-medium">
+          social@yielddelta.xyz
         </a>
       </div>
     </div>
