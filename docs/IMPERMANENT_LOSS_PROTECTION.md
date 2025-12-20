@@ -199,9 +199,9 @@ Traditional LPs accepting 7-10% IL as "cost of business" are leaving money on th
 5. **Transparent Methodology:** Open-source backtesting framework
 
 ### Next Steps
-- **Mainnet Launch:** Q1 2025 on SEI mainnet
+- **Mainnet Launch:** Q3 2026 on SEI mainnet
 - **Live Dashboard:** Real-time IL tracking per vault
-- **Audit Completion:** Certik audit scheduled for January 2025
+- **Audit Completion:** Certik audit scheduled for February 2026
 - **TVL Target:** $1M within 30 days of mainnet launch
 
 ---
