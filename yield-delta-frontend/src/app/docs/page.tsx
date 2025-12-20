@@ -126,8 +126,8 @@ export default function DocsHomePage() {
           <li className="flex items-start gap-3">
             <span className="text-cyan-400 mt-1">▸</span>
             <div>
-              <strong className="text-cyan-300">SEI's Speed Advantage:</strong>
-              <span className="text-muted-foreground"> 400ms block finality enables rapid position adjustments that aren't possible on slower chains</span>
+              <strong className="text-cyan-300">SEI&apos;s Speed Advantage:</strong>
+              <span className="text-muted-foreground"> 400ms block finality enables rapid position adjustments that aren&apos;t possible on slower chains</span>
             </div>
           </li>
         </ul>

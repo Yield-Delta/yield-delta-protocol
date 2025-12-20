@@ -31,7 +31,7 @@ export default function ImpermanentLossReductionPage() {
           68-70% Impermanent Loss Reduction
         </h1>
         <p className="text-xl text-muted-foreground">
-          Technical Analysis & Performance Metrics for Yield Delta's Proprietary IL Mitigation System
+          Technical Analysis & Performance Metrics for Yield Delta&apos;s Proprietary IL Mitigation System
         </p>
       </div>
 
@@ -44,7 +44,7 @@ export default function ImpermanentLossReductionPage() {
       >
         <h2 className="text-2xl font-bold mb-4">Executive Summary</h2>
         <p className="text-lg leading-relaxed mb-4">
-          Yield Delta's AI-powered vault system achieves a <strong className="text-cyan-400">68-70% reduction in impermanent loss</strong> through a combination of:
+          Yield Delta&apos;s AI-powered vault system achieves a <strong className="text-cyan-400">68-70% reduction in impermanent loss</strong> through a combination of:
         </p>
         <ul className="space-y-2 text-lg">
           <li>• <strong>Predictive ML models</strong> trained on 2+ years of DeFi market data</li>
@@ -198,17 +198,17 @@ export default function ImpermanentLossReductionPage() {
       <h2 className="text-3xl font-bold mb-6">Mathematical Foundation</h2>
 
       <div className="p-6 rounded-xl bg-black/30 border border-white/10 mb-8 font-mono">
-        <p className="mb-4 text-cyan-400">// Impermanent Loss Formula (Traditional)</p>
+        <p className="mb-4 text-cyan-400">{/* Impermanent Loss Formula (Traditional) */}</p>
         <p className="mb-2">IL_traditional = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1</p>
 
-        <p className="mb-4 mt-6 text-cyan-400">// Yield Delta IL with Hedging</p>
+        <p className="mb-4 mt-6 text-cyan-400">{/* Yield Delta IL with Hedging */}</p>
         <p className="mb-2">IL_yielddelta = IL_traditional * (1 - hedge_efficiency) * volatility_factor</p>
 
         <p className="mb-2 mt-4">Where:</p>
         <p className="mb-2 ml-4">hedge_efficiency = 0.68-0.70 (68-70%)</p>
         <p className="mb-2 ml-4">volatility_factor = dynamic_range_adjustment(σ, μ, t)</p>
 
-        <p className="mt-6 text-green-400">// Result: 68-70% reduction in IL exposure</p>
+        <p className="mt-6 text-green-400">{/* Result: 68-70% reduction in IL exposure */}</p>
       </div>
 
       {/* Risk Disclosure */}
@@ -237,7 +237,7 @@ export default function ImpermanentLossReductionPage() {
         <div className="p-6 rounded-xl bg-gradient-to-r from-purple-500/5 to-transparent border border-purple-500/20">
           <h3 className="text-xl font-semibold mb-3 text-purple-400">Speed Matters</h3>
           <p className="mb-3">
-            SEI's 400ms block finality enables our AI to execute rebalancing strategies that are impossible on slower chains:
+            SEI&apos;s 400ms block finality enables our AI to execute rebalancing strategies that are impossible on slower chains:
           </p>
           <ul className="space-y-2 text-sm">
             <li>• <strong>12+ rebalances/day</strong> vs 2-3 on Ethereum</li>
@@ -268,7 +268,7 @@ export default function ImpermanentLossReductionPage() {
       >
         <h2 className="text-3xl font-bold mb-4">Ready to Minimize Your IL?</h2>
         <p className="text-lg text-muted-foreground mb-6">
-          Join thousands of LPs already protecting their capital with Yield Delta's AI vaults
+          Join thousands of LPs already protecting their capital with Yield Delta&apos;s AI vaults
         </p>
         <div className="flex gap-4 justify-center">
           <Link href="/vaults">
