@@ -1,4 +1,5 @@
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
+import { CodeBlock } from '@/components/docs/CodeBlock'
 
 export default function AIRebalancingPage() {
   return (
@@ -33,8 +34,7 @@ export default function AIRebalancingPage() {
       
       <p className="mb-4">The AI system continuously collects market data:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface MarketData {
+      <CodeBlock language="typescript" code={`interface MarketData {
   prices: {
     current: number;
     high24h: number;
@@ -56,15 +56,13 @@ export default function AIRebalancingPage() {
     implied: number;
     garch: number;  // GARCH model prediction
   };
-}`}</code>
-      </pre>
+}`} />
 
       <h3 className="text-xl font-semibold mb-4">2. Model Prediction</h3>
       
       <p className="mb-4">Multiple ML models work together to generate predictions:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`class RebalancingPredictor:
+      <CodeBlock language="typescript" code={`class RebalancingPredictor:
     def __init__(self):
         self.price_model = load_model('price_prediction.onnx')
         self.volatility_model = load_model('volatility_prediction.onnx')
@@ -97,15 +95,13 @@ export default function AIRebalancingPage() {
             upper_tick=int(optimal_range[1]),
             confidence=optimal_range[2],
             expected_apy=optimal_range[3]
-        )`}</code>
-      </pre>
+        )`} />
 
       <h3 className="text-xl font-semibold mb-4">3. Decision Making</h3>
       
       <p className="mb-4">The AI evaluates whether rebalancing is profitable:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface RebalancingDecision {
+      <CodeBlock language="typescript" code={`interface RebalancingDecision {
   shouldRebalance: boolean;
   confidence: number;
   expectedImprovement: number;
@@ -126,39 +122,36 @@ export default function AIRebalancingPage() {
       timeHorizon: number; // Hours to break even
     };
   };
-}`}</code>
-      </pre>
+}`} />
 
       <h3 className="text-xl font-semibold mb-4">4. Execution Strategy</h3>
       
       <p className="mb-4">When rebalancing is determined to be profitable:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-8 overflow-x-auto">
-        <code>{`function executeAIRebalancing(
+      <CodeBlock language="solidity" code={`function executeAIRebalancing(
     RebalanceParams calldata params,
     bytes calldata signature
 ) external nonReentrant {
     // Verify AI signature
     require(verifyAISignature(params, signature), "Invalid AI signature");
-    
+
     // Check time constraints
     require(
         block.timestamp >= lastRebalance + rebalanceInterval,
         "Too soon to rebalance"
     );
-    
+
     // Risk checks
     require(params.maxSlippage <= maxAllowedSlippage, "Slippage too high");
     require(params.gasLimit <= maxGasLimit, "Gas limit exceeded");
-    
+
     // Execute rebalancing
     _executeRebalance(params);
-    
+
     // Update state
     lastRebalance = block.timestamp;
     emit AIRebalanceExecuted(params.newLowerTick, params.newUpperTick);
-}`}</code>
-      </pre>
+}`} />
 
       <h2 className="text-2xl font-semibold mb-4">Rebalancing Strategies</h2>
 
@@ -188,8 +181,7 @@ export default function AIRebalancingPage() {
 
       <h3 className="text-xl font-semibold mb-4">Automated Risk Controls</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface RiskControls {
+      <CodeBlock language="typescript" code={`interface RiskControls {
   maxPositionSize: number;     // Maximum position as % of total
   maxDailyRebalances: number;  // Limit rebalancing frequency
   minProfitThreshold: number;  // Minimum expected improvement
@@ -205,8 +197,7 @@ export default function AIRebalancingPage() {
     maxVolatility: number;     // Pause if volatility exceeds
     lookbackPeriod: number;    // Hours to calculate volatility
   };
-}`}</code>
-      </pre>
+}`} />
 
       <h3 className="text-xl font-semibold mb-4">Circuit Breakers</h3>
       
@@ -223,8 +214,7 @@ export default function AIRebalancingPage() {
 
       <h3 className="text-xl font-semibold mb-4">Real-time Tracking</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface RebalancingMetrics {
+      <CodeBlock language="typescript" code={`interface RebalancingMetrics {
   execution: {
     totalRebalances: number;
     successRate: number;
@@ -243,8 +233,7 @@ export default function AIRebalancingPage() {
     rangeUtilization: number;   // % of time price stays in range
     falseSenalRate: number;     // % of unnecessary rebalances
   };
-}`}</code>
-      </pre>
+}`} />
 
       <h3 className="text-xl font-semibold mb-4">Backtesting Results</h3>
       
@@ -277,8 +266,7 @@ export default function AIRebalancingPage() {
       
       <p className="mb-4">Users can customize AI behavior:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface AIConfiguration {
+      <CodeBlock language="typescript" code={`interface AIConfiguration {
   riskTolerance: 'conservative' | 'moderate' | 'aggressive';
   rebalanceFrequency: 'low' | 'medium' | 'high';
   gasOptimization: boolean;
@@ -294,8 +282,7 @@ export default function AIRebalancingPage() {
     pauseDuringVolatility: boolean;
     respectManualOverrides: boolean;
   };
-}`}</code>
-      </pre>
+}`} />
 
       <h3 className="text-xl font-semibold mb-4">Strategy Selection</h3>
       

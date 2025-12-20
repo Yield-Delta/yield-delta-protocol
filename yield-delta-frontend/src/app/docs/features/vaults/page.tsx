@@ -1,4 +1,5 @@
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
+import { CodeBlock } from '@/components/docs/CodeBlock'
 
 export default function VaultsPage() {
   return (
@@ -33,8 +34,7 @@ export default function VaultsPage() {
       
       <p className="mb-4"><strong>Strategy</strong>: Automated concentrated liquidity provision on DEXs</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface ConcentratedLiquidityVault {
+      <CodeBlock language="typescript" code={`interface ConcentratedLiquidityVault {
   tokenA: Token;
   tokenB: Token;
   fee: number;        // Pool fee tier (0.01%, 0.05%, 0.3%, 1%)
@@ -44,8 +44,7 @@ export default function VaultsPage() {
     riskTolerance: 'low' | 'medium' | 'high';
     maxSlippage: number;        // Maximum allowed slippage
   };
-}`}</code>
-      </pre>
+}`} />
       
       <p className="mb-4"><strong>Benefits</strong>:</p>
       <ul className="space-y-2 mb-4">
@@ -61,8 +60,7 @@ export default function VaultsPage() {
       
       <p className="mb-4"><strong>Strategy</strong>: Automated yield farming across multiple protocols</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface YieldFarmingVault {
+      <CodeBlock language="typescript" code={`interface YieldFarmingVault {
   protocols: Protocol[];      // Supported farming protocols
   assets: Token[];           // Supported deposit tokens
   strategy: {
@@ -70,8 +68,7 @@ export default function VaultsPage() {
     harvestFrequency: number;          // Auto-harvest timing
     compoundingRatio: number;          // % of rewards to compound
   };
-}`}</code>
-      </pre>
+}`} />
       
       <p className="mb-4"><strong>Benefits</strong>:</p>
       <ul className="space-y-2 mb-4">
@@ -87,8 +84,7 @@ export default function VaultsPage() {
       
       <p className="mb-4"><strong>Strategy</strong>: Automated arbitrage opportunities across SEI ecosystem</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface ArbitrageVault {
+      <CodeBlock language="typescript" code={`interface ArbitrageVault {
   exchanges: DEX[];          // Monitored DEXs
   tokens: Token[];          // Arbitrage token pairs
   strategy: {
@@ -96,8 +92,7 @@ export default function VaultsPage() {
     maxPositionSize: number;       // Risk management
     executionSpeed: 'fast' | 'optimal'; // Speed vs profit optimization
   };
-}`}</code>
-      </pre>
+}`} />
       
       <p className="mb-4"><strong>Benefits</strong>:</p>
       <ul className="space-y-2 mb-4">
@@ -113,8 +108,7 @@ export default function VaultsPage() {
 
       <h3 className="text-xl font-semibold mb-4">Smart Contract Structure</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-8 overflow-x-auto">
-        <code>{`contract YieldDeltaVault is ERC4626, Ownable, ReentrancyGuard {
+      <CodeBlock language="solidity" code={`contract YieldDeltaVault is ERC4626, Ownable, ReentrancyGuard {
     // Core vault state
     IERC20 public immutable asset;
     string public strategy;
@@ -158,8 +152,7 @@ export default function VaultsPage() {
         
     function updateStrategy(StrategyParams calldata params)
         external onlyOwner;
-}`}</code>
-      </pre>
+}`} />
 
       <h2 className="text-2xl font-semibold mb-4">User Interface</h2>
 
@@ -167,8 +160,7 @@ export default function VaultsPage() {
       
       <p className="mb-4">The vault interface provides comprehensive information and controls:</p>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface VaultDashboard {
+      <CodeBlock language="typescript" code={`interface VaultDashboard {
   overview: {
     totalDeposited: number;
     currentValue: number;
@@ -194,8 +186,7 @@ export default function VaultsPage() {
     withdraw: (amount: number) => Promise<TransactionResult>;
     rebalance: () => Promise<TransactionResult>;
   };
-}`}</code>
-      </pre>
+}`} />
 
       <h3 className="text-xl font-semibold mb-4">Deposit Flow</h3>
       
@@ -211,8 +202,7 @@ export default function VaultsPage() {
 
       <h3 className="text-xl font-semibold mb-4">Automated Risk Controls</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface RiskManagement {
+      <CodeBlock language="typescript" code={`interface RiskManagement {
   maxDrawdown: number;        // Maximum acceptable loss
   stopLoss: number;          // Automatic exit threshold
   positionLimits: {
@@ -226,8 +216,7 @@ export default function VaultsPage() {
     alertThresholds: AlertConfig;
     automaticActions: ActionConfig;
   };
-}`}</code>
-      </pre>
+}`} />
 
       <h3 className="text-xl font-semibold mb-4">Risk Metrics</h3>
       
@@ -264,8 +253,7 @@ export default function VaultsPage() {
 
       <h3 className="text-xl font-semibold mb-4">Performance Tracking</h3>
       
-      <pre className="bg-muted p-4 rounded-lg mb-6 overflow-x-auto">
-        <code>{`interface VaultAnalytics {
+      <CodeBlock language="typescript" code={`interface VaultAnalytics {
   returns: {
     daily: number[];
     cumulative: number;
@@ -287,8 +275,7 @@ export default function VaultsPage() {
     successRate: number;
     averageSlippage: number;
   };
-}`}</code>
-      </pre>
+}`} />
 
       <h3 className="text-xl font-semibold mb-4">Fee Transparency</h3>
       
