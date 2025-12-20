@@ -231,52 +231,81 @@ export default function DocsHomePage() {
 
       <h2 className="text-2xl font-semibold mb-4">Core Features</h2>
       
-      <div className="overflow-x-auto mb-8">
-        <table className="w-full border-collapse border border-border">
+      <div className="docs-table-container mb-8">
+        <table className="w-full">
           <thead>
-            <tr className="border-b border-border">
-              <th className="border border-border px-4 py-2 text-left">Feature</th>
-              <th className="border border-border px-4 py-2 text-left">Description</th>
-              <th className="border border-border px-4 py-2 text-left">Status</th>
+            <tr className="border-b border-white/10">
+              <th className="px-4 py-3 text-left">Feature</th>
+              <th className="px-4 py-3 text-left">Description</th>
+              <th className="px-4 py-3 text-left">Status</th>
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-border">
-              <td className="border border-border px-4 py-2">
-                <a href="/docs/features/ai-rebalancing" className="text-primary hover:text-primary/80">
+            <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
+              <td className="px-4 py-3">
+                <a href="/docs/features/ai-rebalancing" className="text-primary hover:text-primary/80 font-medium">
                   AI-Powered Rebalancing
                 </a>
               </td>
-              <td className="border border-border px-4 py-2">Automated position optimization using ML</td>
-              <td className="border border-border px-4 py-2">✅ Live</td>
+              <td className="px-4 py-3 text-muted-foreground">Automated position optimization using ML</td>
+              <td className="px-4 py-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                  Live
+                </span>
+              </td>
             </tr>
-            <tr className="border-b border-border">
-              <td className="border border-border px-4 py-2">
-                <a href="/docs/features/vaults" className="text-primary hover:text-primary/80">
+            <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
+              <td className="px-4 py-3">
+                <a href="/docs/features/vaults" className="text-primary hover:text-primary/80 font-medium">
                   Vault Management
                 </a>
               </td>
-              <td className="border border-border px-4 py-2">ERC-4626 compatible yield vaults</td>
-              <td className="border border-border px-4 py-2">✅ Live</td>
+              <td className="px-4 py-3 text-muted-foreground">ERC-4626 compatible yield vaults</td>
+              <td className="px-4 py-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                  Live
+                </span>
+              </td>
             </tr>
-            <tr className="border-b border-border">
-              <td className="border border-border px-4 py-2">Liqui Chat</td>
-              <td className="border border-border px-4 py-2">AI assistant for DeFi strategy</td>
-              <td className="border border-border px-4 py-2">✅ Live</td>
+            <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
+              <td className="px-4 py-3">
+                <span className="font-medium">Liqui Chat</span>
+              </td>
+              <td className="px-4 py-3 text-muted-foreground">AI assistant for DeFi strategy</td>
+              <td className="px-4 py-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                  Live
+                </span>
+              </td>
             </tr>
-            <tr className="border-b border-border">
-              <td className="border border-border px-4 py-2">Market Analytics</td>
-              <td className="border border-border px-4 py-2">Real-time market data and insights</td>
-              <td className="border border-border px-4 py-2">✅ Live</td>
+            <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
+              <td className="px-4 py-3">
+                <span className="font-medium">Market Analytics</span>
+              </td>
+              <td className="px-4 py-3 text-muted-foreground">Real-time market data and insights</td>
+              <td className="px-4 py-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                  Live
+                </span>
+              </td>
             </tr>
-            <tr className="border-b border-border">
-              <td className="border border-border px-4 py-2">
-                <a href="/docs/demo-mode" className="text-primary hover:text-primary/80">
+            <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
+              <td className="px-4 py-3">
+                <a href="/docs/demo-mode" className="text-primary hover:text-primary/80 font-medium">
                   Demo Mode
                 </a>
               </td>
-              <td className="border border-border px-4 py-2">Risk-free testing environment</td>
-              <td className="border border-border px-4 py-2">✅ Live</td>
+              <td className="px-4 py-3 text-muted-foreground">Risk-free testing environment</td>
+              <td className="px-4 py-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                  Live
+                </span>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -284,7 +313,7 @@ export default function DocsHomePage() {
 
       <h2 className="text-2xl font-semibold mb-4">Network Information</h2>
 
-      <div className="bg-blue-500/10 border-2 border-blue-500/30 p-6 rounded-lg mb-6">
+      <div className="docs-alert-base docs-alert-info mb-6">
         <p className="text-lg font-semibold mb-2">🧪 Currently on SEI Testnet</p>
         <p className="mb-4">
           Yield Delta is deployed on <strong>SEI Atlantic-2 Testnet</strong>. You need to configure your wallet to use testnet before connecting.
@@ -294,15 +323,17 @@ export default function DocsHomePage() {
         </a>
       </div>
 
-      <ul className="space-y-2 mb-8">
-        <li><strong>Network</strong>: SEI Atlantic-2 (Testnet)</li>
-        <li><strong>Chain ID</strong>: 1328</li>
-        <li><strong>Native Token</strong>: SEI (testnet)</li>
-        <li><strong>Block Time</strong>: ~400ms</li>
-        <li><strong>RPC URL</strong>: https://evm-rpc-testnet.sei-apis.com</li>
-        <li><strong>Explorer</strong>: <a href="https://seitrace.com" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">SeiTrace</a></li>
-        <li><strong>Faucet</strong>: <a href="https://atlantic-2.app.sei.io/faucet" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">Get Testnet Tokens</a></li>
-      </ul>
+      <div className="docs-glass-card mb-8">
+        <ul className="space-y-2">
+          <li><strong>Network</strong>: SEI Atlantic-2 (Testnet)</li>
+          <li><strong>Chain ID</strong>: 1328</li>
+          <li><strong>Native Token</strong>: SEI (testnet)</li>
+          <li><strong>Block Time</strong>: ~400ms</li>
+          <li><strong>RPC URL</strong>: https://evm-rpc-testnet.sei-apis.com</li>
+          <li><strong>Explorer</strong>: <a href="https://seitrace.com" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">SeiTrace</a></li>
+          <li><strong>Faucet</strong>: <a href="https://atlantic-2.app.sei.io/faucet" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">Get Testnet Tokens</a></li>
+        </ul>
+      </div>
 
       <h2 className="text-2xl font-semibold mb-4">Community & Support</h2>
       
