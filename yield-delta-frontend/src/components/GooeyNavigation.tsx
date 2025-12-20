@@ -57,7 +57,7 @@ export function GooeyNavigation() {
       {/* Desktop Navigation - Show at 900px+ */}
       <nav className="hidden min-[900px]:flex items-center justify-center w-full">
         <motion.div
-          className="flex items-center px-8 py-3 rounded-full backdrop-blur-xl min-w-fit"
+          className="flex items-center px-12 py-4 rounded-full backdrop-blur-xl min-w-fit"
           style={{
             filter: 'url(#gooey-effect)',
             background: 'rgba(15, 23, 42, 0.8)',
