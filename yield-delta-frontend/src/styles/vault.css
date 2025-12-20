@@ -263,9 +263,9 @@
   /* === Vault Button Styles === */
 
   .btn-vault-primary {
-    background: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
+    background: linear-gradient(135deg, #00d966 0%, #00b350 100%);
     color: #000000;
-    border: 2px solid rgba(0, 255, 136, 0.6);
+    border: 2px solid rgba(0, 217, 102, 0.6);
     border-radius: 14px;
     font-weight: 700;
     font-size: 1rem;
@@ -286,11 +286,11 @@
   }
 
   .btn-vault-primary:hover {
-    background: linear-gradient(135deg, #00ffaa 0%, #00dd77 100%);
-    border-color: rgba(0, 255, 136, 0.9);
+    background: linear-gradient(135deg, #00e673 0%, #00bf5a 100%);
+    border-color: rgba(0, 217, 102, 0.9);
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45),
-      0 0 40px rgba(0, 255, 136, 0.6),
+      0 0 40px rgba(0, 217, 102, 0.6),
       inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
 
