@@ -1100,6 +1100,25 @@
   padding: 4rem !important;
 }
 
+/* Badge positioning with proper breathing room from container edges */
+.docs-investor-badge > div:first-child {
+  /* Ensures the absolutely positioned badge has adequate spacing */
+  top: 2.5rem !important;
+  right: 2.5rem !important;
+}
+
+/* Responsive badge positioning for smaller screens */
+@media (max-width: 768px) {
+  .docs-investor-badge {
+    padding: 2.5rem !important;
+  }
+
+  .docs-investor-badge > div:first-child {
+    top: 1.5rem !important;
+    right: 1.5rem !important;
+  }
+}
+
 /* Backtested Performance Alert Box */
 .docs-backtest-alert {
   position: relative;
