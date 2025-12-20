@@ -36,12 +36,7 @@ export default function ImpermanentLossReductionPage() {
       </div>
 
       {/* Executive Summary */}
-      <div className="p-6 rounded-xl mb-8"
-        style={{
-          background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.05) 0%, rgba(20, 184, 166, 0.03) 100%)',
-          border: '1px solid rgba(6, 182, 212, 0.2)',
-        }}
-      >
+      <div className="docs-content-section mb-8">
         <h2 className="text-2xl font-bold mb-4">Executive Summary</h2>
         <p className="text-lg leading-relaxed mb-4">
           Yield Delta&apos;s AI-powered vault system achieves a <strong className="text-cyan-400">68-70% reduction in impermanent loss</strong> through a combination of:
@@ -58,7 +53,7 @@ export default function ImpermanentLossReductionPage() {
       <h2 className="text-3xl font-bold mb-6">Performance Metrics</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="p-6 rounded-xl bg-black/30 border border-cyan-500/20">
+        <div className="docs-metric-card">
           <h3 className="text-xl font-semibold mb-4 text-cyan-400">Backtested Results</h3>
           <div className="space-y-3">
             <div className="flex justify-between">
@@ -80,7 +75,7 @@ export default function ImpermanentLossReductionPage() {
           </div>
         </div>
 
-        <div className="p-6 rounded-xl bg-black/30 border border-teal-500/20">
+        <div className="docs-metric-card">
           <h3 className="text-xl font-semibold mb-4 text-teal-400">Live Performance</h3>
           <div className="space-y-3">
             <div className="flex justify-between">
@@ -107,7 +102,7 @@ export default function ImpermanentLossReductionPage() {
       <h2 className="text-3xl font-bold mb-6">Technical Methodology</h2>
 
       <div className="space-y-6 mb-8">
-        <div className="p-6 rounded-xl bg-gradient-to-r from-cyan-500/5 to-transparent border-l-4 border-cyan-500">
+        <div className="docs-content-section border-l-4 border-cyan-400">
           <h3 className="text-xl font-semibold mb-3 text-cyan-400">1. Predictive Price Movement Analysis</h3>
           <p className="mb-3">
             Our ML models analyze multiple data streams to predict price movements with 15-30 minute accuracy:
@@ -120,7 +115,7 @@ export default function ImpermanentLossReductionPage() {
           </ul>
         </div>
 
-        <div className="p-6 rounded-xl bg-gradient-to-r from-teal-500/5 to-transparent border-l-4 border-teal-500">
+        <div className="docs-content-section border-l-4 border-teal-400">
           <h3 className="text-xl font-semibold mb-3 text-teal-400">2. Dynamic Range Optimization</h3>
           <p className="mb-3">
             Concentrated liquidity positions are continuously optimized based on:
@@ -133,7 +128,7 @@ export default function ImpermanentLossReductionPage() {
           </ul>
         </div>
 
-        <div className="p-6 rounded-xl bg-gradient-to-r from-green-500/5 to-transparent border-l-4 border-green-500">
+        <div className="docs-content-section border-l-4 border-green-400">
           <h3 className="text-xl font-semibold mb-3 text-green-400">3. Multi-Strategy Hedging</h3>
           <p className="mb-3">
             Three complementary strategies work together to minimize IL:
@@ -197,27 +192,22 @@ export default function ImpermanentLossReductionPage() {
       {/* Mathematical Proof */}
       <h2 className="text-3xl font-bold mb-6">Mathematical Foundation</h2>
 
-      <div className="p-6 rounded-xl bg-black/30 border border-white/10 mb-8 font-mono">
-        <p className="mb-4 text-cyan-400">{/* Impermanent Loss Formula (Traditional) */}</p>
+      <div className="docs-metric-card mb-8 font-mono text-sm">
+        <p className="mb-4 text-cyan-400 font-sans">{/* Impermanent Loss Formula (Traditional) */}</p>
         <p className="mb-2">IL_traditional = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1</p>
 
-        <p className="mb-4 mt-6 text-cyan-400">{/* Yield Delta IL with Hedging */}</p>
+        <p className="mb-4 mt-6 text-cyan-400 font-sans">{/* Yield Delta IL with Hedging */}</p>
         <p className="mb-2">IL_yielddelta = IL_traditional * (1 - hedge_efficiency) * volatility_factor</p>
 
-        <p className="mb-2 mt-4">Where:</p>
+        <p className="mb-2 mt-4 font-sans">Where:</p>
         <p className="mb-2 ml-4">hedge_efficiency = 0.68-0.70 (68-70%)</p>
         <p className="mb-2 ml-4">volatility_factor = dynamic_range_adjustment(σ, μ, t)</p>
 
-        <p className="mt-6 text-green-400">{/* Result: 68-70% reduction in IL exposure */}</p>
+        <p className="mt-6 text-green-400 font-sans">{/* Result: 68-70% reduction in IL exposure */}</p>
       </div>
 
       {/* Risk Disclosure */}
-      <div className="p-6 rounded-xl mb-8"
-        style={{
-          background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.03) 100%)',
-          border: '1px solid rgba(239, 68, 68, 0.2)',
-        }}
-      >
+      <div className="docs-content-section border-l-4 border-red-400 mb-8">
         <h3 className="text-xl font-semibold mb-3 text-red-400">Risk Disclosure</h3>
         <p className="text-muted-foreground mb-3">
           While our system significantly reduces impermanent loss, it cannot eliminate it entirely. Performance metrics are based on:
@@ -234,7 +224,7 @@ export default function ImpermanentLossReductionPage() {
       <h2 className="text-3xl font-bold mb-6">SEI Network Advantage</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="p-6 rounded-xl bg-gradient-to-r from-purple-500/5 to-transparent border border-purple-500/20">
+        <div className="docs-content-section border-l-4 border-purple-400">
           <h3 className="text-xl font-semibold mb-3 text-purple-400">Speed Matters</h3>
           <p className="mb-3">
             SEI&apos;s 400ms block finality enables our AI to execute rebalancing strategies that are impossible on slower chains:
@@ -246,7 +236,7 @@ export default function ImpermanentLossReductionPage() {
           </ul>
         </div>
 
-        <div className="p-6 rounded-xl bg-gradient-to-r from-blue-500/5 to-transparent border border-blue-500/20">
+        <div className="docs-content-section border-l-4 border-blue-400">
           <h3 className="text-xl font-semibold mb-3 text-blue-400">Cost Efficiency</h3>
           <p className="mb-3">
             Low transaction costs on SEI make frequent rebalancing economically viable:
@@ -260,12 +250,7 @@ export default function ImpermanentLossReductionPage() {
       </div>
 
       {/* Call to Action */}
-      <div className="text-center py-12 px-6 rounded-2xl mb-8"
-        style={{
-          background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(20, 184, 166, 0.08) 100%)',
-          border: '2px solid rgba(6, 182, 212, 0.3)',
-        }}
-      >
+      <div className="docs-premium-card text-center mb-8">
         <h2 className="text-3xl font-bold mb-4">Ready to Minimize Your IL?</h2>
         <p className="text-lg text-muted-foreground mb-6">
           Join thousands of LPs already protecting their capital with Yield Delta&apos;s AI vaults
