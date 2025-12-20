@@ -564,26 +564,30 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
       <div className="simple-nav-container">
         {/* LEFT SIDE */}
         <div className="nav-left-simple">
-          <div
-            ref={logoRef}
-            className="logo-animation-gsap"
-            style={{
-              transformStyle: 'preserve-3d'
-            }}
-          >
-            <Logo
-              variant="horizontal-svg"
-              size={48}
-              animated={false}
-              className="flex-shrink-0 nav-logo-desktop"
-            />
-            <Logo
-              variant="icon"
-              size={48}
-              animated={false}
-              className="flex-shrink-0 nav-logo-mobile"
-            />
-          </div>
+          <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+            <div
+              ref={logoRef}
+              className="logo-animation-gsap"
+              style={{
+                transformStyle: 'preserve-3d',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              <Logo
+                variant="horizontal-svg"
+                size={48}
+                animated={false}
+                className="flex-shrink-0 nav-logo-desktop"
+              />
+              <Logo
+                variant="icon"
+                size={48}
+                animated={false}
+                className="flex-shrink-0 nav-logo-mobile"
+              />
+            </div>
+          </Link>
           <div className="nav-brand nav-brand-tablet">
             <div
               className="font-bold gradient-text"

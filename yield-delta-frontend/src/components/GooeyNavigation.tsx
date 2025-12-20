@@ -55,13 +55,15 @@ export function GooeyNavigation() {
       </svg>
 
       {/* Desktop Navigation - Show at 900px+ */}
-      <nav className="hidden min-[900px]:flex items-center justify-center gap-2 px-4">
+      <nav className="hidden min-[900px]:flex items-center justify-center w-full max-w-full">
         <motion.div
-          className="flex items-center gap-1 px-4 py-2 rounded-full backdrop-blur-xl"
+          className="flex items-center gap-1 px-3 py-2 rounded-full backdrop-blur-xl"
           style={{
             filter: 'url(#gooey-effect)',
             background: 'rgba(15, 23, 42, 0.6)',
             border: '1px solid rgba(99, 102, 241, 0.2)',
+            maxWidth: '100%',
+            overflow: 'visible',
           }}
           layout
         >
@@ -72,7 +74,7 @@ export function GooeyNavigation() {
             return (
               <Link key={item.href} href={item.href}>
                 <motion.div
-                  className="relative px-4 py-2 rounded-full cursor-pointer"
+                  className="relative px-3 py-2 rounded-full cursor-pointer whitespace-nowrap"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   layout
@@ -93,7 +95,7 @@ export function GooeyNavigation() {
                     />
                   )}
                   <div className="relative flex items-center gap-2 z-10">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : 'text-gray-400'}`} />
+                    <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-cyan-400' : 'text-gray-400'}`} />
                     <span
                       className={`text-sm font-medium ${
                         isActive
