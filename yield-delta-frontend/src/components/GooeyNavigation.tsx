@@ -94,8 +94,7 @@ export function GooeyNavigation() {
                       }}
                     />
                   )}
-                  <div className="relative flex items-center gap-2 z-10">
-                    <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-cyan-400' : 'text-gray-400'}`} />
+                  <div className="relative z-10">
                     <span
                       className={`text-sm font-medium ${
                         isActive
