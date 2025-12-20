@@ -57,15 +57,14 @@ export function GooeyNavigation() {
       {/* Desktop Navigation - Show at 900px+ */}
       <nav className="hidden min-[900px]:flex items-center justify-center w-full">
         <motion.div
-          className="flex items-center px-20 py-6 rounded-full backdrop-blur-xl"
+          className="flex items-center px-14 py-5 rounded-full backdrop-blur-xl"
           style={{
             filter: 'url(#gooey-effect)',
             background: 'rgba(15, 23, 42, 0.8)',
-            border: '4px solid rgba(6, 182, 212, 0.6)',
+            border: '3px solid rgba(6, 182, 212, 0.6)',
             boxShadow: 'inset 0 0 0 1px rgba(6, 182, 212, 0.2), 0 0 20px rgba(6, 182, 212, 0.3)',
             overflow: 'visible',
-            gap: '3.5rem',
-            minWidth: '1100px',
+            gap: '2.5rem',
           }}
           layout
         >
@@ -75,7 +74,7 @@ export function GooeyNavigation() {
             return (
               <Link key={item.href} href={item.href} style={{ display: 'block' }}>
                 <motion.div
-                  className="relative px-6 py-3 rounded-full cursor-pointer whitespace-nowrap"
+                  className="relative px-5 py-2.5 rounded-full cursor-pointer whitespace-nowrap"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   layout

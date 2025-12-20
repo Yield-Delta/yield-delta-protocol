@@ -114,7 +114,7 @@ nav .nav-center-links {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Gap is handled by GooeyNavigation component's inline style (3.5rem/56px) */
+  /* Gap is handled by GooeyNavigation component's inline style (2.5rem/40px) */
   flex: 0 0 auto;
   max-width: none;
   overflow: visible;
