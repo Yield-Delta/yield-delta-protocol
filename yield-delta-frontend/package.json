@@ -21,7 +21,8 @@
     "api:test": "curl -s http://localhost:3000/api/health | jq .",
     "api:docs": "curl -s http://localhost:3000/api/docs | jq .title",
     "api:vaults": "curl -s http://localhost:3000/api/vaults | jq '.data | length'",
-    "api:market": "curl -s 'http://localhost:3000/api/market/data?symbols=SEI-USDC' | jq .data[0].price"
+    "api:market": "curl -s 'http://localhost:3000/api/market/data?symbols=SEI-USDC' | jq .data[0].price",
+    "deploy:cloudflare": "./deploy-cloudflare.sh"
   },
   "dependencies": {
     "@cosmos-kit/core": "^2.16.2",
