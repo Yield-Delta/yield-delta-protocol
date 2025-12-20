@@ -220,9 +220,9 @@ Network: SEI Atlantic-2
 ```
 
 ### Contact & Resources
-- **Technical Docs:** docs.yielddelta.com/impermanent-loss
-- **Discord:** discord.gg/yielddelta
-- **Email:** investors@yielddelta.com
+- **Technical Docs:** docs.yielddelta.com/impermanent-loss-reduction
+- **Discord:** https://discord.gg/NMCb5CtG
+- **Email:** social@yielddelta.com
 
 ---
 
