@@ -546,16 +546,16 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
               variant="horizontal-svg"
               size={48}
               animated={false}
-              className="flex-shrink-0 hidden md:block"
+              className="flex-shrink-0 hidden lg:block"
             />
             <Logo
               variant="icon"
               size={48}
               animated={false}
-              className="flex-shrink-0 md:hidden"
+              className="flex-shrink-0 lg:hidden"
             />
           </div>
-          <div className="nav-brand hidden sm:block md:hidden">
+          <div className="nav-brand hidden sm:block lg:hidden">
             <div
               className="font-bold gradient-text"
               style={{

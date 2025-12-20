@@ -8,7 +8,7 @@ export default function TestnetSetupPage() {
 
       <h1 className="text-4xl font-bold mb-8">SEI Testnet Setup Guide</h1>
 
-      <div className="bg-blue-500/10 border-2 border-blue-500/30 p-6 rounded-lg mb-8">
+      <div className="docs-alert-base docs-alert-info mb-8">
         <p className="text-lg font-semibold mb-2">🧪 Yield Delta is Currently on SEI Testnet</p>
         <p className="mb-4">
           Yield Delta is currently deployed on the <strong>SEI Atlantic-2 Testnet</strong>. This means all transactions are for testing purposes only and use testnet tokens with no real value.
@@ -39,7 +39,7 @@ export default function TestnetSetupPage() {
 
       <h3 className="text-xl font-semibold mb-4">Option A: Compass Wallet (Recommended)</h3>
 
-      <div className="bg-muted p-6 rounded-lg mb-6">
+      <div className="docs-glass-card mb-6">
         <p className="mb-4">Compass is the native wallet for SEI Network with built-in testnet support.</p>
 
         <ol className="space-y-3 list-decimal list-inside">
@@ -53,7 +53,7 @@ export default function TestnetSetupPage() {
 
       <h3 className="text-xl font-semibold mb-4">Option B: MetaMask</h3>
 
-      <div className="bg-muted p-6 rounded-lg mb-8">
+      <div className="docs-glass-card mb-8">
         <p className="mb-4">MetaMask is a popular EVM wallet that can be configured for SEI.</p>
 
         <ol className="space-y-3 list-decimal list-inside">
@@ -68,7 +68,7 @@ export default function TestnetSetupPage() {
 
       <h3 className="text-xl font-semibold mb-4">For Compass Wallet</h3>
 
-      <div className="bg-muted p-6 rounded-lg mb-6">
+      <div className="docs-glass-card mb-6">
         <p className="mb-4">Compass has built-in SEI testnet support:</p>
 
         <ol className="space-y-3 list-decimal list-inside">
@@ -78,7 +78,7 @@ export default function TestnetSetupPage() {
           <li>Confirm the network switch</li>
         </ol>
 
-        <div className="mt-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+        <div className="docs-alert-base docs-alert-success mt-4">
           <p className="text-sm">
             ✅ <strong>You&apos;re done!</strong> Compass automatically configured the testnet RPC and chain ID.
           </p>
@@ -87,7 +87,7 @@ export default function TestnetSetupPage() {
 
       <h3 className="text-xl font-semibold mb-4">For MetaMask</h3>
 
-      <div className="bg-muted p-6 rounded-lg mb-6">
+      <div className="docs-glass-card mb-6">
         <p className="mb-4">You need to manually add SEI testnet to MetaMask:</p>
 
         <ol className="space-y-3 list-decimal list-inside mb-4">
@@ -98,7 +98,7 @@ export default function TestnetSetupPage() {
           <li>Enter the following details:</li>
         </ol>
 
-        <div className="border border-border rounded-lg p-4 mb-4">
+        <div className="docs-table-container mb-4">
           <table className="w-full text-sm">
             <tbody>
               <tr className="border-b border-border">
@@ -130,7 +130,7 @@ export default function TestnetSetupPage() {
           <li>Switch to the SEI Atlantic-2 Testnet network</li>
         </ol>
 
-        <div className="mt-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+        <div className="docs-alert-base docs-alert-success mt-4">
           <p className="text-sm">
             ✅ <strong>Success!</strong> Your MetaMask is now configured for SEI testnet.
           </p>
@@ -139,7 +139,7 @@ export default function TestnetSetupPage() {
 
       <h3 className="text-xl font-semibold mb-4">Quick Add via Chainlist</h3>
 
-      <div className="bg-muted p-6 rounded-lg mb-8">
+      <div className="docs-glass-card mb-8">
         <p className="mb-4">
           <strong>Alternative method:</strong> Use Chainlist for one-click network addition
         </p>
@@ -157,7 +157,7 @@ export default function TestnetSetupPage() {
 
       <h3 className="text-xl font-semibold mb-4">SEI Testnet Faucet</h3>
 
-      <div className="bg-muted p-6 rounded-lg mb-6">
+      <div className="docs-glass-card mb-6">
         <p className="mb-4">You need testnet SEI to pay for transaction gas fees:</p>
 
         <ol className="space-y-3 list-decimal list-inside">
@@ -173,7 +173,7 @@ export default function TestnetSetupPage() {
           <li>Check your wallet balance</li>
         </ol>
 
-        <div className="mt-4 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+        <div className="docs-alert-base docs-alert-info mt-4">
           <p className="text-sm">
             💡 <strong>Tip:</strong> The faucet typically provides 1-10 SEI. This is more than enough for testing on Yield Delta.
           </p>
@@ -182,7 +182,7 @@ export default function TestnetSetupPage() {
 
       <h3 className="text-xl font-semibold mb-4">Additional Test Tokens</h3>
 
-      <div className="bg-muted p-6 rounded-lg mb-8">
+      <div className="docs-glass-card mb-8">
         <p className="mb-4">For full testing, you may want testnet versions of other tokens:</p>
 
         <ul className="space-y-2">
@@ -201,7 +201,7 @@ export default function TestnetSetupPage() {
 
       <h2 className="text-2xl font-semibold mb-4">✅ Step 4: Connect to Yield Delta</h2>
 
-      <div className="bg-muted p-6 rounded-lg mb-6">
+      <div className="docs-glass-card mb-6">
         <p className="mb-4">Now you&apos;re ready to use Yield Delta on testnet:</p>
 
         <ol className="space-y-3 list-decimal list-inside">
@@ -212,7 +212,7 @@ export default function TestnetSetupPage() {
           <li>Ensure you&apos;re on the SEI Atlantic-2 Testnet</li>
         </ol>
 
-        <div className="mt-4 p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+        <div className="docs-alert-base docs-alert-success mt-4">
           <p className="text-sm">
             🎉 <strong>You&apos;re connected!</strong> You should see your wallet address and testnet SEI balance in the navigation bar.
           </p>
@@ -222,7 +222,7 @@ export default function TestnetSetupPage() {
       <h2 className="text-2xl font-semibold mb-4">🚀 Next Steps</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <div className="border border-border p-6 rounded-lg">
+        <div className="docs-nav-card">
           <h3 className="font-semibold mb-2">📊 Explore Vaults</h3>
           <p className="text-sm text-muted-foreground mb-4">
             Browse available yield strategies and deposit testnet tokens
@@ -232,7 +232,7 @@ export default function TestnetSetupPage() {
           </a>
         </div>
 
-        <div className="border border-border p-6 rounded-lg">
+        <div className="docs-nav-card">
           <h3 className="font-semibold mb-2">🧠 Try AI Rebalancing</h3>
           <p className="text-sm text-muted-foreground mb-4">
             Let AI optimize your portfolio for maximum returns
@@ -242,7 +242,7 @@ export default function TestnetSetupPage() {
           </a>
         </div>
 
-        <div className="border border-border p-6 rounded-lg">
+        <div className="docs-nav-card">
           <h3 className="font-semibold mb-2">💬 Chat with Kairos</h3>
           <p className="text-sm text-muted-foreground mb-4">
             Ask our AI assistant about DeFi strategies
@@ -252,7 +252,7 @@ export default function TestnetSetupPage() {
           </p>
         </div>
 
-        <div className="border border-border p-6 rounded-lg">
+        <div className="docs-nav-card">
           <h3 className="font-semibold mb-2">📈 View Dashboard</h3>
           <p className="text-sm text-muted-foreground mb-4">
             Track your portfolio performance and analytics
@@ -266,7 +266,7 @@ export default function TestnetSetupPage() {
       <h2 className="text-2xl font-semibold mb-4">🔍 Troubleshooting</h2>
 
       <div className="space-y-4 mb-8">
-        <div className="border border-border p-4 rounded-lg">
+        <div className="docs-trouble-card">
           <p className="font-semibold mb-2">❌ Wallet won&apos;t connect</p>
           <ul className="text-sm space-y-1 ml-4">
             <li>• Ensure you&apos;re on the SEI Atlantic-2 Testnet (Chain ID: 1328)</li>
@@ -276,7 +276,7 @@ export default function TestnetSetupPage() {
           </ul>
         </div>
 
-        <div className="border border-border p-4 rounded-lg">
+        <div className="docs-trouble-card">
           <p className="font-semibold mb-2">❌ Transaction fails with &quot;insufficient funds&quot;</p>
           <ul className="text-sm space-y-1 ml-4">
             <li>• Request more testnet SEI from the faucet</li>
@@ -285,7 +285,7 @@ export default function TestnetSetupPage() {
           </ul>
         </div>
 
-        <div className="border border-border p-4 rounded-lg">
+        <div className="docs-trouble-card">
           <p className="font-semibold mb-2">❌ Network mismatch error</p>
           <ul className="text-sm space-y-1 ml-4">
             <li>• Open your wallet and manually switch to SEI Atlantic-2</li>
@@ -294,7 +294,7 @@ export default function TestnetSetupPage() {
           </ul>
         </div>
 
-        <div className="border border-border p-4 rounded-lg">
+        <div className="docs-trouble-card">
           <p className="font-semibold mb-2">❌ Faucet not working</p>
           <ul className="text-sm space-y-1 ml-4">
             <li>• Try an alternative faucet link</li>
@@ -307,21 +307,21 @@ export default function TestnetSetupPage() {
       <h2 className="text-2xl font-semibold mb-4">ℹ️ Important Notes</h2>
 
       <div className="space-y-4 mb-8">
-        <div className="bg-yellow-500/10 border border-yellow-500/30 p-4 rounded-lg">
+        <div className="docs-alert-base docs-alert-warning">
           <p className="font-semibold mb-2">⚠️ Testnet Tokens Have No Value</p>
           <p className="text-sm">
             All tokens on testnet are for testing only. They cannot be traded for real money and have no monetary value. Never send mainnet tokens to testnet addresses!
           </p>
         </div>
 
-        <div className="bg-blue-500/10 border border-blue-500/30 p-4 rounded-lg">
+        <div className="docs-alert-base docs-alert-info">
           <p className="font-semibold mb-2">🔄 Testnet Can Be Reset</p>
           <p className="text-sm">
             Testnets may be periodically reset, causing all balances and transactions to be wiped. This is normal and expected behavior.
           </p>
         </div>
 
-        <div className="bg-purple-500/10 border border-purple-500/30 p-4 rounded-lg">
+        <div className="docs-alert-base docs-alert-purple">
           <p className="font-semibold mb-2">🚀 Mainnet Coming Soon</p>
           <p className="text-sm">
             Yield Delta will launch on SEI mainnet in the future. When that happens, we&apos;ll update this guide with mainnet instructions. Stay tuned!
