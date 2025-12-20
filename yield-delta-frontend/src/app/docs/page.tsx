@@ -62,7 +62,7 @@ export default function DocsHomePage() {
       </ul>
 
       {/* Investor Highlight Section - IL Reduction Proof */}
-      <div className="docs-premium-card mb-8">
+      <div className="docs-premium-card docs-investor-badge mb-8">
         <div className="absolute top-4 right-4">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-sm font-medium">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
@@ -126,7 +126,7 @@ export default function DocsHomePage() {
           </li>
         </ul>
 
-        <div className="p-4 rounded-lg bg-gradient-to-r from-cyan-500/10 to-teal-500/10 border border-cyan-500/30">
+        <div className="docs-backtest-alert">
           <p className="text-sm">
             <strong className="text-cyan-400">Backtested Performance:</strong> Over 6 months of historical data across major pairs (ETH/USDC, WBTC/ETH, etc.) shows consistent 68-70% IL reduction compared to standard V3 positions with identical capital allocation.
           </p>

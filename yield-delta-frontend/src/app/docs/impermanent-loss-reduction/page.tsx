@@ -144,8 +144,8 @@ export default function ImpermanentLossReductionPage() {
       {/* Comparison Table */}
       <h2 className="text-3xl font-bold mb-6">Traditional AMM vs Yield Delta</h2>
 
-      <div className="overflow-x-auto mb-8">
-        <table className="w-full border-collapse">
+      <div className="docs-comparison-table">
+        <table>
           <thead>
             <tr className="border-b border-white/10">
               <th className="text-left py-4 px-4">Metric</th>
@@ -192,18 +192,18 @@ export default function ImpermanentLossReductionPage() {
       {/* Mathematical Proof */}
       <h2 className="text-3xl font-bold mb-6">Mathematical Foundation</h2>
 
-      <div className="docs-metric-card mb-8 font-mono text-sm">
-        <p className="mb-4 text-cyan-400 font-sans">{/* Impermanent Loss Formula (Traditional) */}</p>
-        <p className="mb-2">IL_traditional = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1</p>
+      <div className="docs-math-card">
+        <p className="mb-4 text-cyan-400 font-sans text-base font-semibold">Impermanent Loss Formula (Traditional)</p>
+        <p className="mb-2 text-base">IL_traditional = 2 * sqrt(price_ratio) / (1 + price_ratio) - 1</p>
 
-        <p className="mb-4 mt-6 text-cyan-400 font-sans">{/* Yield Delta IL with Hedging */}</p>
-        <p className="mb-2">IL_yielddelta = IL_traditional * (1 - hedge_efficiency) * volatility_factor</p>
+        <p className="mb-4 mt-6 text-cyan-400 font-sans text-base font-semibold">Yield Delta IL with Hedging</p>
+        <p className="mb-2 text-base">IL_yielddelta = IL_traditional * (1 - hedge_efficiency) * volatility_factor</p>
 
-        <p className="mb-2 mt-4 font-sans">Where:</p>
-        <p className="mb-2 ml-4">hedge_efficiency = 0.68-0.70 (68-70%)</p>
-        <p className="mb-2 ml-4">volatility_factor = dynamic_range_adjustment(σ, μ, t)</p>
+        <p className="mb-2 mt-4 font-sans text-base font-semibold text-white">Where:</p>
+        <p className="mb-2 ml-4 text-base">hedge_efficiency = 0.68-0.70 (68-70%)</p>
+        <p className="mb-2 ml-4 text-base">volatility_factor = dynamic_range_adjustment(σ, μ, t)</p>
 
-        <p className="mt-6 text-green-400 font-sans">{/* Result: 68-70% reduction in IL exposure */}</p>
+        <p className="mt-6 text-green-400 font-sans text-base font-semibold">Result: 68-70% reduction in IL exposure</p>
       </div>
 
       {/* Risk Disclosure */}
@@ -255,15 +255,11 @@ export default function ImpermanentLossReductionPage() {
         <p className="text-lg text-muted-foreground mb-6">
           Join thousands of LPs already protecting their capital with Yield Delta&apos;s AI vaults
         </p>
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-center flex-wrap">
           <Link href="/vaults">
             <Button
               size="lg"
-              className="gap-2"
-              style={{
-                background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.9), rgba(20, 184, 166, 0.9))',
-                border: '1px solid rgba(6, 182, 212, 0.3)',
-              }}
+              className="docs-cta-button-large gap-2"
             >
               Explore Vaults
             </Button>
@@ -272,10 +268,7 @@ export default function ImpermanentLossReductionPage() {
             <Button
               size="lg"
               variant="outline"
-              className="gap-2"
-              style={{
-                border: '1px solid rgba(6, 182, 212, 0.3)',
-              }}
+              className="docs-cta-button-outline-large gap-2"
             >
               Read Whitepaper
             </Button>
