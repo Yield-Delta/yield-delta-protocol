@@ -62,9 +62,9 @@ export default function DocsHomePage() {
       </ul>
 
       {/* Investor Highlight Section - IL Reduction Proof */}
-      <div className="docs-premium-card docs-investor-badge mb-8 relative">
-        <div className="absolute">
-          <span className="inline-flex items-center gap-2.5 px-6 py-3 rounded-full bg-cyan-500/10 text-cyan-400 text-sm font-bold">
+      <div className="docs-premium-card docs-investor-badge mb-8">
+        <div className="mb-6">
+          <span className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-cyan-500/10 text-cyan-400 text-sm font-bold">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
             Investor Highlight
           </span>
