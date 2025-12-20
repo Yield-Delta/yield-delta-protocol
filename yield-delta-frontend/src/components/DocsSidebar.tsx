@@ -44,7 +44,7 @@ const navigation: NavItem[] = [
   },
   {
     title: 'API Reference',
-    href: '/docs/api',
+    href: '/docs/api-reference',
   },
   {
     title: 'Deployment',

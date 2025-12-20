@@ -1,4 +1,4 @@
-import { permanentRedirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export const metadata = {
   title: 'API Documentation - Yield Delta',
@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function APIRedirectPage() {
-  permanentRedirect('/docs/api-reference');
+  redirect('/docs/api-reference');
 }
