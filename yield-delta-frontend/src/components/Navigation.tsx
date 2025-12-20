@@ -578,13 +578,13 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
                 variant="horizontal-svg"
                 size={48}
                 animated={false}
-                className="flex-shrink-0 nav-logo-desktop"
+                className="nav-logo-desktop"
               />
               <Logo
                 variant="icon"
                 size={48}
                 animated={false}
-                className="flex-shrink-0 nav-logo-mobile"
+                className="nav-logo-mobile"
               />
             </div>
           </Link>

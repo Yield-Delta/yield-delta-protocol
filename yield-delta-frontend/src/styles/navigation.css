@@ -72,10 +72,10 @@ nav {
   margin: 0 !important;
   padding: 0 !important;
   isolation: isolate !important;
-  background-color: hsl(var(--background) / 0.95) !important;
+  background-color: rgba(15, 23, 42, 0.95) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border-bottom: 1px solid hsl(var(--border) / 0.3);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
 }
 
 nav .simple-nav-container {

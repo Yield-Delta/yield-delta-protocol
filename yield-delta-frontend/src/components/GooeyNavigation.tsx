@@ -60,8 +60,8 @@ export function GooeyNavigation() {
           className="flex items-center gap-1 px-3 py-2 rounded-full backdrop-blur-xl"
           style={{
             filter: 'url(#gooey-effect)',
-            background: 'rgba(15, 23, 42, 0.6)',
-            border: '1px solid rgba(99, 102, 241, 0.2)',
+            background: 'rgba(15, 23, 42, 0.8)',
+            border: '1px solid rgba(6, 182, 212, 0.25)',
             maxWidth: '100%',
             overflow: 'visible',
           }}
@@ -74,7 +74,7 @@ export function GooeyNavigation() {
             return (
               <Link key={item.href} href={item.href}>
                 <motion.div
-                  className="relative px-3 py-2 rounded-full cursor-pointer whitespace-nowrap"
+                  className="relative px-4 py-2 rounded-full cursor-pointer whitespace-nowrap"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   layout
@@ -84,8 +84,8 @@ export function GooeyNavigation() {
                       layoutId="active-pill"
                       className="absolute inset-0 rounded-full"
                       style={{
-                        background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(139, 92, 246, 0.3) 100%)',
-                        boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), 0 0 40px rgba(139, 92, 246, 0.3)',
+                        background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(20, 184, 166, 0.3) 100%)',
+                        boxShadow: '0 0 20px rgba(6, 182, 212, 0.5), 0 0 40px rgba(20, 184, 166, 0.4)',
                       }}
                       transition={{
                         type: 'spring',
@@ -99,8 +99,8 @@ export function GooeyNavigation() {
                     <span
                       className={`text-sm font-medium ${
                         isActive
-                          ? 'bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent'
-                          : 'text-gray-300'
+                          ? 'bg-gradient-to-r from-cyan-400 to-teal-400 bg-clip-text text-transparent'
+                          : 'text-gray-200'
                       }`}
                     >
                       {item.label}
@@ -118,8 +118,8 @@ export function GooeyNavigation() {
         <motion.button
           className="relative w-14 h-14 rounded-full flex items-center justify-center"
           style={{
-            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.8) 0%, rgba(139, 92, 246, 0.8) 100%)',
-            boxShadow: '0 4px 20px rgba(6, 182, 212, 0.4), 0 8px 40px rgba(139, 92, 246, 0.3)',
+            background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.8) 0%, rgba(20, 184, 166, 0.8) 100%)',
+            boxShadow: '0 4px 20px rgba(6, 182, 212, 0.5), 0 8px 40px rgba(20, 184, 166, 0.4)',
             filter: 'url(#gooey-effect)',
           }}
           whileHover={{ scale: 1.1 }}
@@ -193,11 +193,11 @@ export function GooeyNavigation() {
                         className="relative flex items-center gap-3 px-4 py-3 rounded-full min-w-[140px]"
                         style={{
                           background: isActive
-                            ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.8) 0%, rgba(139, 92, 246, 0.8) 100%)'
+                            ? 'linear-gradient(135deg, rgba(6, 182, 212, 0.8) 0%, rgba(20, 184, 166, 0.8) 100%)'
                             : 'rgba(15, 23, 42, 0.9)',
-                          border: `1px solid ${isActive ? 'rgba(6, 182, 212, 0.5)' : 'rgba(99, 102, 241, 0.3)'}`,
+                          border: `1px solid ${isActive ? 'rgba(6, 182, 212, 0.5)' : 'rgba(6, 182, 212, 0.25)'}`,
                           boxShadow: isActive
-                            ? '0 4px 20px rgba(6, 182, 212, 0.3)'
+                            ? '0 4px 20px rgba(6, 182, 212, 0.4)'
                             : '0 2px 10px rgba(0, 0, 0, 0.3)',
                         }}
                         whileHover={{ scale: 1.05, x: -5 }}
