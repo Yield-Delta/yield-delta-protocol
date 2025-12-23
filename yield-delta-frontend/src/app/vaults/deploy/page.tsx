@@ -229,7 +229,7 @@ const DeployVaultPage = () => {
       <Navigation variant="dark" showWallet={true} showLaunchApp={false} />
       
       {/* Header - Enhanced */}
-      <div className="relative z-10" style={{ paddingTop: '3.5rem' }}>
+      <div className="relative z-10" style={{ paddingTop: '1.5rem' }}>
         <div 
           className="border-b border-white/10 backdrop-blur-xl mb-8" 
           style={{

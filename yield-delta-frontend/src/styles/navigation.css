@@ -122,6 +122,29 @@ nav .nav-center-links {
   z-index: 5;
 }
 
+/* Ensure GooeyNav container fits properly */
+nav .nav-center-links .gooey-nav-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Override text transform for GooeyNav items */
+nav .nav-center-links .gooey-nav-container nav ul li a {
+  text-transform: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-decoration: none !important;
+}
+
+/* Remove any underline effects from GooeyNav */
+nav .nav-center-links .gooey-nav-container nav ul li a::after,
+nav .nav-center-links .gooey-nav-container nav ul li a::before {
+  display: none !important;
+}
+
 /* === Mobile Navigation Overrides (outside @layer for higher specificity) === */
 
 /* Hide center links on mobile - must be outside @layer with !important */
@@ -154,6 +177,42 @@ nav .nav-center-links {
   nav .wallet-container {
     display: flex !important;
   }
+}
+
+/* Force Launch App button to use correct gradient */
+nav .nav-right-simple a.btn-cyber,
+nav .nav-right-simple .btn-cyber {
+  background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+  color: hsl(216 100% 4%) !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  box-shadow:
+    0 0 20px hsl(180 100% 48% / 0.4),
+    0 0 40px hsl(180 100% 48% / 0.15) !important;
+}
+
+nav .nav-right-simple a.btn-cyber:hover,
+nav .nav-right-simple .btn-cyber:hover {
+  background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow:
+    0 0 30px hsl(180 100% 48% / 0.5),
+    0 0 60px hsl(180 100% 48% / 0.2) !important;
+}
+
+/* Also ensure Connect Wallet button uses the same gradient */
+nav .wallet-container button.btn-cyber,
+nav .wallet-container-override button.btn-cyber {
+  background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+  color: hsl(216 100% 4%) !important;
+  border: none !important;
+}
+
+nav .wallet-container button.btn-cyber:hover,
+nav .wallet-container-override button.btn-cyber:hover {
+  background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+  transform: translateY(-2px) scale(1.05) !important;
 }
 
 /* === Desktop Navigation Overrides (must come AFTER mobile rules) === */

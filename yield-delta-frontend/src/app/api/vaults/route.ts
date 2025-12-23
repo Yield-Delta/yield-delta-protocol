@@ -183,21 +183,34 @@ export async function GET(request: NextRequest) {
       filteredVaults = filteredVaults.filter(vault => vault.active === isActive)
     }
 
-    return NextResponse.json({
-      success: true,
-      data: filteredVaults,
-      count: filteredVaults.length,
-      chainId: 1328
-    })
+    return NextResponse.json(
+      {
+        success: true,
+        data: filteredVaults,
+        count: filteredVaults.length,
+        chainId: 1328
+      },
+      {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    )
   } catch (error) {
     console.error('Error fetching vaults:', error)
     return NextResponse.json(
-      { 
-        success: false, 
+      {
+        success: false,
         error: 'Failed to fetch vaults',
         chainId: 1328
       },
-      { status: 500 }
+      {
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
     )
   }
 }

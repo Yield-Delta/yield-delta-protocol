@@ -648,7 +648,7 @@ const ChartsPage = () => {
       <Navigation variant="dark" showWallet={true} showLaunchApp={false} />
 
       {/* Main Content */}
-      <div className="relative z-10" style={{ paddingTop: '3.5rem' }}>
+      <div className="relative z-10" style={{ paddingTop: '1.5rem' }}>
         {/* Header */}
         <div
           className="border-b border-white/10"

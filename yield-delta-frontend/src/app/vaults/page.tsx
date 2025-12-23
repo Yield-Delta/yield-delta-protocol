@@ -347,7 +347,7 @@ export default function VaultsPage() {
       <DemoBanner />
 
       {/* Live Stats Ticker - Positioned right after navigation */}
-      <div className="relative z-10" style={{ paddingTop: '3.5rem' }}>
+      <div className="relative z-10" style={{ paddingTop: '1.5rem' }}>
         <div className="w-full" style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.25rem', marginTop: '0.125rem' }}>
           <div 
             ref={statsRef}

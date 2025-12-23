@@ -1,14 +1,15 @@
 'use client'
 
-import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
+import React, { useEffect, useRef, useState, useCallback, memo, useMemo } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { usePathname } from 'next/navigation';
 import Logo from './Logo';
 import { gsap } from 'gsap';
 import { Menu, X, Vault, TrendingUp, Target, PieChart, RefreshCw, BookOpen, Rocket, CandlestickChart, AlertTriangle } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { isTestnetChain } from '@/lib/chainUtils';
-import { GooeyNavigation } from './GooeyNavigation';
+import GooeyNav  from './GooeyNavigation';
 
 const WalletConnectButton = dynamic(
   () => import('./WalletConnectButton').then(mod => ({ default: mod.WalletConnectButton })),
@@ -202,6 +203,7 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
   const hamburgerButtonRef = useRef<HTMLButtonElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const pathname = usePathname();
 
   // Viewport detection to prevent hamburger rendering at 900px+
   // CRITICAL: Initialize to null to prevent hydration mismatch
@@ -605,7 +607,20 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
         {/* CENTER - Gooey Navigation (only show when inside app, hidden on mobile via CSS) */}
         {!showLaunchApp && (
           <div className="nav-center-links">
-            <GooeyNavigation />
+            <GooeyNav
+              items={NAV_LINKS.map(link => ({
+                label: link.label,
+                href: link.href
+              }))}
+              particleCount={15}
+              particleDistances={[90, 10]}
+              particleR={100}
+              initialActiveIndex={NAV_LINKS.findIndex(link => link.href === pathname) >= 0 ? NAV_LINKS.findIndex(link => link.href === pathname) : 0}
+              animationTime={600}
+              timeVariance={300}
+              colors={[1, 2, 3, 1, 2, 3, 1, 4]}
+            />
+
           </div>
         )}
 

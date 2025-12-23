@@ -76,8 +76,39 @@ export const useVaults = (filters?: { strategy?: string; active?: boolean }) => 
           throw new Error(`Failed to fetch vaults: ${response.status} ${response.statusText}${errorText ? ` - ${errorText}` : ''}`)
         }
 
-        const result: VaultResponse = await response.json()
-        console.log('[useVaults] API response:', result);
+        // Check if response has content
+        const contentLength = response.headers.get('content-length');
+        const contentType = response.headers.get('content-type');
+
+        console.log('[useVaults] Response headers:', {
+          contentLength,
+          contentType
+        });
+
+        // Read response as text first to handle empty responses
+        const responseText = await response.text();
+        console.log('[useVaults] Response text length:', responseText.length);
+        console.log('[useVaults] Response text preview:', responseText.substring(0, 200));
+
+        // Handle empty response
+        if (!responseText || responseText.trim().length === 0) {
+          console.warn('[useVaults] Empty response received, returning empty array');
+          return [];
+        }
+
+        // Try to parse JSON
+        let result: VaultResponse;
+        try {
+          result = JSON.parse(responseText);
+          console.log('[useVaults] Successfully parsed JSON response:', result);
+        } catch (parseError) {
+          console.error('[useVaults] JSON parse error:', parseError);
+          console.error('[useVaults] Failed to parse response text:', responseText);
+
+          // Return empty array as fallback
+          console.warn('[useVaults] Returning empty array due to parse error');
+          return [];
+        }
 
         if (!result.success) {
           throw new Error(result.error || 'Failed to fetch vaults')
@@ -157,7 +188,23 @@ export const useVault = (address: string) => {
         throw new Error(`Failed to fetch vault: ${response.status} ${response.statusText}${errorText ? ` - ${errorText}` : ''}`)
       }
 
-      const result = await response.json()
+      // Read response as text first to handle empty responses
+      const responseText = await response.text();
+
+      // Handle empty response
+      if (!responseText || responseText.trim().length === 0) {
+        throw new Error('Empty response received from server')
+      }
+
+      // Try to parse JSON
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('[useVault] JSON parse error:', parseError);
+        console.error('[useVault] Failed to parse response text:', responseText);
+        throw new Error('Invalid JSON response from server');
+      }
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch vault')
