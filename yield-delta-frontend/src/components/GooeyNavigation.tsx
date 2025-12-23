@@ -250,7 +250,9 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
         case 'Enter':
         case ' ':
           e.preventDefault();
-          handleClick(e as any, currentIndex);
+          // Trigger a programmatic click instead of casting event types
+          const currentElement = e.currentTarget;
+          currentElement.click();
           break;
         case 'ArrowRight':
         case 'ArrowDown':
