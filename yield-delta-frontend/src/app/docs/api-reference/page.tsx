@@ -1217,8 +1217,3 @@ console.log('Deposited successfully!');`} />
     </div>
   );
 }
-
-export const metadata = {
-  title: 'API Reference - Yield Delta Documentation',
-  description: 'Complete API reference for Yield Delta - AI-powered yield optimization on SEI Network',
-};
