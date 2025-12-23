@@ -1,18 +1,9 @@
-'use client'
-
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 import { CodeBlock } from '@/components/docs/CodeBlock'
-import { Shield, Zap, Lock, TrendingUp, CheckCircle, ExternalLink, Copy, Check } from 'lucide-react'
-import { useState } from 'react'
+import { Shield, Zap, Lock, TrendingUp, CheckCircle, ExternalLink } from 'lucide-react'
+import { CopyButton } from '@/components/docs/CopyButton'
 
 export default function SmartContractsPage() {
-  const [copiedAddress, setCopiedAddress] = useState<string | null>(null)
-
-  const handleCopyAddress = async (address: string) => {
-    await navigator.clipboard.writeText(address)
-    setCopiedAddress(address)
-    setTimeout(() => setCopiedAddress(null), 2000)
-  }
 
   return (
     <div className="docs-content">
@@ -240,24 +231,14 @@ export default function SmartContractsPage() {
                       >
                         {contract.address}
                       </code>
-                      <button
-                        onClick={() => handleCopyAddress(contract.address)}
-                        className="p-2 rounded-lg transition-all duration-300"
+                      <CopyButton
+                        text={contract.address}
+                        className="transition-all duration-300"
                         style={{
-                          background: copiedAddress === contract.address
-                            ? 'rgba(16, 185, 129, 0.15)'
-                            : 'rgba(255, 255, 255, 0.05)',
-                          border: copiedAddress === contract.address
-                            ? '1px solid rgba(16, 185, 129, 0.4)'
-                            : `1px solid ${colors.border}`,
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          border: `1px solid ${colors.border}`,
                         }}
-                      >
-                        {copiedAddress === contract.address ? (
-                          <Check className="w-4 h-4 text-green-400" />
-                        ) : (
-                          <Copy className="w-4 h-4 text-gray-400" />
-                        )}
-                      </button>
+                      />
                     </div>
                   </div>
                 </div>
@@ -980,24 +961,14 @@ console.log('New vault deployed at:', vaultAddress);`} />
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
-                        <button
-                          onClick={() => handleCopyAddress(contract.address)}
-                          className="p-2 rounded-lg transition-all duration-300"
+                        <CopyButton
+                          text={contract.address}
+                          className="transition-all duration-300"
                           style={{
-                            background: copiedAddress === contract.address
-                              ? 'rgba(16, 185, 129, 0.15)'
-                              : 'rgba(255, 255, 255, 0.05)',
-                            border: copiedAddress === contract.address
-                              ? '1px solid rgba(16, 185, 129, 0.4)'
-                              : '1px solid rgba(59, 130, 246, 0.3)',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: '1px solid rgba(59, 130, 246, 0.3)',
                           }}
-                        >
-                          {copiedAddress === contract.address ? (
-                            <Check className="w-4 h-4 text-green-400" />
-                          ) : (
-                            <Copy className="w-4 h-4 text-blue-400" />
-                          )}
-                        </button>
+                        />
                         <a
                           href={`https://seitrace.com/address/${contract.address}?chain=atlantic-2`}
                           target="_blank"
