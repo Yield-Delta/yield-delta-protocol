@@ -10,6 +10,82 @@ interface CodeBlockProps {
   showLineNumbers?: boolean
 }
 
+// Syntax highlighting function
+function highlightCode(code: string, language: string): string {
+  const patterns: Record<string, { pattern: RegExp; replacement: string }[]> = {
+    javascript: [
+      // Comments
+      { pattern: /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm, replacement: '<span style="color: #6b7280; font-style: italic;">$1</span>' },
+      // Strings (single and double quotes)
+      { pattern: /(['"`])((?:\\.|[^\\])*?)\1/g, replacement: '<span style="color: #34d399;">$1$2$1</span>' },
+      // Keywords
+      { pattern: /\b(const|let|var|function|async|await|return|if|else|for|while|do|break|continue|switch|case|default|try|catch|finally|throw|new|typeof|instanceof|this|super|class|extends|import|export|from|default|as|null|undefined|true|false)\b/g, replacement: '<span style="color: #a78bfa;">$1</span>' },
+      // Numbers
+      { pattern: /\b(\d+\.?\d*)\b/g, replacement: '<span style="color: #fb923c;">$1</span>' },
+      // Functions (word followed by parenthesis)
+      { pattern: /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, replacement: '<span style="color: #60a5fa;">$1</span>' },
+      // Properties (after a dot)
+      { pattern: /\.([a-zA-Z_$][a-zA-Z0-9_$]*)/g, replacement: '.<span style="color: #22d3ee;">$1</span>' },
+      // Methods
+      { pattern: /\b(console|window|document|navigator|Math|JSON|Object|Array|String|Number|Boolean|Date|Promise)\b/g, replacement: '<span style="color: #f472b6;">$1</span>' },
+    ],
+    typescript: [
+      // Comments
+      { pattern: /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm, replacement: '<span style="color: #6b7280; font-style: italic;">$1</span>' },
+      // Strings
+      { pattern: /(['"`])((?:\\.|[^\\])*?)\1/g, replacement: '<span style="color: #34d399;">$1$2$1</span>' },
+      // Keywords
+      { pattern: /\b(const|let|var|function|async|await|return|if|else|for|while|do|break|continue|switch|case|default|try|catch|finally|throw|new|typeof|instanceof|this|super|class|extends|implements|interface|type|enum|namespace|import|export|from|default|as|null|undefined|true|false|public|private|protected|readonly|static)\b/g, replacement: '<span style="color: #a78bfa;">$1</span>' },
+      // Numbers
+      { pattern: /\b(\d+\.?\d*)\b/g, replacement: '<span style="color: #fb923c;">$1</span>' },
+      // Types
+      { pattern: /:\s*([A-Z][a-zA-Z0-9_]*|string|number|boolean|void|any|unknown|never|object)\b/g, replacement: ': <span style="color: #fbbf24;">$1</span>' },
+      // Functions
+      { pattern: /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, replacement: '<span style="color: #60a5fa;">$1</span>' },
+      // Properties
+      { pattern: /\.([a-zA-Z_$][a-zA-Z0-9_$]*)/g, replacement: '.<span style="color: #22d3ee;">$1</span>' },
+    ],
+    json: [
+      // Property keys
+      { pattern: /"([^"]+)":/g, replacement: '<span style="color: #60a5fa;">"$1"</span>:' },
+      // String values
+      { pattern: /:\s*"([^"]*)"/g, replacement: ': <span style="color: #34d399;">"$1"</span>' },
+      // Numbers
+      { pattern: /:\s*(-?\d+\.?\d*)/g, replacement: ': <span style="color: #fb923c;">$1</span>' },
+      // Booleans and null
+      { pattern: /\b(true|false|null)\b/g, replacement: '<span style="color: #a78bfa;">$1</span>' },
+      // Brackets and braces
+      { pattern: /([{}\[\]])/g, replacement: '<span style="color: #94a3b8;">$1</span>' },
+    ],
+    solidity: [
+      // Comments
+      { pattern: /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm, replacement: '<span style="color: #6b7280; font-style: italic;">$1</span>' },
+      // Strings
+      { pattern: /(['"])((?:\\.|[^\\])*?)\1/g, replacement: '<span style="color: #34d399;">$1$2$1</span>' },
+      // Keywords
+      { pattern: /\b(pragma|solidity|contract|interface|library|struct|enum|event|function|modifier|constructor|fallback|receive|external|public|internal|private|pure|view|payable|returns|return|if|else|for|while|do|break|continue|throw|emit|new|delete|this|super|import|from|as|is|memory|storage|calldata|indexed)\b/g, replacement: '<span style="color: #a78bfa;">$1</span>' },
+      // Types
+      { pattern: /\b(uint256|uint128|uint64|uint32|uint16|uint8|int256|int|address|bool|bytes32|bytes|string|mapping)\b/g, replacement: '<span style="color: #fbbf24;">$1</span>' },
+      // Numbers
+      { pattern: /\b(\d+\.?\d*)\b/g, replacement: '<span style="color: #fb923c;">$1</span>' },
+      // Functions
+      { pattern: /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, replacement: '<span style="color: #60a5fa;">$1</span>' },
+      // Properties
+      { pattern: /\.([a-zA-Z_$][a-zA-Z0-9_$]*)/g, replacement: '.<span style="color: #22d3ee;">$1</span>' },
+    ]
+  }
+
+  let highlighted = code
+  const languagePatterns = patterns[language] || patterns.javascript
+
+  // Apply patterns in order
+  languagePatterns.forEach(({ pattern, replacement }) => {
+    highlighted = highlighted.replace(pattern, replacement)
+  })
+
+  return highlighted
+}
+
 export function CodeBlock({ code, language = 'typescript', title, showLineNumbers = false }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
 
@@ -20,6 +96,7 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
   }
 
   const lines = code.split('\n')
+  const highlightedCode = highlightCode(code, language)
 
   return (
     <div className="code-block-wrapper group relative my-6">
@@ -113,15 +190,20 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
                       <td className="pr-4 text-right select-none" style={{ color: 'rgba(148, 163, 184, 0.4)' }}>
                         {index + 1}
                       </td>
-                      <td className="text-slate-200">
-                        {line || '\n'}
-                      </td>
+                      <td
+                        className="text-slate-200"
+                        dangerouslySetInnerHTML={{
+                          __html: highlightCode(line, language) || '<br/>'
+                        }}
+                      />
                     </tr>
                   ))}
                 </tbody>
               </table>
             ) : (
-              <span className="text-slate-200">{code}</span>
+              <span
+                dangerouslySetInnerHTML={{ __html: highlightedCode }}
+              />
             )}
           </code>
         </pre>

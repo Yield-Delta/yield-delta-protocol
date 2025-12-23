@@ -481,7 +481,9 @@ nav .wallet-container {
 
   @media (max-width: 899px) {
     nav .simple-nav-container {
-      padding: 0 0.75rem;
+      padding: 0 1rem;
+      overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .nav-brand {
@@ -501,6 +503,8 @@ nav .wallet-container {
     /* Mobile: Show wallet and hamburger */
     nav .nav-right-simple {
       gap: 0.5rem;
+      padding-right: 0.25rem;
+      overflow: visible;
     }
 
     nav .wallet-container {
@@ -509,19 +513,25 @@ nav .wallet-container {
 
     nav .mobile-menu-btn {
       order: 2;
+      margin-right: 0;
+      flex-shrink: 0;
     }
   }
 
   @media (max-width: 640px) {
     nav .simple-nav-container {
-      padding: 0 0.75rem;
+      padding: 0 1rem;
       gap: 0.5rem;
+      overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .nav-right-simple {
       gap: 0.4rem;
-      flex-shrink: 1;
-      min-width: 0;
+      flex-shrink: 0;
+      min-width: auto;
+      padding-right: 0.25rem;
+      overflow: visible;
     }
 
     nav .wallet-container {
@@ -542,11 +552,15 @@ nav .wallet-container {
 
   @media (max-width: 480px) {
     nav .simple-nav-container {
-      padding: 0 0.5rem;
+      padding: 0 0.75rem;
+      overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .nav-right-simple {
       gap: 0.35rem;
+      padding-right: 0.25rem;
+      overflow: visible;
     }
 
     nav .btn-cyber {
@@ -554,6 +568,11 @@ nav .wallet-container {
       min-width: 0;
       max-width: 140px;
       font-size: 0.7rem;
+    }
+
+    nav .mobile-menu-btn {
+      margin-right: 0;
+      flex-shrink: 0;
     }
   }
 
