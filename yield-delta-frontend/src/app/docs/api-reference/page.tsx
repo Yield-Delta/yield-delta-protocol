@@ -1,3 +1,5 @@
+'use client'
+
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 import { CodeBlock } from '@/components/docs/CodeBlock'
 import { Database, Code, Zap, Shield, TrendingUp, Link as LinkIcon, Terminal } from 'lucide-react'
