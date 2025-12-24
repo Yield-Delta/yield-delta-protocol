@@ -4,9 +4,8 @@ import { Shield, Zap, Lock, TrendingUp, CheckCircle, ExternalLink } from 'lucide
 import { CopyButton } from '@/components/docs/CopyButton'
 
 export default function SmartContractsPage() {
-
   return (
-    <div className="docs-content">
+    <div className="docs-content rounded-2xl">
       <DocsBackButton />
 
       {/* Hero Section with Gradient */}

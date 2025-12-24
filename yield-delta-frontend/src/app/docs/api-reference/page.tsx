@@ -6,7 +6,7 @@ import { Database, Code, Zap, Shield, TrendingUp, Link as LinkIcon, Terminal } f
 
 export default function APIReferencePage() {
   return (
-    <div className="docs-content">
+    <div className="docs-content rounded-2xl">
       <DocsBackButton />
 
       {/* Hero Section with Gradient */}
