@@ -56,7 +56,7 @@ export default function FeaturesPage() {
         </a>
       </p>
 
-      <h2 className="text-2xl font-semibold mb-4">💬 Liqui Chat Assistant</h2>
+      <h2 className="text-2xl font-semibold mb-4">💬 Kairos Chat Assistant</h2>
       
       <p className="mb-4"><strong>ElizaOS-Powered AI Agent</strong></p>
       

@@ -3,7 +3,7 @@
  * Tests the enhanced code snippet styling implementation
  */
 
-import { CodeBlock, InlineCode } from '@/components/CodeBlock';
+import { CodeBlock, InlineCode } from '@/components/docs/CodeBlock';
 
 export default function CodeTestPage() {
   return (
@@ -107,8 +107,8 @@ class YieldOptimizer:
 
       <h3 className="text-xl font-semibold mb-4">With Language Badge</h3>
 
-      <CodeBlock language="typescript">
-{`// React hook for vault interactions
+      <CodeBlock
+        code={`// React hook for vault interactions
 import { useVaultDeposit } from '@/hooks/useVaultDeposit';
 
 export function VaultDepositButton() {
@@ -129,12 +129,13 @@ export function VaultDepositButton() {
     </button>
   );
 }`}
-      </CodeBlock>
+        language="typescript"
+      />
 
       <h3 className="text-xl font-semibold mb-4">With Filename</h3>
 
-      <CodeBlock language="bash" filename=".env.local">
-{`# Environment configuration for Yield Delta
+      <CodeBlock
+        code={`# Environment configuration for Yield Delta
 NEXT_PUBLIC_SEI_CHAIN_ID=1328
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 NEXT_PUBLIC_VAULT_ADDRESS=0x1234567890abcdef
@@ -145,12 +146,14 @@ AI_ENGINE_URL=http://localhost:8000
 
 # Demo mode (for testing without wallet)
 NEXT_PUBLIC_DEMO_MODE=true`}
-      </CodeBlock>
+        language="bash"
+        title=".env.local"
+      />
 
       <h3 className="text-xl font-semibold mb-4">With Line Numbers</h3>
 
-      <CodeBlock language="javascript" showLineNumbers={true}>
-{`// Calculate impermanent loss protection
+      <CodeBlock
+        code={`// Calculate impermanent loss protection
 function calculateILProtection(entryPrice, currentPrice, liquidity) {
   const priceRatio = currentPrice / entryPrice;
   const sqrtRatio = Math.sqrt(priceRatio);
@@ -167,7 +170,9 @@ function calculateILProtection(entryPrice, currentPrice, liquidity) {
     protected: hedgeAmount > 0
   };
 }`}
-      </CodeBlock>
+        language="javascript"
+        showLineNumbers={true}
+      />
 
       <h2 className="text-2xl font-semibold mb-4 mt-12">Inline Code Styling</h2>
 

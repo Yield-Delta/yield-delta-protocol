@@ -287,7 +287,7 @@ export default function DocsHomePage() {
             </tr>
             <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
               <td className="px-4 py-3">
-                <span className="font-medium">Liqui Chat</span>
+                <span className="font-medium">Kairos Chat</span>
               </td>
               <td className="px-4 py-3 text-muted-foreground">AI assistant for DeFi strategy</td>
               <td className="px-4 py-3">
