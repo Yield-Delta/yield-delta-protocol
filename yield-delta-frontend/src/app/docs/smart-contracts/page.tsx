@@ -165,21 +165,20 @@ export default function SmartContractsPage() {
           }
           const colors = colorMap[contract.color as keyof typeof colorMap]
 
+          const hoverClasses = {
+            cyan: 'hover:border-cyan-500 hover:shadow-cyan-500/40',
+            purple: 'hover:border-purple-500 hover:shadow-purple-500/40',
+            blue: 'hover:border-blue-500 hover:shadow-blue-500/40',
+            green: 'hover:border-green-500 hover:shadow-green-500/40'
+          }
+
           return (
-            <div key={index} className="overflow-hidden rounded-2xl group transition-all duration-500 hover:scale-[1.01]"
+            <div key={index} className={`overflow-hidden rounded-2xl group transition-all duration-500 hover:scale-[1.01] hover:shadow-2xl ${hoverClasses[contract.color as keyof typeof hoverClasses]}`}
               style={{
                 background: `linear-gradient(135deg, ${colors.bg} 0%, rgba(255, 255, 255, 0.03) 100%)`,
                 backdropFilter: 'blur(20px)',
                 border: `1px solid ${colors.border}`,
                 boxShadow: `0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) inset`,
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = colors.text
-                e.currentTarget.style.boxShadow = `0 12px 40px ${colors.glow}, 0 0 0 1px rgba(255, 255, 255, 0.1) inset`
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = colors.border
-                e.currentTarget.style.boxShadow = `0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) inset`
               }}
             >
               <div className="p-6"
@@ -866,15 +865,9 @@ console.log('New vault deployed at:', vaultAddress);`} />
                   { operation: 'Create Vault', gas: '~500,000', sei: '0.005', usd: '$0.003' }
                 ].map((row, index) => (
                   <tr key={index}
-                    className="transition-all duration-300"
+                    className="transition-all duration-300 hover:bg-purple-500/[0.08]"
                     style={{
                       borderBottom: index < 4 ? '1px solid rgba(139, 92, 246, 0.15)' : 'none',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(139, 92, 246, 0.08)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent'
                     }}
                   >
                     <td className="px-6 py-4 font-bold text-white">{row.operation}</td>
@@ -936,15 +929,9 @@ console.log('New vault deployed at:', vaultAddress);`} />
                   { name: 'Governance', address: '0xFEDCBA9876543210FEDCBA9876543210FEDCBA98' }
                 ].map((contract, index) => (
                   <tr key={index}
-                    className="transition-all duration-300"
+                    className="transition-all duration-300 hover:bg-blue-500/[0.08]"
                     style={{
                       borderBottom: index < 4 ? '1px solid rgba(59, 130, 246, 0.15)' : 'none',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(59, 130, 246, 0.08)'
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent'
                     }}
                   >
                     <td className="px-6 py-4 font-bold text-white">{contract.name}</td>
@@ -1065,26 +1052,25 @@ console.log('New vault deployed at:', vaultAddress);`} />
           }
           const colors = colorMap[resource.color as keyof typeof colorMap]
 
+          const hoverClasses = {
+            purple: 'hover:border-purple-500 hover:shadow-purple-500/40',
+            blue: 'hover:border-blue-500 hover:shadow-blue-500/40',
+            cyan: 'hover:border-cyan-500 hover:shadow-cyan-500/40',
+            green: 'hover:border-green-500 hover:shadow-green-500/40'
+          }
+
           return (
             <a
               key={index}
               href={resource.href}
               target={resource.href.startsWith('http') ? '_blank' : undefined}
               rel={resource.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-              className="block p-6 rounded-2xl transition-all duration-500 hover:scale-[1.02] group"
+              className={`block p-6 rounded-2xl transition-all duration-500 hover:scale-[1.02] hover:shadow-2xl group ${hoverClasses[resource.color as keyof typeof hoverClasses]}`}
               style={{
                 background: `linear-gradient(135deg, ${colors.bg} 0%, rgba(255, 255, 255, 0.03) 100%)`,
                 backdropFilter: 'blur(20px)',
                 border: `1px solid ${colors.border}`,
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) inset',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = colors.text
-                e.currentTarget.style.boxShadow = `0 12px 40px ${colors.glow}, 0 0 0 1px rgba(255, 255, 255, 0.1) inset`
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = colors.border
-                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.05) inset'
               }}
             >
               <div className="flex items-start gap-4">
