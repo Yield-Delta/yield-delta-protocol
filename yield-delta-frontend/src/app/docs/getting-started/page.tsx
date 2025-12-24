@@ -3,7 +3,14 @@ import { CodeBlock } from '@/components/docs/CodeBlock'
 
 export default function GettingStartedPage() {
   return (
-    <div className="docs-content">
+    <div className="docs-content rounded-2xl p-8"
+      style={{
+        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.3) 100%)',
+        border: '1px solid rgba(148, 163, 184, 0.15)',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+      }}
+    >
       <DocsBackButton />
 
       <h1 className="text-4xl font-bold mb-8">Getting Started</h1>
