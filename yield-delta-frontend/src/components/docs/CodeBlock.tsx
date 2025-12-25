@@ -148,12 +148,6 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
     setTimeout(() => setCopied(false), 2000)
   }
 
-  // Handle manual text selection and copy
-  const handleManualCopy = (e: React.ClipboardEvent) => {
-    e.preventDefault()
-    e.clipboardData.setData('text/plain', code)
-  }
-
   const highlightedCode = highlightCode(code, language)
 
   // Language badge colors with inline styles for Tailwind v4 compatibility
@@ -235,15 +229,18 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
           .hl-type { color: #fbbf24; }
           .hl-bracket { color: #94a3b8; }
 
-          /* Hidden raw code for clean copying */
-          .code-raw {
-            position: absolute;
-            left: -9999px;
-            top: -9999px;
-            width: 0;
-            height: 0;
-            overflow: hidden;
-            user-select: text;
+          /* Prevent selection of syntax highlighting spans */
+          .hl-comment::before,
+          .hl-string::before,
+          .hl-keyword::before,
+          .hl-number::before,
+          .hl-function::before,
+          .hl-property::before,
+          .hl-method::before,
+          .hl-type::before,
+          .hl-bracket::before {
+            content: attr(data-text);
+            display: none;
           }
         `
       }} />
@@ -289,59 +286,62 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
           )}
         </button>
 
-        {/* Code content */}
+        {/* Code content with improved copy functionality */}
         <pre
-          className="overflow-x-auto p-6 m-0 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent"
-          onCopy={handleManualCopy}
+          className="overflow-x-auto p-6 m-0 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent relative"
+          onCopy={(e: React.ClipboardEvent) => {
+            e.preventDefault();
+            e.clipboardData.setData('text/plain', code);
+          }}
         >
-          {/* Language badge - positioned inline at top of code area */}
-          {(language || title) && (
-            <div className="flex items-center gap-3 mb-4">
-              {title && (
-                <span className="text-sm font-medium text-slate-300">
-                  {title}
-                </span>
-              )}
-              {language && language !== 'text' && (() => {
-                const { className, style } = getLanguageColor(language)
-                return (
-                  <span
-                    className={`inline-flex items-center px-2.5 py-1 text-xs font-mono uppercase tracking-wider rounded-md border ${className}`}
-                    style={style}
-                  >
-                    {language}
+            {/* Language badge - positioned inline at top of code area */}
+            {(language || title) && (
+              <div className="flex items-center gap-3 mb-4">
+                {title && (
+                  <span className="text-sm font-medium text-slate-300">
+                    {title}
                   </span>
-                )
-              })()}
-            </div>
-          )}
-          {showLineNumbers ? (
-            <code className="block font-mono text-sm leading-relaxed text-slate-200">
-              <table className="w-full border-collapse">
-                <tbody>
-                  {highlightedCode.split('\n').map((line, index) => (
-                    <tr key={index}>
-                      <td className="pr-4 text-right select-none" style={{ color: 'rgba(148, 163, 184, 0.4)' }}>
-                        {index + 1}
-                      </td>
-                      <td
-                        className="text-slate-200"
-                        dangerouslySetInnerHTML={{
-                          __html: line || '<br/>'
-                        }}
-                      />
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </code>
-          ) : (
-            <code
-              className="block font-mono text-sm leading-relaxed text-slate-200"
-              dangerouslySetInnerHTML={{ __html: highlightedCode }}
-            />
-          )}
-        </pre>
+                )}
+                {language && language !== 'text' && (() => {
+                  const { className, style } = getLanguageColor(language)
+                  return (
+                    <span
+                      className={`inline-flex items-center px-3 py-1 text-xs font-mono uppercase tracking-wider rounded-full border ${className}`}
+                      style={style}
+                    >
+                      {language}
+                    </span>
+                  )
+                })()}
+              </div>
+            )}
+            {showLineNumbers ? (
+              <code className="block font-mono text-sm leading-relaxed text-slate-200">
+                <table className="w-full border-collapse">
+                  <tbody>
+                    {highlightedCode.split('\n').map((line, index) => (
+                      <tr key={index}>
+                        <td className="pr-4 text-right select-none" style={{ color: 'rgba(148, 163, 184, 0.4)' }}>
+                          {index + 1}
+                        </td>
+                        <td
+                          className="text-slate-200"
+                          dangerouslySetInnerHTML={{
+                            __html: line || '<br/>'
+                          }}
+                        />
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </code>
+            ) : (
+              <code
+                className="block font-mono text-sm leading-relaxed text-slate-200"
+                dangerouslySetInnerHTML={{ __html: highlightedCode }}
+              />
+            )}
+          </pre>
       </div>
       </div>
     </>
