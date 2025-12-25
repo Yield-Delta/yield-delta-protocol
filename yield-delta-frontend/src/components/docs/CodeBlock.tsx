@@ -10,7 +10,20 @@ interface CodeBlockProps {
   showLineNumbers?: boolean
 }
 
-// Syntax highlighting function
+/**
+ * Produce an HTML string with simple syntax highlighting for a supported language.
+ *
+ * The input source is first HTML-escaped; for non-plain-text languages the function
+ * wraps recognized tokens in <span> elements using classes such as `hl-string`,
+ * `hl-keyword`, `hl-number`, `hl-function`, `hl-property`, `hl-method`, `hl-type`,
+ * and `hl-bracket`.
+ *
+ * If `language` is 'text' or 'plaintext', the function only escapes HTML entities
+ * and does not add any highlighting spans.
+ *
+ * @param code - The source code to highlight.
+ * @param language - Language identifier (examples: 'typescript', 'javascript', 'bash', 'json', 'solidity', 'text'). Unknown identifiers fall back to JavaScript-style rules.
+ * @returns An HTML-escaped string where recognized language tokens are wrapped with `<span>` elements bearing `hl-*` classes suitable for styling.
 function highlightCode(code: string, language: string): string {
   // Don't apply syntax highlighting to plain text
   if (language === 'text' || language === 'plaintext') {
@@ -139,6 +152,15 @@ function highlightCode(code: string, language: string): string {
   return highlighted
 }
 
+/**
+ * Render a styled, copyable code block with optional syntax highlighting, language badge, and line numbers.
+ *
+ * @param code - The source code to display.
+ * @param language - Language identifier used for highlighting and the language badge (defaults to `'typescript'`).
+ * @param title - Optional title shown beside the language badge.
+ * @param showLineNumbers - When `true`, render line numbers alongside highlighted lines.
+ * @returns A React element that displays the formatted, copy-enabled code block.
+ */
 export function CodeBlock({ code, language = 'typescript', title, showLineNumbers = false }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
 
@@ -348,7 +370,13 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
   )
 }
 
-// Inline code component for use within text
+/**
+ * Render an inline monospace-styled code element suitable for embedding within text.
+ *
+ * @param children - Content to display inside the inline code element.
+ * @param className - Optional additional CSS classes to apply to the element.
+ * @returns A styled inline `<code>` element for short code snippets or identifiers.
+ */
 export function InlineCode({
   children,
   className = '',

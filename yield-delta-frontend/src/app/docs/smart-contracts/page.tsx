@@ -3,6 +3,16 @@ import { CodeBlock } from '@/components/docs/CodeBlock'
 import { Shield, Zap, CheckCircle, ExternalLink } from 'lucide-react'
 import { CopyButton } from '@/components/docs/CopyButton'
 
+/**
+ * Render the Smart Contracts documentation page for Yield Delta on SEI Network.
+ *
+ * Presents network information, core contract cards (with interfaces, addresses, and copy actions),
+ * contract interface reference sections (IStrategyVault, IVaultFactory, IAIOracle), integration examples,
+ * security and bug-bounty details, gas optimization and estimates, deployment addresses (testnet/mainnet),
+ * resources, and a final call-to-action.
+ *
+ * @returns The page's JSX element.
+ */
 export default function SmartContractsPage() {
   return (
     <div className="docs-content rounded-2xl p-8"

@@ -4,6 +4,11 @@ import { DocsBackButton } from '@/components/docs/DocsBackButton'
 import { CodeBlock } from '@/components/docs/CodeBlock'
 import { Database, Code, Zap, Shield, TrendingUp, Link as LinkIcon, Terminal } from 'lucide-react'
 
+/**
+ * Render the API Reference documentation page for Yield Delta, including sections for base configuration, authentication, health, vaults, AI predictions, market data, code examples, error codes, and next steps.
+ *
+ * @returns The React element for the complete API reference documentation page.
+ */
 export default function APIReferencePage() {
   return (
     <div className="docs-content rounded-2xl p-8"
