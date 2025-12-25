@@ -1,6 +1,6 @@
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 import { CodeBlock } from '@/components/docs/CodeBlock'
-import { Shield, Zap, Lock, TrendingUp, CheckCircle, ExternalLink } from 'lucide-react'
+import { Shield, Zap, CheckCircle, ExternalLink } from 'lucide-react'
 import { CopyButton } from '@/components/docs/CopyButton'
 
 export default function SmartContractsPage() {
