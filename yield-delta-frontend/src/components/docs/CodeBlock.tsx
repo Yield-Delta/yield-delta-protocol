@@ -156,18 +156,68 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
 
   const highlightedCode = highlightCode(code, language)
 
-  // Language badge colors
-  const getLanguageColor = (lang: string) => {
-    const colors: Record<string, string> = {
-      javascript: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
-      typescript: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-      bash: 'bg-green-500/20 text-green-400 border-green-500/30',
-      json: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
-      solidity: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30',
-      python: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30',
-      text: 'bg-gray-500/20 text-gray-400 border-gray-500/30',
+  // Language badge colors with inline styles for Tailwind v4 compatibility
+  const getLanguageColor = (lang: string): { className: string; style: React.CSSProperties } => {
+    const colorMap: Record<string, { className: string; bg: string; text: string; border: string }> = {
+      javascript: {
+        className: 'language-badge-javascript',
+        bg: 'rgb(234 179 8 / 0.2)',
+        text: 'rgb(250 204 21)',
+        border: 'rgb(234 179 8 / 0.3)'
+      },
+      typescript: {
+        className: 'language-badge-typescript',
+        bg: 'rgb(59 130 246 / 0.2)',
+        text: 'rgb(96 165 250)',
+        border: 'rgb(59 130 246 / 0.3)'
+      },
+      bash: {
+        className: 'language-badge-bash',
+        bg: 'rgb(34 197 94 / 0.2)',
+        text: 'rgb(74 222 128)',
+        border: 'rgb(34 197 94 / 0.3)'
+      },
+      json: {
+        className: 'language-badge-json',
+        bg: 'rgb(168 85 247 / 0.2)',
+        text: 'rgb(192 132 252)',
+        border: 'rgb(168 85 247 / 0.3)'
+      },
+      solidity: {
+        className: 'language-badge-solidity',
+        bg: 'rgb(99 102 241 / 0.2)',
+        text: 'rgb(129 140 248)',
+        border: 'rgb(99 102 241 / 0.3)'
+      },
+      python: {
+        className: 'language-badge-python',
+        bg: 'rgb(6 182 212 / 0.2)',
+        text: 'rgb(34 211 238)',
+        border: 'rgb(6 182 212 / 0.3)'
+      },
+      text: {
+        className: 'language-badge-text',
+        bg: 'rgb(107 114 128 / 0.2)',
+        text: 'rgb(156 163 175)',
+        border: 'rgb(107 114 128 / 0.3)'
+      },
     }
-    return colors[lang] || 'bg-slate-500/20 text-slate-400 border-slate-500/30'
+
+    const colors = colorMap[lang] || {
+      className: 'language-badge-default',
+      bg: 'rgb(100 116 139 / 0.2)',
+      text: 'rgb(148 163 184)',
+      border: 'rgb(100 116 139 / 0.3)'
+    }
+
+    return {
+      className: colors.className,
+      style: {
+        backgroundColor: colors.bg,
+        color: colors.text,
+        borderColor: colors.border
+      }
+    }
   }
 
   return (
@@ -252,11 +302,17 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
                   {title}
                 </span>
               )}
-              {language && language !== 'text' && (
-                <span className={`inline-flex items-center px-2.5 py-1 text-xs font-mono uppercase tracking-wider rounded-md border ${getLanguageColor(language)}`}>
-                  {language}
-                </span>
-              )}
+              {language && language !== 'text' && (() => {
+                const { className, style } = getLanguageColor(language)
+                return (
+                  <span
+                    className={`inline-flex items-center px-2.5 py-1 text-xs font-mono uppercase tracking-wider rounded-md border ${className}`}
+                    style={style}
+                  >
+                    {language}
+                  </span>
+                )
+              })()}
             </div>
           )}
           {showLineNumbers ? (
