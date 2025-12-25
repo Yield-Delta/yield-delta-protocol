@@ -81,7 +81,7 @@ export default function APIReferencePage() {
               }}
             >
               <p className="text-sm font-semibold text-gray-400 mb-2">Production</p>
-              <code className="text-sm text-cyan-400 font-mono">https://api.yielddelta.io/api</code>
+              <code className="text-sm text-cyan-400 font-mono">https://www.yielddelta.xyz/api</code>
             </div>
             <div className="p-4 rounded-xl"
               style={{
@@ -165,10 +165,16 @@ export default function APIReferencePage() {
               Some endpoints require API key authentication. Include your API key in the request headers:
             </p>
 
-            <CodeBlock language="javascript" code={`headers: {
+            <CodeBlock language="javascript" code={`const headers = {
   'X-API-Key': 'your-api-key-here',
   'Content-Type': 'application/json'
-}`} />
+};
+
+// Example usage:
+fetch('https://www.yielddelta.xyz/api/vaults', {
+  method: 'GET',
+  headers: headers
+});`} />
 
             <div className="mt-6 p-4 rounded-xl"
               style={{
@@ -937,7 +943,7 @@ export default function APIReferencePage() {
               <h3 className="text-xl font-bold text-white">Fetching Vault Data</h3>
             </div>
             <div className="p-6">
-              <CodeBlock language="javascript" code={`const response = await fetch('https://api.yielddelta.io/api/vaults', {
+              <CodeBlock language="javascript" code={`const response = await fetch('https://www.yielddelta.xyz/api/vaults', {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
@@ -967,7 +973,7 @@ console.log('Vaults:', data);`} />
               <h3 className="text-xl font-bold text-white">Creating a Vault</h3>
             </div>
             <div className="p-6">
-              <CodeBlock language="javascript" code={`const response = await fetch('https://api.yielddelta.io/api/vaults', {
+              <CodeBlock language="javascript" code={`const response = await fetch('https://www.yielddelta.xyz/api/vaults', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -1007,7 +1013,7 @@ console.log('Created vault:', data.address);`} />
               <h3 className="text-xl font-bold text-white">Getting AI Predictions</h3>
             </div>
             <div className="p-6">
-              <CodeBlock language="javascript" code={`const response = await fetch('https://api.yielddelta.io/api/ai/predict', {
+              <CodeBlock language="javascript" code={`const response = await fetch('https://www.yielddelta.xyz/api/ai/predict', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
