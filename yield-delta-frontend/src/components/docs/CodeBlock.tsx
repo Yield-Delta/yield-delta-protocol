@@ -148,6 +148,12 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
     setTimeout(() => setCopied(false), 2000)
   }
 
+  // Handle manual text selection and copy
+  const handleManualCopy = (e: React.ClipboardEvent) => {
+    e.preventDefault()
+    e.clipboardData.setData('text/plain', code)
+  }
+
   const highlightedCode = highlightCode(code, language)
 
   // Language badge colors
@@ -178,6 +184,17 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
           .hl-method { color: #f472b6; }
           .hl-type { color: #fbbf24; }
           .hl-bracket { color: #94a3b8; }
+
+          /* Hidden raw code for clean copying */
+          .code-raw {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 0;
+            height: 0;
+            overflow: hidden;
+            user-select: text;
+          }
         `
       }} />
 
@@ -196,10 +213,10 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
           `,
         }}
       >
-        {/* Copy button - moved to avoid overlap */}
+        {/* Copy button with enhanced visibility */}
         <button
           onClick={handleCopy}
-          className="absolute top-3 right-3 p-2 rounded-lg opacity-60 hover:opacity-100 transition-all duration-300 z-20"
+          className="absolute top-3 right-3 p-2 rounded-lg opacity-70 hover:opacity-100 transition-all duration-300 z-20 group/copy"
           style={{
             background: copied
               ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.1))'
@@ -213,6 +230,7 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
               : '0 4px 12px rgba(0, 0, 0, 0.3)',
           }}
           aria-label={copied ? 'Copied!' : 'Copy code'}
+          title="Click to copy clean code"
         >
           {copied ? (
             <Check className="w-4 h-4 text-green-400" />
@@ -222,7 +240,10 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
         </button>
 
         {/* Code content */}
-        <pre className="overflow-x-auto p-6 m-0 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent">
+        <pre
+          className="overflow-x-auto p-6 m-0 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent"
+          onCopy={handleManualCopy}
+        >
           {/* Language badge - positioned inline at top of code area */}
           {(language || title) && (
             <div className="flex items-center gap-3 mb-4">
