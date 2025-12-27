@@ -1028,7 +1028,7 @@ console.log('New vault deployed at:', vaultAddress);`} />
           <p className="text-gray-200 font-medium">
             Mainnet contracts will be deployed after final audit completion.
             Join our{' '}
-            <a href="https://discord.gg/TWNybCBr" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
+            <a href="https://discord.gg/TWNybCBr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
               Discord
             </a>
             {' '}for deployment updates.
@@ -1143,7 +1143,7 @@ console.log('New vault deployed at:', vaultAddress);`} />
       >
         <p className="text-lg text-gray-200 font-medium">
           Need help? Join our{' '}
-          <a href="https://discord.gg/TWNybCBr" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
+          <a href="https://discord.gg/TWNybCBr" target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
             Discord
           </a>
           {' '}or check the{' '}
