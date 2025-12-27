@@ -1,9 +1,22 @@
 import Link from 'next/link';
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 
+/**
+ * Renders the SEI Testnet Setup documentation page with step-by-step wallet installation, network configuration,
+ * testnet faucet instructions, connection guidance for Yield Delta, troubleshooting tips, and additional resources.
+ *
+ * @returns The page JSX containing instructional content and navigation links for configuring and using SEI Atlantic-2 Testnet.
+ */
 export default function TestnetSetupPage() {
   return (
-    <div className="docs-content">
+    <div className="docs-content rounded-2xl p-8"
+      style={{
+        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.3) 100%)',
+        border: '1px solid rgba(148, 163, 184, 0.15)',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+      }}
+    >
       <DocsBackButton />
 
       <h1 className="text-4xl font-bold mb-8">SEI Testnet Setup Guide</h1>
@@ -299,7 +312,7 @@ export default function TestnetSetupPage() {
           <ul className="text-sm space-y-1 ml-4">
             <li>• Try an alternative faucet link</li>
             <li>• Wait a few minutes and try again (rate limits)</li>
-            <li>• Join the <a href="https://discord.gg/sei" className="text-primary hover:text-primary/80">SEI Discord</a> and ask in #faucet channel</li>
+            <li>• Join the <a href="https://discord.gg/TWNybCBr" className="text-primary hover:text-primary/80">SEI Discord</a> and ask in #faucet channel</li>
           </ul>
         </div>
       </div>
@@ -338,7 +351,7 @@ export default function TestnetSetupPage() {
           </a>
         </li>
         <li>
-          <a href="https://discord.gg/sei" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">
+          <a href="https://discord.gg/TWNybCBr" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">
             SEI Discord Community
           </a>
         </li>
@@ -362,7 +375,7 @@ export default function TestnetSetupPage() {
       <hr className="my-8" />
 
       <p className="text-center text-muted-foreground italic">
-        Need help? Join our <a href="https://discord.gg/sei" className="text-primary hover:text-primary/80">Discord community</a> for support! 💬
+        Need help? Join our <a href="https://discord.gg/TWNybCBr" className="text-primary hover:text-primary/80">Discord community</a> for support! 💬
       </p>
     </div>
   );

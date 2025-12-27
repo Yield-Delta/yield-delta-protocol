@@ -156,9 +156,9 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%) !important;
-    color: rgba(255, 255, 255, 0.95) !important;
-    border: 1px solid rgba(6, 182, 212, 0.3) !important;
+    background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+    color: hsl(216 100% 4%) !important;
+    border: none !important;
     border-radius: 12px;
     font-weight: 600;
     font-size: 0.875rem;
@@ -170,18 +170,18 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow:
-      0 0 20px rgba(6, 182, 212, 0.3),
-      0 4px 12px rgba(0, 0, 0, 0.15),
+      0 0 20px hsl(180 100% 48% / 0.4),
+      0 0 40px hsl(180 100% 48% / 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   }
 
   .btn-cyber:hover {
-    transform: translateY(-2px) scale(1.02);
-    background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%) !important;
-    border-color: rgba(6, 182, 212, 0.5) !important;
+    transform: translateY(-2px) scale(1.05);
+    background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+    border: none !important;
     box-shadow:
-      0 0 30px rgba(6, 182, 212, 0.4),
-      0 0 60px rgba(20, 184, 166, 0.3),
+      0 0 30px hsl(180 100% 48% / 0.5),
+      0 0 60px hsl(180 100% 48% / 0.2),
       0 8px 25px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
   }
@@ -194,22 +194,24 @@
   .btn-cyber:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%) !important;
+    background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
     transform: none !important;
   }
 
-  /* Force cyan gradient on wallet buttons - override RainbowKit styles */
+  /* Force cyan-purple gradient on all buttons with btn-cyber class */
   button.btn-cyber,
   .wallet-container button.btn-cyber,
   .wallet-container-override button.btn-cyber,
   nav button.btn-cyber,
-  nav .wallet-container button.btn-cyber {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.8) 0%, rgba(20, 184, 166, 0.8) 100%) !important;
-    color: rgba(255, 255, 255, 0.95) !important;
-    border: 1px solid rgba(6, 182, 212, 0.25) !important;
+  nav .wallet-container button.btn-cyber,
+  a.btn-cyber,
+  nav a.btn-cyber {
+    background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+    color: hsl(216 100% 4%) !important;
+    border: none !important;
     box-shadow:
-      0 0 15px rgba(6, 182, 212, 0.2),
-      0 4px 12px rgba(0, 0, 0, 0.15),
+      0 0 20px hsl(180 100% 48% / 0.4),
+      0 0 40px hsl(180 100% 48% / 0.15),
       inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   }
 
@@ -217,12 +219,15 @@
   .wallet-container button.btn-cyber:hover,
   .wallet-container-override button.btn-cyber:hover,
   nav button.btn-cyber:hover,
-  nav .wallet-container button.btn-cyber:hover {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.9) 0%, rgba(20, 184, 166, 0.9) 100%) !important;
-    border-color: rgba(6, 182, 212, 0.4) !important;
+  nav .wallet-container button.btn-cyber:hover,
+  a.btn-cyber:hover,
+  nav a.btn-cyber:hover {
+    transform: translateY(-2px) scale(1.05);
+    background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+    border: none !important;
     box-shadow:
-      0 0 20px rgba(6, 182, 212, 0.3),
-      0 0 40px rgba(20, 184, 166, 0.2),
+      0 0 30px hsl(180 100% 48% / 0.5),
+      0 0 60px hsl(180 100% 48% / 0.2),
       0 8px 25px rgba(0, 0, 0, 0.2),
       inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
   }
@@ -234,7 +239,7 @@
   nav .wallet-container button.btn-cyber:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: linear-gradient(135deg, #06b6d4 0%, #14b8a6 100%) !important;
+    background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
     transform: none !important;
   }
 

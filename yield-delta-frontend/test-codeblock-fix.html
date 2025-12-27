@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeBlock Syntax Highlighting Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            padding: 40px;
+            margin: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .test-section {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            backdrop-filter: blur(20px);
+        }
+        .test-section h2 {
+            color: #22d3ee;
+            margin-top: 0;
+            margin-bottom: 16px;
+        }
+        .code-preview {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 16px 0;
+            position: relative;
+            overflow: auto;
+        }
+        .code-preview pre {
+            margin: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .hl-comment { color: #6b7280; font-style: italic; }
+        .hl-string { color: #34d399; }
+        .hl-keyword { color: #a78bfa; }
+        .hl-number { color: #fb923c; }
+        .hl-function { color: #60a5fa; }
+        .hl-property { color: #22d3ee; }
+        .hl-method { color: #f472b6; }
+        .hl-type { color: #fbbf24; }
+        .hl-bracket { color: #94a3b8; }
+        .hl-variable { color: #22d3ee; }
+        .expected {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        .expected h3 {
+            color: #22c55e;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+        .expected ul {
+            margin: 8px 0;
+            padding-left: 24px;
+        }
+        .expected li {
+            margin: 4px 0;
+            color: #86efac;
+        }
+        .checklist {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+        .checklist h3 {
+            color: #60a5fa;
+            margin-top: 0;
+            font-size: 1rem;
+        }
+        .checklist label {
+            display: block;
+            margin: 8px 0;
+            cursor: pointer;
+        }
+        .checklist input[type="checkbox"] {
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+        .badge-javascript {
+            background: rgb(234 179 8 / 0.2);
+            color: rgb(250 204 21);
+            border: 2px solid rgb(234 179 8 / 0.3);
+        }
+        .badge-bash {
+            background: rgb(34 197 94 / 0.2);
+            color: rgb(74 222 128);
+            border: 2px solid rgb(34 197 94 / 0.3);
+        }
+        .badge-json {
+            background: rgb(168 85 247 / 0.2);
+            color: rgb(192 132 252);
+            border: 2px solid rgb(168 85 247 / 0.3);
+        }
+        .line-numbers {
+            color: rgba(148, 163, 184, 0.4);
+            user-select: none;
+            padding-right: 16px;
+            text-align: right;
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CodeBlock Syntax Highlighting Tests</h1>
+
+        <div class="expected">
+            <h3>Expected Behavior:</h3>
+            <ul>
+                <li>No HTML tags visible (like <code>class="hl-string"</code>)</li>
+                <li>No HTML entities visible (like <code>&amp;#039;</code> or <code>&amp;quot;</code>)</li>
+                <li>Proper syntax highlighting colors applied</li>
+                <li>Strings appear in green (#34d399)</li>
+                <li>Keywords appear in purple (#a78bfa)</li>
+                <li>Numbers appear in orange (#fb923c)</li>
+                <li>Functions appear in blue (#60a5fa)</li>
+                <li>Properties appear in cyan (#22d3ee)</li>
+            </ul>
+        </div>
+
+        <!-- Test 1: JavaScript with strings -->
+        <div class="test-section">
+            <h2>Test 1: JavaScript - Strings with Quotes</h2>
+            <span class="badge badge-javascript">JavaScript</span>
+            <div class="code-preview">
+                <pre><code><span class="hl-keyword">const</span> response = <span class="hl-keyword">await</span> <span class="hl-function">fetch</span>(<span class="hl-string">'https://www.yielddelta.xyz/api/ai/predict'</span>, {
+  <span class="hl-property">method</span>: <span class="hl-string">'POST'</span>,
+  <span class="hl-property">headers</span>: {
+    <span class="hl-string">'Content-Type'</span>: <span class="hl-string">'application/json'</span>,
+    <span class="hl-string">'X-API-Key'</span>: <span class="hl-string">'your-api-key'</span>,
+  },
+})
+<span class="hl-keyword">const</span> { data } = <span class="hl-keyword">await</span> response.<span class="hl-function">json</span>()
+<span class="hl-method">console</span>.<span class="hl-function">log</span>(<span class="hl-string">'Created vault:'</span>, data.<span class="hl-property">address</span>)</code></pre>
+            </div>
+        </div>
+
+        <!-- Test 2: JavaScript with template literals -->
+        <div class="test-section">
+            <h2>Test 2: JavaScript - Template Literals and Backticks</h2>
+            <span class="badge badge-javascript">JavaScript</span>
+            <div class="code-preview">
+                <pre><code><span class="hl-keyword">const</span> message = <span class="hl-string">`AI Prediction: ${data.prediction}`</span>
+<span class="hl-method">console</span>.<span class="hl-function">log</span>(<span class="hl-string">`Vault ID: ${vaultId}`</span>)</code></pre>
+            </div>
+        </div>
+
+        <!-- Test 3: Bash commands -->
+        <div class="test-section">
+            <h2>Test 3: Bash - Commands with Flags</h2>
+            <span class="badge badge-bash">Bash</span>
+            <div class="code-preview">
+                <pre><code><span class="hl-keyword">npm</span> install --save @yield-delta/sdk
+<span class="hl-keyword">git</span> clone <span class="hl-string">"https://github.com/example/repo.git"</span>
+<span class="hl-keyword">echo</span> <span class="hl-string">'Hello World'</span></code></pre>
+            </div>
+        </div>
+
+        <!-- Test 4: JSON data -->
+        <div class="test-section">
+            <h2>Test 4: JSON - Object with Various Types</h2>
+            <span class="badge badge-json">JSON</span>
+            <div class="code-preview">
+                <pre><code><span class="hl-bracket">{</span>
+  <span class="hl-function">"vaultAddress"</span>: <span class="hl-string">"0xf6A791e47733a773A60083aA29aaC9c3bA5E900974fEx"</span>,
+  <span class="hl-function">"currentPrice"</span>: <span class="hl-number">0.485</span>,
+  <span class="hl-function">"volume24h"</span>: <span class="hl-number">15678234</span>,
+  <span class="hl-function">"isActive"</span>: <span class="hl-keyword">true</span>
+<span class="hl-bracket">}</span></code></pre>
+            </div>
+        </div>
+
+        <!-- Test 5: Line Numbers -->
+        <div class="test-section">
+            <h2>Test 5: JavaScript with Line Numbers</h2>
+            <span class="badge badge-javascript">JavaScript</span>
+            <div class="code-preview">
+                <pre><code><table style="border-collapse: collapse; width: 100%;">
+<tbody>
+<tr>
+    <td class="line-numbers">1</td>
+    <td><span class="hl-keyword">import</span> { ethers } <span class="hl-keyword">from</span> <span class="hl-string">"ethers"</span></td>
+</tr>
+<tr>
+    <td class="line-numbers">2</td>
+    <td></td>
+</tr>
+<tr>
+    <td class="line-numbers">3</td>
+    <td><span class="hl-keyword">const</span> provider = <span class="hl-keyword">new</span> ethers.JsonRpcProvider(<span class="hl-string">"https://evm-rpc-arctic-1.sei-apis.com"</span>)</td>
+</tr>
+<tr>
+    <td class="line-numbers">4</td>
+    <td><span class="hl-keyword">const</span> contract = <span class="hl-keyword">new</span> ethers.<span class="hl-function">Contract</span>(address, abi, provider)</td>
+</tr>
+</tbody>
+</table></code></pre>
+            </div>
+        </div>
+
+        <!-- Test 6: Special Characters -->
+        <div class="test-section">
+            <h2>Test 6: Special Characters & Symbols</h2>
+            <span class="badge badge-javascript">JavaScript</span>
+            <div class="code-preview">
+                <pre><code><span class="hl-keyword">const</span> symbols = {
+  <span class="hl-property">quote</span>: <span class="hl-string">"'"</span>,
+  <span class="hl-property">doubleQuote</span>: <span class="hl-string">'"'</span>,
+  <span class="hl-property">backtick</span>: <span class="hl-string">'`'</span>,
+  <span class="hl-property">ampersand</span>: <span class="hl-string">'&'</span>,
+  <span class="hl-property">lessThan</span>: <span class="hl-string">'<'</span>,
+  <span class="hl-property">greaterThan</span>: <span class="hl-string">'>'</span>
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Validation Checklist -->
+        <div class="checklist">
+            <h3>Validation Checklist:</h3>
+            <label>
+                <input type="checkbox"> All code snippets display clean, readable text
+            </label>
+            <label>
+                <input type="checkbox"> No HTML tags are visible (no <code>class="..."</code>)
+            </label>
+            <label>
+                <input type="checkbox"> No HTML entities are visible (no <code>&amp;#039;</code>, <code>&amp;quot;</code>, etc.)
+            </label>
+            <label>
+                <input type="checkbox"> Strings are highlighted in green
+            </label>
+            <label>
+                <input type="checkbox"> Keywords are highlighted in purple
+            </label>
+            <label>
+                <input type="checkbox"> Numbers are highlighted in orange
+            </label>
+            <label>
+                <input type="checkbox"> Functions are highlighted in blue
+            </label>
+            <label>
+                <input type="checkbox"> Properties are highlighted in cyan
+            </label>
+            <label>
+                <input type="checkbox"> Line numbers display correctly
+            </label>
+            <label>
+                <input type="checkbox"> Special characters (', ", `, &, <, >) display correctly
+            </label>
+            <label>
+                <input type="checkbox"> Can copy code without HTML artifacts
+            </label>
+        </div>
+    </div>
+</body>
+</html>

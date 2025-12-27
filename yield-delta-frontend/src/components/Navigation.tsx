@@ -3,12 +3,13 @@
 import React, { useEffect, useRef, useState, useCallback, memo } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { usePathname } from 'next/navigation';
 import Logo from './Logo';
 import { gsap } from 'gsap';
 import { Menu, X, Vault, TrendingUp, Target, PieChart, RefreshCw, BookOpen, Rocket, CandlestickChart, AlertTriangle } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { isTestnetChain } from '@/lib/chainUtils';
-import { GooeyNavigation } from './GooeyNavigation';
+import GooeyNav  from './GooeyNavigation';
 
 const WalletConnectButton = dynamic(
   () => import('./WalletConnectButton').then(mod => ({ default: mod.WalletConnectButton })),
@@ -195,6 +196,17 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
 
 MobileMenuItem.displayName = 'MobileMenuItem';
 
+/**
+ * Render the responsive top navigation bar with brand, center navigation (GooeyNav), wallet actions, and an animated premium mobile menu.
+ *
+ * The component animates the logo and mobile menu using GSAP, traps focus while the mobile menu is open, and disables body scrolling during menu open. When the connected chain is a testnet, a fixed testnet banner is displayed above the nav.
+ *
+ * @param variant - Visual style for the nav; one of `"light" | "dark" | "transparent"`.
+ * @param className - Additional CSS classes to apply to the nav container.
+ * @param showWallet - If true, render the wallet connect control.
+ * @param showLaunchApp - If true, show the "Launch App" button; when false the center GooeyNav and mobile menu button are shown instead.
+ * @returns The navigation React element (JSX) containing branding, optional center GooeyNav, wallet/launch actions, and the full-screen animated mobile menu when opened.
+ */
 export function Navigation({ variant = 'transparent', className = '', showWallet = true, showLaunchApp = true }: NavigationProps) {
   const logoRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
@@ -202,6 +214,7 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
   const hamburgerButtonRef = useRef<HTMLButtonElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const pathname = usePathname();
 
   // Viewport detection to prevent hamburger rendering at 900px+
   // CRITICAL: Initialize to null to prevent hydration mismatch
@@ -388,55 +401,6 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
     }
   }, [mobileMenuOpen]);
 
-  // Focus trap for accessibility
-  useEffect(() => {
-    if (!mobileMenuOpen || !mobileMenuRef.current) return;
-
-    const menuElement = mobileMenuRef.current;
-    const focusableElements = menuElement.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-    );
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    // Focus the close button when menu opens
-    const focusTimer = setTimeout(() => {
-      closeButtonRef.current?.focus();
-    }, 100);
-
-    const handleTabKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-
-      if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement?.focus();
-        }
-      } else {
-        if (document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement?.focus();
-        }
-      }
-    };
-
-    const handleEscapeKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeMobileMenu();
-      }
-    };
-
-    document.addEventListener('keydown', handleTabKey);
-    document.addEventListener('keydown', handleEscapeKey);
-
-    return () => {
-      clearTimeout(focusTimer);
-      document.removeEventListener('keydown', handleTabKey);
-      document.removeEventListener('keydown', handleEscapeKey);
-    };
-  }, [mobileMenuOpen]); // closeMobileMenu is defined below but uses only stable refs
-
   // Mobile menu close handler with premium animation - memoized to prevent recreation
   const closeMobileMenu = useCallback(() => {
     if (!mobileMenuRef.current) {
@@ -506,6 +470,55 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
       ease: 'power2.in'
     }, 0.2);
   }, []);
+
+  // Focus trap for accessibility
+  useEffect(() => {
+    if (!mobileMenuOpen || !mobileMenuRef.current) return;
+
+    const menuElement = mobileMenuRef.current;
+    const focusableElements = menuElement.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    // Focus the close button when menu opens
+    const focusTimer = setTimeout(() => {
+      closeButtonRef.current?.focus();
+    }, 100);
+
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement?.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement?.focus();
+        }
+      }
+    };
+
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener('keydown', handleTabKey);
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return () => {
+      clearTimeout(focusTimer);
+      document.removeEventListener('keydown', handleTabKey);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [mobileMenuOpen, closeMobileMenu]);
 
   // Toggle menu handler - memoized
   const toggleMobileMenu = useCallback(() => {
@@ -605,7 +618,20 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
         {/* CENTER - Gooey Navigation (only show when inside app, hidden on mobile via CSS) */}
         {!showLaunchApp && (
           <div className="nav-center-links">
-            <GooeyNavigation />
+            <GooeyNav
+              items={NAV_LINKS.map(link => ({
+                label: link.label,
+                href: link.href
+              }))}
+              particleCount={15}
+              particleDistances={[90, 10]}
+              particleR={100}
+              initialActiveIndex={NAV_LINKS.findIndex(link => link.href === pathname) >= 0 ? NAV_LINKS.findIndex(link => link.href === pathname) : 0}
+              animationTime={600}
+              timeVariance={300}
+              colors={[1, 2, 3, 1, 2, 3, 1, 4]}
+            />
+
           </div>
         )}
 

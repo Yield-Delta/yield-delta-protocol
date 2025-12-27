@@ -21,7 +21,7 @@
 /* CRITICAL: Specific Page Layout Fixes */
 .vault-page,
 [class*="min-h-screen"] {
-  padding-top: 3.5rem !important;
+  padding-top: 1.5rem !important;
 }
 
 /* Vault Page Container Width Controls */
@@ -64,19 +64,21 @@
 
 /* Vault Page Spacing Controls */
 .vault-page-spacing {
-  padding-top: 3.5rem;
-  min-height: calc(100vh - 3.5rem);
+.vault-page-spacing {
+  padding-top: 1.5rem;
+  min-height: calc(100vh - 1.5rem);
+}
 }
 
 @media (max-width: 768px) {
   .vault-page-spacing {
-    padding-top: 3.25rem;
+    padding-top: 1.25rem;
   }
 }
 
 @media (max-width: 480px) {
   .vault-page-spacing {
-    padding-top: 3rem;
+    padding-top: 1rem;
   }
 }
 
