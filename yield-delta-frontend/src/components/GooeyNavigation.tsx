@@ -62,13 +62,16 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
 
   const createParticle = useCallback(
     (i: number, t: number, d: [number, number], r: number): Particle => {
+      if (colors.length === 0) {
+        console.warn('colors array is empty, using default color');
+      }
       const rotate = noise(r / 10);
       return {
         start: getXY(d[0], particleCount - i, particleCount),
         end: getXY(d[1] + noise(7), particleCount - i, particleCount),
         time: t,
         scale: 1 + noise(0.2),
-        color: colors[Math.floor(Math.random() * colors.length)],
+        color: colors.length > 0 ? colors[Math.floor(Math.random() * colors.length)] : 1,
         rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10
       };
     },
