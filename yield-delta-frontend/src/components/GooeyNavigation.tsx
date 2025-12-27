@@ -248,40 +248,45 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
 
       switch (e.key) {
         case 'Enter':
-        case ' ':
+        case ' ': {
           e.preventDefault();
           // Trigger a programmatic click instead of casting event types
           const currentElement = e.currentTarget;
           currentElement.click();
           break;
+        }
         case 'ArrowRight':
-        case 'ArrowDown':
+        case 'ArrowDown': {
           e.preventDefault();
           const nextIndex = (currentIndex + 1) % items.length;
           const nextElement = navRef.current?.querySelectorAll('a')[nextIndex] as HTMLAnchorElement;
           nextElement?.focus();
           nextElement?.click();
           break;
+        }
         case 'ArrowLeft':
-        case 'ArrowUp':
+        case 'ArrowUp': {
           e.preventDefault();
           const prevIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
           const prevElement = navRef.current?.querySelectorAll('a')[prevIndex] as HTMLAnchorElement;
           prevElement?.focus();
           prevElement?.click();
           break;
-        case 'Home':
+        }
+        case 'Home': {
           e.preventDefault();
           const firstElement = navRef.current?.querySelector('a') as HTMLAnchorElement;
           firstElement?.focus();
           firstElement?.click();
           break;
-        case 'End':
+        }
+        case 'End': {
           e.preventDefault();
           const lastElement = navRef.current?.querySelectorAll('a')[items.length - 1] as HTMLAnchorElement;
           lastElement?.focus();
           lastElement?.click();
           break;
+        }
       }
     },
     [items.length, handleClick]
