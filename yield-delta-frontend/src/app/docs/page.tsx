@@ -144,7 +144,7 @@ export default function DocsHomePage() {
           </p>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-white/10">
+        <div className="mt-6 pt-6">
           <a
             href="/docs/impermanent-loss-reduction"
             className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-medium transition-colors"

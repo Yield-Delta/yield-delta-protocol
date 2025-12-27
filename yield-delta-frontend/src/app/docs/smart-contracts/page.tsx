@@ -1034,7 +1034,7 @@ console.log('New vault deployed at:', vaultAddress);`} />
           {
             title: 'GitHub Repository',
             description: 'Source code and documentation',
-            href: 'https://github.com/yield-delta/contracts',
+            href: 'https://github.com/yield-delta/yield-delta-protocol/contracts',
             icon: '📚',
             color: 'purple'
           },

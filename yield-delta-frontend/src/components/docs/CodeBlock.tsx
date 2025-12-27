@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { Check, Copy } from 'lucide-react'
 
 interface CodeBlockProps {
@@ -81,13 +81,19 @@ function highlightCode(code: string, language: string): React.ReactElement {
     }
 
     const langPatterns = patterns[language] || patterns.javascript
+
+    // Precompile regexes once before the loop
+    const compiledPatterns = langPatterns.map(({ type, pattern }) => ({
+      type,
+      regex: new RegExp('^(' + pattern.source + ')', pattern.flags.replace('g', ''))
+    }))
+
     let remaining = code
 
     while (remaining.length > 0) {
       let matched = false
 
-      for (const { type, pattern } of langPatterns) {
-        const regex = new RegExp('^(' + pattern.source + ')', pattern.flags.replace('g', ''))
+      for (const { type, regex } of compiledPatterns) {
         const match = remaining.match(regex)
 
         if (match) {
@@ -144,26 +150,35 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
 
   // Intercept copy events to provide clean code
   useEffect(() => {
-    const handleCopyEvent = (e: ClipboardEvent) => {
-      if (!preRef.current) return
+    const pre = preRef.current
+    if (!pre) return
 
+    const handleCopyEvent = (e: ClipboardEvent) => {
       const selection = window.getSelection()
       if (!selection || selection.rangeCount === 0) return
 
       const range = selection.getRangeAt(0)
-      if (!preRef.current.contains(range.commonAncestorContainer)) return
+      if (!pre.contains(range.commonAncestorContainer)) return
 
       // Prevent default and provide clean code
       e.preventDefault()
       e.clipboardData?.setData('text/plain', code)
     }
 
-    document.addEventListener('copy', handleCopyEvent)
-    return () => document.removeEventListener('copy', handleCopyEvent)
+    pre.addEventListener('copy', handleCopyEvent)
+    return () => pre.removeEventListener('copy', handleCopyEvent)
   }, [code])
 
   // Generate highlighted code
   const highlightedCode = highlightCode(code, language)
+
+  // Memoize highlighted lines for line-numbered display
+  const highlightedLines = useMemo(() => {
+    return code.split('\n').map(line => ({
+      original: line,
+      highlighted: highlightCode(line, language)
+    }))
+  }, [code, language])
 
   // Language badge colors
   const getLanguageColor = (lang: string): { className: string; style: React.CSSProperties } => {
@@ -320,15 +335,14 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
               <code className="block font-mono text-sm leading-relaxed text-slate-200">
                 <table className="w-full border-collapse">
                   <tbody>
-                    {code.split('\n').map((line, index) => {
-                      const lineHighlighted = highlightCode(line, language);
+                    {highlightedLines.map((lineData, index) => {
                       return (
                         <tr key={`line-${index}`}>
                           <td className="pr-4 text-right select-none" style={{ color: 'rgba(148, 163, 184, 0.4)', verticalAlign: 'top' }}>
                             {index + 1}
                           </td>
                           <td className="text-slate-200">
-                            {line.trim() === '' ? '\u00A0' : lineHighlighted}
+                            {lineData.original.trim() === '' ? '\u00A0' : lineData.highlighted}
                           </td>
                         </tr>
                       );
