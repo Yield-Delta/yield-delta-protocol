@@ -55,7 +55,7 @@ function highlightCode(code: string, language: string): string {
     ],
     javascript: [
       // Template literals (backticks now escaped as &#96;)
-      { pattern: /&#96;([^&#]|&#(?!96;)|\$\{[^}]*\})*&#96;/g, replacement: '<span class="hl-string">$&</span>' },
+      { pattern: /&#96;(?:\$\{[^}]*\}|(?!&#96;)[^$])*&#96;/g, replacement: '<span class="hl-string">$&</span>' },
       // Double quoted strings (now escaped as &quot;)
       { pattern: /&quot;([^&]|&(?!quot;))*&quot;/g, replacement: '<span class="hl-string">$&</span>' },
       // Single quoted strings (now escaped as &#039;)
