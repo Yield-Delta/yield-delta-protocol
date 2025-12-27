@@ -302,7 +302,7 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .gooey-nav-container .effect.filter::before {
-    background: #0a0a0a;
+    background: transparent; /* Keep transparent in dark mode to prevent black box */
   }
 }
 

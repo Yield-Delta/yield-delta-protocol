@@ -200,17 +200,19 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
         e.preventDefault();
       }
 
-      // Call custom onClick handler if provided
-      if (items[index]?.onClick) {
-        items[index].onClick(e);
-      }
-
-      // Don't update if same index
-      if (activeIndex === index) return;
-
       // Get the parent li element for positioning
       const liElement = e.currentTarget.closest('li') as HTMLLIElement;
       if (!liElement) return;
+
+      // Validate item exists
+      const item = items[index];
+      if (!item) return;
+
+      // Call custom onClick handler if provided
+      item.onClick?.(e);
+
+      // Don't update if same index
+      if (activeIndex === index) return;
 
       setActiveIndex(index);
       updateEffectPosition(liElement);
@@ -242,7 +244,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
 
       // Call change handler
       if (onItemChange) {
-        onItemChange(index, items[index]);
+        onItemChange(index, item);
       }
     },
     [activeIndex, items, preventNavigation, onItemChange, updateEffectPosition, makeParticles]
