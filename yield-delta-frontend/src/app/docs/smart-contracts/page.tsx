@@ -115,7 +115,7 @@ export default function SmartContractsPage() {
         <div className="p-4 mb-6 rounded-lg border border-yellow-500/20 bg-yellow-500/5">
           <p className="text-sm text-yellow-400">
             <strong>Note:</strong> Addresses marked with &quot;(Example)&quot; are placeholder addresses for demonstration.
-            All other addresses are deployed on SEI Testnet (arctic-1).
+            All other addresses are deployed on SEI Testnet (atlantic-2).
           </p>
         </div>
       </div>
@@ -126,7 +126,7 @@ export default function SmartContractsPage() {
             name: 'StrategyVault (Native SEI)',
             description: 'AI-driven vault for native SEI token liquidity management.',
             interface: 'IStrategyVault',
-            address: '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // SEI Testnet - arctic-1
+            address: '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // SEI Testnet - atlantic-2
             features: [
               'Native SEI optimization',
               'Gas-efficient operations',
@@ -140,7 +140,7 @@ export default function SmartContractsPage() {
             name: 'StrategyVault (USDC)',
             description: 'AI-driven dynamic liquidity vault that automatically manages concentrated liquidity positions.',
             interface: 'IStrategyVault',
-            address: '0xbCB883594435D92395fA72D87845f87BE78d202E', // SEI Testnet - arctic-1
+            address: '0xbCB883594435D92395fA72D87845f87BE78d202E', // SEI Testnet - atlantic-2
             features: [
               'Automated position management',
               'AI-powered rebalancing',
@@ -154,7 +154,7 @@ export default function SmartContractsPage() {
             name: 'VaultFactory',
             description: 'Factory contract for creating new strategy vaults with different configurations.',
             interface: 'IVaultFactory',
-            address: '0x1ec598666F2A7322A7C954455018e3CFB5A13A99', // SEI Testnet - arctic-1
+            address: '0x1ec598666F2A7322A7C954455018e3CFB5A13A99', // SEI Testnet - atlantic-2
             features: [
               'Vault creation with custom parameters',
               'Strategy template management',
@@ -168,7 +168,7 @@ export default function SmartContractsPage() {
             name: 'AIOracle',
             description: 'Oracle contract that provides AI-powered predictions for optimal rebalancing.',
             interface: 'IAIOracle',
-            address: '0xA3437847337d953ED6c9eB130840D04c249973e5', // SEI Testnet - arctic-1
+            address: '0xA3437847337d953ED6c9eB130840D04c249973e5', // SEI Testnet - atlantic-2
             features: [
               'AI model registration',
               'Rebalance signal generation',
@@ -479,9 +479,9 @@ export default function SmartContractsPage() {
 // Testnet configuration
 const TESTNET_CONFIG = {
   chainId: 1328,
-  name: 'SEI Testnet',
-  rpcUrl: 'https://evm-rpc-arctic-1.sei-apis.com',
-  explorer: 'https://seitrace.com',
+  name: 'SEI Atlantic-2 Testnet',
+  rpcUrl: 'https://evm-rpc-testnet.sei-apis.com',
+  explorer: 'https://seitrace.com/atlantic-2',
   nativeCurrency: {
     name: 'SEI',
     symbol: 'SEI',
@@ -933,7 +933,7 @@ console.log('New vault deployed at:', vaultAddress);`} />
       </div>
 
       <div className="mb-8">
-        <h3 className="text-xl font-bold text-white mb-6">Testnet (Chain ID: 1328)</h3>
+        <h3 className="text-xl font-bold text-white mb-6">SEI Atlantic-2 Testnet (Chain ID: 1328)</h3>
         <div className="overflow-hidden rounded-2xl"
           style={{
             background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%)',
