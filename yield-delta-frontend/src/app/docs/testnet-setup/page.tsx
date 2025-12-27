@@ -312,7 +312,7 @@ export default function TestnetSetupPage() {
           <ul className="text-sm space-y-1 ml-4">
             <li>• Try an alternative faucet link</li>
             <li>• Wait a few minutes and try again (rate limits)</li>
-            <li>• Join the <a href="https://discord.gg/sei" className="text-primary hover:text-primary/80">SEI Discord</a> and ask in #faucet channel</li>
+            <li>• Join the <a href="https://discord.gg/TWNybCBr" className="text-primary hover:text-primary/80">SEI Discord</a> and ask in #faucet channel</li>
           </ul>
         </div>
       </div>
@@ -351,7 +351,7 @@ export default function TestnetSetupPage() {
           </a>
         </li>
         <li>
-          <a href="https://discord.gg/sei" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">
+          <a href="https://discord.gg/TWNybCBr" className="text-primary hover:text-primary/80" target="_blank" rel="noopener noreferrer">
             SEI Discord Community
           </a>
         </li>
@@ -375,7 +375,7 @@ export default function TestnetSetupPage() {
       <hr className="my-8" />
 
       <p className="text-center text-muted-foreground italic">
-        Need help? Join our <a href="https://discord.gg/sei" className="text-primary hover:text-primary/80">Discord community</a> for support! 💬
+        Need help? Join our <a href="https://discord.gg/TWNybCBr" className="text-primary hover:text-primary/80">Discord community</a> for support! 💬
       </p>
     </div>
   );

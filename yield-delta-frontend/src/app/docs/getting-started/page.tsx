@@ -316,7 +316,7 @@ bun update`} />
 
       <h3 className="text-xl font-semibold mb-4">Community</h3>
       <ul className="space-y-2 mb-8">
-        <li><a href="https://discord.gg/sei" className="text-primary hover:text-primary/80">Discord</a> - Join the community</li>
+        <li><a href="https://discord.gg/TWNybCBr" className="text-primary hover:text-primary/80">Discord</a> - Join the community</li>
         <li><a href="https://github.com/yield-delta/yield-delta-protocol" className="text-primary hover:text-primary/80">GitHub</a> - View source code</li>
         <li><a href="https://x.com/yielddelta" className="text-primary hover:text-primary/80">Twitter</a> - Follow updates</li>
       </ul>

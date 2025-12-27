@@ -202,8 +202,8 @@ export default function FeaturesPage() {
       </ul>
       
       <p className="mb-8">
-        <a href="/docs/demo-mode" className="text-primary hover:text-primary/80">
-          Enable Demo Mode →
+        <a href="/" className="text-primary hover:text-primary/80">
+          View Live Demo →
         </a>
       </p>
 
@@ -276,8 +276,8 @@ export default function FeaturesPage() {
           </a> - Get up and running in minutes
         </li>
         <li>
-          <a href="/docs/demo-mode" className="text-primary hover:text-primary/80">
-            <strong>Try Demo Mode</strong>
+          <a href="/" className="text-primary hover:text-primary/80">
+            <strong>View Live Demo</strong>
           </a> - Experience features risk-free
         </li>
         <li>

@@ -270,7 +270,10 @@ export default function DocsHomePage() {
               </td>
               <td className="px-4 py-3 text-muted-foreground">Automated position optimization using ML</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -284,7 +287,10 @@ export default function DocsHomePage() {
               </td>
               <td className="px-4 py-3 text-muted-foreground">ERC-4626 compatible yield vaults</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -296,7 +302,10 @@ export default function DocsHomePage() {
               </td>
               <td className="px-4 py-3 text-muted-foreground">AI assistant for DeFi strategy</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -308,7 +317,10 @@ export default function DocsHomePage() {
               </td>
               <td className="px-4 py-3 text-muted-foreground">Real-time market data and insights</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -316,13 +328,16 @@ export default function DocsHomePage() {
             </tr>
             <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
               <td className="px-4 py-3">
-                <a href="/docs/demo-mode" className="text-primary hover:text-primary/80 font-medium">
-                  Demo Mode
+                <a href="/" className="text-primary hover:text-primary/80 font-medium">
+                  View Live Demo
                 </a>
               </td>
               <td className="px-4 py-3 text-muted-foreground">Risk-free testing environment</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -359,7 +374,7 @@ export default function DocsHomePage() {
       <h2 className="text-2xl font-semibold mb-4">Community & Support</h2>
       
       <ul className="space-y-2 mb-8">
-        <li><strong>Discord</strong>: <a href="https://discord.gg/NMCb5CtG" className="text-primary hover:text-primary/80">Join our community</a></li>
+        <li><strong>Discord</strong>: <a href="https://discord.gg/TWNybCBr" className="text-primary hover:text-primary/80">Join our community</a></li>
         <li><strong>GitHub</strong>: <a href="https://github.com/yield-delta/yield-delta-protocol" className="text-primary hover:text-primary/80">Contribute to the project</a></li>
         <li><strong>Twitter</strong>: <a href="https://x.com/yielddelta" className="text-primary hover:text-primary/80">@yielddelta</a></li>
       </ul>

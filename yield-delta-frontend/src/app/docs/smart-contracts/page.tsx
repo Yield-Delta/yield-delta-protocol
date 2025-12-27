@@ -1007,7 +1007,7 @@ console.log('New vault deployed at:', vaultAddress);`} />
           <p className="text-gray-200 font-medium">
             Mainnet contracts will be deployed after final audit completion.
             Join our{' '}
-            <a href="https://discord.gg/sei" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
+            <a href="https://discord.gg/TWNybCBr" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
               Discord
             </a>
             {' '}for deployment updates.
@@ -1055,7 +1055,7 @@ console.log('New vault deployed at:', vaultAddress);`} />
           {
             title: 'Discord Community',
             description: 'Get help and connect with developers',
-            href: 'https://discord.gg/sei',
+            href: 'https://discord.gg/TWNybCBr',
             icon: '💬',
             color: 'green'
           }
@@ -1122,7 +1122,7 @@ console.log('New vault deployed at:', vaultAddress);`} />
       >
         <p className="text-lg text-gray-200 font-medium">
           Need help? Join our{' '}
-          <a href="https://discord.gg/sei" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
+          <a href="https://discord.gg/TWNybCBr" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
             Discord
           </a>
           {' '}or check the{' '}

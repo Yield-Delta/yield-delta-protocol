@@ -1165,7 +1165,7 @@ console.log('Deposited successfully!');`} />
             { title: 'Getting Started', href: '/docs/getting-started', desc: 'Set up your development environment', color: 'blue' },
             { title: 'Features', href: '/docs/features', desc: 'Explore platform capabilities', color: 'purple' },
             { title: 'Vaults', href: '/vaults', desc: 'Browse available vaults', color: 'cyan' },
-            { title: 'Discord', href: 'https://discord.gg/sei', desc: 'Join the community for support', color: 'green' },
+            { title: 'Discord', href: 'https://discord.gg/TWNybCBr', desc: 'Join the community for support', color: 'green' },
           ].map((link, index) => {
             const colorMap = {
               blue: { bg: 'rgba(59, 130, 246, 0.1)', border: 'rgba(59, 130, 246, 0.3)', text: '#3b82f6', glow: 'rgba(59, 130, 246, 0.4)' },
@@ -1213,7 +1213,7 @@ console.log('Deposited successfully!');`} />
       >
         <p className="text-lg text-gray-200 font-medium">
           Need help? Join our{' '}
-          <a href="https://discord.gg/sei" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
+          <a href="https://discord.gg/TWNybCBr" className="text-cyan-400 hover:text-cyan-300 font-bold transition-colors">
             Discord
           </a>
           {' '}or check the{' '}

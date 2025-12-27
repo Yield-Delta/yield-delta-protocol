@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Check, Copy } from 'lucide-react'
 
 interface CodeBlockProps {
@@ -11,145 +11,119 @@ interface CodeBlockProps {
 }
 
 /**
- * Produce an HTML string with simple syntax highlighting for a supported language.
+ * Produce JSX elements with syntax highlighting for a supported language.
  *
- * The input source is first HTML-escaped; for non-plain-text languages the function
- * wraps recognized tokens in <span> elements using classes such as `hl-string`,
- * `hl-keyword`, `hl-number`, `hl-function`, `hl-property`, `hl-method`, `hl-type`,
- * and `hl-bracket`.
+ * The function tokenizes the input code and wraps recognized tokens in <span> elements
+ * using classes such as `hl-string`, `hl-keyword`, `hl-number`, `hl-function`, `hl-property`,
+ * `hl-method`, `hl-type`, and `hl-bracket`.
  *
- * If `language` is 'text' or 'plaintext', the function only escapes HTML entities
- * and does not add any highlighting spans.
+ * If `language` is 'text' or 'plaintext', the function returns the code as-is without
+ * any highlighting.
  *
  * @param code - The source code to highlight.
  * @param language - Language identifier (examples: 'typescript', 'javascript', 'bash', 'json', 'solidity', 'text'). Unknown identifiers fall back to JavaScript-style rules.
- * @returns An HTML-escaped string where recognized language tokens are wrapped with `<span>` elements bearing `hl-*` classes suitable for styling.
-function highlightCode(code: string, language: string): string {
+ * @returns A React element with syntax-highlighted code.
+ */
+function highlightCode(code: string, language: string): React.ReactElement {
   // Don't apply syntax highlighting to plain text
   if (language === 'text' || language === 'plaintext') {
-    return code
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+    return <>{code}</>
   }
 
-  // Work with the raw code - we'll handle escaping carefully
-  let highlighted = code
-    // First escape HTML entities properly
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
-    .replace(/`/g, '&#96;')
+  // Define token patterns for each language
+  const tokenize = (code: string, language: string): Array<{ type: string; value: string }> => {
+    const tokens: Array<{ type: string; value: string }> = []
 
-  const patterns: Record<string, { pattern: RegExp; replacement: string }[]> = {
-    bash: [
-      // Double quoted strings (now escaped as &quot;)
-      { pattern: /&quot;([^&]|&(?!quot;))*&quot;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Single quoted strings (now escaped as &#039;)
-      { pattern: /&#039;([^&]|&(?!#039;))*&#039;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Comments (# at start of line or after whitespace)
-      { pattern: /(^|\s)(#[^\n]*)/gm, replacement: '$1<span class="hl-comment">$2</span>' },
-      // Variables ($VAR or ${VAR})
-      { pattern: /\$\{?[A-Za-z_][A-Za-z0-9_]*\}?/g, replacement: '<span class="hl-property">$&</span>' },
-      // Commands/keywords (only as whole words)
-      { pattern: /\b(if|then|else|elif|fi|for|while|do|done|case|esac|function|return|export|source|alias|unset|set|echo|printf|read|cd|ls|pwd|mkdir|rm|cp|mv|touch|cat|grep|sed|awk|find|chmod|chown|curl|wget|git|npm|yarn|pnpm|bun|docker|kubectl|apt|apt-get|yum|brew|sudo|su|exit|break|continue)\b/g, replacement: '<span class="hl-keyword">$1</span>' },
-      // Flags (single dash with single letter)
-      { pattern: /(^|\s)(-[a-zA-Z])(?=\s|$)/g, replacement: '$1<span class="hl-type">$2</span>' },
-      // Long flags (double dash)
-      { pattern: /(^|\s)(--[a-zA-Z][a-zA-Z0-9-]*)/g, replacement: '$1<span class="hl-type">$2</span>' },
-      // Numbers (but not in URLs or identifiers)
-      { pattern: /\b(\d+)(?!\w|:)/g, replacement: '<span class="hl-number">$1</span>' },
-      // Operators (need to match escaped versions)
-      { pattern: /(&amp;&amp;|\|\||&gt;&gt;|&lt;&lt;|\||&amp;|&lt;|&gt;)/g, replacement: '<span class="hl-bracket">$&</span>' },
-    ],
-    javascript: [
-      // Template literals (backticks now escaped as &#96;)
-      { pattern: /&#96;[^&#96;]*&#96;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Double quoted strings (now escaped as &quot;)
-      { pattern: /&quot;([^&]|&(?!quot;))*&quot;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Single quoted strings (now escaped as &#039;)
-      { pattern: /&#039;([^&]|&(?!#039;))*&#039;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Single-line comments
-      { pattern: /\/\/[^\n]*/g, replacement: '<span class="hl-comment">$&</span>' },
-      // Multi-line comments
-      { pattern: /\/\*[\s\S]*?\*\//g, replacement: '<span class="hl-comment">$&</span>' },
-      // Keywords
-      { pattern: /\b(const|let|var|function|async|await|return|if|else|for|while|do|break|continue|switch|case|default|try|catch|finally|throw|new|typeof|instanceof|this|super|class|extends|import|export|from|default|as|null|undefined|true|false)\b/g, replacement: '<span class="hl-keyword">$1</span>' },
-      // Numbers
-      { pattern: /\b(\d+\.?\d*)\b/g, replacement: '<span class="hl-number">$1</span>' },
-      // Functions (word followed by parenthesis)
-      { pattern: /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, replacement: '<span class="hl-function">$1</span>' },
-      // Properties (after a dot)
-      { pattern: /\.([a-zA-Z_$][a-zA-Z0-9_$]*)/g, replacement: '.<span class="hl-property">$1</span>' },
-      // Methods
-      { pattern: /\b(console|window|document|navigator|Math|JSON|Object|Array|String|Number|Boolean|Date|Promise)\b/g, replacement: '<span class="hl-method">$1</span>' },
-    ],
-    typescript: [
-      // Template literals (backticks now escaped as &#96;)
-      { pattern: /&#96;([^&#]|&#(?!96;)|\$\{[^}]*\})*&#96;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Double quoted strings (now escaped as &quot;)
-      { pattern: /&quot;([^&]|&(?!quot;))*&quot;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Single quoted strings (now escaped as &#039;)
-      { pattern: /&#039;([^&]|&(?!#039;))*&#039;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Single-line comments
-      { pattern: /\/\/[^\n]*/g, replacement: '<span class="hl-comment">$&</span>' },
-      // Multi-line comments
-      { pattern: /\/\*[\s\S]*?\*\//g, replacement: '<span class="hl-comment">$&</span>' },
-      // Keywords
-      { pattern: /\b(const|let|var|function|async|await|return|if|else|for|while|do|break|continue|switch|case|default|try|catch|finally|throw|new|typeof|instanceof|this|super|class|extends|implements|interface|type|enum|namespace|import|export|from|default|as|null|undefined|true|false|public|private|protected|readonly|static)\b/g, replacement: '<span class="hl-keyword">$1</span>' },
-      // Numbers
-      { pattern: /\b(\d+\.?\d*)\b/g, replacement: '<span class="hl-number">$1</span>' },
-      // Types
-      { pattern: /:\s*([A-Z][a-zA-Z0-9_]*|string|number|boolean|void|any|unknown|never|object)\b/g, replacement: ': <span class="hl-type">$1</span>' },
-      // Functions
-      { pattern: /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, replacement: '<span class="hl-function">$1</span>' },
-      // Properties
-      { pattern: /\.([a-zA-Z_$][a-zA-Z0-9_$]*)/g, replacement: '.<span class="hl-property">$1</span>' },
-    ],
-    json: [
-      // Property keys (with escaped quotes)
-      { pattern: /&quot;([^&]+)&quot;:/g, replacement: '<span class="hl-function">$&</span>' },
-      // String values (with escaped quotes)
-      { pattern: /:\s*&quot;([^&]*)&quot;/g, replacement: ': <span class="hl-string">&quot;$1&quot;</span>' },
-      // Numbers
-      { pattern: /:\s*(-?\d+\.?\d*)/g, replacement: ': <span class="hl-number">$1</span>' },
-      // Booleans and null
-      { pattern: /\b(true|false|null)\b/g, replacement: '<span class="hl-keyword">$1</span>' },
-      // Brackets and braces
-      { pattern: /([{}\[\]])/g, replacement: '<span class="hl-bracket">$1</span>' },
-    ],
-    solidity: [
-      // Comments
-      { pattern: /(\/\/.*$|\/\*[\s\S]*?\*\/)/gm, replacement: '<span class="hl-comment">$1</span>' },
-      // Double quoted strings (escaped)
-      { pattern: /&quot;([^&]|&(?!quot;))*&quot;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Single quoted strings (escaped)
-      { pattern: /&#039;([^&]|&(?!#039;))*&#039;/g, replacement: '<span class="hl-string">$&</span>' },
-      // Keywords
-      { pattern: /\b(pragma|solidity|contract|interface|library|struct|enum|event|function|modifier|constructor|fallback|receive|external|public|internal|private|pure|view|payable|returns|return|if|else|for|while|do|break|continue|throw|emit|new|delete|this|super|import|from|as|is|memory|storage|calldata|indexed)\b/g, replacement: '<span class="hl-keyword">$1</span>' },
-      // Types
-      { pattern: /\b(uint256|uint128|uint64|uint32|uint16|uint8|int256|int|address|bool|bytes32|bytes|string|mapping)\b/g, replacement: '<span class="hl-type">$1</span>' },
-      // Numbers
-      { pattern: /\b(\d+\.?\d*)\b/g, replacement: '<span class="hl-number">$1</span>' },
-      // Functions
-      { pattern: /\b([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?=\()/g, replacement: '<span class="hl-function">$1</span>' },
-      // Properties
-      { pattern: /\.([a-zA-Z_$][a-zA-Z0-9_$]*)/g, replacement: '.<span class="hl-property">$1</span>' },
-    ]
+    // Language-specific regex patterns
+    const patterns: Record<string, Array<{ type: string; pattern: RegExp }>> = {
+      javascript: [
+        { type: 'comment', pattern: /\/\/.*|\/\*[\s\S]*?\*\// },
+        { type: 'string', pattern: /(['"`])(?:\\.|(?!\1)[^\\])*\1/ },
+        { type: 'keyword', pattern: /\b(const|let|var|function|async|await|return|if|else|for|while|do|break|continue|switch|case|default|try|catch|finally|throw|new|typeof|instanceof|this|super|class|extends|import|export|from|default|as|null|undefined|true|false)\b/ },
+        { type: 'number', pattern: /\b\d+\.?\d*\b/ },
+        { type: 'function', pattern: /\b[a-zA-Z_$][a-zA-Z0-9_$]*(?=\s*\()/ },
+        { type: 'property', pattern: /\.[a-zA-Z_$][a-zA-Z0-9_$]*/ },
+        { type: 'method', pattern: /\b(console|window|document|navigator|Math|JSON|Object|Array|String|Number|Boolean|Date|Promise)\b/ },
+      ],
+      typescript: [
+        { type: 'comment', pattern: /\/\/.*|\/\*[\s\S]*?\*\// },
+        { type: 'string', pattern: /(['"`])(?:\\.|(?!\1)[^\\])*\1/ },
+        { type: 'keyword', pattern: /\b(const|let|var|function|async|await|return|if|else|for|while|do|break|continue|switch|case|default|try|catch|finally|throw|new|typeof|instanceof|this|super|class|extends|implements|interface|type|enum|namespace|import|export|from|default|as|null|undefined|true|false|public|private|protected|readonly|static)\b/ },
+        { type: 'type', pattern: /:\s*([A-Z][a-zA-Z0-9_]*|string|number|boolean|void|any|unknown|never|object)\b/ },
+        { type: 'number', pattern: /\b\d+\.?\d*\b/ },
+        { type: 'function', pattern: /\b[a-zA-Z_$][a-zA-Z0-9_$]*(?=\s*\()/ },
+        { type: 'property', pattern: /\.[a-zA-Z_$][a-zA-Z0-9_$]*/ },
+      ],
+      bash: [
+        { type: 'comment', pattern: /#.*/ },
+        { type: 'string', pattern: /(['"])(?:\\.|(?!\1)[^\\])*\1/ },
+        { type: 'variable', pattern: /\$\{?[A-Za-z_][A-Za-z0-9_]*\}?/ },
+        { type: 'keyword', pattern: /\b(if|then|else|elif|fi|for|while|do|done|case|esac|function|return|export|source|alias|unset|set|echo|printf|read|cd|ls|pwd|mkdir|rm|cp|mv|touch|cat|grep|sed|awk|find|chmod|chown|curl|wget|git|npm|yarn|pnpm|bun|docker|kubectl|apt|apt-get|yum|brew|sudo|su|exit|break|continue)\b/ },
+        { type: 'type', pattern: /(^|\s)--?[a-zA-Z][a-zA-Z0-9-]*/ },
+        { type: 'number', pattern: /\b\d+\b/ },
+      ],
+      json: [
+        { type: 'function', pattern: /"[^"]*"(?=\s*:)/ },
+        { type: 'string', pattern: /:\s*"[^"]*"/ },
+        { type: 'number', pattern: /:\s*-?\d+\.?\d*/ },
+        { type: 'keyword', pattern: /\b(true|false|null)\b/ },
+        { type: 'bracket', pattern: /[{}\[\],]/ },
+      ],
+      solidity: [
+        { type: 'comment', pattern: /\/\/.*|\/\*[\s\S]*?\*\// },
+        { type: 'string', pattern: /(['"])(?:\\.|(?!\1)[^\\])*\1/ },
+        { type: 'keyword', pattern: /\b(pragma|solidity|contract|interface|library|struct|enum|event|function|modifier|constructor|fallback|receive|external|public|internal|private|pure|view|payable|returns|return|if|else|for|while|do|break|continue|throw|emit|new|delete|this|super|import|from|as|is|memory|storage|calldata|indexed)\b/ },
+        { type: 'type', pattern: /\b(uint256|uint128|uint64|uint32|uint16|uint8|int256|int|address|bool|bytes32|bytes|string|mapping)\b/ },
+        { type: 'number', pattern: /\b\d+\.?\d*\b/ },
+        { type: 'function', pattern: /\b[a-zA-Z_$][a-zA-Z0-9_$]*(?=\s*\()/ },
+        { type: 'property', pattern: /\.[a-zA-Z_$][a-zA-Z0-9_$]*/ },
+      ],
+    }
+
+    const langPatterns = patterns[language] || patterns.javascript
+    let remaining = code
+    let position = 0
+
+    while (remaining.length > 0) {
+      let matched = false
+
+      for (const { type, pattern } of langPatterns) {
+        const regex = new RegExp('^(' + pattern.source + ')', pattern.flags.replace('g', ''))
+        const match = remaining.match(regex)
+
+        if (match) {
+          tokens.push({ type, value: match[0] })
+          remaining = remaining.slice(match[0].length)
+          position += match[0].length
+          matched = true
+          break
+        }
+      }
+
+      if (!matched) {
+        tokens.push({ type: 'text', value: remaining[0] })
+        remaining = remaining.slice(1)
+        position++
+      }
+    }
+
+    return tokens
   }
 
-  const languagePatterns = patterns[language] || patterns.javascript
+  const tokens = tokenize(code, language)
 
-  // Apply patterns in order
-  languagePatterns.forEach(({ pattern, replacement }) => {
-    highlighted = highlighted.replace(pattern, replacement)
-  })
-
-  return highlighted
+  return (
+    <>
+      {tokens.map((token, index) => {
+        const className = token.type !== 'text' ? `hl-${token.type}` : ''
+        return (
+          <span key={index} className={className}>
+            {token.value}
+          </span>
+        )
+      })}
+    </>
+  )
 }
 
 /**
@@ -171,19 +145,18 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
     setTimeout(() => setCopied(false), 2000)
   }
 
-  // Add copy event listener to intercept all copy operations
+  // Intercept copy events to provide clean code
   useEffect(() => {
     const handleCopyEvent = (e: ClipboardEvent) => {
       if (!preRef.current) return
 
-      // Check if the selection is within our code block
       const selection = window.getSelection()
       if (!selection || selection.rangeCount === 0) return
 
       const range = selection.getRangeAt(0)
       if (!preRef.current.contains(range.commonAncestorContainer)) return
 
-      // Intercept the copy and provide clean code
+      // Prevent default and provide clean code
       e.preventDefault()
       e.clipboardData?.setData('text/plain', code)
     }
@@ -192,9 +165,10 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
     return () => document.removeEventListener('copy', handleCopyEvent)
   }, [code])
 
+  // Generate highlighted code
   const highlightedCode = highlightCode(code, language)
 
-  // Language badge colors with inline styles for Tailwind v4 compatibility
+  // Language badge colors
   const getLanguageColor = (lang: string): { className: string; style: React.CSSProperties } => {
     const colorMap: Record<string, { className: string; bg: string; text: string; border: string }> = {
       javascript: {
@@ -253,7 +227,9 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
       style: {
         backgroundColor: colors.bg,
         color: colors.text,
-        borderColor: colors.border
+        borderColor: colors.border,
+        paddingLeft: '1rem',
+        paddingRight: '1rem'
       }
     }
   }
@@ -272,70 +248,55 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
           .hl-method { color: #f472b6; }
           .hl-type { color: #fbbf24; }
           .hl-bracket { color: #94a3b8; }
-
-          /* Prevent selection of syntax highlighting spans */
-          .hl-comment::before,
-          .hl-string::before,
-          .hl-keyword::before,
-          .hl-number::before,
-          .hl-function::before,
-          .hl-property::before,
-          .hl-method::before,
-          .hl-type::before,
-          .hl-bracket::before {
-            content: attr(data-text);
-            display: none;
-          }
+          .hl-variable { color: #22d3ee; }
         `
       }} />
 
       <div className="code-block-wrapper group relative my-6">
-
-      {/* Code container with premium glassmorphic design */}
-      <div className="relative overflow-hidden rounded-xl"
-        style={{
-          background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
-          border: '1px solid rgba(6, 182, 212, 0.2)',
-          boxShadow: `
-            0 8px 32px rgba(0, 0, 0, 0.4),
-            inset 0 1px 0 rgba(255, 255, 255, 0.05),
-            inset 0 0 60px rgba(6, 182, 212, 0.03),
-            0 0 0 1px rgba(6, 182, 212, 0.1)
-          `,
-        }}
-      >
-        {/* Copy button with enhanced visibility */}
-        <button
-          onClick={handleCopy}
-          className="absolute top-3 right-3 p-2 rounded-lg opacity-70 hover:opacity-100 transition-all duration-300 z-20 group/copy"
+        {/* Code container */}
+        <div className="relative overflow-hidden rounded-xl"
           style={{
-            background: copied
-              ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.1))'
-              : 'linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9))',
-            border: copied
-              ? '1px solid rgba(34, 197, 94, 0.4)'
-              : '1px solid rgba(148, 163, 184, 0.3)',
-            backdropFilter: 'blur(12px)',
-            boxShadow: copied
-              ? '0 4px 12px rgba(34, 197, 94, 0.2)'
-              : '0 4px 12px rgba(0, 0, 0, 0.3)',
+            background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%)',
+            border: '1px solid rgba(6, 182, 212, 0.2)',
+            boxShadow: `
+              0 8px 32px rgba(0, 0, 0, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05),
+              inset 0 0 60px rgba(6, 182, 212, 0.03),
+              0 0 0 1px rgba(6, 182, 212, 0.1)
+            `,
           }}
-          aria-label={copied ? 'Copied!' : 'Copy code'}
-          title="Click to copy clean code"
         >
-          {copied ? (
-            <Check className="w-4 h-4 text-green-400" />
-          ) : (
-            <Copy className="w-4 h-4 text-slate-400 group-hover:text-cyan-400 transition-colors" />
-          )}
-        </button>
+          {/* Copy button */}
+          <button
+            onClick={handleCopy}
+            className="absolute top-3 right-3 p-2 rounded-lg opacity-70 hover:opacity-100 transition-all duration-300 z-20"
+            style={{
+              background: copied
+                ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.1))'
+                : 'linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9))',
+              border: copied
+                ? '1px solid rgba(34, 197, 94, 0.4)'
+                : '1px solid rgba(148, 163, 184, 0.3)',
+              backdropFilter: 'blur(12px)',
+              boxShadow: copied
+                ? '0 4px 12px rgba(34, 197, 94, 0.2)'
+                : '0 4px 12px rgba(0, 0, 0, 0.3)',
+            }}
+            aria-label={copied ? 'Copied!' : 'Copy code'}
+          >
+            {copied ? (
+              <Check className="w-4 h-4 text-green-400" />
+            ) : (
+              <Copy className="w-4 h-4 text-slate-400" />
+            )}
+          </button>
 
-        {/* Code content with copy event interception */}
-        <pre
-          ref={preRef}
-          className="overflow-x-auto p-6 m-0 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent relative code-block-pre"
-        >
-            {/* Language badge - positioned inline at top of code area */}
+          {/* Code content */}
+          <pre
+            ref={preRef}
+            className="overflow-x-auto p-6 m-0 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent relative"
+          >
+            {/* Language badge */}
             {(language || title) && (
               <div className="flex items-center gap-3 mb-4">
                 {title && (
@@ -347,7 +308,7 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
                   const { className, style } = getLanguageColor(language)
                   return (
                     <span
-                      className={`inline-flex items-center px-3 py-1 text-xs font-mono uppercase tracking-wider rounded-full border ${className}`}
+                      className={`inline-flex items-center px-4 py-1.5 text-xs font-mono uppercase tracking-wider rounded-full border-2 ${className}`}
                       style={style}
                     >
                       {language}
@@ -356,34 +317,35 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
                 })()}
               </div>
             )}
+
+            {/* Render code with line numbers or without */}
             {showLineNumbers ? (
               <code className="block font-mono text-sm leading-relaxed text-slate-200">
                 <table className="w-full border-collapse">
                   <tbody>
-                    {highlightedCode.split('\n').map((line, index) => (
-                      <tr key={index}>
-                        <td className="pr-4 text-right select-none" style={{ color: 'rgba(148, 163, 184, 0.4)' }}>
-                          {index + 1}
-                        </td>
-                        <td
-                          className="text-slate-200"
-                          dangerouslySetInnerHTML={{
-                            __html: line || '<br/>'
-                          }}
-                        />
-                      </tr>
-                    ))}
+                    {code.split('\n').map((line, index) => {
+                      const lineHighlighted = highlightCode(line, language);
+                      return (
+                        <tr key={`line-${index}`}>
+                          <td className="pr-4 text-right select-none" style={{ color: 'rgba(148, 163, 184, 0.4)', verticalAlign: 'top' }}>
+                            {index + 1}
+                          </td>
+                          <td className="text-slate-200">
+                            {line.trim() === '' ? '\u00A0' : lineHighlighted}
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </code>
             ) : (
-              <code
-                className="block font-mono text-sm leading-relaxed text-slate-200"
-                dangerouslySetInnerHTML={{ __html: highlightedCode }}
-              />
+              <code className="block font-mono text-sm leading-relaxed text-slate-200">
+                {highlightedCode}
+              </code>
             )}
           </pre>
-      </div>
+        </div>
       </div>
     </>
   )
