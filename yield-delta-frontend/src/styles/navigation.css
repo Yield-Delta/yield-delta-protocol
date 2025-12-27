@@ -513,7 +513,7 @@ nav .wallet-container {
 
     nav .mobile-menu-btn {
       order: 2;
-      margin-right: 0;
+      margin-right: 0.5rem; /* Add margin to prevent cutoff on mobile */
       flex-shrink: 0;
     }
   }
@@ -571,7 +571,7 @@ nav .wallet-container {
     }
 
     nav .mobile-menu-btn {
-      margin-right: 0;
+      margin-right: 0.5rem; /* Add margin to prevent cutoff on mobile */
       flex-shrink: 0;
     }
   }
