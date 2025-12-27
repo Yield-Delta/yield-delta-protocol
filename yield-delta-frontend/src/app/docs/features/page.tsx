@@ -667,8 +667,3 @@ export default function FeaturesPage() {
     </div>
   );
 }
-
-export const metadata = {
-  title: 'Core Features - Yield Delta Documentation',
-  description: 'Discover the core features of Yield Delta: AI-powered rebalancing, vault management, market analytics, and more.',
-};
