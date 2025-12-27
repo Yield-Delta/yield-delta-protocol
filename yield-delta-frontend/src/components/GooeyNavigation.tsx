@@ -244,7 +244,11 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLAnchorElement>) => {
-      const currentIndex = Number(e.currentTarget.dataset.index);
+      const currentIndex = Number(e.currentTarget.dataset.index ?? 0);
+      if (isNaN(currentIndex)) {
+        console.warn('Invalid index in keyboard navigation');
+        return;
+      }
 
       switch (e.key) {
         case 'Enter':
@@ -289,7 +293,7 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
         }
       }
     },
-    [items.length, handleClick]
+    [items.length]
   );
 
   // Initial setup and resize observer
