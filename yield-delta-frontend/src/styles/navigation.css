@@ -171,6 +171,7 @@ nav .nav-center-links .gooey-nav-container nav ul li a::before {
     color: hsl(var(--foreground)) !important;
     flex-shrink: 0 !important;
     display: flex !important;
+    margin-right: 0.5rem !important; /* Prevent cutoff on mobile screens */
   }
 
   /* Wallet container always visible on mobile */
@@ -513,7 +514,7 @@ nav .wallet-container {
 
     nav .mobile-menu-btn {
       order: 2;
-      margin-right: 0.5rem; /* Add margin to prevent cutoff on mobile */
+      margin-right: 0.5rem !important; /* Add margin to prevent cutoff on mobile */
       flex-shrink: 0;
     }
   }
@@ -571,7 +572,7 @@ nav .wallet-container {
     }
 
     nav .mobile-menu-btn {
-      margin-right: 0.5rem; /* Add margin to prevent cutoff on mobile */
+      margin-right: 0.5rem !important; /* Add margin to prevent cutoff on mobile */
       flex-shrink: 0;
     }
   }
