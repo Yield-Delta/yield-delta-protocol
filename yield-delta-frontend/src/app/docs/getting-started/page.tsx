@@ -1,6 +1,15 @@
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 import { CodeBlock } from '@/components/docs/CodeBlock'
 
+/**
+ * Render the Getting Started documentation page for Yield Delta.
+ *
+ * The page presents installation and configuration steps, development and architecture
+ * overviews, instructions for creating a first vault, AI feature summaries, testing
+ * checks, common troubleshooting tips, and links to further documentation and community resources.
+ *
+ * @returns The rendered React element for the Getting Started documentation page.
+ */
 export default function GettingStartedPage() {
   return (
     <div className="docs-content rounded-2xl p-8"

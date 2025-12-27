@@ -196,6 +196,17 @@ const MobileMenuItem = memo<{ item: NavLink; onClose: () => void }>(({ item, onC
 
 MobileMenuItem.displayName = 'MobileMenuItem';
 
+/**
+ * Render the responsive top navigation bar with brand, center navigation (GooeyNav), wallet actions, and an animated premium mobile menu.
+ *
+ * The component animates the logo and mobile menu using GSAP, traps focus while the mobile menu is open, and disables body scrolling during menu open. When the connected chain is a testnet, a fixed testnet banner is displayed above the nav.
+ *
+ * @param variant - Visual style for the nav; one of `"light" | "dark" | "transparent"`.
+ * @param className - Additional CSS classes to apply to the nav container.
+ * @param showWallet - If true, render the wallet connect control.
+ * @param showLaunchApp - If true, show the "Launch App" button; when false the center GooeyNav and mobile menu button are shown instead.
+ * @returns The navigation React element (JSX) containing branding, optional center GooeyNav, wallet/launch actions, and the full-screen animated mobile menu when opened.
+ */
 export function Navigation({ variant = 'transparent', className = '', showWallet = true, showLaunchApp = true }: NavigationProps) {
   const logoRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);

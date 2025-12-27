@@ -1,5 +1,15 @@
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 
+/**
+ * Renders the "Core Features" documentation page for Yield Delta.
+ *
+ * This component displays sections describing vault management, AI-powered rebalancing,
+ * the Kairos Chat Assistant, market analytics, liquidity provision, SEI network advantages,
+ * security, performance metrics, cross-chain features, UX, integrations, demo mode, a feature
+ * comparison table, and a getting started guide.
+ *
+ * @returns A React element containing the styled documentation content for the Core Features page.
+ */
 export default function FeaturesPage() {
   return (
     <div className="docs-content rounded-2xl p-8"

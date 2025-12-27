@@ -9,6 +9,14 @@ interface CopyButtonProps {
   style?: React.CSSProperties
 }
 
+/**
+ * Renders a button that copies the provided text to the clipboard and shows brief visual and accessible feedback.
+ *
+ * @param text - The string to write to the clipboard when the button is clicked.
+ * @param className - Optional additional CSS class names applied to the button.
+ * @param style - Optional inline style object applied to the button.
+ * @returns The copy button element; after a successful copy the button shows a check icon and sets its aria-label to "Copied!" for 2 seconds. 
+ */
 export function CopyButton({ text, className = '', style }: CopyButtonProps) {
   const [copied, setCopied] = useState(false)
 

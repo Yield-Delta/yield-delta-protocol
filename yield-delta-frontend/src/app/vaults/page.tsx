@@ -108,6 +108,14 @@ const getRiskBadgeStyle = (riskLevel: 'Low' | 'Medium' | 'High') => {
   return styles[riskLevel]
 }
 
+/**
+ * Render the Vaults dashboard with live stats, a responsive vaults grid, AI chat assistant, and deposit modal.
+ *
+ * The component fetches and combines API and on-chain data to display TVL, APY, and performance metrics, provides
+ * actions for depositing and viewing analytics, and includes GSAP-powered entrance animations for stats and vault cards.
+ *
+ * @returns JSX element representing the Vaults dashboard page
+ */
 export default function VaultsPage() {
   const router = useRouter();
   const vaultCardsRef = useRef<HTMLDivElement>(null);

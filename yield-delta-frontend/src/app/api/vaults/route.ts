@@ -18,9 +18,13 @@ const VaultSchema = z.object({
 const CreateVaultSchema = VaultSchema.omit({ address: true })
 
 /**
- * Get all vaults or create a new vault
- * GET /api/vaults - List all vaults
- * POST /api/vaults - Create new vault
+ * Return the list of predefined vaults, optionally filtered by query parameters.
+ *
+ * Supports the URL search parameters:
+ * - `strategy` — filter vaults by strategy key (e.g., `concentrated_liquidity`).
+ * - `active` — filter by active status; use `true` or `false`.
+ *
+ * @returns On success, an object with `success: true`, `data` (array of vault objects), `count` (number of returned vaults), and `chainId` (1328). On failure, an object with `success: false`, an `error` message, and `chainId` (1328).
  */
 export async function GET(request: NextRequest) {
   try {

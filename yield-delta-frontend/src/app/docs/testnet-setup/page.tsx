@@ -1,6 +1,12 @@
 import Link from 'next/link';
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 
+/**
+ * Renders the SEI Testnet Setup documentation page with step-by-step wallet installation, network configuration,
+ * testnet faucet instructions, connection guidance for Yield Delta, troubleshooting tips, and additional resources.
+ *
+ * @returns The page JSX containing instructional content and navigation links for configuring and using SEI Atlantic-2 Testnet.
+ */
 export default function TestnetSetupPage() {
   return (
     <div className="docs-content rounded-2xl p-8"

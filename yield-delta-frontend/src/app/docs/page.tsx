@@ -4,6 +4,11 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
+/**
+ * Renders the static documentation home page for Yield Delta, including navigation, key innovations, investor highlights, quick-start guides, core features, network information, and community links.
+ *
+ * @returns The JSX element for the documentation home page.
+ */
 export default function DocsHomePage() {
   return (
     <div className="docs-content rounded-2xl p-8"
