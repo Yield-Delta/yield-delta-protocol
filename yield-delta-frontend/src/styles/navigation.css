@@ -504,7 +504,7 @@ nav .wallet-container {
     /* Mobile: Show wallet and hamburger */
     nav .nav-right-simple {
       gap: 0.5rem;
-      padding-right: 0.25rem;
+      padding-right: 0;
       overflow: visible;
     }
 
@@ -531,7 +531,7 @@ nav .wallet-container {
       gap: 0.4rem;
       flex-shrink: 0;
       min-width: auto;
-      padding-right: 0.25rem;
+      padding-right: 0;
       overflow: visible;
     }
 
@@ -560,7 +560,7 @@ nav .wallet-container {
 
     nav .nav-right-simple {
       gap: 0.35rem;
-      padding-right: 0.25rem;
+      padding-right: 0;
       overflow: visible;
     }
 
