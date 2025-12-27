@@ -401,55 +401,6 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
     }
   }, [mobileMenuOpen]);
 
-  // Focus trap for accessibility
-  useEffect(() => {
-    if (!mobileMenuOpen || !mobileMenuRef.current) return;
-
-    const menuElement = mobileMenuRef.current;
-    const focusableElements = menuElement.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-    );
-
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    // Focus the close button when menu opens
-    const focusTimer = setTimeout(() => {
-      closeButtonRef.current?.focus();
-    }, 100);
-
-    const handleTabKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-
-      if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement?.focus();
-        }
-      } else {
-        if (document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement?.focus();
-        }
-      }
-    };
-
-    const handleEscapeKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        closeMobileMenu();
-      }
-    };
-
-    document.addEventListener('keydown', handleTabKey);
-    document.addEventListener('keydown', handleEscapeKey);
-
-    return () => {
-      clearTimeout(focusTimer);
-      document.removeEventListener('keydown', handleTabKey);
-      document.removeEventListener('keydown', handleEscapeKey);
-    };
-  }, [mobileMenuOpen]); // closeMobileMenu is defined below but uses only stable refs
-
   // Mobile menu close handler with premium animation - memoized to prevent recreation
   const closeMobileMenu = useCallback(() => {
     if (!mobileMenuRef.current) {
@@ -519,6 +470,55 @@ export function Navigation({ variant = 'transparent', className = '', showWallet
       ease: 'power2.in'
     }, 0.2);
   }, []);
+
+  // Focus trap for accessibility
+  useEffect(() => {
+    if (!mobileMenuOpen || !mobileMenuRef.current) return;
+
+    const menuElement = mobileMenuRef.current;
+    const focusableElements = menuElement.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    // Focus the close button when menu opens
+    const focusTimer = setTimeout(() => {
+      closeButtonRef.current?.focus();
+    }, 100);
+
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement?.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement?.focus();
+        }
+      }
+    };
+
+    const handleEscapeKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener('keydown', handleTabKey);
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return () => {
+      clearTimeout(focusTimer);
+      document.removeEventListener('keydown', handleTabKey);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [mobileMenuOpen, closeMobileMenu]);
 
   // Toggle menu handler - memoized
   const toggleMobileMenu = useCallback(() => {

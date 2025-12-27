@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 

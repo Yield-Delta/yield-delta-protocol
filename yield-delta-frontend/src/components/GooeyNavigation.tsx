@@ -80,11 +80,14 @@ const GooeyNav: React.FC<GooeyNavProps> = ({
 
   // Clear timeouts and animation frames on unmount
   useEffect(() => {
+    const timeouts = timeoutsRef.current;
+    const animationFrame = animationFrameRef.current;
+
     return () => {
-      timeoutsRef.current.forEach(timeout => clearTimeout(timeout));
-      timeoutsRef.current.clear();
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
+      timeouts.forEach(timeout => clearTimeout(timeout));
+      timeouts.clear();
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
       }
     };
   }, []);
