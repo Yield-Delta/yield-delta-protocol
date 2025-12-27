@@ -82,7 +82,6 @@ function highlightCode(code: string, language: string): React.ReactElement {
 
     const langPatterns = patterns[language] || patterns.javascript
     let remaining = code
-    let position = 0
 
     while (remaining.length > 0) {
       let matched = false
@@ -94,7 +93,6 @@ function highlightCode(code: string, language: string): React.ReactElement {
         if (match) {
           tokens.push({ type, value: match[0] })
           remaining = remaining.slice(match[0].length)
-          position += match[0].length
           matched = true
           break
         }
@@ -103,7 +101,6 @@ function highlightCode(code: string, language: string): React.ReactElement {
       if (!matched) {
         tokens.push({ type: 'text', value: remaining[0] })
         remaining = remaining.slice(1)
-        position++
       }
     }
 

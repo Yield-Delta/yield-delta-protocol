@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { DocsBackButton } from '@/components/docs/DocsBackButton'
 
 /**
@@ -202,9 +203,9 @@ export default function FeaturesPage() {
       </ul>
       
       <p className="mb-8">
-        <a href="/" className="text-primary hover:text-primary/80">
+        <Link href="/" className="text-primary hover:text-primary/80">
           View Live Demo →
-        </a>
+        </Link>
       </p>
 
       <hr className="my-8" />
@@ -271,22 +272,22 @@ export default function FeaturesPage() {
       
       <ol className="space-y-2 mb-8">
         <li>
-          <a href="/docs/getting-started" className="text-primary hover:text-primary/80">
+          <Link href="/docs/getting-started" className="text-primary hover:text-primary/80">
             <strong>Setup Development Environment</strong>
-          </a> - Get up and running in minutes
+          </Link> - Get up and running in minutes
         </li>
         <li>
-          <a href="/" className="text-primary hover:text-primary/80">
+          <Link href="/" className="text-primary hover:text-primary/80">
             <strong>View Live Demo</strong>
-          </a> - Experience features risk-free
+          </Link> - Experience features risk-free
         </li>
         <li>
-          <a href="/docs/features/vaults" className="text-primary hover:text-primary/80">
+          <Link href="/docs/features/vaults" className="text-primary hover:text-primary/80">
             <strong>Deploy Your First Vault</strong>
-          </a> - Start earning optimized yields
+          </Link> - Start earning optimized yields
         </li>
         <li>
-          <strong>Chat with Liqui</strong> - Get personalized strategy advice
+          <strong>Chat with Kairos</strong> - Get personalized strategy advice
         </li>
       </ol>
 

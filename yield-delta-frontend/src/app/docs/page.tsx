@@ -328,9 +328,9 @@ export default function DocsHomePage() {
             </tr>
             <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
               <td className="px-4 py-3">
-                <a href="/" className="text-primary hover:text-primary/80 font-medium">
+                <Link href="/" className="text-primary hover:text-primary/80 font-medium">
                   View Live Demo
-                </a>
+                </Link>
               </td>
               <td className="px-4 py-3 text-muted-foreground">Risk-free testing environment</td>
               <td className="px-4 py-3">

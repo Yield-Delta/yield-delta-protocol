@@ -67,7 +67,7 @@ const contract = new ethers.Contract(address, abi, provider)`
         <div className="bg-green-900/20 border border-green-500/30 rounded-lg p-6">
           <h3 className="text-xl font-semibold mb-3 text-green-400">Validation Checklist:</h3>
           <ul className="space-y-2 text-green-200">
-            <li>✓ No HTML tags visible (no class="...")</li>
+            <li>✓ No HTML tags visible (no class=&quot;...&quot;)</li>
             <li>✓ No HTML entities visible (no &amp;#039;, &amp;quot;, etc.)</li>
             <li>✓ Strings are highlighted in green</li>
             <li>✓ Keywords are highlighted in purple</li>

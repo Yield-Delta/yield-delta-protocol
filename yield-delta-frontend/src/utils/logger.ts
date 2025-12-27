@@ -33,31 +33,31 @@ class Logger {
     return messageLevelIndex >= configLevelIndex;
   }
 
-  private formatMessage(level: LogLevel, message: string, ...args: any[]): any[] {
+  private formatMessage(level: LogLevel, message: string, ...args: unknown[]): unknown[] {
     const timestamp = new Date().toISOString();
     const prefix = this.context ? `[${timestamp}] [${level.toUpperCase()}] [${this.context}]` : `[${timestamp}] [${level.toUpperCase()}]`;
     return [prefix, message, ...args];
   }
 
-  debug(message: string, ...args: any[]): void {
+  debug(message: string, ...args: unknown[]): void {
     if (this.shouldLog('debug')) {
       console.log(...this.formatMessage('debug', message, ...args));
     }
   }
 
-  info(message: string, ...args: any[]): void {
+  info(message: string, ...args: unknown[]): void {
     if (this.shouldLog('info')) {
       console.info(...this.formatMessage('info', message, ...args));
     }
   }
 
-  warn(message: string, ...args: any[]): void {
+  warn(message: string, ...args: unknown[]): void {
     if (this.shouldLog('warn')) {
       console.warn(...this.formatMessage('warn', message, ...args));
     }
   }
 
-  error(message: string, error?: Error | unknown, ...args: any[]): void {
+  error(message: string, error?: Error | unknown, ...args: unknown[]): void {
     if (this.shouldLog('error')) {
       const errorDetails = error instanceof Error
         ? { message: error.message, stack: error.stack }
