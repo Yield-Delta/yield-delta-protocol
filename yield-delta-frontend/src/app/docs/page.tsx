@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -387,3 +385,8 @@ export default function DocsHomePage() {
     </div>
   );
 }
+
+export const metadata = {
+  title: 'Documentation Home - Yield Delta',
+  description: 'Comprehensive documentation for Yield Delta - the next-generation AI-powered DeFi platform built on SEI Network.',
+};
