@@ -64,8 +64,10 @@
 
 /* Vault Page Spacing Controls */
 .vault-page-spacing {
+.vault-page-spacing {
   padding-top: 1.5rem;
-  min-height: calc(100vh - 3.5rem);
+  min-height: calc(100vh - 1.5rem);
+}
 }
 
 @media (max-width: 768px) {
