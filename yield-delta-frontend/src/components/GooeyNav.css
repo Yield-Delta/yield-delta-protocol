@@ -92,8 +92,23 @@
   transform: translateY(-2px);
 }
 
-.gooey-nav-container nav ul li:focus-within:has(:focus-visible) {
+/* Modern browsers with :has() support */
+@supports(selector(:has(*))) {
+  .gooey-nav-container nav ul li:focus-within:has(:focus-visible) {
+    box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.5), 0 0 8px rgba(139, 92, 246, 0.4);
+  }
+}
+
+/* Fallback for older browsers without :has() support */
+.gooey-nav-container nav ul li:focus-within {
   box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.5), 0 0 8px rgba(139, 92, 246, 0.4);
+}
+
+/* Additional fallback for direct focus on links */
+.gooey-nav-container nav ul li a:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.5), 0 0 8px rgba(139, 92, 246, 0.4);
+  border-radius: 100vw;
 }
 
 .gooey-nav-container nav ul li::after {

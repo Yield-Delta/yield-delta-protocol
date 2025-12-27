@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Check, Copy } from 'lucide-react'
 
 interface CodeBlockProps {
@@ -55,7 +55,7 @@ function highlightCode(code: string, language: string): string {
     ],
     javascript: [
       // Template literals (backticks now escaped as &#96;)
-      { pattern: /&#96;(?:\$\{[^}]*\}|(?!&#96;)[^$])*&#96;/g, replacement: '<span class="hl-string">$&</span>' },
+      { pattern: /&#96;[^&#96;]*&#96;/g, replacement: '<span class="hl-string">$&</span>' },
       // Double quoted strings (now escaped as &quot;)
       { pattern: /&quot;([^&]|&(?!quot;))*&quot;/g, replacement: '<span class="hl-string">$&</span>' },
       // Single quoted strings (now escaped as &#039;)
@@ -141,12 +141,34 @@ function highlightCode(code: string, language: string): string {
 
 export function CodeBlock({ code, language = 'typescript', title, showLineNumbers = false }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
+  const preRef = useRef<HTMLPreElement>(null)
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(code)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
+
+  // Add copy event listener to intercept all copy operations
+  useEffect(() => {
+    const handleCopyEvent = (e: ClipboardEvent) => {
+      if (!preRef.current) return
+
+      // Check if the selection is within our code block
+      const selection = window.getSelection()
+      if (!selection || selection.rangeCount === 0) return
+
+      const range = selection.getRangeAt(0)
+      if (!preRef.current.contains(range.commonAncestorContainer)) return
+
+      // Intercept the copy and provide clean code
+      e.preventDefault()
+      e.clipboardData?.setData('text/plain', code)
+    }
+
+    document.addEventListener('copy', handleCopyEvent)
+    return () => document.removeEventListener('copy', handleCopyEvent)
+  }, [code])
 
   const highlightedCode = highlightCode(code, language)
 
@@ -286,13 +308,10 @@ export function CodeBlock({ code, language = 'typescript', title, showLineNumber
           )}
         </button>
 
-        {/* Code content with improved copy functionality */}
+        {/* Code content with copy event interception */}
         <pre
-          className="overflow-x-auto p-6 m-0 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent relative"
-          onCopy={(e: React.ClipboardEvent) => {
-            e.preventDefault();
-            e.clipboardData.setData('text/plain', code);
-          }}
+          ref={preRef}
+          className="overflow-x-auto p-6 m-0 scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-transparent relative code-block-pre"
         >
             {/* Language badge - positioned inline at top of code area */}
             {(language || title) && (
