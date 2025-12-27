@@ -126,7 +126,7 @@ export default function SmartContractsPage() {
             name: 'StrategyVault (Native SEI)',
             description: 'AI-driven vault for native SEI token liquidity management.',
             interface: 'IStrategyVault',
-            address: '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565',
+            address: '0x1ec7d0E455c0Ca2Ed4F2c27bc8F7E3542eeD6565', // SEI Testnet - arctic-1
             features: [
               'Native SEI optimization',
               'Gas-efficient operations',
@@ -140,7 +140,7 @@ export default function SmartContractsPage() {
             name: 'StrategyVault (USDC)',
             description: 'AI-driven dynamic liquidity vault that automatically manages concentrated liquidity positions.',
             interface: 'IStrategyVault',
-            address: '0xbCB883594435D92395fA72D87845f87BE78d202E',
+            address: '0xbCB883594435D92395fA72D87845f87BE78d202E', // SEI Testnet - arctic-1
             features: [
               'Automated position management',
               'AI-powered rebalancing',
@@ -154,7 +154,7 @@ export default function SmartContractsPage() {
             name: 'VaultFactory',
             description: 'Factory contract for creating new strategy vaults with different configurations.',
             interface: 'IVaultFactory',
-            address: '0x1ec598666F2A7322A7C954455018e3CFB5A13A99',
+            address: '0x1ec598666F2A7322A7C954455018e3CFB5A13A99', // SEI Testnet - arctic-1
             features: [
               'Vault creation with custom parameters',
               'Strategy template management',
@@ -168,7 +168,7 @@ export default function SmartContractsPage() {
             name: 'AIOracle',
             description: 'Oracle contract that provides AI-powered predictions for optimal rebalancing.',
             interface: 'IAIOracle',
-            address: '0xA3437847337d953ED6c9eB130840D04c249973e5',
+            address: '0xA3437847337d953ED6c9eB130840D04c249973e5', // SEI Testnet - arctic-1
             features: [
               'AI model registration',
               'Rebalance signal generation',
