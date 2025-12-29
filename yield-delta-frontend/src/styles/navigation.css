@@ -108,6 +108,8 @@ nav .nav-right-simple {
   min-width: 200px;
   justify-content: flex-end;
   z-index: 10;
+  padding-right: 0.75rem; /* Add padding to prevent button cutoff */
+  box-sizing: border-box;
 }
 
 nav .nav-center-links {
@@ -171,7 +173,8 @@ nav .nav-center-links .gooey-nav-container nav ul li a::before {
     color: hsl(var(--foreground)) !important;
     flex-shrink: 0 !important;
     display: flex !important;
-    margin-right: 0.5rem !important; /* Prevent cutoff on mobile screens */
+    margin-right: 0 !important; /* Remove margin - using parent padding instead */
+    margin-left: 0.5rem !important; /* Space from wallet button */
   }
 
   /* Wallet container always visible on mobile */
@@ -504,18 +507,21 @@ nav .wallet-container {
     /* Mobile: Show wallet and hamburger */
     nav .nav-right-simple {
       gap: 0.5rem;
-      padding-right: 0;
+      padding-right: 0.75rem !important; /* Ensure right padding on mobile */
       overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .wallet-container {
       order: 1;
+      flex-shrink: 1; /* Allow wallet to shrink if needed */
     }
 
     nav .mobile-menu-btn {
       order: 2;
-      margin-right: 0.5rem !important; /* Add margin to prevent cutoff on mobile */
-      flex-shrink: 0;
+      margin-right: 0 !important; /* No margin - using parent padding */
+      margin-left: 0.5rem !important;
+      flex-shrink: 0 !important; /* Never shrink the hamburger */
     }
   }
 
@@ -531,13 +537,20 @@ nav .wallet-container {
       gap: 0.4rem;
       flex-shrink: 0;
       min-width: auto;
-      padding-right: 0;
+      padding-right: 0.75rem !important; /* Maintain right padding on small screens */
       overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .wallet-container {
       flex-shrink: 1;
       min-width: 0;
+    }
+
+    nav .mobile-menu-btn {
+      margin-right: 0 !important; /* No margin - using parent padding */
+      margin-left: 0.4rem !important;
+      flex-shrink: 0 !important;
     }
 
     nav .btn-cyber {
@@ -560,8 +573,9 @@ nav .wallet-container {
 
     nav .nav-right-simple {
       gap: 0.35rem;
-      padding-right: 0;
+      padding-right: 0.75rem !important; /* Critical: maintain right padding on very small screens */
       overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .btn-cyber {
@@ -572,8 +586,35 @@ nav .wallet-container {
     }
 
     nav .mobile-menu-btn {
-      margin-right: 0.5rem !important; /* Add margin to prevent cutoff on mobile */
-      flex-shrink: 0;
+      margin-right: 0 !important; /* No margin - using parent padding */
+      margin-left: 0.35rem !important;
+      flex-shrink: 0 !important;
+      width: 2rem !important; /* Slightly smaller on very small screens */
+      height: 2rem !important;
+    }
+  }
+
+  /* Extra small screens (320px width) - iPhone SE, small phones */
+  @media (max-width: 375px) {
+    nav .simple-nav-container {
+      padding: 0 0.5rem !important;
+    }
+
+    nav .nav-right-simple {
+      padding-right: 0.5rem !important; /* Reduced padding for tiny screens */
+      gap: 0.25rem !important;
+    }
+
+    nav .mobile-menu-btn {
+      margin-left: 0.25rem !important;
+      width: 1.875rem !important; /* 30px - slightly smaller */
+      height: 1.875rem !important;
+    }
+
+    nav .btn-cyber {
+      max-width: 120px;
+      font-size: 0.65rem;
+      padding: 0.4rem 0.6rem;
     }
   }
 
