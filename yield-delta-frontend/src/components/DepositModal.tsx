@@ -636,18 +636,17 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
         /* Responsive handling for smaller screens - Enhanced */
         @media (max-width: 600px) {
           .deposit-modal-container {
-            padding: 0 !important;
+            padding: 16px !important; /* Added padding to prevent modal cutoff on mobile */
             align-items: center !important;
             justify-content: center !important;
           }
           .deposit-modal-content {
-            width: calc(100vw - 16px) !important;
-            max-width: calc(100vw - 16px) !important;
+            width: 100% !important; /* Use 100% to respect container padding instead of calc() */
+            max-width: 100% !important;
             min-width: 280px !important;
-            max-height: calc(100vh - 16px) !important;
-            max-height: calc(100dvh - 16px) !important;
+            max-height: 100% !important; /* Respect container padding */
             border-radius: 20px !important;
-            margin: 8px !important;
+            margin: 0 !important; /* Removed margin since container now has padding */
             overflow: hidden !important;
             box-sizing: border-box !important;
           }
@@ -805,15 +804,14 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
 
         @media (max-width: 375px) {
           .deposit-modal-container {
-            padding: 0 !important;
+            padding: 12px !important; /* Added padding to prevent modal cutoff on very small screens */
           }
           .deposit-modal-content {
-            width: calc(100vw - 12px) !important;
-            max-width: calc(100vw - 12px) !important;
-            max-height: calc(100vh - 12px) !important;
-            max-height: calc(100dvh - 12px) !important;
+            width: 100% !important; /* Use 100% to respect container padding instead of calc() */
+            max-width: 100% !important;
+            max-height: 100% !important; /* Respect container padding */
             border-radius: 16px !important;
-            margin: 6px !important;
+            margin: 0 !important; /* Removed margin since container now has padding */
             box-sizing: border-box !important;
           }
 

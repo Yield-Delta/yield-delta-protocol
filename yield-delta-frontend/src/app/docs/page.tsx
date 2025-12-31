@@ -1,12 +1,22 @@
-'use client'
-
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
+/**
+ * Renders the static documentation home page for Yield Delta, including navigation, key innovations, investor highlights, quick-start guides, core features, network information, and community links.
+ *
+ * @returns The JSX element for the documentation home page.
+ */
 export default function DocsHomePage() {
   return (
-    <div className="docs-content">
+    <div className="docs-content rounded-2xl p-8"
+      style={{
+        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.3) 100%)',
+        border: '1px solid rgba(148, 163, 184, 0.15)',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.05)',
+      }}
+    >
       {/* Back to Vaults Navigation */}
       <div className="mb-6">
         <Link href="/vaults">
@@ -132,7 +142,7 @@ export default function DocsHomePage() {
           </p>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-white/10">
+        <div className="mt-6 pt-6">
           <a
             href="/docs/impermanent-loss-reduction"
             className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-medium transition-colors"
@@ -258,7 +268,10 @@ export default function DocsHomePage() {
               </td>
               <td className="px-4 py-3 text-muted-foreground">Automated position optimization using ML</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -272,7 +285,10 @@ export default function DocsHomePage() {
               </td>
               <td className="px-4 py-3 text-muted-foreground">ERC-4626 compatible yield vaults</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -280,11 +296,14 @@ export default function DocsHomePage() {
             </tr>
             <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
               <td className="px-4 py-3">
-                <span className="font-medium">Liqui Chat</span>
+                <span className="font-medium">Kairos Chat</span>
               </td>
               <td className="px-4 py-3 text-muted-foreground">AI assistant for DeFi strategy</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -296,7 +315,10 @@ export default function DocsHomePage() {
               </td>
               <td className="px-4 py-3 text-muted-foreground">Real-time market data and insights</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -304,13 +326,16 @@ export default function DocsHomePage() {
             </tr>
             <tr className="group border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-200">
               <td className="px-4 py-3">
-                <a href="/docs/demo-mode" className="text-primary hover:text-primary/80 font-medium">
-                  Demo Mode
-                </a>
+                <Link href="/" className="text-primary hover:text-primary/80 font-medium">
+                  View Live Demo
+                </Link>
               </td>
               <td className="px-4 py-3 text-muted-foreground">Risk-free testing environment</td>
               <td className="px-4 py-3">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium">
+                <span
+                  className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-sm font-medium"
+                  style={{ paddingLeft: '1rem', paddingRight: '1rem', paddingTop: '0.25rem', paddingBottom: '0.25rem' }}
+                >
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
                   Live
                 </span>
@@ -347,7 +372,7 @@ export default function DocsHomePage() {
       <h2 className="text-2xl font-semibold mb-4">Community & Support</h2>
       
       <ul className="space-y-2 mb-8">
-        <li><strong>Discord</strong>: <a href="https://discord.gg/NMCb5CtG" className="text-primary hover:text-primary/80">Join our community</a></li>
+        <li><strong>Discord</strong>: <a href="https://discord.gg/TWNybCBr" className="text-primary hover:text-primary/80">Join our community</a></li>
         <li><strong>GitHub</strong>: <a href="https://github.com/yield-delta/yield-delta-protocol" className="text-primary hover:text-primary/80">Contribute to the project</a></li>
         <li><strong>Twitter</strong>: <a href="https://x.com/yielddelta" className="text-primary hover:text-primary/80">@yielddelta</a></li>
       </ul>
@@ -360,3 +385,8 @@ export default function DocsHomePage() {
     </div>
   );
 }
+
+export const metadata = {
+  title: 'Documentation Home - Yield Delta',
+  description: 'Comprehensive documentation for Yield Delta - the next-generation AI-powered DeFi platform built on SEI Network.',
+};

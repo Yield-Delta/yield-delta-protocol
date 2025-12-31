@@ -189,7 +189,7 @@ export default function CTASection() {
                                 </Button>
                             </Link>
 
-                            <Link href="https://discord.gg/yield-delta" target="_blank" rel="noopener noreferrer" className="w-auto">
+                            <Link href="https://discord.gg/TWNybCBr" target="_blank" rel="noopener noreferrer" className="w-auto">
                                 <Button
                                     variant="ghost"
                                     className="mobile-responsive-button font-bold w-auto px-4 sm:px-6 md:px-8 lg:px-12 py-4 md:py-4 lg:py-6"

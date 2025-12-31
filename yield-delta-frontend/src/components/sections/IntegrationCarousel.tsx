@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import styles from './IntegrationCarousel.module.css';
@@ -24,7 +25,7 @@ const integrations: Integration[] = [
         id: 'pyth',
         name: 'Pyth Network',
         logo: (
-            <img src="/pyth-logo.svg" alt="Pyth Network" className={styles.partnerLogo} />
+            <Image src="/pyth-logo.svg" alt="Pyth Network" width={100} height={100} className={styles.partnerLogo} />
         ),
         tagline: 'Real-Time Oracle Data',
         description: 'Powered by Pyth Network\'s high-fidelity, low-latency price feeds. Our vaults leverage real-time market data from 450+ price feeds across crypto, equities, and commodities.',
@@ -42,7 +43,7 @@ const integrations: Integration[] = [
         id: 'yei',
         name: 'Yei Finance',
         logo: (
-            <img src="/yei-logo.jpeg" alt="Yei Finance" className={styles.partnerLogo} />
+            <Image src="/yei-logo.jpeg" alt="Yei Finance" width={100} height={100} className={styles.partnerLogo} />
         ),
         tagline: 'SEI Native Lending',
         description: 'Deep integration with Yei Finance, the leading lending protocol on SEI. Our strategies optimize borrowing and lending positions to maximize capital efficiency.',
@@ -60,7 +61,7 @@ const integrations: Integration[] = [
         id: 'dragonswap',
         name: 'DragonSwap',
         logo: (
-            <img src="/drago.png" alt="DragonSwap" className={styles.partnerLogo} />
+            <Image src="/drago.png" alt="DragonSwap" width={100} height={100} className={styles.partnerLogo} />
         ),
         tagline: 'Premier SEI DEX',
         description: 'Seamless integration with DragonSwap, SEI\'s leading decentralized exchange. Our vaults leverage concentrated liquidity positions to maximize trading fees and optimize capital efficiency.',

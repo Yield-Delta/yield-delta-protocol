@@ -268,7 +268,7 @@ const MarketSentimentPage = () => {
       <Navigation variant="dark" showWallet={true} showLaunchApp={false} />
       
       {/* Header */}
-      <div className="relative z-10" style={{ paddingTop: '3.5rem' }}>
+      <div className="relative z-10" style={{ paddingTop: '1.5rem' }}>
         <div 
           className="border-b border-white/20 backdrop-blur-xl"
           style={{

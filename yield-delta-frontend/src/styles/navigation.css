@@ -84,7 +84,7 @@ nav .simple-nav-container {
   width: 100%;
   max-width: 100%;
   height: 3.5rem;
-  padding: 0 1.5rem;
+  padding: 0 1rem 0 1.75rem; /* Increased left padding for logo breathing room */
   margin: 0;
   box-sizing: border-box;
   gap: 1rem;
@@ -99,6 +99,13 @@ nav .nav-left-simple {
   z-index: 10;
 }
 
+@media (max-width: 640px) {
+  nav .nav-left-simple {
+    min-width: auto !important;
+    gap: 0.5rem;
+  }
+}
+
 nav .nav-right-simple {
   display: flex;
   align-items: center;
@@ -108,6 +115,8 @@ nav .nav-right-simple {
   min-width: 200px;
   justify-content: flex-end;
   z-index: 10;
+  padding-right: 2.5rem; /* Increased padding to prevent hamburger button cutoff */
+  box-sizing: border-box;
 }
 
 nav .nav-center-links {
@@ -120,6 +129,29 @@ nav .nav-center-links {
   overflow: visible;
   position: relative;
   z-index: 5;
+}
+
+/* Ensure GooeyNav container fits properly */
+nav .nav-center-links .gooey-nav-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Override text transform for GooeyNav items */
+nav .nav-center-links .gooey-nav-container nav ul li a {
+  text-transform: none;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-decoration: none !important;
+}
+
+/* Remove any underline effects from GooeyNav */
+nav .nav-center-links .gooey-nav-container nav ul li a::after,
+nav .nav-center-links .gooey-nav-container nav ul li a::before {
+  display: none !important;
 }
 
 /* === Mobile Navigation Overrides (outside @layer for higher specificity) === */
@@ -148,12 +180,50 @@ nav .nav-center-links {
     color: hsl(var(--foreground)) !important;
     flex-shrink: 0 !important;
     display: flex !important;
+    margin-right: 0 !important; /* No right margin - parent padding handles spacing */
+    margin-left: 0.5rem !important; /* Space from wallet button */
   }
 
   /* Wallet container always visible on mobile */
   nav .wallet-container {
     display: flex !important;
   }
+}
+
+/* Force Launch App button to use correct gradient */
+nav .nav-right-simple a.btn-cyber,
+nav .nav-right-simple .btn-cyber {
+  background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+  color: hsl(216 100% 4%) !important;
+  border: none !important;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  box-shadow:
+    0 0 20px hsl(180 100% 48% / 0.4),
+    0 0 40px hsl(180 100% 48% / 0.15) !important;
+}
+
+nav .nav-right-simple a.btn-cyber:hover,
+nav .nav-right-simple .btn-cyber:hover {
+  background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow:
+    0 0 30px hsl(180 100% 48% / 0.5),
+    0 0 60px hsl(180 100% 48% / 0.2) !important;
+}
+
+/* Also ensure Connect Wallet button uses the same gradient */
+nav .wallet-container button.btn-cyber,
+nav .wallet-container-override button.btn-cyber {
+  background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+  color: hsl(216 100% 4%) !important;
+  border: none !important;
+}
+
+nav .wallet-container button.btn-cyber:hover,
+nav .wallet-container-override button.btn-cyber:hover {
+  background: linear-gradient(135deg, hsl(180 100% 48%), hsl(262 80% 60%)) !important;
+  transform: translateY(-2px) scale(1.05) !important;
 }
 
 /* === Desktop Navigation Overrides (must come AFTER mobile rules) === */
@@ -336,14 +406,14 @@ nav .nav-center-links {
 /* Merged: wallet-container-override - combines flex layout + z-index/isolation */
 .wallet-container-override,
 nav .wallet-container {
-  position: relative !important;
+  position: relative;
   display: flex !important;
   align-items: center !important;
   justify-content: flex-end !important;
   flex-shrink: 0 !important;
-  margin-left: auto !important;
-  z-index: 99999 !important;
-  isolation: isolate !important;
+  margin-left: auto;
+  z-index: 10;
+  isolation: isolate;
 }
 
   nav .nav-center-links a {
@@ -382,17 +452,6 @@ nav .wallet-container {
     line-height: 1.2;
   }
 
-  /* === Wallet Container === */
-
-  .wallet-container-override,
-  nav .wallet-container {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-end !important;
-    flex-shrink: 0 !important;
-    margin-left: auto !important;
-  }
-
   /* Force right-side positioning for navigation buttons */
   .flex.items-center.gap-4.ml-auto {
     margin-left: auto !important;
@@ -422,7 +481,9 @@ nav .wallet-container {
 
   @media (max-width: 899px) {
     nav .simple-nav-container {
-      padding: 0 0.75rem;
+      padding: 0 1rem 0 0.75rem; /* Reduced left padding to move logo left */
+      overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .nav-brand {
@@ -442,32 +503,50 @@ nav .wallet-container {
     /* Mobile: Show wallet and hamburger */
     nav .nav-right-simple {
       gap: 0.5rem;
+      padding-right: 2.5rem !important; /* Increased padding to prevent hamburger button cutoff */
+      overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .wallet-container {
       order: 1;
+      flex-shrink: 1; /* Allow wallet to shrink if needed */
     }
 
     nav .mobile-menu-btn {
       order: 2;
+      margin-right: 0 !important; /* No margin - using parent padding */
+      margin-left: 0.5rem !important;
+      flex-shrink: 0 !important; /* Never shrink the hamburger */
     }
   }
 
   @media (max-width: 640px) {
     nav .simple-nav-container {
-      padding: 0 0.75rem;
+      padding: 0 1rem 0 1.5rem; /* Increased left padding for logo breathing room */
       gap: 0.5rem;
+      overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .nav-right-simple {
       gap: 0.4rem;
-      flex-shrink: 1;
-      min-width: 0;
+      flex-shrink: 0;
+      min-width: auto;
+      padding-right: 1.25rem !important; /* Increased padding to prevent hamburger button cutoff (20px for 36px button + 2px border) */
+      overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .wallet-container {
       flex-shrink: 1;
       min-width: 0;
+    }
+
+    nav .mobile-menu-btn {
+      margin-right: 0 !important; /* No margin - using parent padding */
+      margin-left: 0.4rem !important;
+      flex-shrink: 0 !important;
     }
 
     nav .btn-cyber {
@@ -483,11 +562,16 @@ nav .wallet-container {
 
   @media (max-width: 480px) {
     nav .simple-nav-container {
-      padding: 0 0.5rem;
+      padding: 0 0.75rem 0 1.25rem; /* Increased left padding for logo breathing room */
+      overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .nav-right-simple {
       gap: 0.35rem;
+      padding-right: 1rem !important; /* Increased padding to prevent hamburger button cutoff (16px for smaller screens) */
+      overflow: visible;
+      box-sizing: border-box;
     }
 
     nav .btn-cyber {
@@ -495,6 +579,38 @@ nav .wallet-container {
       min-width: 0;
       max-width: 140px;
       font-size: 0.7rem;
+    }
+
+    nav .mobile-menu-btn {
+      margin-right: 0 !important; /* No margin - using parent padding */
+      margin-left: 0.35rem !important;
+      flex-shrink: 0 !important;
+      width: 2rem !important; /* Slightly smaller on very small screens */
+      height: 2rem !important;
+    }
+  }
+
+  /* Extra small screens (320px width) - iPhone SE, small phones */
+  @media (max-width: 375px) {
+    nav .simple-nav-container {
+      padding: 0 0.5rem 0 1rem !important; /* Increased left padding for logo breathing room */
+    }
+
+    nav .nav-right-simple {
+      padding-right: 1rem !important; /* Increased padding to prevent hamburger button cutoff (16px for smaller screens) */
+      gap: 0.25rem !important;
+    }
+
+    nav .mobile-menu-btn {
+      margin-left: 0.25rem !important;
+      width: 1.875rem !important; /* 30px - slightly smaller */
+      height: 1.875rem !important;
+    }
+
+    nav .btn-cyber {
+      max-width: 120px;
+      font-size: 0.65rem;
+      padding: 0.4rem 0.6rem;
     }
   }
 

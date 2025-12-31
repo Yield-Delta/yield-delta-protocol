@@ -4,6 +4,9 @@ import { useAppStore } from '@/stores/appStore'
 import { useWriteContract, useAccount } from 'wagmi'
 import { parseUnits } from 'viem'
 import SEIVault from '@/lib/abis/SEIVault'
+import { createLogger } from '@/utils/logger'
+
+const logger = createLogger('useVaults')
 
 interface VaultResponse {
   success: boolean
@@ -42,7 +45,7 @@ export const useVaults = (filters?: { strategy?: string; active?: boolean }) => 
   return useQuery({
     queryKey: VAULT_QUERY_KEYS.list(filters || {}),
     queryFn: async (): Promise<VaultData[]> => {
-      console.log('[useVaults] queryFn called - starting fetch');
+      logger.debug('queryFn called - starting fetch');
 
       // Only set loading in store if it's the client
       if (typeof window !== 'undefined') {
@@ -55,7 +58,7 @@ export const useVaults = (filters?: { strategy?: string; active?: boolean }) => 
         if (filters?.active !== undefined) params.append('active', filters.active.toString())
 
         const url = `/api/vaults?${params.toString()}`;
-        console.log('[useVaults] Fetching from URL:', url);
+        logger.info('Fetching vaults from URL:', url);
 
         const response = await fetch(url, {
           headers: {
@@ -64,7 +67,7 @@ export const useVaults = (filters?: { strategy?: string; active?: boolean }) => 
           },
         })
 
-        console.log('[useVaults] Response received:', {
+        logger.debug('Response received:', {
           status: response.status,
           statusText: response.statusText,
           ok: response.ok,
@@ -76,14 +79,48 @@ export const useVaults = (filters?: { strategy?: string; active?: boolean }) => 
           throw new Error(`Failed to fetch vaults: ${response.status} ${response.statusText}${errorText ? ` - ${errorText}` : ''}`)
         }
 
-        const result: VaultResponse = await response.json()
-        console.log('[useVaults] API response:', result);
+        // Check if response has content
+        const contentLength = response.headers.get('content-length');
+        const contentType = response.headers.get('content-type');
+
+        logger.debug('Response headers:', {
+          contentLength,
+          contentType
+        });
+
+        // Read response as text first to handle empty responses
+        const responseText = await response.text();
+        logger.debug(`Response text length: ${responseText.length}`);
+        logger.debug(`Response text preview: ${responseText.substring(0, 200)}`);
+
+        // Handle empty response
+        if (!responseText || responseText.trim().length === 0) {
+          logger.warn('Empty response received from vaults API');
+          const emptyError = new Error('Empty response from vaults API');
+          setError(emptyError.message);
+          throw emptyError;
+        }
+
+        // Try to parse JSON
+        let result: VaultResponse;
+        try {
+          result = JSON.parse(responseText);
+          logger.debug('Successfully parsed JSON response:', result);
+        } catch (parseError) {
+          logger.error('JSON parse error:', parseError);
+          logger.error('Failed to parse response text:', responseText);
+
+          // Throw the error to surface it properly
+          const error = new Error(`Failed to parse vaults API response: ${parseError instanceof Error ? parseError.message : 'Unknown parse error'}`);
+          setError(error.message);
+          throw error;
+        }
 
         if (!result.success) {
           throw new Error(result.error || 'Failed to fetch vaults')
         }
 
-        console.log('[useVaults] Successfully fetched', result.data.length, 'vaults');
+        logger.info(`Successfully fetched ${result.data.length} vaults`);
 
         // Update store with fetched data (only on client)
         if (typeof window !== 'undefined') {
@@ -94,8 +131,8 @@ export const useVaults = (filters?: { strategy?: string; active?: boolean }) => 
         return result.data
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred'
-        console.error('[useVaults] Fetch error:', error);
-        console.error('[useVaults] Error details:', {
+        logger.error('Fetch error:', error);
+        logger.debug('Error details:', {
           message: errorMessage,
           stack: error instanceof Error ? error.stack : 'No stack',
           name: error instanceof Error ? error.name : 'Unknown error type'
@@ -157,7 +194,23 @@ export const useVault = (address: string) => {
         throw new Error(`Failed to fetch vault: ${response.status} ${response.statusText}${errorText ? ` - ${errorText}` : ''}`)
       }
 
-      const result = await response.json()
+      // Read response as text first to handle empty responses
+      const responseText = await response.text();
+
+      // Handle empty response
+      if (!responseText || responseText.trim().length === 0) {
+        throw new Error('Empty response received from server')
+      }
+
+      // Try to parse JSON
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        logger.error('Single vault JSON parse error:', parseError);
+        logger.error('Failed to parse single vault response text:', responseText);
+        throw new Error('Invalid JSON response from server');
+      }
 
       if (!result.success) {
         throw new Error(result.error || 'Failed to fetch vault')
@@ -299,14 +352,14 @@ export const useDepositToVault = (vaultAddress: string) => {
     const isValidTestnetVault = validTestnetVaults.some(addr => addr.toLowerCase() === normalizedVaultAddress)
 
     if (!isValidTestnetVault) {
-      console.error('[useDepositToVault] Invalid vault address for testnet:', vaultAddress)
+      logger.error('Invalid vault address for testnet:', vaultAddress)
       throw new Error(`Vault address ${vaultAddress} is not deployed on SEI Atlantic-2 testnet (Chain ID 1328). Please use a valid testnet vault address.`)
     }
 
     const amountInWei = parseUnits(amount, 18)
 
     try {
-      console.log('[useDepositToVault] Initiating deposit with validated address:', {
+      logger.info('Initiating deposit with validated address:', {
         vaultAddress,
         amount,
         amountInWei: amountInWei.toString(),
@@ -329,7 +382,7 @@ export const useDepositToVault = (vaultAddress: string) => {
       return Promise.resolve('pending')
     } catch (err) {
       // Handle any synchronous errors
-      console.error('Deposit error:', err)
+      logger.error('Deposit error:', err)
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
 
       // Enhanced error messaging for common issues
