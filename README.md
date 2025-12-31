@@ -1,16 +1,16 @@
 # 🚀 Yield Delta Core - AI-Powered DeFi on SEI
 
 [![Built on SEI](https://img.shields.io/badge/Powered_by-SEI_Chain-00f5d4?logo=sei&logoColor=white)](https://www.sei.io)
-[![SEI AI Accelathon](https://img.shields.io/badge/SEI_AI_Accelathon-2025_Submission-ff4081)](https://blog.sei.io/introducing-the-ai-accelathon/)
+[![SEI AI Accelathon](https://img.shields.io/badge/SEI_AI_Accelathon-Honorable_Mention_Winner_🏆-gold)](https://blog.sei.io/introducing-the-ai-accelathon/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Demo Ready](https://img.shields.io/badge/Demo-Ready-brightgreen)](https://github.com/your-org/sei-dlp-core/blob/main/DEMO_MODE.md)
 
-> **🏆 SEI AI Accelathon 2025 Submission** - Track: DeFi and Payments  
+> **🏆 SEI AI Accelathon 2025 - HONORABLE MENTION WINNER** - Track: DeFi and Payments
 > **Solving the $50B+ Impermanent Loss Problem with AI on SEI**
 
-## 🎯 **Competition Highlights**
+## 🎯 **Award-Winning Achievements**
 
-### **Why This Wins the Accelathon:**
+### **Why This Won Honorable Mention:**
 - ✅ **Usefulness**: Solves real $50B+ impermanent loss problem with AI
 - ✅ **Ecosystem Value**: Advanced DeFi infrastructure native to SEI
 - ✅ **Engagement**: Production-ready UI with 3D visualizations
@@ -130,7 +130,7 @@ Market Data → Feature Engineering → ML Models → Strategy Optimization → 
 
 ---
 
-## 🏆 **Competition Advantages**
+## 🏆 **Key Achievements & Impact**
 
 ### **🎯 Usefulness - Solving Real Problems**
 - **$50B+ Market**: Impermanent loss affects all LP providers
@@ -230,19 +230,19 @@ This is an **open-source project** built for the SEI ecosystem. We welcome contr
 
 ---
 
-## 🏅 **SEI AI Accelathon 2025**
+## 🏅 **SEI AI Accelathon 2025 - Honorable Mention Winner**
 
-**This project was built specifically for the SEI AI Accelathon** to showcase how AI and SEI's ultra-fast blockchain can revolutionize DeFi yield optimization.
+**This project earned Honorable Mention in the SEI AI Accelathon**, demonstrating how AI and SEI's ultra-fast blockchain can revolutionize DeFi yield optimization.
 
-**Why Yield Delta Core deserves to win:**
-- ✅ **Solves massive real-world problem** ($50B+ impermanent loss)
-- ✅ **Showcases SEI's technical advantages** (400ms finality)
-- ✅ **Production-ready implementation** with beautiful UI/UX
-- ✅ **Innovative AI integration** with practical utility
-- ✅ **Complete ecosystem value** for SEI's DeFi growth
+**Key Achievements Recognized:**
+- ✅ **Addressed massive real-world problem** ($50B+ impermanent loss)
+- ✅ **Showcased SEI's technical advantages** (400ms finality)
+- ✅ **Delivered production-ready implementation** with beautiful UI/UX
+- ✅ **Demonstrated innovative AI integration** with practical utility
+- ✅ **Provided complete ecosystem value** for SEI's DeFi growth
 
-**Ready to change how the world thinks about DeFi yield optimization.**
+**Continuing to build the future of AI-powered DeFi on SEI.**
 
 ---
 
-*Built with ❤️ for the SEI ecosystem | AI-Powered | Competition Ready*
+*Built with ❤️ for the SEI ecosystem | AI-Powered | Honorable Mention Winner 🏆*

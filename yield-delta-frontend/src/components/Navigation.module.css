@@ -1,6 +1,6 @@
 .wallet-container {
   display: flex !important;
-  flex: 1 !important;
+  flex-shrink: 0 !important;
   justify-content: flex-end !important;
   text-decoration: none !important;
 }
