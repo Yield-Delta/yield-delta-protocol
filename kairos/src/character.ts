@@ -67,10 +67,12 @@ export const character: ExtendedCharacter = {
     TWITTER_MAX_TWEET_LENGTH: '280',
 
     // Interaction settings for engagement
-    TWITTER_SEARCH_ENABLE: 'true',
-    TWITTER_INTERACTION_INTERVAL_MIN: '30',
-    TWITTER_INTERACTION_INTERVAL_MAX: '60',
-    TWITTER_MAX_INTERACTIONS_PER_RUN: '5',
+    // DISABLED: Twitter Free tier has extremely limited API access (1 request)
+    // Enable only if you have Twitter Basic tier ($100/mo) or higher
+    TWITTER_SEARCH_ENABLE: 'false',
+    TWITTER_INTERACTION_INTERVAL_MIN: '360',  // 6 hours (increased from 30 min to avoid rate limits)
+    TWITTER_INTERACTION_INTERVAL_MAX: '720',  // 12 hours (increased from 60 min)
+    TWITTER_MAX_INTERACTIONS_PER_RUN: '1',    // Reduced from 5 to minimize API calls
 
     // Timeline algorithm for quality engagement
     TWITTER_TIMELINE_ALGORITHM: 'weighted',
