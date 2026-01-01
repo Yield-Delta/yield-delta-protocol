@@ -74,8 +74,9 @@ RUN python init_models.py || echo "Model initialization failed, continuing..."
 EXPOSE 8000
 
 # Health check with dynamic port - increased timeouts for Railway
+# Use PORT env var with fallback to 8000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=15 \
-    CMD curl -f http://localhost:8000/health || exit 1
+    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
 
 # Create entrypoint script
 USER root
