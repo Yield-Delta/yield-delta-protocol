@@ -221,11 +221,13 @@ class DeFiRLAgent:
         # Setup callbacks
         callbacks = []
 
-        # Evaluation callback
+        # Evaluation callback - must match training env wrapper structure
         eval_env = self.create_environment(historical_data)
         eval_env = Monitor(eval_env)
+        eval_vec_env = DummyVecEnv([lambda: eval_env])
+        eval_vec_env = VecNormalize(eval_vec_env, norm_obs=True, norm_reward=True, gamma=self.gamma, training=False)
         eval_callback = EvalCallback(
-            eval_env,
+            eval_vec_env,
             best_model_save_path=os.path.join(self.save_path, "best"),
             log_path=os.path.join(self.save_path, "eval"),
             eval_freq=eval_freq,

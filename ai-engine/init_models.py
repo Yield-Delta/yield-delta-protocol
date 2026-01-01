@@ -65,7 +65,9 @@ async def train_missing_models():
         'il_config': {
             'n_estimators': 50,  # Reduced trees
             'max_depth': 10,
-            'test_size': 0.2
+            'test_size': 0.2,
+            'optimize_hyperparameters': False,  # Disable hyperparameter optimization for faster training
+            'feature_selection': False  # Disable feature selection for faster training
         }
     }
 
