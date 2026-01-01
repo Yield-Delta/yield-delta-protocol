@@ -3,11 +3,11 @@ builder = "dockerfile"
 dockerfilePath = "./Dockerfile"
 
 [deploy]
-startCommand = "python api_server.py"
+startCommand = "/app/entrypoint.sh"
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 3
 healthcheckPath = "/health"
-healthcheckTimeout = 10
+healthcheckTimeout = 60
 region = "us-west1"
 
 [[services]]
@@ -29,4 +29,5 @@ MODEL_CACHE_TTL = { default = "3600" }
 MAX_BATCH_SIZE = { default = "32" }
 MODEL_TIMEOUT = { default = "30" }
 TRAIN_ON_START = { default = "false", description = "Train models on container start" }
-SKIP_MODEL_TRAINING = { default = "false", description = "Skip model training entirely" }
+SKIP_MODEL_TRAINING = { default = "true", description = "Skip model training entirely - set to true for Railway deployment" }
+PORT = { default = "8000", description = "Port for the API server" }

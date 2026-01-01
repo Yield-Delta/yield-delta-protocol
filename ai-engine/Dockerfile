@@ -73,9 +73,9 @@ RUN python init_models.py || echo "Model initialization failed, continuing..."
 # Expose FastAPI port
 EXPOSE 8000
 
-# Health check with dynamic port
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=10 \
-    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
+# Health check with dynamic port - increased timeouts for Railway
+HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=15 \
+    CMD curl -f http://localhost:8000/health || exit 1
 
 # Create entrypoint script
 USER root
