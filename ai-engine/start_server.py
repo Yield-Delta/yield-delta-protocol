@@ -23,7 +23,10 @@ def main():
             "api_server:app",
             host="0.0.0.0",
             port=port,
-            log_level=os.getenv("LOG_LEVEL", "info").lower()
+            log_level=os.getenv("LOG_LEVEL", "info").lower(),
+            proxy_headers=True,
+            forwarded_allow_ips="*",
+            timeout_keep_alive=75
         )
 
     except Exception as e:
@@ -51,7 +54,10 @@ def main():
             app,
             host="0.0.0.0",
             port=port,
-            log_level="info"
+            log_level="info",
+            proxy_headers=True,
+            forwarded_allow_ips="*",
+            timeout_keep_alive=75
         )
 
 if __name__ == "__main__":
