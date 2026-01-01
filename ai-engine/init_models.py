@@ -20,9 +20,9 @@ logger = logging.getLogger(__name__)
 def check_models_exist():
     """Check if pre-trained models exist"""
     model_paths = {
-        'rl_agent': 'models/rl/defi_ppo_agent/final.zip',
-        'lstm_forecaster': 'models/lstm/price_forecaster/final.pt',
-        'il_predictor': 'models/il_predictor/il_predictor/final.pkl'
+        'rl_agent': 'models/rl/defi_vault_strategy/defi_vault_strategy_final.zip',
+        'lstm_forecaster': 'models/lstm/price_forecaster/price_forecaster_final.pt',
+        'il_predictor': 'models/il_predictor/il_predictor/il_predictor_final_random_forest.pkl'
     }
 
     existing_models = {}
