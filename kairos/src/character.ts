@@ -79,7 +79,9 @@ export const character: ExtendedCharacter = {
     TWITTER_TIMELINE_RELEVANCE_WEIGHT: '7',
 
     // Target DeFi and SEI community
-    TWITTER_TARGET_USERS: 'SeiNetwork,DragonSwapSei,YEIFinance',
+    // DISABLED: Causes search API calls that exceed Free tier rate limits
+    // TWITTER_TARGET_USERS: 'SeiNetwork,DragonSwapSei,YEIFinance',
+    TWITTER_TARGET_USERS: '',  // Empty to prevent search API calls
     TWITTER_ENABLE_ACTION_PROCESSING: 'true',
 
     // Safety settings
