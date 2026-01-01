@@ -51,7 +51,7 @@ export function TestnetBanner({ className, variant = 'banner' }: TestnetBannerPr
   return (
     <div
       className={cn(
-        "testnet-banner-container fixed left-0 right-0 z-40",
+        "testnet-banner-container fixed left-0 right-0 z-30",
         "bg-gradient-to-r from-amber-500 to-orange-500",
         "border-b border-amber-400/30",
         "shadow-sm",
