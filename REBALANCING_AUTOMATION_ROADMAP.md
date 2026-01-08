@@ -359,6 +359,23 @@ This document outlines the implementation plan for automated vault rebalancing a
 
 ---
 
+## 🔮 **Future: Build Our Own Perpetual DEX**
+
+**Long-term Vision:** After proving product-market fit with integrated Hyperliquid/Coinbase hedging, build **Yield Delta Perpetuals** - a native SEI perpetual exchange integrated directly with vaults.
+
+**Why Build Our Own?**
+- ✅ Zero bridging overhead (SEI native)
+- ✅ One-click delta hedging
+- ✅ Capture trading fee revenue
+- ✅ Vertical integration competitive moat
+- ✅ US compliance path
+
+**Timeline:** 18-24 months after Phase 1-3 completion
+
+📋 **[→ See Full Yield Delta Perpetuals Plan](./YIELD_DELTA_PERPETUALS_PLAN.md)**
+
+---
+
 ## 🔗 **Resources & Documentation**
 
 ### **Coinbase Advanced Trade API**
