@@ -641,10 +641,10 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
             justify-content: center !important;
           }
           .deposit-modal-content {
-            width: 100% !important; /* Use 100% to respect container padding instead of calc() */
-            max-width: 100% !important;
+            width: calc(100% - 32px) !important; /* Account for 16px padding on each side */
+            max-width: calc(100% - 32px) !important;
             min-width: 280px !important;
-            max-height: 100% !important; /* Respect container padding */
+            max-height: calc(100% - 32px) !important; /* Account for vertical padding */
             border-radius: 20px !important;
             margin: 0 !important; /* Removed margin since container now has padding */
             overflow: hidden !important;
@@ -807,9 +807,9 @@ export default function DepositModal({ vault, isOpen, onClose, onSuccess }: Depo
             padding: 12px !important; /* Added padding to prevent modal cutoff on very small screens */
           }
           .deposit-modal-content {
-            width: 100% !important; /* Use 100% to respect container padding instead of calc() */
-            max-width: 100% !important;
-            max-height: 100% !important; /* Respect container padding */
+            width: calc(100% - 24px) !important; /* Account for 12px padding on each side */
+            max-width: calc(100% - 24px) !important;
+            max-height: calc(100% - 24px) !important; /* Account for vertical padding */
             border-radius: 16px !important;
             margin: 0 !important; /* Removed margin since container now has padding */
             box-sizing: border-box !important;
