@@ -45,7 +45,9 @@ This document outlines the implementation plan for automated vault rebalancing a
 **Target Users:** Non-US international traders
 **Perpetual Futures:** Multi-DEX integration (prioritized by liquidity & reliability)
 
-#### **Primary Integration: Hyperliquid** (Recommended)
+**⛔ UPDATE:** ToroDeX has been removed from consideration due to red flags (suspended Twitter, broken Discord, no community). Focusing on battle-tested platforms only.
+
+#### **Primary Integration: Hyperliquid** (Recommended - Now PRIMARY CHOICE)
 - ✅ Highest DeFi perp volume ($3.35T cumulative)
 - ✅ Deep liquidity across 130+ markets
 - ✅ CLOB-based (low slippage)

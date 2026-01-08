@@ -1,8 +1,32 @@
 # ToroDeX Integration Notes
 
-**Status:** 🔍 Research Phase
-**Priority:** 🔥 High - Native SEI DEX (No Bridge Required!)
+**Status:** ⛔ **ABANDONED - DO NOT USE**
+**Priority:** 🚫 **REJECTED** - Likely scam or dead project
 **Last Updated:** 2026-01-08
+
+---
+
+## 🚨 **CRITICAL WARNING - PROJECT APPEARS TO BE ABANDONED OR SCAM**
+
+**Red Flags Identified:**
+- ❌ Discord invite link is broken/expired
+- ❌ Twitter/X account (@Toro_DEX) is **SUSPENDED**
+- ❌ Zero SEO presence - doesn't appear in Google searches
+- ❌ No active development or community
+- ❌ Website still exists but no real activity
+- ❌ No verifiable smart contract addresses
+- ❌ No GitHub repository
+
+**Assessment:** This appears to be either:
+1. An abandoned project
+2. A scam/rug pull that has been shut down
+3. A fake website/phishing attempt
+
+**Recommendation:** ⛔ **DO NOT INTEGRATE OR INVEST**
+
+---
+
+## ~~Why ToroDeX is Ideal for Yield Delta~~ **DISREGARD THIS SECTION**
 
 ---
 
