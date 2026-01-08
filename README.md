@@ -47,18 +47,48 @@ Yield Delta Core combines machine learning with SEI's 400ms block finality to cr
 | **Frontend** | Next.js 15, React 19 | AI chat with ElizaOS | SEI wallet integration |
 | **Analytics** | GSAP, Three.js | ML performance metrics | SEI transaction monitoring |
 
-## 🎮 **8 AI-Optimized Vault Strategies**
+## 🎮 **3 Live AI-Optimized Vault Strategies**
 
-| Strategy | APY Range | Risk Level | AI Optimization |
-|----------|-----------|------------|-----------------|
-| **SEI Hypergrowth** | 15-42% | High | Growth token ML analysis |
-| **Delta Neutral** | 8-16% | Low | Market-neutral AI hedging |
-| **Concentrated Liquidity** | 12-30% | Medium | AI range optimization |
-| **Blue Chip** | 6-12% | Low | Large-cap stability AI |
-| **Arbitrage** | 10-30% | Medium | Cross-DEX opportunity detection |
-| **Stable Max** | 4-8% | Very Low | Stablecoin yield optimization |
-| **Yield Farming** | 8-18% | Medium | Farm rotation AI |
-| **Hedge Vault** | 5-15% | Low | Risk-adjusted AI balancing |
+| Strategy | APY | Risk Level | Rebalancing | Status |
+|----------|-----|------------|-------------|--------|
+| **Delta Neutral LP** | 7% | Low | Hourly (automated) | ✅ Live |
+| **Concentrated Liquidity** | 12.23% | Medium | Hourly (automated) | ✅ Live |
+| **Arbitrage Vault** | 10.3% | Medium | Real-time detection | ✅ Live |
+
+**🚧 Coming Soon:** SEI Hypergrowth, Stable Max, Blue Chip, Yield Farming, Hedge Vault
+
+### **How Automated Rebalancing Works:**
+
+```
+AI Engine → Market Analysis → Position Optimization → On-Chain Execution
+    ↓              ↓                    ↓                     ↓
+RL/LSTM/IL    Price/Vol/IL         Optimal Ranges      Smart Contract
+  Models        Prediction           Every Hour           Rebalancing
+```
+
+**⚙️ Technical Implementation:**
+- Smart contracts have built-in `rebalance()` functions (1-hour cooldown)
+- AI Oracle authorization prevents unauthorized rebalancing
+- Off-chain keeper service monitors and triggers rebalances
+- SEI's 400ms finality enables rapid position adjustments
+
+### **How Trades Are Executed:**
+
+The vaults automatically execute trades through:
+
+1. **Liquidity Provision:** Deposits go into concentrated liquidity positions on DEXs (Dragonswap, etc.)
+2. **Position Management:** Smart contracts adjust tick ranges based on market conditions
+3. **Fee Collection:** Trading fees accumulate automatically from the DEX
+4. **Yield Compounding:** Fees are reinvested hourly during rebalancing
+5. **Delta Hedging:** Delta Neutral vault uses perpetual futures to maintain market neutrality
+
+**🔧 What Needs to Be Built:**
+- [ ] Off-chain keeper service (Chainlink Automation or custom bot)
+- [ ] DEX integrations (Uniswap V3-style interfaces for SEI DEXs)
+- [ ] Perpetual futures integration for hedging strategies
+- [ ] Real-time oracle price feeds
+
+📋 **[→ See Full Rebalancing Automation Roadmap](./REBALANCING_AUTOMATION_ROADMAP.md)**
 
 ---
 
