@@ -2,17 +2,28 @@
 
 import { useRef, useEffect } from 'react';
 
-// Simple animated SVG-based 3D-like visualization as fallback
+/**
+ * Hero3DSimple - Lightweight mobile fallback
+ *
+ * A performant SVG-based visualization that maintains the visual
+ * language of the full 3D scene while being mobile-friendly.
+ *
+ * Design elements:
+ * - Neural network pattern representing AI intelligence
+ * - Orbital vault system showing liquidity management
+ * - Data streams indicating automation
+ * - Holographic aesthetic with brand colors
+ */
 export default function Hero3DSimple() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (containerRef.current) {
-      // Simple CSS animation instead of GSAP to reduce bundle size
+      // Smooth fade-in animation
       containerRef.current.style.opacity = '0';
       setTimeout(() => {
         if (containerRef.current) {
-          containerRef.current.style.transition = 'opacity 1s ease-in-out';
+          containerRef.current.style.transition = 'opacity 1.5s ease-in-out';
           containerRef.current.style.opacity = '1';
         }
       }, 100);
@@ -20,119 +31,266 @@ export default function Hero3DSimple() {
   }, []);
 
   return (
-    <div ref={containerRef} className="w-full h-full relative flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 min-h-full" style={{ minHeight: 'inherit' }}>
-      {/* Enhanced SVG-based 3D-like visualization */}
-      <svg 
-        viewBox="0 0 600 600" 
+    <div
+      ref={containerRef}
+      className="w-full h-full relative flex items-center justify-center min-h-full overflow-hidden"
+      style={{ minHeight: 'inherit' }}
+    >
+      {/* Enhanced SVG-based neural network visualization */}
+      <svg
+        viewBox="0 0 800 800"
         className="w-full h-full max-w-none max-h-none"
-        style={{ filter: 'drop-shadow(0 0 30px rgba(0, 245, 212, 0.2))', minHeight: 'inherit' }}
+        style={{
+          filter: 'drop-shadow(0 0 40px rgba(0, 245, 212, 0.3))',
+          minHeight: 'inherit'
+        }}
       >
-        {/* Background grid with perspective */}
+        {/* Defs for gradients and effects */}
         <defs>
-          <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(0, 245, 212, 0.08)" strokeWidth="0.5"/>
+          {/* Holographic grid pattern */}
+          <pattern id="neuralGrid" width="80" height="80" patternUnits="userSpaceOnUse">
+            <path
+              d="M 80 0 L 0 0 0 80"
+              fill="none"
+              stroke="rgba(0, 245, 212, 0.06)"
+              strokeWidth="0.5"
+            />
           </pattern>
-          <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" style={{stopColor:"rgba(0, 245, 212, 0.3)", stopOpacity:1}} />
-            <stop offset="100%" style={{stopColor:"rgba(0, 245, 212, 0)", stopOpacity:0}} />
+
+          {/* Radial gradients for depth */}
+          <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" style={{stopColor:"rgba(0, 245, 212, 0.4)", stopOpacity:1}} />
+            <stop offset="50%" style={{stopColor:"rgba(155, 93, 229, 0.2)", stopOpacity:0.5}} />
+            <stop offset="100%" style={{stopColor:"rgba(255, 32, 110, 0.1)", stopOpacity:0}} />
           </radialGradient>
+
+          {/* Energy flow gradient */}
+          <linearGradient id="energyFlow" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{stopColor:"#00f5d4", stopOpacity:0.8}} />
+            <stop offset="50%" style={{stopColor:"#9b5de5", stopOpacity:0.6}} />
+            <stop offset="100%" style={{stopColor:"#ff206e", stopOpacity:0.4}} />
+          </linearGradient>
+
+          {/* Glow filter */}
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
         </defs>
-        
-        {/* Background grid */}
-        <rect width="100%" height="100%" fill="url(#grid)" />
-        <circle cx="300" cy="300" r="250" fill="url(#centerGlow)" />
-        
-        {/* Multiple rotating vault cubes for depth */}
-        <g className="animate-spin" style={{ transformOrigin: '300px 300px', animationDuration: '25s' }}>
-          {/* Main vault */}
-          <g transform="translate(300,300)">
-            <rect x="-40" y="-40" width="80" height="80" fill="none" stroke="rgba(0, 245, 212, 0.7)" strokeWidth="2"/>
-            <rect x="-35" y="-45" width="80" height="80" fill="none" stroke="rgba(155, 93, 229, 0.5)" strokeWidth="1"/>
-            <rect x="-30" y="-35" width="80" height="80" fill="none" stroke="rgba(255, 32, 110, 0.3)" strokeWidth="1"/>
+
+        {/* Background holographic grid */}
+        <rect width="100%" height="100%" fill="url(#neuralGrid)" opacity="0.8"/>
+
+        {/* Central glow */}
+        <circle cx="400" cy="400" r="350" fill="url(#coreGlow)" />
+
+        {/* Central AI Neural Core */}
+        <g className="animate-spin" style={{
+          transformOrigin: '400px 400px',
+          animationDuration: '40s',
+          animationTimingFunction: 'linear'
+        }}>
+          {/* Core icosahedron representation */}
+          <g transform="translate(400,400)">
+            {/* Multi-layered neural sphere */}
+            {[0, 1, 2].map((layer) => {
+              const size = 60 - layer * 8;
+              const opacity = 0.7 - layer * 0.15;
+              const color = layer === 0 ? '#00f5d4' : layer === 1 ? '#9b5de5' : '#ff206e';
+
+              return (
+                <g key={`layer-${layer}`}>
+                  {/* Pentagon pattern for icosahedron feel */}
+                  {[0, 72, 144, 216, 288].map((angle) => (
+                    <path
+                      key={`pent-${angle}`}
+                      d={`M ${Math.cos((angle * Math.PI) / 180) * size} ${Math.sin((angle * Math.PI) / 180) * size}
+                          L ${Math.cos(((angle + 72) * Math.PI) / 180) * size} ${Math.sin(((angle + 72) * Math.PI) / 180) * size}`}
+                      stroke={color}
+                      strokeWidth="2"
+                      fill="none"
+                      opacity={opacity}
+                      filter="url(#glow)"
+                    />
+                  ))}
+                </g>
+              );
+            })}
           </g>
         </g>
-        
-        {/* Orbiting vaults with different sizes and speeds */}
-        {[0, 1, 2, 3, 4, 5].map((i) => (
-          <g key={`orbit-${i}`} className="animate-spin" style={{ 
-            transformOrigin: '300px 300px', 
-            animationDuration: `${20 + i * 8}s`,
-            animationDirection: i % 2 === 0 ? 'normal' : 'reverse'
-          }}>
-            <g transform={`translate(${300 + Math.cos(i * Math.PI / 3) * 120}, ${300 + Math.sin(i * Math.PI / 3) * 120})`}>
-              <rect 
-                x="-15" y="-15" width="30" height="30" 
-                fill="none" 
-                stroke={i % 3 === 0 ? 'rgba(0, 245, 212, 0.6)' : i % 3 === 1 ? 'rgba(155, 93, 229, 0.6)' : 'rgba(255, 32, 110, 0.6)'} 
-                strokeWidth="1.5"
-                className="animate-pulse"
-              />
-              <rect 
-                x="-12" y="-18" width="30" height="30" 
-                fill="none" 
-                stroke={i % 3 === 0 ? 'rgba(0, 245, 212, 0.3)' : i % 3 === 1 ? 'rgba(155, 93, 229, 0.3)' : 'rgba(255, 32, 110, 0.3)'} 
-                strokeWidth="0.5"
-              />
+
+        {/* Neural network nodes */}
+        <g>
+          {Array.from({ length: 16 }).map((_, i) => {
+            const angle = (i / 16) * Math.PI * 2;
+            const radius = 180;
+            const x = 400 + Math.cos(angle) * radius;
+            const y = 400 + Math.sin(angle) * radius;
+            const color = i % 3 === 0 ? '#00f5d4' : i % 3 === 1 ? '#9b5de5' : '#ff206e';
+
+            return (
+              <g key={`neuron-${i}`}>
+                {/* Connection to core */}
+                <line
+                  x1="400"
+                  y1="400"
+                  x2={x}
+                  y2={y}
+                  stroke={color}
+                  strokeWidth="0.5"
+                  opacity="0.2"
+                  strokeDasharray="4,4"
+                  className="animate-pulse"
+                  style={{animationDelay: `${i * 0.1}s`, animationDuration: '3s'}}
+                />
+                {/* Neuron node */}
+                <circle
+                  cx={x}
+                  cy={y}
+                  r="4"
+                  fill={color}
+                  opacity="0.8"
+                  filter="url(#glow)"
+                  className="animate-pulse"
+                  style={{animationDelay: `${i * 0.1}s`, animationDuration: '2s'}}
+                />
+              </g>
+            );
+          })}
+        </g>
+
+        {/* Orbiting Vaults - Represents liquidity strategies */}
+        {[0, 1, 2, 3].map((i) => {
+          const orbitRadius = 240;
+          const vaultSize = 30;
+
+          return (
+            <g
+              key={`vault-${i}`}
+              className="animate-spin"
+              style={{
+                transformOrigin: '400px 400px',
+                animationDuration: `${25 + i * 5}s`,
+                animationDirection: i % 2 === 0 ? 'normal' : 'reverse'
+              }}
+            >
+              <g transform={`translate(${400 + Math.cos(i * Math.PI / 2) * orbitRadius}, ${400 + Math.sin(i * Math.PI / 2) * orbitRadius})`}>
+                {/* Vault dodecahedron representation */}
+                <g className="animate-pulse" style={{animationDuration: '2s'}}>
+                  {/* Inner vault */}
+                  <polygon
+                    points={`0,-${vaultSize} ${vaultSize * 0.95},${vaultSize * 0.31} ${vaultSize * 0.59},${vaultSize * 0.81} ${-vaultSize * 0.59},${vaultSize * 0.81} ${-vaultSize * 0.95},${vaultSize * 0.31}`}
+                    fill="none"
+                    stroke={i === 0 ? '#00f5d4' : i === 1 ? '#9b5de5' : i === 2 ? '#ff206e' : '#fbae3c'}
+                    strokeWidth="2"
+                    opacity="0.8"
+                    filter="url(#glow)"
+                  />
+                  {/* Outer glow */}
+                  <polygon
+                    points={`0,-${vaultSize * 1.2} ${vaultSize * 1.14},${vaultSize * 0.37} ${vaultSize * 0.71},${vaultSize * 0.97} ${-vaultSize * 0.71},${vaultSize * 0.97} ${-vaultSize * 1.14},${vaultSize * 0.37}`}
+                    fill="none"
+                    stroke={i === 0 ? '#00f5d4' : i === 1 ? '#9b5de5' : i === 2 ? '#ff206e' : '#fbae3c'}
+                    strokeWidth="0.5"
+                    opacity="0.3"
+                  />
+                </g>
+
+                {/* Particle ring */}
+                {Array.from({ length: 8 }).map((_, p) => {
+                  const pAngle = (p / 8) * Math.PI * 2;
+                  const pRadius = 45;
+                  return (
+                    <circle
+                      key={`particle-${p}`}
+                      cx={Math.cos(pAngle) * pRadius}
+                      cy={Math.sin(pAngle) * pRadius}
+                      r="2"
+                      fill={i === 0 ? '#00f5d4' : i === 1 ? '#9b5de5' : i === 2 ? '#ff206e' : '#fbae3c'}
+                      opacity="0.6"
+                    />
+                  );
+                })}
+              </g>
             </g>
-          </g>
-        ))}
-        
-        {/* Data streams connecting vaults */}
-        {[0, 1, 2, 3, 4, 5].map((i) => (
-          <g key={`stream-${i}`}>
+          );
+        })}
+
+        {/* Data flow streams */}
+        {[0, 1, 2, 3].map((i) => {
+          const angle = (i / 4) * Math.PI * 2;
+          const streamLength = 200;
+
+          return (
             <line
-              x1="300"
-              y1="300"
-              x2={300 + Math.cos(i * Math.PI / 3) * 120}
-              y2={300 + Math.sin(i * Math.PI / 3) * 120}
-              stroke="rgba(0, 245, 212, 0.2)"
-              strokeWidth="0.5"
-              strokeDasharray="2,4"
+              key={`stream-${i}`}
+              x1="400"
+              y1="400"
+              x2={400 + Math.cos(angle) * streamLength}
+              y2={400 + Math.sin(angle) * streamLength}
+              stroke="url(#energyFlow)"
+              strokeWidth="1.5"
+              strokeDasharray="5,10"
+              opacity="0.4"
               className="animate-pulse"
-              style={{animationDelay: `${i * 0.3}s`}}
+              style={{
+                animationDelay: `${i * 0.3}s`,
+                animationDuration: '2s'
+              }}
             />
-          </g>
-        ))}
-        
-        {/* Central energy rings */}
-        {[30, 50, 70].map((radius, i) => (
-          <circle 
+          );
+        })}
+
+        {/* Holographic rings */}
+        {[120, 160, 200].map((radius, i) => (
+          <circle
             key={`ring-${i}`}
-            cx="300" 
-            cy="300" 
-            r={radius} 
-            fill="none" 
-            stroke={i === 0 ? 'rgba(0, 245, 212, 0.4)' : i === 1 ? 'rgba(155, 93, 229, 0.3)' : 'rgba(255, 32, 110, 0.2)'} 
+            cx="400"
+            cy="400"
+            r={radius}
+            fill="none"
+            stroke={i === 0 ? '#00f5d4' : i === 1 ? '#9b5de5' : '#ff206e'}
             strokeWidth="1"
+            opacity="0.15"
+            strokeDasharray="10,10"
             className="animate-ping"
-            style={{ animationDuration: `${3 + i}s`, animationDelay: `${i * 0.5}s` }}
-          />
-        ))}
-      </svg>
-      
-      {/* Enhanced floating particles */}
-      <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={`particle-${i}`}
-            className={`absolute rounded-full animate-bounce ${
-              i % 3 === 0 ? 'bg-primary/30 w-1 h-1' : 
-              i % 3 === 1 ? 'bg-secondary/30 w-2 h-2' : 
-              'bg-accent/30 w-1.5 h-1.5'
-            }`}
             style={{
-              left: `${15 + (i * 4.5) % 70}%`,
-              top: `${20 + (i * 6.2) % 60}%`,
-              animationDelay: `${i * 0.15}s`,
-              animationDuration: `${2.5 + (i % 4) * 0.5}s`,
+              animationDuration: `${4 + i * 2}s`,
+              animationDelay: `${i * 0.5}s`
             }}
           />
         ))}
-      </div>
-      
-      {/* Subtle overlay message */}
-      <div className="absolute bottom-4 right-4 text-xs text-primary-glow/50">
-        Lightweight Mode
+
+        {/* Energy particles */}
+        {Array.from({ length: 30 }).map((_, i) => {
+          const x = 200 + Math.random() * 400;
+          const y = 200 + Math.random() * 400;
+          const color = i % 3 === 0 ? '#00f5d4' : i % 3 === 1 ? '#9b5de5' : '#ff206e';
+
+          return (
+            <circle
+              key={`particle-${i}`}
+              cx={x}
+              cy={y}
+              r={Math.random() * 2 + 1}
+              fill={color}
+              opacity="0.4"
+              className="animate-pulse"
+              style={{
+                animationDelay: `${i * 0.2}s`,
+                animationDuration: `${2 + Math.random() * 2}s`
+              }}
+            />
+          );
+        })}
+      </svg>
+
+      {/* Lightweight mode indicator */}
+      <div className="absolute bottom-4 right-4 text-xs opacity-40 text-primary-glow backdrop-blur-sm px-2 py-1 rounded">
+        Optimized Mode
       </div>
     </div>
   );

@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "dev:debug": "next dev --turbopack --show-all",
+    "build": "next build --turbo",
+    "build:webpack": "next build",
+    "build:analyze": "ANALYZE=true next build",
     "postbuild": "echo 'Build completed for Cloudflare Pages'",
     "start": "next start",
     "lint": "next lint",

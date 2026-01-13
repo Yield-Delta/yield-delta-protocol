@@ -3,15 +3,57 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   // Basic config for Cloudflare Pages with Functions
   reactStrictMode: false,
-  
+
   // Basic environment variables
   env: {
     SEI_CHAIN_ID: '1328',
     SEI_RPC_URL: 'https://evm-rpc-arctic-1.sei-apis.com',
     API_VERSION: '1.0.0',
   },
-  
-  // Simple webpack config
+
+  // Turbopack experimental configuration
+  experimental: {
+    // Enable Turbopack-specific optimizations
+    turbo: {
+      rules: {
+        // Configure loaders for specific file types
+        '*.svg': {
+          loaders: ['@svgr/webpack'],
+          as: '*.js',
+        },
+      },
+      resolveAlias: {
+        // Optimize module resolution
+        '@': './src',
+      },
+      resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+    },
+
+    // Enable optimized compilation
+    optimizePackageImports: [
+      '@radix-ui/react-icons',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-select',
+      '@radix-ui/react-tabs',
+      'lucide-react',
+      'recharts',
+      'three',
+      '@react-three/fiber',
+      '@react-three/drei',
+    ],
+  },
+
+  // Compiler options for faster builds
+  compiler: {
+    // Remove console logs in production
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+  },
+
+  // Simple webpack config (fallback when not using Turbopack)
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
@@ -37,6 +79,14 @@ const nextConfig: NextConfig = {
       { message: /Can't resolve 'react-native'/ },
     ];
 
+    // Optimize for faster rebuilds
+    config.cache = {
+      type: 'filesystem',
+      buildDependencies: {
+        config: [__filename],
+      },
+    };
+
     return config;
   },
 
@@ -44,6 +94,21 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+
+  // Output configuration for better caching
+  output: 'standalone',
+
+  // Enable static page generation optimization
+  swcMinify: true,
+
+  // Optimize production builds
+  productionBrowserSourceMaps: false,
+
+  // PoweredBy header
+  poweredByHeader: false,
+
+  // Compress responses
+  compress: true,
 }
 
 export default nextConfig

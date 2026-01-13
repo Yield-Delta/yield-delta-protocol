@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import AIOrb3D from '@/components/AIOrb3D';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -194,16 +195,10 @@ export default function FeatureHighlight() {
                                     {/* Inner Glow */}
                                     <div className="absolute inset-4 rounded-full bg-gradient-to-br from-primary/20 to-transparent blur-sm animate-pulse"></div>
 
-                                    {/* Core AI Symbol */}
+                                    {/* Core AI 3D Orb */}
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <div 
-                                            className="transform hover:scale-110 transition-transform duration-300" 
-                                            style={{ 
-                                                fontSize: '5rem',
-                                                filter: 'drop-shadow(0 0 20px hsl(var(--primary)))'
-                                            }}
-                                        >
-                                            🌟
+                                        <div className="transform hover:scale-110 transition-transform duration-300">
+                                            <AIOrb3D size={320} color="#00f5d4" animated={true} />
                                         </div>
                                     </div>
 
