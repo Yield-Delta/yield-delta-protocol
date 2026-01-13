@@ -1,6 +1,5 @@
 import { useRef, useEffect, useMemo } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { EffectComposer, Bloom, ChromaticAberration } from '@react-three/drei';
 import * as THREE from 'three';
 import gsap from 'gsap';
 
@@ -504,17 +503,6 @@ function Scene() {
 
       {/* Mouse tracking for parallax */}
       <MouseTracker />
-
-      {/* Post-processing effects */}
-      <EffectComposer>
-        <Bloom
-          intensity={0.8}
-          luminanceThreshold={0.2}
-          luminanceSmoothing={0.9}
-          mipmapBlur
-        />
-        <ChromaticAberration offset={[0.0002, 0.0002]} />
-      </EffectComposer>
     </>
   );
 }

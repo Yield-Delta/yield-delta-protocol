@@ -11,24 +11,24 @@ const nextConfig: NextConfig = {
     API_VERSION: '1.0.0',
   },
 
-  // Turbopack experimental configuration
-  experimental: {
-    // Enable Turbopack-specific optimizations
-    turbo: {
-      rules: {
-        // Configure loaders for specific file types
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  // Turbopack configuration (stable in Next.js 15)
+  turbopack: {
+    rules: {
+      // Configure loaders for specific file types
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
-      resolveAlias: {
-        // Optimize module resolution
-        '@': './src',
-      },
-      resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
     },
+    resolveAlias: {
+      // Optimize module resolution
+      '@': './src',
+    },
+    resolveExtensions: ['.tsx', '.ts', '.jsx', '.js', '.json'],
+  },
 
+  // Experimental features
+  experimental: {
     // Enable optimized compilation
     optimizePackageImports: [
       '@radix-ui/react-icons',
@@ -97,9 +97,6 @@ const nextConfig: NextConfig = {
 
   // Output configuration for better caching
   output: 'standalone',
-
-  // Enable static page generation optimization
-  swcMinify: true,
 
   // Optimize production builds
   productionBrowserSourceMaps: false,
