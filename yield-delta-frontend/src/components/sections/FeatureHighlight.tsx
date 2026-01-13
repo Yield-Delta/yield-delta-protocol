@@ -179,14 +179,13 @@ export default function FeatureHighlight() {
                     </p>
                 </div>
 
-                {/* Layout with Orb and Staggered Cards */}
+                {/* Layout with Orb and Feature Cards */}
                 <div className="relative max-w-7xl mx-auto">
                     {/* Floating Orb - Positioned for better visual balance */}
-                    <div className="absolute top-16 left-0 lg:left-16 transform z-20">
+                    <div className="absolute top-12 left-0 md:left-8 lg:left-16 transform z-20">
                         <div
                             ref={centerImageRef}
-                            className="relative w-112 h-112"
-                            style={{ width: '24rem', height: '24rem' }}
+                            className="relative w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96"
                         >
                             {/* Main 3D Container */}
                             <div className="relative w-full h-full transform-gpu perspective-1000">
@@ -252,33 +251,29 @@ export default function FeatureHighlight() {
                         </div>
                     </div>
 
-                    {/* Staggered Feature Cards */}
+                    {/* Feature Cards - Vertical Layout */}
                     <div className="pt-20 pb-20 lg:pl-96">
-                        <div className="flex flex-col md:flex-row items-center justify-center md:justify-start" style={{ gap: '2rem' }}>
+                        <div className="flex flex-col items-center justify-center" style={{ gap: '3rem' }}>
                             {features.map((feature, index) => (
                                 <div
                                     key={feature.title}
-                                    className={`w-full ${
-                                        index === 0 ? 'md:mt-0' :
-                                        index === 1 ? 'md:mt-32' :
-                                        'md:mt-16'
-                                    }`}
-                                    style={{ maxWidth: '360px' }}
+                                    className="w-full"
+                                    style={{ maxWidth: '480px' }}
                                 >
                                     <Card
                                         ref={el => { cardsRef.current[index] = el; }}
-                                        className="h-full transition-all duration-500 transform hover:scale-105 hover:rotate-1"
+                                        className="h-full transition-all duration-500 transform hover:scale-105 hover:-translate-y-2"
                                         style={{
                                             background: 'linear-gradient(135deg, hsl(var(--card) / 0.8) 0%, hsl(var(--card) / 0.4) 100%)',
                                             backdropFilter: 'blur(20px)',
                                             border: '2px solid hsl(var(--primary) / 0.2)',
                                             borderRadius: '1rem',
-                                            padding: '1.5rem',
-                                            minHeight: '270px',
+                                            padding: '2rem',
+                                            minHeight: '280px',
                                             display: 'flex',
                                             flexDirection: 'column',
-                                            alignItems: 'center',
-                                            textAlign: 'center'
+                                            alignItems: 'flex-start',
+                                            textAlign: 'left'
                                         }}
                                         onMouseEnter={(e) => {
                                             e.currentTarget.style.border = '2px solid hsl(var(--primary) / 0.4)';
@@ -305,28 +300,28 @@ export default function FeatureHighlight() {
                                         >
                                             {feature.icon}
                                         </div>
-                                        <h3 
+                                        <h3
                                             style={{
-                                                fontSize: '1.375rem !important',
+                                                fontSize: '1.5rem !important',
                                                 fontWeight: '700 !important',
                                                 color: 'hsl(var(--foreground)) !important',
                                                 lineHeight: '1.3 !important',
-                                                margin: '0 0 0.75rem 0 !important',
-                                                textAlign: 'center'
+                                                margin: '0 0 1rem 0 !important',
+                                                textAlign: 'left'
                                             }}
                                         >
                                             {feature.title}
                                         </h3>
-                                        <p 
+                                        <p
                                             style={{
                                                 fontSize: '1.0625rem !important',
                                                 color: 'hsl(var(--muted-foreground)) !important',
-                                                lineHeight: '1.65 !important',
+                                                lineHeight: '1.7 !important',
                                                 margin: '0 !important',
                                                 flexGrow: '1',
                                                 display: 'flex',
                                                 alignItems: 'center',
-                                                textAlign: 'center',
+                                                textAlign: 'left',
                                                 fontWeight: '400 !important'
                                             }}
                                         >
