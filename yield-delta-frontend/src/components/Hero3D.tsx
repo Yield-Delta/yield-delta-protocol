@@ -64,33 +64,34 @@ const neuralShaderMaterial = {
   `,
 };
 
-// Energy Flow Shader for particle streams
-const energyFlowShader = {
-  uniforms: {
-    time: { value: 0 },
-    color: { value: new THREE.Color('#00f5d4') },
-  },
-  vertexShader: `
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  fragmentShader: `
-    uniform float time;
-    uniform vec3 color;
-    varying vec2 vUv;
-
-    void main() {
-      // Flowing energy effect
-      float flow = sin(vUv.y * 10.0 - time * 3.0) * 0.5 + 0.5;
-      float alpha = flow * (1.0 - vUv.y);
-
-      gl_FragColor = vec4(color, alpha);
-    }
-  `,
-};
+// Energy Flow Shader for particle streams (reserved for future use)
+// Uncomment and use when implementing energy stream effects
+// const energyFlowShader = {
+//   uniforms: {
+//     time: { value: 0 },
+//     color: { value: new THREE.Color('#00f5d4') },
+//   },
+//   vertexShader: `
+//     varying vec2 vUv;
+//     void main() {
+//       vUv = uv;
+//       gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+//     }
+//   `,
+//   fragmentShader: `
+//     uniform float time;
+//     uniform vec3 color;
+//     varying vec2 vUv;
+//
+//     void main() {
+//       // Flowing energy effect
+//       float flow = sin(vUv.y * 10.0 - time * 3.0) * 0.5 + 0.5;
+//       float alpha = flow * (1.0 - vUv.y);
+//
+//       gl_FragColor = vec4(color, alpha);
+//     }
+//   `,
+// };
 
 // ============================================================================
 // COMPONENTS
@@ -326,7 +327,6 @@ function EnergyParticles() {
   useFrame(() => {
     if (meshRef.current) {
       const matrix = new THREE.Matrix4();
-      const color = new THREE.Color();
 
       particles.forEach((particle, i) => {
         // Update position
@@ -369,7 +369,7 @@ function EnergyParticles() {
 function DataFlowStreams() {
   const groupRef = useRef<THREE.Group>(null);
 
-  useFrame((state) => {
+  useFrame(() => {
     if (groupRef.current) {
       groupRef.current.rotation.y += 0.001;
     }

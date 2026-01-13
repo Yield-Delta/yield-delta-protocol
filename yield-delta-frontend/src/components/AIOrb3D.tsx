@@ -17,7 +17,7 @@ export default function AIOrb3D({
     const containerRef = useRef<HTMLDivElement>(null);
     const sceneRef = useRef<THREE.Scene | null>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-    const animationFrameRef = useRef<number>();
+    const animationFrameRef = useRef<number | undefined>(undefined);
 
     useEffect(() => {
         if (!containerRef.current) return;
@@ -232,8 +232,10 @@ export default function AIOrb3D({
                 cancelAnimationFrame(animationFrameRef.current);
             }
 
-            if (containerRef.current && renderer.domElement) {
-                containerRef.current.removeChild(renderer.domElement);
+            // Store ref in variable to avoid stale closure warning
+            const container = containerRef.current;
+            if (container && renderer.domElement) {
+                container.removeChild(renderer.domElement);
             }
 
             // Dispose of Three.js objects
