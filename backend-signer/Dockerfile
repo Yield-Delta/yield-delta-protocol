@@ -4,6 +4,10 @@ FROM node:18-alpine AS builder
 # Set working directory
 WORKDIR /app
 
+# Ensure production defaults and writable log directory for non-root runtime user
+ENV NODE_ENV=production
+RUN mkdir -p /app/logs && chown -R nodejs:nodejs /app
+
 # Copy package files
 COPY package*.json ./
 

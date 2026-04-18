@@ -26,6 +26,22 @@ function getEnvNumber(name: string, required: boolean = true, defaultValue?: num
   return numValue;
 }
 
+function getSignerPrivateKey(): string {
+  const signerPrivateKey = process.env.AI_MODEL_SIGNER_PRIVATE_KEY;
+  if (signerPrivateKey) {
+    return signerPrivateKey;
+  }
+
+  const ownerPrivateKey = process.env.OWNER_PRIVATE_KEY;
+  if (ownerPrivateKey) {
+    logger.warn('AI_MODEL_SIGNER_PRIVATE_KEY not set; falling back to OWNER_PRIVATE_KEY');
+    return ownerPrivateKey;
+  }
+
+  logger.error('Missing required environment variable: AI_MODEL_SIGNER_PRIVATE_KEY');
+  throw new Error('Missing required environment variable: AI_MODEL_SIGNER_PRIVATE_KEY');
+}
+
 export function loadConfig(): ServiceConfig {
   return {
     // Network
@@ -33,7 +49,7 @@ export function loadConfig(): ServiceConfig {
     seiChainId: getEnvNumber('SEI_CHAIN_ID', false, 1328),
 
     // Signer
-    aiModelSignerPrivateKey: getEnvVar('AI_MODEL_SIGNER_PRIVATE_KEY', true),
+    aiModelSignerPrivateKey: getSignerPrivateKey(),
 
     // Contracts
     aiOracleAddress: getEnvVar('AI_ORACLE_ADDRESS', true, '0x4199f86F3Bd73cF6ae5E89C8E28863d4B12fb18E'),

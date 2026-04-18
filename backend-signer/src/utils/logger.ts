@@ -1,4 +1,6 @@
 import winston from 'winston';
+import fs from 'fs';
+import path from 'path';
 
 const { combine, timestamp, printf, colorize, errors } = winston.format;
 
@@ -31,19 +33,30 @@ const transports: winston.transport[] = [
 ];
 
 if (enableFileLogging) {
-  transports.push(
-    new winston.transports.File({
-      filename: 'logs/error.log',
-      level: 'error',
-      maxsize: 5242880,
-      maxFiles: 5,
-    }),
-    new winston.transports.File({
-      filename: 'logs/combined.log',
-      maxsize: 5242880,
-      maxFiles: 5,
-    })
-  );
+  const logsDir = path.resolve(process.cwd(), 'logs');
+
+  try {
+    fs.mkdirSync(logsDir, { recursive: true });
+
+    transports.push(
+      new winston.transports.File({
+        filename: path.join(logsDir, 'error.log'),
+        level: 'error',
+        maxsize: 5242880,
+        maxFiles: 5,
+      }),
+      new winston.transports.File({
+        filename: path.join(logsDir, 'combined.log'),
+        maxsize: 5242880,
+        maxFiles: 5,
+      })
+    );
+  } catch (error: any) {
+    // Keep service alive even when file logging is unavailable in restricted containers.
+    console.warn(
+      `[logger] File logging disabled: ${error?.message || 'failed to initialize log directory'}`
+    );
+  }
 }
 
 export const logger = winston.createLogger({

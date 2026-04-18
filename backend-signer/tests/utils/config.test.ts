@@ -89,6 +89,26 @@ describe('Config Utils', () => {
       expect(() => loadConfig()).toThrow('Missing required environment variable: AI_MODEL_SIGNER_PRIVATE_KEY');
     });
 
+    it('should fallback to OWNER_PRIVATE_KEY when AI_MODEL_SIGNER_PRIVATE_KEY is missing', () => {
+      process.env = {
+        ...process.env,
+        OWNER_PRIVATE_KEY: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+        AI_ORACLE_ADDRESS: '0x4199f86F3Bd73cF6ae5E89C8E28863d4B12fb18E',
+        VAULT_FACTORY_ADDRESS: '0x37b8E91705bc42d5489Dae84b00B87356342B267',
+        VAULTS: '0xvault1',
+        AI_ENGINE_URL: 'http://localhost:8000',
+      };
+
+      const config = loadConfig();
+
+      expect(config.aiModelSignerPrivateKey).toBe(
+        '0xabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdefabcd'
+      );
+      expect(logger.warn).toHaveBeenCalledWith(
+        'AI_MODEL_SIGNER_PRIVATE_KEY not set; falling back to OWNER_PRIVATE_KEY'
+      );
+    });
+
     it('should throw error for invalid number format', () => {
       process.env = {
         ...process.env,

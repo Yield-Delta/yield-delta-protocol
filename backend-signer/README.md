@@ -86,6 +86,7 @@ cp .env.example .env
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `AI_MODEL_SIGNER_PRIVATE_KEY` | Private key for signing requests | `0x...` |
+| `OWNER_PRIVATE_KEY` | Fallback signer key if `AI_MODEL_SIGNER_PRIVATE_KEY` is not set | `0x...` |
 | `VAULTS` | Comma-separated vault addresses | `0xAC64...,0xcF79...` |
 
 ### Optional Environment Variables
@@ -99,6 +100,7 @@ cp .env.example .env
 | `CRON_SCHEDULE` | `*/5 * * * *` | Check frequency |
 | `MIN_CONFIDENCE_THRESHOLD` | `7500` | Min confidence (75%) |
 | `REQUEST_DEADLINE_SECONDS` | `300` | Request validity (5 min) |
+| `LOG_TO_FILES` | `false` (recommended in containers) | Enable local `logs/*.log` files |
 | `AI_MODEL_VERSION` | `liquidity-optimizer-v1.0` | Model identifier |
 
 ## Generating a Signer Key
