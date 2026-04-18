@@ -1,7 +1,6 @@
 import { logger, type Character } from '@elizaos/core';
 import packageJson from '../package.json';
 import { isTruthy } from './utils.ts';
-import twitterPosterPlugin from './plugins/twitter-poster-plugin.ts';
 
 /**
  * Extended Character type to include clients property used by ElizaOS runtime
@@ -102,8 +101,6 @@ export const getConfiguredPlugins = (): string[] => [
     enabled: false,  // Don't load ElizaOS plugin
     packageName: '@elizaos/plugin-twitter',
   }),
-  // Custom minimal Twitter poster (only posting, no search/interactions)
-  ...(!isTwitterEnabled() ? [] : [twitterPosterPlugin]),
   ...includeOptionalPlugin({
     enabled: !!process.env.TELEGRAM_BOT_TOKEN?.trim(),
     packageName: '@elizaos/plugin-telegram',

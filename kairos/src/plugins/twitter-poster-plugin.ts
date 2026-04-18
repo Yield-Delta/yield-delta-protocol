@@ -172,6 +172,18 @@ function scheduleNextTweet(runtime: IAgentRuntime): void {
   }, intervalMs);
 }
 
+async function postTweetNow(runtime: IAgentRuntime): Promise<void> {
+  try {
+    const tweetContent = await generateTweet(runtime);
+    const posted = await postTweet(runtime, tweetContent);
+    if (!posted) {
+      runtime.logger.warn('[TwitterPoster] Startup tweet was not posted (see prior logs for details)');
+    }
+  } catch (error) {
+    runtime.logger.error('[TwitterPoster] Startup tweet error:', error);
+  }
+}
+
 /**
  * Twitter Poster Plugin Definition
  */
@@ -186,7 +198,8 @@ const twitterPosterPlugin: Plugin = {
       name: 'twitter-poster-service',
       description: 'Service for scheduled Twitter posting',
       async initialize(runtime: IAgentRuntime) {
-        if (!process.env.ENABLE_TWITTER_CLIENT?.toLowerCase() === 'true') {
+        const twitterEnabled = process.env.ENABLE_TWITTER_CLIENT?.toLowerCase() === 'true';
+        if (!twitterEnabled) {
           runtime.logger.info('[TwitterPoster] Disabled (ENABLE_TWITTER_CLIENT not set)');
           return;
         }
@@ -207,6 +220,16 @@ const twitterPosterPlugin: Plugin = {
             `[TwitterPoster] Missing credentials: ${missing.join(', ')}`
           );
           return;
+        }
+
+        runtime.logger.info(
+          `[TwitterPoster] Posting interval configured: ${process.env.TWITTER_POST_INTERVAL_MIN || '5'}-${process.env.TWITTER_POST_INTERVAL_MAX || '10'} minutes`
+        );
+
+        const postOnStartup = (process.env.TWITTER_POST_ON_STARTUP || 'true').toLowerCase() === 'true';
+        if (postOnStartup) {
+          runtime.logger.info('[TwitterPoster] Attempting immediate startup tweet...');
+          await postTweetNow(runtime);
         }
 
         // Start scheduling tweets

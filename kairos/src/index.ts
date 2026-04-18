@@ -10,6 +10,7 @@ import {
   getTwitterIntegrationStatus,
   getTwitterRuntimeMode,
 } from "./character.ts";
+import twitterPosterPlugin from "./plugins/twitter-poster-plugin.ts";
 import seiYieldDeltaPlugin from "../node_modules/@elizaos/plugin-sei-yield-delta/src/index.ts";
 import vaultIntegrationPlugin from "./vault-integration-plugin";
 import { getOracleProviderDecision } from "./oracle-provider.ts";
@@ -73,9 +74,12 @@ export const projectAgent: ProjectAgent = {
   init: async (runtime: IAgentRuntime) => await initCharacter({ runtime }),
   get plugins() {
     _configuredSeiYieldDeltaPlugin ??= withOptionalOracleProvider();
+    const twitterStatus = getTwitterIntegrationStatus();
+
     return [
       _configuredSeiYieldDeltaPlugin, // Base SEI Yield Delta strategies (optionally without polling oracle provider)
       vaultIntegrationPlugin, // Vault automation and monitoring
+      ...(twitterStatus.enabled ? [twitterPosterPlugin] : []), // Custom post-only Twitter scheduler
     ];
   },
 } as ProjectAgent;
