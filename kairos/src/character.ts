@@ -1,6 +1,7 @@
 import { logger, type Character } from '@elizaos/core';
 import packageJson from '../package.json';
 import { isTruthy } from './utils.ts';
+import twitterPosterPlugin from './plugins/twitter-poster-plugin.ts';
 
 /**
  * Extended Character type to include clients property used by ElizaOS runtime
@@ -95,10 +96,14 @@ export const getConfiguredPlugins = (): string[] => [
     enabled: !!process.env.DISCORD_API_TOKEN?.trim(),
     packageName: '@elizaos/plugin-discord',
   }),
+  // Use custom minimal Twitter poster instead of ElizaOS plugin
+  // to avoid expensive paid API calls (search, timeline, discovery)
   ...includeOptionalPlugin({
-    enabled: isTwitterEnabled(),
+    enabled: false,  // Don't load ElizaOS plugin
     packageName: '@elizaos/plugin-twitter',
   }),
+  // Custom minimal Twitter poster (only posting, no search/interactions)
+  ...(!isTwitterEnabled() ? [] : [twitterPosterPlugin]),
   ...includeOptionalPlugin({
     enabled: !!process.env.TELEGRAM_BOT_TOKEN?.trim(),
     packageName: '@elizaos/plugin-telegram',
@@ -164,7 +169,7 @@ const isTwitterEnabled = (): boolean => getTwitterIntegrationStatus().enabled;
 export const character: ExtendedCharacter = {
   name: 'Kairos',
   clients: [
-    ...(isTwitterEnabled() ? ['twitter'] : []),
+    // Twitter is now handled by custom plugin (not ElizaOS client)
     ...(process.env.INSTAGRAM_USERNAME?.trim() ? ['instagram'] : []),
   ],
   plugins: getConfiguredPlugins(),
@@ -185,29 +190,13 @@ export const character: ExtendedCharacter = {
     TWITTER_POST_INTERVAL_VARIANCE: '0.25',
     TWITTER_MAX_TWEET_LENGTH: '280',
 
-    // Interaction settings for engagement
-    // DISABLED: Twitter Free tier has extremely limited API access (1 request)
-    // Enable only if you have Twitter Basic tier ($100/mo) or higher
+    // ElizaOS Twitter settings disabled - using custom minimal poster instead
+    // All interaction/search features are disabled to avoid paid API calls
     TWITTER_SEARCH_ENABLE: 'false',
     TWITTER_INTERACTION_ENABLE: 'false',
     TWITTER_TIMELINE_ENABLE: 'false',
-    TWITTER_INTERACTION_INTERVAL_MIN: '360',  // 6 hours (increased from 30 min to avoid rate limits)
-    TWITTER_INTERACTION_INTERVAL_MAX: '720',  // 12 hours (increased from 60 min)
-    TWITTER_MAX_INTERACTIONS_PER_RUN: '1',    // Reduced from 5 to minimize API calls
-
-    // Timeline algorithm for quality engagement
-    TWITTER_TIMELINE_ALGORITHM: 'weighted',
-    TWITTER_TIMELINE_RELEVANCE_WEIGHT: '7',
-
-    // Target DeFi and SEI community
-    // DISABLED: Causes search API calls that exceed Free tier rate limits
-    // TWITTER_TARGET_USERS: 'SeiNetwork,DragonSwapSei,YEIFinance',
-    TWITTER_TARGET_USERS: '',  // Empty to prevent search API calls
     TWITTER_ENABLE_ACTION_PROCESSING: 'false',
-
-    // Safety settings
-    TWITTER_RETRY_LIMIT: '3',
-    TWITTER_DRY_RUN: process.env.NODE_ENV === 'development' ? 'true' : 'false',
+    TWITTER_TARGET_USERS: '',
 
     // Instagram credentials from environment
     INSTAGRAM_USERNAME: process.env.INSTAGRAM_USERNAME || '',

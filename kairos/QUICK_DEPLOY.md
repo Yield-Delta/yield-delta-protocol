@@ -193,18 +193,23 @@ Once deployed, these endpoints will be available:
 - YIELD_FARMING_VAULT_ADDRESS
 - ARBITRAGE_VAULT_ADDRESS
 
-**Twitter** (optional):
-- ENABLE_TWITTER_CLIENT=true
-- ENABLE_TWITTER_INTERACTIONS=false
-- TWITTER_POST_INTERVAL_MIN=5
-- TWITTER_POST_INTERVAL_MAX=10
-- TWITTER_API_KEY
-- TWITTER_API_SECRET_KEY
-- TWITTER_ACCESS_TOKEN
-- TWITTER_ACCESS_TOKEN_SECRET
+**Twitter** (optional - Custom Minimal Poster):
+- ENABLE_TWITTER_CLIENT=true (set to true to enable, false to disable)
+- ENABLE_TWITTER_INTERACTIONS=false (not used, kept for reference)
+- TWITTER_POST_INTERVAL_MIN=5 (minimum minutes between posts)
+- TWITTER_POST_INTERVAL_MAX=10 (maximum minutes between posts)
+- TWITTER_API_KEY (from Twitter Developer Portal)
+- TWITTER_API_SECRET_KEY (from Twitter Developer Portal)
+- TWITTER_ACCESS_TOKEN (from Twitter Developer Portal)
+- TWITTER_ACCESS_TOKEN_SECRET (from Twitter Developer Portal)
 
-`ENABLE_TWITTER_INTERACTIONS` should stay `false` unless you intentionally want paid Twitter search/reply/discovery features.
-For this smoke test, the default posting cadence is 5 to 10 minutes. Raise it again after validation if you do not want frequent posts.
+**Important Twitter Notes**:
+- Uses **custom minimal poster** that ONLY posts tweets (no search/discovery/interaction API calls)
+- This avoids the $100+/month Twitter API paid tier fees
+- Posts are auto-generated about Yield Delta vaults
+- Default posting cadence: 5-10 minutes (adjust via TWITTER_POST_INTERVAL_MIN/MAX)
+- For smoke testing, default 5-10 min cadence is fine
+- For production, increase TWITTER_POST_INTERVAL_MIN/MAX to 120-240
 
 All are already in `.env` file - just need to upload to Railway.
 

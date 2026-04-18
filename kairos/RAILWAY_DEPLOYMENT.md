@@ -125,9 +125,12 @@ railway variables set GOOGLE_GENERATIVE_AI_API_KEY="YOUR-GOOGLE-API-KEY-HERE"
 - `SEI_NETWORK` - SEI network (sei-testnet)
 - `SEI_RPC_URL` - SEI RPC endpoint
 - All vault addresses
-- `ENABLE_TWITTER_CLIENT=true` plus `TWITTER_API_KEY`, `TWITTER_API_SECRET_KEY`, `TWITTER_ACCESS_TOKEN`, and `TWITTER_ACCESS_TOKEN_SECRET` if using Twitter posting
-- Keep `ENABLE_TWITTER_INTERACTIONS=false` unless you want Twitter search/reply/discovery features and have paid API credits available
-- Optionally set `TWITTER_POST_INTERVAL_MIN=5` and `TWITTER_POST_INTERVAL_MAX=10` for a smoke test, then increase them after validation
+- **Twitter (Custom Minimal Poster - No Paid API Calls)**:
+  - `ENABLE_TWITTER_CLIENT=true` - to enable Twitter posting
+  - `TWITTER_API_KEY`, `TWITTER_API_SECRET_KEY`, `TWITTER_ACCESS_TOKEN`, `TWITTER_ACCESS_TOKEN_SECRET` from your Twitter Developer Portal
+  - `KEEP` `ENABLE_TWITTER_INTERACTIONS=false` (not used by custom poster)
+  - `TWITTER_POST_INTERVAL_MIN=5` and `TWITTER_POST_INTERVAL_MAX=10` for testing (increase to 120-240 for production)
+  - **Note**: Custom poster ONLY implements tweet posting; it does NOT make search/discovery/interaction API calls. This avoids the $100+/month Twitter API paid tier fees.
 
 #### Step 3: Deploy to Railway
 ```bash
