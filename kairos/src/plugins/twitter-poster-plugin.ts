@@ -1,4 +1,4 @@
-import { Plugin, IAgentRuntime, Memory, State, IMessage } from '@elizaos/core';
+import { Plugin, IAgentRuntime, Service } from '@elizaos/core';
 import { TwitterApi } from 'twitter-api-v2';
 import { randomInt } from 'crypto';
 
@@ -32,7 +32,6 @@ interface TwitterPosterConfig {
 
 let twitterClient: TwitterApi | null = null;
 let lastPostTime = 0;
-let postScheduled = false;
 
 /**
  * Initialize Twitter API client (read-only for posting)
@@ -145,42 +144,122 @@ async function postTweet(
   }
 }
 
-/**
- * Schedule the next tweet
- */
-function scheduleNextTweet(runtime: IAgentRuntime): void {
-  const minInterval = parseInt(process.env.TWITTER_POST_INTERVAL_MIN || '5', 10);
-  const maxInterval = parseInt(process.env.TWITTER_POST_INTERVAL_MAX || '10', 10);
+export class TwitterPosterService extends Service {
+  static serviceType = 'twitter-poster';
 
-  const intervalMs = (minInterval + Math.random() * (maxInterval - minInterval)) * 60 * 1000;
+  get capabilityDescription(): string {
+    return 'Posts scheduled updates to Twitter/X using a minimal post-only flow';
+  }
 
-  postScheduled = true;
-  runtime.logger.info(
-    `[TwitterPoster] Next tweet scheduled in ${Math.round(intervalMs / 60000)} minutes`
-  );
+  private timeoutHandle: NodeJS.Timeout | null = null;
+  private stopped = false;
 
-  setTimeout(async () => {
-    postScheduled = false;
+  constructor(runtime: IAgentRuntime) {
+    super(runtime);
+  }
+
+  private scheduleNextTweet(): void {
+    const minInterval = parseInt(process.env.TWITTER_POST_INTERVAL_MIN || '5', 10);
+    const maxInterval = parseInt(process.env.TWITTER_POST_INTERVAL_MAX || '10', 10);
+    const intervalMs = (minInterval + Math.random() * (maxInterval - minInterval)) * 60 * 1000;
+
+    this.runtime.logger.info(
+      `[TwitterPoster] Next tweet scheduled in ${Math.round(intervalMs / 60000)} minutes`
+    );
+
+    this.timeoutHandle = setTimeout(async () => {
+      if (this.stopped) {
+        return;
+      }
+
+      try {
+        const tweetContent = await generateTweet(this.runtime);
+        await postTweet(this.runtime, tweetContent);
+      } catch (error) {
+        this.runtime.logger.error('[TwitterPoster] Error in scheduled post:', error);
+      }
+
+      if (!this.stopped) {
+        this.scheduleNextTweet();
+      }
+    }, intervalMs);
+  }
+
+  private async postTweetNow(): Promise<void> {
     try {
-      const tweetContent = await generateTweet(runtime);
-      await postTweet(runtime, tweetContent);
-      scheduleNextTweet(runtime);
+      const tweetContent = await generateTweet(this.runtime);
+      const posted = await postTweet(this.runtime, tweetContent);
+      if (!posted) {
+        this.runtime.logger.warn(
+          '[TwitterPoster] Startup tweet was not posted (see prior logs for details)'
+        );
+      }
     } catch (error) {
-      runtime.logger.error('[TwitterPoster] Error in scheduled post:', error);
-      scheduleNextTweet(runtime);
+      this.runtime.logger.error('[TwitterPoster] Startup tweet error:', error);
     }
-  }, intervalMs);
-}
+  }
 
-async function postTweetNow(runtime: IAgentRuntime): Promise<void> {
-  try {
-    const tweetContent = await generateTweet(runtime);
-    const posted = await postTweet(runtime, tweetContent);
-    if (!posted) {
-      runtime.logger.warn('[TwitterPoster] Startup tweet was not posted (see prior logs for details)');
+  private async initialize(): Promise<void> {
+    const twitterEnabled = process.env.ENABLE_TWITTER_CLIENT?.toLowerCase() === 'true';
+    if (!twitterEnabled) {
+      this.runtime.logger.info('[TwitterPoster] Disabled (ENABLE_TWITTER_CLIENT not set)');
+      return;
     }
-  } catch (error) {
-    runtime.logger.error('[TwitterPoster] Startup tweet error:', error);
+
+    this.runtime.logger.info('[TwitterPoster] Initializing minimal Twitter poster...');
+
+    const requiredEnvVars = [
+      'TWITTER_API_KEY',
+      'TWITTER_API_SECRET_KEY',
+      'TWITTER_ACCESS_TOKEN',
+      'TWITTER_ACCESS_TOKEN_SECRET',
+    ];
+
+    const missing = requiredEnvVars.filter((v) => !process.env[v]);
+    if (missing.length > 0) {
+      this.runtime.logger.warn(`[TwitterPoster] Missing credentials: ${missing.join(', ')}`);
+      return;
+    }
+
+    this.runtime.logger.info(
+      `[TwitterPoster] Posting interval configured: ${process.env.TWITTER_POST_INTERVAL_MIN || '5'}-${process.env.TWITTER_POST_INTERVAL_MAX || '10'} minutes`
+    );
+
+    const postOnStartup = (process.env.TWITTER_POST_ON_STARTUP || 'true').toLowerCase() === 'true';
+    if (postOnStartup) {
+      this.runtime.logger.info('[TwitterPoster] Attempting immediate startup tweet...');
+      await this.postTweetNow();
+    }
+
+    this.scheduleNextTweet();
+    this.runtime.logger.info('[TwitterPoster] ✅ Service started');
+  }
+
+  static async start(runtime: IAgentRuntime) {
+    const service = new TwitterPosterService(runtime);
+    await service.initialize();
+    return service;
+  }
+
+  static async stop(runtime: IAgentRuntime) {
+    const service = runtime.getService(TwitterPosterService.serviceType) as
+      | TwitterPosterService
+      | undefined;
+
+    if (!service) {
+      return;
+    }
+
+    await service.stop();
+  }
+
+  async stop() {
+    this.stopped = true;
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle);
+      this.timeoutHandle = null;
+    }
+    this.runtime.logger.info('[TwitterPoster] Service stopped');
   }
 }
 
@@ -193,51 +272,7 @@ const twitterPosterPlugin: Plugin = {
   actions: [],
   evaluators: [],
   providers: [],
-  services: [
-    {
-      name: 'twitter-poster-service',
-      description: 'Service for scheduled Twitter posting',
-      async initialize(runtime: IAgentRuntime) {
-        const twitterEnabled = process.env.ENABLE_TWITTER_CLIENT?.toLowerCase() === 'true';
-        if (!twitterEnabled) {
-          runtime.logger.info('[TwitterPoster] Disabled (ENABLE_TWITTER_CLIENT not set)');
-          return;
-        }
-
-        runtime.logger.info('[TwitterPoster] Initializing minimal Twitter poster...');
-
-        // Verify credentials
-        const requiredEnvVars = [
-          'TWITTER_API_KEY',
-          'TWITTER_API_SECRET_KEY',
-          'TWITTER_ACCESS_TOKEN',
-          'TWITTER_ACCESS_TOKEN_SECRET',
-        ];
-
-        const missing = requiredEnvVars.filter((v) => !process.env[v]);
-        if (missing.length > 0) {
-          runtime.logger.warn(
-            `[TwitterPoster] Missing credentials: ${missing.join(', ')}`
-          );
-          return;
-        }
-
-        runtime.logger.info(
-          `[TwitterPoster] Posting interval configured: ${process.env.TWITTER_POST_INTERVAL_MIN || '5'}-${process.env.TWITTER_POST_INTERVAL_MAX || '10'} minutes`
-        );
-
-        const postOnStartup = (process.env.TWITTER_POST_ON_STARTUP || 'true').toLowerCase() === 'true';
-        if (postOnStartup) {
-          runtime.logger.info('[TwitterPoster] Attempting immediate startup tweet...');
-          await postTweetNow(runtime);
-        }
-
-        // Start scheduling tweets
-        scheduleNextTweet(runtime);
-        runtime.logger.info('[TwitterPoster] ✅ Service started');
-      },
-    },
-  ],
+  services: [TwitterPosterService],
 };
 
 export default twitterPosterPlugin;
