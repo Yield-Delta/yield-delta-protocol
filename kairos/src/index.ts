@@ -94,9 +94,12 @@ const withOptionalOracleProvider = () => {
   const providers = (seiYieldDeltaPlugin as any).providers;
   if (!Array.isArray(providers)) {
     logger.warn(
-      `YEI oracle provider should be disabled (${decision.reason}), but no plugin providers were found to filter`
+      `YEI oracle provider should be disabled (${decision.reason}), but no plugin providers were found to filter; returning plugin with no providers`
     );
-    return seiYieldDeltaPlugin;
+    return {
+      ...(seiYieldDeltaPlugin as any),
+      providers: [],
+    };
   }
 
   const filteredProviders = providers.filter((provider: any) => provider?.name !== 'seiOracle');
