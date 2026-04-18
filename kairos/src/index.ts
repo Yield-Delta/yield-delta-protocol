@@ -30,6 +30,8 @@ const hasVerifiedTestnetOracleConfig = (): boolean => {
     process.env.YEI_API3_CONTRACT,
     process.env.YEI_PYTH_CONTRACT,
     process.env.YEI_SEI_ORACLE,
+    process.env.YEI_USDC_ORACLE,
+    process.env.YEI_USDT_ORACLE,
     process.env.YEI_ETH_ORACLE,
     process.env.YEI_BTC_ORACLE,
   ];
