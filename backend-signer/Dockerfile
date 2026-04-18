@@ -4,9 +4,8 @@ FROM node:18-alpine AS builder
 # Set working directory
 WORKDIR /app
 
-# Ensure production defaults and writable log directory for non-root runtime user
+# Build in production mode defaults
 ENV NODE_ENV=production
-RUN mkdir -p /app/logs && chown -R nodejs:nodejs /app
 
 # Copy package files
 COPY package*.json ./
@@ -29,6 +28,9 @@ RUN apk add --no-cache dumb-init
 # Create non-root user
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
+
+# Ensure writable log directory for non-root runtime user
+RUN mkdir -p /app/logs && chown -R nodejs:nodejs /app
 
 # Set working directory
 WORKDIR /app
