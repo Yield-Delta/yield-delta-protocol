@@ -103,6 +103,8 @@ cp .env.example .env
 | `LOG_TO_FILES` | `false` (recommended in containers) | Enable local `logs/*.log` files |
 | `AI_MODEL_VERSION` | `liquidity-optimizer-v1.0` | Model identifier |
 
+`LOG_TO_FILES` is opt-in only. File logs are disabled unless this is explicitly set to `true`.
+
 ## Generating a Signer Key
 
 Generate a new private key for the AI model:

@@ -4,9 +4,7 @@ import path from 'path';
 
 const { combine, timestamp, printf, colorize, errors } = winston.format;
 
-const enableFileLogging =
-  process.env.LOG_TO_FILES === 'true' ||
-  (!process.env.RAILWAY_ENVIRONMENT && process.env.NODE_ENV !== 'production');
+const enableFileLogging = process.env.LOG_TO_FILES === 'true';
 
 const logFormat = printf(({ level, message, timestamp, stack, ...metadata }) => {
   let msg = `${timestamp} [${level}]: ${message}`;
