@@ -1,4 +1,5 @@
-import { type Character } from '@elizaos/core';
+import { logger, type Character } from '@elizaos/core';
+import packageJson from '../package.json';
 import { isTruthy } from './utils.ts';
 
 /**
@@ -7,6 +8,88 @@ import { isTruthy } from './utils.ts';
 interface ExtendedCharacter extends Character {
   clients?: string[];
 }
+
+type OptionalPluginConfig = {
+  enabled: boolean;
+  packageName: string;
+};
+
+const declaredDependencies = new Set(Object.keys(packageJson.dependencies ?? {}));
+const warnedUndeclaredPlugins = new Set<string>();
+
+const includeOptionalPlugin = ({ enabled, packageName }: OptionalPluginConfig): string[] => {
+  if (!enabled) {
+    return [];
+  }
+
+  if (!declaredDependencies.has(packageName)) {
+    if (!warnedUndeclaredPlugins.has(packageName)) {
+      logger.warn(
+        `Skipping optional plugin ${packageName} because it is not declared in package.json dependencies`
+      );
+      warnedUndeclaredPlugins.add(packageName);
+    }
+
+    return [];
+  }
+
+  return [packageName];
+};
+
+export const getConfiguredPlugins = (): string[] => [
+  '@elizaos/plugin-sql',
+
+  // Text-only plugins (no embedding support)
+  ...includeOptionalPlugin({
+    enabled: !!process.env.ANTHROPIC_API_KEY?.trim(),
+    packageName: '@elizaos/plugin-anthropic',
+  }),
+  ...includeOptionalPlugin({
+    enabled: !!process.env.OPENROUTER_API_KEY?.trim(),
+    packageName: '@elizaos/plugin-openrouter',
+  }),
+
+  // Embedding-capable plugins (optional, based on available credentials)
+  ...includeOptionalPlugin({
+    enabled: !!process.env.OPENAI_API_KEY?.trim(),
+    packageName: '@elizaos/plugin-openai',
+  }),
+  ...includeOptionalPlugin({
+    enabled: !!process.env.GOOGLE_GENERATIVE_AI_API_KEY?.trim(),
+    packageName: '@elizaos/plugin-google-genai',
+  }),
+
+  // Ollama as fallback (only if no main LLM providers are configured)
+  ...includeOptionalPlugin({
+    enabled: !!process.env.OLLAMA_API_ENDPOINT?.trim(),
+    packageName: '@elizaos/plugin-ollama',
+  }),
+
+  // Platform plugins
+  ...includeOptionalPlugin({
+    enabled: !!process.env.DISCORD_API_TOKEN?.trim(),
+    packageName: '@elizaos/plugin-discord',
+  }),
+  ...includeOptionalPlugin({
+    enabled: isTwitterEnabled(),
+    packageName: '@elizaos/plugin-twitter',
+  }),
+  ...includeOptionalPlugin({
+    enabled: !!process.env.TELEGRAM_BOT_TOKEN?.trim(),
+    packageName: '@elizaos/plugin-telegram',
+  }),
+  ...includeOptionalPlugin({
+    enabled:
+      !!process.env.INSTAGRAM_USERNAME?.trim() && !!process.env.INSTAGRAM_PASSWORD?.trim(),
+    packageName: '@elizaos/plugin-instagram',
+  }),
+
+  // Bootstrap plugin
+  ...includeOptionalPlugin({
+    enabled: !process.env.IGNORE_BOOTSTRAP,
+    packageName: '@elizaos/plugin-bootstrap',
+  }),
+];
 
 /**
  * Returns true when Twitter is enabled via configuration AND all required
@@ -31,32 +114,7 @@ export const character: ExtendedCharacter = {
     ...(isTwitterEnabled() ? ['twitter'] : []),
     ...(process.env.INSTAGRAM_USERNAME?.trim() ? ['instagram'] : []),
   ],
-  plugins: [
-    // Core plugins first
-    '@elizaos/plugin-sql',
-
-    // Text-only plugins (no embedding support)
-    ...(process.env.ANTHROPIC_API_KEY?.trim() ? ['@elizaos/plugin-anthropic'] : []),
-    ...(process.env.OPENROUTER_API_KEY?.trim() ? ['@elizaos/plugin-openrouter'] : []),
-
-    // Embedding-capable plugins (optional, based on available credentials)
-    ...(process.env.OPENAI_API_KEY?.trim() ? ['@elizaos/plugin-openai'] : []),
-    ...(process.env.GOOGLE_GENERATIVE_AI_API_KEY?.trim() ? ['@elizaos/plugin-google-genai'] : []),
-
-    // Ollama as fallback (only if no main LLM providers are configured)
-    ...(process.env.OLLAMA_API_ENDPOINT?.trim() ? ['@elizaos/plugin-ollama'] : []),
-
-    // Platform plugins
-    ...(process.env.DISCORD_API_TOKEN?.trim() ? ['@elizaos/plugin-discord'] : []),
-    ...(isTwitterEnabled() ? ['@elizaos/plugin-twitter'] : []),
-    ...(process.env.TELEGRAM_BOT_TOKEN?.trim() ? ['@elizaos/plugin-telegram'] : []),
-    ...(process.env.INSTAGRAM_USERNAME?.trim() && process.env.INSTAGRAM_PASSWORD?.trim()
-      ? ['@elizaos/plugin-instagram']
-      : []),
-
-    // Bootstrap plugin
-    ...(!process.env.IGNORE_BOOTSTRAP ? ['@elizaos/plugin-bootstrap'] : []),
-  ],
+  plugins: getConfiguredPlugins(),
   settings: {
     secrets: {},
     avatar: 'https://www.yielddelta.xyz/kairos-avatar.svg',

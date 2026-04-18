@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { character } from '../index';
+import { getConfiguredPlugins } from '../character';
 
 describe('Character Configuration', () => {
   it('should have all required fields', () => {
@@ -20,29 +21,36 @@ describe('Character Configuration', () => {
   });
 
   it('should have conditionally included plugins based on environment variables', () => {
-    // This test is a simple placeholder since we can't easily test dynamic imports in test environments
-    // The actual functionality is tested at runtime by the starter test suite
-
     // Save the original env values
     const originalOpenAIKey = process.env.OPENAI_API_KEY;
     const originalAnthropicKey = process.env.ANTHROPIC_API_KEY;
 
     try {
-      // Verify if plugins array includes the core plugin
-      expect(character.plugins).toContain('@elizaos/plugin-sql');
+      process.env.OPENAI_API_KEY = 'test-openai-key';
+      process.env.ANTHROPIC_API_KEY = 'test-anthropic-key';
 
-      // Plugins array should have conditional plugins based on environment variables
-      if (process.env.OPENAI_API_KEY) {
-        expect(character.plugins).toContain('@elizaos/plugin-openai');
-      }
+      const plugins = getConfiguredPlugins();
 
-      if (process.env.ANTHROPIC_API_KEY) {
-        expect(character.plugins).toContain('@elizaos/plugin-anthropic');
-      }
+      expect(plugins).toContain('@elizaos/plugin-sql');
+      expect(plugins).toContain('@elizaos/plugin-openai');
+      expect(plugins).toContain('@elizaos/plugin-anthropic');
     } finally {
-      // Restore original env values
       process.env.OPENAI_API_KEY = originalOpenAIKey;
       process.env.ANTHROPIC_API_KEY = originalAnthropicKey;
+    }
+  });
+
+  it('should skip optional plugins that are not declared in dependencies', () => {
+    const originalTelegramToken = process.env.TELEGRAM_BOT_TOKEN;
+
+    try {
+      process.env.TELEGRAM_BOT_TOKEN = 'test-telegram-token';
+
+      const plugins = getConfiguredPlugins();
+
+      expect(plugins).not.toContain('@elizaos/plugin-telegram');
+    } finally {
+      process.env.TELEGRAM_BOT_TOKEN = originalTelegramToken;
     }
   });
 
