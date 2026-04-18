@@ -51,9 +51,9 @@ const hasVerifiedTestnetOracleConfig = (): boolean => {
 
 const getOracleProviderDecision = (): { disable: boolean; reason: string } => {
   const explicitDisable = process.env.DISABLE_YEI_ORACLE_PROVIDER;
-  if (explicitDisable !== undefined) {
+  if (isTruthy(explicitDisable)) {
     return {
-      disable: isTruthy(explicitDisable),
+      disable: true,
       reason: 'explicit DISABLE_YEI_ORACLE_PROVIDER override',
     };
   }
