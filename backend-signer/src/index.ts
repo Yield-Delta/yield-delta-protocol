@@ -96,20 +96,36 @@ async function main() {
     logger.info('Initial health check:', health);
 
     if (health.service === 'unhealthy') {
-      logger.error('Service is unhealthy, please check configuration and dependencies');
-      process.exit(1);
+      state.lastError = health.errors.join('; ') || 'Startup dependency health check failed';
+      logger.warn(
+        'Startup health check is unhealthy; continuing in degraded mode so the service can recover automatically',
+      );
     }
 
     // Run initial check immediately
     logger.info('Running initial rebalance check...');
-    await submitter.run();
+    try {
+      await submitter.run();
+      state.lastError = undefined;
+    } catch (error: any) {
+      state.lastError = error?.message || 'Initial rebalance run failed';
+      logger.error('Initial rebalance run failed; service will keep running and retry on schedule', {
+        error: error?.message,
+      });
+    }
 
     // Schedule recurring checks
     logger.info(`Scheduling rebalance checks with cron: ${config.cronSchedule}`);
 
     const job = cron.schedule(config.cronSchedule, async () => {
       logger.info('Scheduled rebalance check triggered');
-      await submitter.run();
+      try {
+        await submitter.run();
+        state.lastError = undefined;
+      } catch (error: any) {
+        state.lastError = error?.message || 'Scheduled rebalance run failed';
+        logger.error('Scheduled rebalance run failed', { error: error?.message });
+      }
     });
 
     state.ready = true;
