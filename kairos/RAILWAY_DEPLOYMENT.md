@@ -124,7 +124,10 @@ railway variables set GOOGLE_GENERATIVE_AI_API_KEY="YOUR-GOOGLE-API-KEY-HERE"
 - `SEI_PRIVATE_KEY` - SEI wallet private key (for blockchain operations)
 - `SEI_NETWORK` - SEI network (sei-testnet)
 - `SEI_RPC_URL` - SEI RPC endpoint
-- All vault addresses and Twitter credentials
+- All vault addresses
+- `ENABLE_TWITTER_CLIENT=true` plus `TWITTER_API_KEY`, `TWITTER_API_SECRET_KEY`, `TWITTER_ACCESS_TOKEN`, and `TWITTER_ACCESS_TOKEN_SECRET` if using Twitter posting
+- Keep `ENABLE_TWITTER_INTERACTIONS=false` unless you want Twitter search/reply/discovery features and have paid API credits available
+- Optionally set `TWITTER_POST_INTERVAL_MIN=5` and `TWITTER_POST_INTERVAL_MAX=10` for a smoke test, then increase them after validation
 
 #### Step 3: Deploy to Railway
 ```bash
@@ -176,7 +179,8 @@ railway domain
 - [ ] SEI_NETWORK
 - [ ] SEI_RPC_URL
 - [ ] All 5 vault addresses
-- [ ] TWITTER_API_KEY, TWITTER_API_SECRET_KEY, etc. (if using Twitter)
+- [ ] ENABLE_TWITTER_CLIENT=true plus TWITTER API credentials (if using Twitter)
+- [ ] ENABLE_TWITTER_INTERACTIONS=false unless paid Twitter interaction/discovery APIs are required
 - [ ] LOG_LEVEL
 
 #### Step 4: Connect GitHub Repository

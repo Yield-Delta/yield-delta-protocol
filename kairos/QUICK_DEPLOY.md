@@ -194,10 +194,17 @@ Once deployed, these endpoints will be available:
 - ARBITRAGE_VAULT_ADDRESS
 
 **Twitter** (optional):
+- ENABLE_TWITTER_CLIENT=true
+- ENABLE_TWITTER_INTERACTIONS=false
+- TWITTER_POST_INTERVAL_MIN=5
+- TWITTER_POST_INTERVAL_MAX=10
 - TWITTER_API_KEY
 - TWITTER_API_SECRET_KEY
 - TWITTER_ACCESS_TOKEN
 - TWITTER_ACCESS_TOKEN_SECRET
+
+`ENABLE_TWITTER_INTERACTIONS` should stay `false` unless you intentionally want paid Twitter search/reply/discovery features.
+For this smoke test, the default posting cadence is 5 to 10 minutes. Raise it again after validation if you do not want frequent posts.
 
 All are already in `.env` file - just need to upload to Railway.
 

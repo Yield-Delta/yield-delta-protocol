@@ -5,7 +5,11 @@ import {
   type ProjectAgent,
 } from "@elizaos/core";
 import starterPlugin from "./plugin.ts";
-import { character } from "./character.ts";
+import {
+  character,
+  getTwitterIntegrationStatus,
+  getTwitterRuntimeMode,
+} from "./character.ts";
 import seiYieldDeltaPlugin from "../node_modules/@elizaos/plugin-sei-yield-delta/src/index.ts";
 import vaultIntegrationPlugin from "./vault-integration-plugin";
 import { getOracleProviderDecision } from "./oracle-provider.ts";
@@ -49,8 +53,16 @@ let _configuredSeiYieldDeltaPlugin:
   | undefined;
 
 const initCharacter = ({ runtime }: { runtime: IAgentRuntime }) => {
+  const twitterStatus = getTwitterIntegrationStatus();
+
   logger.info("Initializing character");
   logger.info({ name: character.name }, "Name:");
+  if (twitterStatus.enabled) {
+    logger.info(`Twitter client enabled (${twitterStatus.reason})`);
+    logger.info(getTwitterRuntimeMode());
+  } else {
+    logger.warn(`Twitter client disabled (${twitterStatus.reason})`);
+  }
   logger.info(
     "🏦 Vault Integration enabled - automatic yield generation active",
   );

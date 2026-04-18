@@ -14,6 +14,31 @@ type OptionalPluginConfig = {
   packageName: string;
 };
 
+type IntegrationStatus = {
+  enabled: boolean;
+  reason: string;
+};
+
+const isTwitterPostOnlyMode = (): boolean => !isTruthy(process.env.ENABLE_TWITTER_INTERACTIONS);
+
+const applyTwitterRuntimeDefaults = (): void => {
+  if (!isTwitterPostOnlyMode()) {
+    return;
+  }
+
+  process.env.TWITTER_INTERACTION_ENABLE = 'false';
+  process.env.TWITTER_TIMELINE_ENABLE = 'false';
+  process.env.TWITTER_ENABLE_DISCOVERY = 'false';
+  process.env.TWITTER_SEARCH_ENABLE = 'false';
+  process.env.TWITTER_ENABLE_ACTION_PROCESSING = 'false';
+  process.env.TWITTER_TARGET_USERS = '';
+};
+
+applyTwitterRuntimeDefaults();
+
+const twitterPostIntervalMin = process.env.TWITTER_POST_INTERVAL_MIN?.trim() || '5';
+const twitterPostIntervalMax = process.env.TWITTER_POST_INTERVAL_MAX?.trim() || '10';
+
 const declaredDependencies = new Set(Object.keys(packageJson.dependencies ?? {}));
 const warnedUndeclaredPlugins = new Set<string>();
 
@@ -91,17 +116,45 @@ export const getConfiguredPlugins = (): string[] => [
   }),
 ];
 
+export const getTwitterIntegrationStatus = (): IntegrationStatus => {
+  if (!isTruthy(process.env.ENABLE_TWITTER_CLIENT)) {
+    return {
+      enabled: false,
+      reason: 'ENABLE_TWITTER_CLIENT must be set to true',
+    };
+  }
+
+  const missingEnvVars = [
+    'TWITTER_API_KEY',
+    'TWITTER_API_SECRET_KEY',
+    'TWITTER_ACCESS_TOKEN',
+    'TWITTER_ACCESS_TOKEN_SECRET',
+  ].filter((name) => !process.env[name]?.trim());
+
+  if (missingEnvVars.length > 0) {
+    return {
+      enabled: false,
+      reason: `Missing required Twitter credentials: ${missingEnvVars.join(', ')}`,
+    };
+  }
+
+  return {
+    enabled: true,
+    reason: 'Twitter client enabled',
+  };
+};
+
+export const getTwitterRuntimeMode = (): string =>
+  isTwitterPostOnlyMode()
+    ? 'Twitter post-only mode enabled (interactions, search, and discovery disabled)'
+    : 'Twitter interaction mode enabled';
+
 /**
  * Returns true when Twitter is enabled via configuration AND all required
  * API credentials are present. Using a single helper ensures `clients`,
  * `plugins`, and settings stay in sync.
  */
-const isTwitterEnabled = (): boolean =>
-  isTruthy(process.env.ENABLE_TWITTER_CLIENT) &&
-  !!process.env.TWITTER_API_KEY?.trim() &&
-  !!process.env.TWITTER_API_SECRET_KEY?.trim() &&
-  !!process.env.TWITTER_ACCESS_TOKEN?.trim() &&
-  !!process.env.TWITTER_ACCESS_TOKEN_SECRET?.trim();
+const isTwitterEnabled = (): boolean => getTwitterIntegrationStatus().enabled;
 
 /**
  * Represents Kairos, a DeFi-focused AI agent specialized in SEI blockchain operations.
@@ -127,8 +180,8 @@ export const character: ExtendedCharacter = {
 
     // Posting schedule - engaging but not spammy
     TWITTER_POST_ENABLE: isTwitterEnabled() ? 'true' : 'false',
-    TWITTER_POST_INTERVAL_MIN: '120',  // 2 hours minimum
-    TWITTER_POST_INTERVAL_MAX: '240',  // 4 hours maximum
+    TWITTER_POST_INTERVAL_MIN: twitterPostIntervalMin,
+    TWITTER_POST_INTERVAL_MAX: twitterPostIntervalMax,
     TWITTER_POST_INTERVAL_VARIANCE: '0.25',
     TWITTER_MAX_TWEET_LENGTH: '280',
 
