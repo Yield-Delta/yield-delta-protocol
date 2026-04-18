@@ -3,6 +3,7 @@ import starterPlugin from './plugin.ts';
 import { character } from './character.ts';
 import seiYieldDeltaPlugin from '../node_modules/@elizaos/plugin-sei-yield-delta/src/index.ts';
 import vaultIntegrationPlugin from './vault-integration-plugin';
+import { isTruthy } from './utils.ts';
 
 const KNOWN_MAINNET_ORACLE_DEFAULTS = new Set([
   '0x2880ab155794e7179c9ee2e38200202908c17b43',
@@ -13,11 +14,6 @@ const KNOWN_MAINNET_ORACLE_DEFAULTS = new Set([
   '0xf0f6e8b018d7834e3693e9a0f389282c3f59f1f6',
   '0x1111111111111111111111111111111111111111',
 ]);
-
-const isTruthy = (value?: string): boolean => {
-  if (!value) return false;
-  return ['1', 'true', 'yes', 'on'].includes(value.trim().toLowerCase());
-};
 
 const isHexAddress = (value?: string): boolean => {
   if (!value) return false;
