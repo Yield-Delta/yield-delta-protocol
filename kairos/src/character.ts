@@ -1,4 +1,5 @@
 import { type Character } from '@elizaos/core';
+import { isTruthy } from './utils.ts';
 
 /**
  * Extended Character type to include clients property used by ElizaOS runtime
@@ -8,6 +9,18 @@ interface ExtendedCharacter extends Character {
 }
 
 /**
+ * Returns true when Twitter is enabled via configuration AND all required
+ * API credentials are present. Using a single helper ensures `clients`,
+ * `plugins`, and settings stay in sync.
+ */
+const isTwitterEnabled = (): boolean =>
+  isTruthy(process.env.ENABLE_TWITTER_CLIENT) &&
+  !!process.env.TWITTER_API_KEY?.trim() &&
+  !!process.env.TWITTER_API_SECRET_KEY?.trim() &&
+  !!process.env.TWITTER_ACCESS_TOKEN?.trim() &&
+  !!process.env.TWITTER_ACCESS_TOKEN_SECRET?.trim();
+
+/**
  * Represents Kairos, a DeFi-focused AI agent specialized in SEI blockchain operations.
  * Kairos provides real-time cryptocurrency prices, executes DeFi strategies, and manages portfolios.
  * Expert in yield optimization, arbitrage, and advanced trading strategies on SEI Network.
@@ -15,7 +28,7 @@ interface ExtendedCharacter extends Character {
 export const character: ExtendedCharacter = {
   name: 'Kairos',
   clients: [
-    'twitter',
+    ...(isTwitterEnabled() ? ['twitter'] : []),
     ...(process.env.INSTAGRAM_USERNAME?.trim() ? ['instagram'] : []),
   ],
   plugins: [
@@ -35,12 +48,7 @@ export const character: ExtendedCharacter = {
 
     // Platform plugins
     ...(process.env.DISCORD_API_TOKEN?.trim() ? ['@elizaos/plugin-discord'] : []),
-    ...(process.env.TWITTER_API_KEY?.trim() &&
-    process.env.TWITTER_API_SECRET_KEY?.trim() &&
-    process.env.TWITTER_ACCESS_TOKEN?.trim() &&
-    process.env.TWITTER_ACCESS_TOKEN_SECRET?.trim()
-      ? ['@elizaos/plugin-twitter']
-      : []),
+    ...(isTwitterEnabled() ? ['@elizaos/plugin-twitter'] : []),
     ...(process.env.TELEGRAM_BOT_TOKEN?.trim() ? ['@elizaos/plugin-telegram'] : []),
     ...(process.env.INSTAGRAM_USERNAME?.trim() && process.env.INSTAGRAM_PASSWORD?.trim()
       ? ['@elizaos/plugin-instagram']
@@ -60,7 +68,7 @@ export const character: ExtendedCharacter = {
     TWITTER_ACCESS_TOKEN_SECRET: process.env.TWITTER_ACCESS_TOKEN_SECRET || '',
 
     // Posting schedule - engaging but not spammy
-    TWITTER_POST_ENABLE: 'true',
+    TWITTER_POST_ENABLE: isTwitterEnabled() ? 'true' : 'false',
     TWITTER_POST_INTERVAL_MIN: '120',  // 2 hours minimum
     TWITTER_POST_INTERVAL_MAX: '240',  // 4 hours maximum
     TWITTER_POST_INTERVAL_VARIANCE: '0.25',
@@ -70,6 +78,8 @@ export const character: ExtendedCharacter = {
     // DISABLED: Twitter Free tier has extremely limited API access (1 request)
     // Enable only if you have Twitter Basic tier ($100/mo) or higher
     TWITTER_SEARCH_ENABLE: 'false',
+    TWITTER_INTERACTION_ENABLE: 'false',
+    TWITTER_TIMELINE_ENABLE: 'false',
     TWITTER_INTERACTION_INTERVAL_MIN: '360',  // 6 hours (increased from 30 min to avoid rate limits)
     TWITTER_INTERACTION_INTERVAL_MAX: '720',  // 12 hours (increased from 60 min)
     TWITTER_MAX_INTERACTIONS_PER_RUN: '1',    // Reduced from 5 to minimize API calls
@@ -82,7 +92,7 @@ export const character: ExtendedCharacter = {
     // DISABLED: Causes search API calls that exceed Free tier rate limits
     // TWITTER_TARGET_USERS: 'SeiNetwork,DragonSwapSei,YEIFinance',
     TWITTER_TARGET_USERS: '',  // Empty to prevent search API calls
-    TWITTER_ENABLE_ACTION_PROCESSING: 'true',
+    TWITTER_ENABLE_ACTION_PROCESSING: 'false',
 
     // Safety settings
     TWITTER_RETRY_LIMIT: '3',
