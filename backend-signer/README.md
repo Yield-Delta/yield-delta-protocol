@@ -2,7 +2,8 @@
 
 The Backend Signer Service is the critical bridge between the Yield Delta AI Engine and the on-chain AIOracle contract. It automates the process of:
 
-1. Fetching rebalance recommendations from the AI Engine
+1. Fetching rebalance recommendations from the AI Engine.
+
 2. Signing those recommendations with the registered AI model's private key
 3. Submitting signed requests to the AIOracle smart contract
 4. Executing the rebalance operations on target vaults
