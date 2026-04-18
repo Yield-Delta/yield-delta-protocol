@@ -30,6 +30,12 @@ interface TwitterPosterConfig {
   postIntervalMax: number;
 }
 
+type PostTweetResult = {
+  posted: boolean;
+  terminalFailure?: 'credits-depleted' | 'unauthorized';
+  transientFailure?: boolean;
+};
+
 let twitterClient: TwitterApi | null = null;
 let lastPostTime = 0;
 
@@ -78,7 +84,7 @@ async function generateTweet(runtime: IAgentRuntime): Promise<string> {
 async function postTweet(
   runtime: IAgentRuntime,
   content: string
-): Promise<boolean> {
+): Promise<PostTweetResult> {
   const config: TwitterPosterConfig = {
     apiKey: process.env.TWITTER_API_KEY || '',
     apiSecret: process.env.TWITTER_API_SECRET_KEY || '',
@@ -101,7 +107,7 @@ async function postTweet(
     !config.accessTokenSecret
   ) {
     console.warn('[TwitterPoster] Missing API credentials');
-    return false;
+    return { posted: false, terminalFailure: 'unauthorized' };
   }
 
   try {
@@ -122,25 +128,41 @@ async function postTweet(
         `[TwitterPoster] ✅ Posted tweet: ${response.data.id}`
       );
       lastPostTime = Date.now();
-      return true;
+      return { posted: true };
     }
 
     runtime.logger.warn('[TwitterPoster] No tweet ID in response');
-    return false;
+    return { posted: false };
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);
     runtime.logger.error(`[TwitterPoster] Failed to post: ${errorMsg}`);
+    const normalizedError = errorMsg.toLowerCase();
 
     // Check for specific API errors
     if (errorMsg.includes('402')) {
       runtime.logger.error(
         '[TwitterPoster] 402 Credits Depleted - Twitter paid tier required'
       );
+      return { posted: false, terminalFailure: 'credits-depleted' };
     } else if (errorMsg.includes('401')) {
       runtime.logger.error('[TwitterPoster] 401 Unauthorized - Check credentials');
+      return { posted: false, terminalFailure: 'unauthorized' };
     }
 
-    return false;
+    const isRateLimited = normalizedError.includes('429');
+    const isServerError = /\b5\d\d\b/.test(normalizedError);
+    const isNetworkError =
+      normalizedError.includes('timeout') ||
+      normalizedError.includes('econnreset') ||
+      normalizedError.includes('eai_again') ||
+      normalizedError.includes('network');
+
+    if (isRateLimited || isServerError || isNetworkError) {
+      runtime.logger.warn('[TwitterPoster] Transient Twitter API failure detected, retry with backoff');
+      return { posted: false, transientFailure: true };
+    }
+
+    return { posted: false };
   }
 }
 
@@ -153,18 +175,77 @@ export class TwitterPosterService extends Service {
 
   private timeoutHandle: NodeJS.Timeout | null = null;
   private stopped = false;
+  private transientBackoffAttempts = 0;
+  private nextDelayOverrideMs: number | null = null;
+
+  private stopDueToTerminalFailure(reason: PostTweetResult['terminalFailure']): void {
+    if (!reason || this.stopped) {
+      return;
+    }
+
+    const reasonMessage =
+      reason === 'credits-depleted'
+        ? 'Twitter API credits depleted or paid tier required'
+        : 'Twitter credentials are invalid or missing';
+
+    this.runtime.logger.error(
+      `[TwitterPoster] Disabling scheduled posts due to terminal failure: ${reasonMessage}`
+    );
+
+    this.stopped = true;
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle);
+      this.timeoutHandle = null;
+    }
+  }
 
   constructor(runtime: IAgentRuntime) {
     super(runtime);
   }
 
+  private shouldUseBackoff(): boolean {
+    return (process.env.TWITTER_ENABLE_BACKOFF || 'true').toLowerCase() === 'true';
+  }
+
+  private registerSuccessfulPost(): void {
+    this.transientBackoffAttempts = 0;
+    this.nextDelayOverrideMs = null;
+  }
+
+  private registerTransientFailure(): void {
+    if (!this.shouldUseBackoff()) {
+      this.nextDelayOverrideMs = null;
+      return;
+    }
+
+    this.transientBackoffAttempts += 1;
+
+    const baseBackoffSec = parseInt(process.env.TWITTER_BACKOFF_BASE_SEC || '60', 10);
+    const maxBackoffSec = parseInt(process.env.TWITTER_BACKOFF_MAX_SEC || '1800', 10);
+    const exponentialBackoffSec = Math.min(
+      baseBackoffSec * Math.pow(2, this.transientBackoffAttempts - 1),
+      maxBackoffSec
+    );
+    const jitterMultiplier = 0.8 + Math.random() * 0.4;
+    this.nextDelayOverrideMs = Math.round(exponentialBackoffSec * jitterMultiplier * 1000);
+
+    this.runtime.logger.warn(
+      `[TwitterPoster] Backoff attempt ${this.transientBackoffAttempts}; next retry in ${Math.round((this.nextDelayOverrideMs || 0) / 1000)} seconds`
+    );
+  }
+
   private scheduleNextTweet(): void {
     const minInterval = parseInt(process.env.TWITTER_POST_INTERVAL_MIN || '5', 10);
     const maxInterval = parseInt(process.env.TWITTER_POST_INTERVAL_MAX || '10', 10);
-    const intervalMs = (minInterval + Math.random() * (maxInterval - minInterval)) * 60 * 1000;
+    const normalIntervalMs = (minInterval + Math.random() * (maxInterval - minInterval)) * 60 * 1000;
+    const intervalMs = this.nextDelayOverrideMs ?? normalIntervalMs;
+    const isBackoffDelay = this.nextDelayOverrideMs !== null;
+    this.nextDelayOverrideMs = null;
 
     this.runtime.logger.info(
-      `[TwitterPoster] Next tweet scheduled in ${Math.round(intervalMs / 60000)} minutes`
+      isBackoffDelay
+        ? `[TwitterPoster] Next retry scheduled in ${Math.round(intervalMs / 1000)} seconds (backoff mode)`
+        : `[TwitterPoster] Next tweet scheduled in ${Math.round(intervalMs / 60000)} minutes`
     );
 
     this.timeoutHandle = setTimeout(async () => {
@@ -174,9 +255,17 @@ export class TwitterPosterService extends Service {
 
       try {
         const tweetContent = await generateTweet(this.runtime);
-        await postTweet(this.runtime, tweetContent);
+        const result = await postTweet(this.runtime, tweetContent);
+        if (result.terminalFailure) {
+          this.stopDueToTerminalFailure(result.terminalFailure);
+        } else if (result.posted) {
+          this.registerSuccessfulPost();
+        } else if (result.transientFailure) {
+          this.registerTransientFailure();
+        }
       } catch (error) {
         this.runtime.logger.error('[TwitterPoster] Error in scheduled post:', error);
+        this.registerTransientFailure();
       }
 
       if (!this.stopped) {
@@ -188,14 +277,22 @@ export class TwitterPosterService extends Service {
   private async postTweetNow(): Promise<void> {
     try {
       const tweetContent = await generateTweet(this.runtime);
-      const posted = await postTweet(this.runtime, tweetContent);
-      if (!posted) {
+      const result = await postTweet(this.runtime, tweetContent);
+      if (result.terminalFailure) {
+        this.stopDueToTerminalFailure(result.terminalFailure);
+      } else if (result.posted) {
+        this.registerSuccessfulPost();
+      } else if (result.transientFailure) {
+        this.registerTransientFailure();
+      }
+      if (!result.posted) {
         this.runtime.logger.warn(
           '[TwitterPoster] Startup tweet was not posted (see prior logs for details)'
         );
       }
     } catch (error) {
       this.runtime.logger.error('[TwitterPoster] Startup tweet error:', error);
+      this.registerTransientFailure();
     }
   }
 
@@ -229,6 +326,11 @@ export class TwitterPosterService extends Service {
     if (postOnStartup) {
       this.runtime.logger.info('[TwitterPoster] Attempting immediate startup tweet...');
       await this.postTweetNow();
+    }
+
+    if (this.stopped) {
+      this.runtime.logger.warn('[TwitterPoster] Service initialization halted after terminal failure');
+      return;
     }
 
     this.scheduleNextTweet();
