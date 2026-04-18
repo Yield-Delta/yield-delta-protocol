@@ -94,6 +94,8 @@ cp .env.example .env
 |----------|---------|-------------|
 | `SEI_RPC_URL` | `https://evm-rpc-arctic-1.sei-apis.com` | SEI network RPC |
 | `AI_ENGINE_URL` | `http://localhost:8000` | AI Engine API URL |
+| `PORT` | `3000` | HTTP port for health endpoints |
+| `STARTUP_RETRY_MS` | `30000` | Retry delay when startup/config fails |
 | `CRON_SCHEDULE` | `*/5 * * * *` | Check frequency |
 | `MIN_CONFIDENCE_THRESHOLD` | `7500` | Min confidence (75%) |
 | `REQUEST_DEADLINE_SECONDS` | `300` | Request validity (5 min) |
@@ -176,7 +178,11 @@ Log level is controlled by `LOG_LEVEL` env var (default: `info`).
 ## Monitoring
 
 ### Health Checks
-The service performs health checks on startup and each cycle:
+The service exposes HTTP health endpoints:
+- `GET /health` returns `200` when the process is alive
+- `GET /ready` returns `200` when the worker is initialized, `503` while starting/retrying
+
+The service also performs dependency health checks on startup and each cycle:
 - AI Engine connectivity
 - Blockchain connection
 - Signer balance
