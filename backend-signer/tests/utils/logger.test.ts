@@ -23,8 +23,18 @@ jest.mock('winston', () => {
 });
 
 describe('Logger', () => {
+  const originalEnv = process.env;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    process.env = { ...originalEnv };
+    delete process.env.LOG_TO_FILES;
+    delete process.env.RAILWAY_ENVIRONMENT;
+    delete process.env.NODE_ENV;
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
   });
 
   describe('logger configuration', () => {
@@ -93,7 +103,19 @@ describe('Logger', () => {
       );
     });
 
-    it('should configure File transports for errors', () => {
+    it('should not configure File transports in production by default', () => {
+      process.env.NODE_ENV = 'production';
+
+      jest.resetModules();
+      require('../../src/utils/logger');
+
+      expect(winston.transports.File).not.toHaveBeenCalled();
+    });
+
+    it('should configure File transports for errors when LOG_TO_FILES is enabled', () => {
+      process.env.NODE_ENV = 'production';
+      process.env.LOG_TO_FILES = 'true';
+
       jest.resetModules();
       require('../../src/utils/logger');
 
@@ -107,7 +129,10 @@ describe('Logger', () => {
       );
     });
 
-    it('should configure File transports for combined logs', () => {
+    it('should configure File transports for combined logs when LOG_TO_FILES is enabled', () => {
+      process.env.NODE_ENV = 'production';
+      process.env.LOG_TO_FILES = 'true';
+
       jest.resetModules();
       require('../../src/utils/logger');
 
