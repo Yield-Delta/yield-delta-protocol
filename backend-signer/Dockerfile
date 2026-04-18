@@ -30,7 +30,7 @@ RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001
 
 # Ensure writable log directory for non-root runtime user
-RUN mkdir -p /app/logs && chown -R nodejs:nodejs /app
+RUN mkdir -p /app/logs && chown -R 1001:1001 /app
 
 # Set working directory
 WORKDIR /app
