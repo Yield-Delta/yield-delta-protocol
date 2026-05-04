@@ -155,6 +155,9 @@ jobs:
   security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend-signer
 
     steps:
       - name: Checkout code
@@ -164,7 +167,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: 'fs'
-          scan-ref: 'backend-signer'
+          scan-ref: './backend-signer'
           format: 'sarif'
           output: 'trivy-results.sarif'
         continue-on-error: true
@@ -176,6 +179,4 @@ jobs:
         continue-on-error: true
 
       - name: Run npm audit
-        run: |
-          cd backend-signer
-          npm audit --audit-level=moderate || true
+        run: npm audit --audit-level=moderate || true
