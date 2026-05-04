@@ -65,6 +65,7 @@ export interface ServiceConfig {
   requestDeadlineSeconds: number;
   logLevel: string;
   aiModelVersion: string;
+  solana?: SolanaConfig;
 }
 
 // Submission Result
@@ -101,4 +102,47 @@ export interface VaultState {
   token0Balance: bigint;
   token1Balance: bigint;
   lastRebalanceTime: bigint;
+}
+
+// ============ Solana Types ============
+
+export interface SolanaConfig {
+  rpcUrl: string;
+  chainId: number;
+  commitment: 'confirmed' | 'finalized' | 'processed';
+  vaultProgramId: string;
+  tokenProgramId: string;
+  associatedTokenProgramId: string;
+  vaults: string[];
+  signerPrivateKey?: string;
+}
+
+export interface SolanaVaultState {
+  address: string;
+  poolAddress: string;
+  tokenAMint: string;
+  tokenBMint: string;
+  liquidity: bigint;
+  tokenABalance: bigint;
+  tokenBBalance: bigint;
+  lowerPrice: number;
+  upperPrice: number;
+  lastRebalanceTime: number;
+  feeGrowthGlobal: bigint;
+}
+
+export interface SolanaTransaction {
+  txId: string;
+  signature: string;
+  status: 'confirmed' | 'failed' | 'pending';
+  blockTime: number;
+  fee: bigint;
+}
+
+export interface SolanaSubmissionResult {
+  success: boolean;
+  txId?: string;
+  signature?: string;
+  error?: string;
+  slot?: number;
 }
