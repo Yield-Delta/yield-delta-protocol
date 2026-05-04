@@ -136,7 +136,8 @@ export class SolanaService {
     if (!this.signerKeypair) {
       return BigInt(0);
     }
-    return this.connection.getBalance(this.signerKeypair.publicKey);
+    const balance = await this.connection.getBalance(this.signerKeypair.publicKey);
+    return BigInt(balance);
   }
 
   async checkHealth(): Promise<boolean> {
