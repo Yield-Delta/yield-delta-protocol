@@ -5,7 +5,7 @@ module.exports = {
   roots: ['<rootDir>/tests', '<rootDir>/src'],
   testMatch: ['**/tests/**/*.test.ts'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    '^.+\\.ts$': ['ts-jest', { useESM: false }],
   },
   collectCoverageFrom: [
     'src/**/*.ts',
@@ -13,17 +13,6 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-  },
   setupFilesAfterEnv: ['<rootDir>/tests/setup.ts'],
   testTimeout: 30000,
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        esModuleInterop: true,
-        allowSyntheticDefaultImports: true,
-      },
-    },
-  },
 };
