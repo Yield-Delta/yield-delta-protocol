@@ -1,11 +1,58 @@
 import os
+import time
+import threading
 import requests
+import schedule
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
+
+def post_tweet(prompt="defi update"):
+    gemini_key = os.environ.get("GEMINI_API_KEY")
+    if not gemini_key:
+        print("GEMINI_API_KEY not set")
+        return
+    
+    try:
+        response = requests.post(
+            f"https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key={gemini_key}",
+            json={
+                "contents": [{"parts": [{"text": f"Write a concise tweet (max 280 chars) about: {prompt}"}]}],
+                "generationConfig": {"temperature": 0.7, "maxOutputTokens": 280}
+            }
+        )
+        response.raise_for_status()
+        tweet_text = response.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+        
+        post_response = requests.post(
+            "https://api.postpeer.dev/v1/posts",
+            headers={
+                "x-access-key": os.environ.get("POSTPEER_API_KEY"),
+                "Content-Type": "application/json"
+            },
+            json={
+                "content": tweet_text,
+                "platforms": [{"platform": "twitter", "accountId": os.environ.get("POSTPEER_ACCOUNT_ID")}],
+                "publishNow": True
+            }
+        )
+        post_response.raise_for_status()
+        
+        print(f"Tweet posted: {tweet_text}")
+    except Exception as e:
+        print(f"Error posting tweet: {e}")
+
+def run_scheduler():
+    schedule.every(4).hours.do(post_tweet)
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+
+scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
+scheduler_thread.start()
 
 @app.route("/health")
 def health():
