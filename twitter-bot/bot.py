@@ -120,7 +120,7 @@ if __name__ == "__main__":
         def health():
             return {"status": "ok"}, 200
         
-        print("Starting server on port $PORT...")
+        print(f"Starting server on port {os.environ.get('PORT', 5000)}...")
         app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
     elif "--schedule" in sys.argv:
         import schedule
