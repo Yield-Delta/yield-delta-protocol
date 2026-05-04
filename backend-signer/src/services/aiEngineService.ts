@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosError } from 'axios';
 import {
   ServiceConfig,
   RebalanceRecommendation,
@@ -6,12 +6,38 @@ import {
 } from '../types';
 import logger from '../utils/logger';
 
+const DEFAULT_MAX_RETRIES = 3;
+const DEFAULT_INITIAL_DELAY_MS = 1000;
+
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = DEFAULT_MAX_RETRIES,
+  initialDelayMs: number = DEFAULT_INITIAL_DELAY_MS
+): Promise<T> {
+  let lastError: any;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      lastError = error;
+      if (attempt < maxRetries - 1) {
+        const delay = initialDelayMs * Math.pow(2, attempt);
+        logger.debug(`Retrying after ${delay}ms (attempt ${attempt + 1}/${maxRetries})`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+  }
+  throw lastError;
+}
+
 export class AIEngineService {
   private client: AxiosInstance;
   private config: ServiceConfig;
   private lastMarketData: any = null;
   private lastMarketDataTimestamp: number = 0;
-  private marketDataCacheDuration: number = 60000; // 1 minute cache
+  private marketDataCacheDuration: number = 60000;
+  private maxRetries: number = DEFAULT_MAX_RETRIES;
+  private healthCheckRetries: number = 2;
 
   constructor(config: ServiceConfig) {
     this.config = config;
@@ -31,7 +57,7 @@ export class AIEngineService {
   }
 
   /**
-   * Request rebalance analysis from the AI Engine
+   * Request rebalance analysis from the AI Engine with retry logic
    */
   async analyzeVault(vaultState: VaultState): Promise<RebalanceRecommendation | null> {
     try {
@@ -55,9 +81,10 @@ export class AIEngineService {
 
       logger.debug('Requesting rebalance analysis', { vault: vaultState.address, request });
 
-      const response = await this.client.post(
-        '/analyze/rebalance',
-        request
+      const response = await retryWithBackoff(
+        () => this.client.post('/analyze/rebalance', request),
+        this.maxRetries,
+        1000
       );
 
       // Response format: RebalanceResponse
@@ -178,12 +205,18 @@ export class AIEngineService {
   }
 
   /**
-   * Check AI Engine health
+   * Check AI Engine health with retry logic
    */
   async checkHealth(): Promise<boolean> {
     try {
-      const response = await this.client.get('/health', { timeout: 5000 });
-      return response.status === 200;
+      return await retryWithBackoff(
+        async () => {
+          const response = await this.client.get('/health', { timeout: 5000 });
+          return response.status === 200;
+        },
+        this.healthCheckRetries,
+        1000
+      );
     } catch (error) {
       logger.error('AI Engine health check failed', { error });
       return false;
