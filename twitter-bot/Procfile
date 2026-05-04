@@ -1,1 +1,2 @@
 web: python bot.py "yield delta defi updates" --server
+cron: python bot.py "yield delta defi updates" --cron

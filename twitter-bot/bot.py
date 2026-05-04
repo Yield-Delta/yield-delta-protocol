@@ -97,7 +97,7 @@ if __name__ == "__main__":
     import sys
     
     if len(sys.argv) < 2:
-        print("Usage: python bot.py <prompt> [--schedule] [--server]")
+        print("Usage: python bot.py <prompt> [--server] [--schedule] [--cron]")
         print("Environment variables: POSTPEER_API_KEY, GEMINI_API_KEY, POSTPEER_ACCOUNT_ID")
         sys.exit(1)
     
@@ -107,7 +107,7 @@ if __name__ == "__main__":
         from flask import Flask, request
         app = Flask(__name__)
         
-        @app.route("/tweet", methods=["POST"])
+        @app.route("/tweet", methods=["POST", "GET"])
         def tweet_endpoint():
             p = request.args.get("prompt") or prompt
             try:
@@ -120,8 +120,11 @@ if __name__ == "__main__":
         def health():
             return {"status": "ok"}, 200
         
-        print(f"Starting server on port {os.environ.get('PORT', 5000)}...")
-        app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+        port = int(os.environ.get("PORT", 5000))
+        print(f"Starting server on port {port}...")
+        app.run(host="0.0.0.0", port=port)
+    elif "--cron" in sys.argv:
+        run_once(prompt)
     elif "--schedule" in sys.argv:
         import schedule
         prompts = [prompt]
