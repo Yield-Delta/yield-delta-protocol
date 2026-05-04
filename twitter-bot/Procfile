@@ -1,0 +1,1 @@
+web: python bot.py "yield delta defi updates" --server
