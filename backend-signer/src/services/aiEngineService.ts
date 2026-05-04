@@ -209,14 +209,29 @@ export class AIEngineService {
    */
   async checkHealth(): Promise<boolean> {
     try {
-      return await retryWithBackoff(
+      const response = await retryWithBackoff(
         async () => {
-          const response = await this.client.get('/health', { timeout: 5000 });
-          return response.status === 200;
+          return this.client.get('/health', { timeout: 5000 });
         },
         this.healthCheckRetries,
         1000
       );
+
+      if (response.status !== 200) {
+        return false;
+      }
+
+      const healthData = response.data;
+      const isHealthy = healthData.status === 'healthy';
+
+      if (!isHealthy) {
+        logger.warn('AI Engine reports degraded health', {
+          status: healthData.status,
+          modelsLoaded: healthData.models_loaded,
+        });
+      }
+
+      return isHealthy;
     } catch (error) {
       logger.error('AI Engine health check failed', { error });
       return false;
