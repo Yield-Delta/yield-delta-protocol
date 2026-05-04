@@ -104,7 +104,7 @@ if __name__ == "__main__":
     prompt = sys.argv[1]
     
     if "--server" in sys.argv:
-        from flask import Flask, request
+        from flask import Flask, request, jsonify
         app = Flask(__name__)
         
         @app.route("/tweet", methods=["POST", "GET"])
@@ -112,19 +112,20 @@ if __name__ == "__main__":
             p = request.args.get("prompt") or prompt
             try:
                 run_once(p)
-                return {"success": True}, 200
+                return jsonify({"success": True}), 200
             except Exception as e:
-                return {"error": str(e)}, 500
+                return jsonify({"error": str(e)}), 500
         
         @app.route("/health", methods=["GET"])
         def health():
-            return {"status": "ok"}, 200
+            return jsonify({"status": "ok"}), 200
         
         port = int(os.environ.get("PORT", 5000))
         print(f"Starting server on port {port}...")
         app.run(host="0.0.0.0", port=port, threaded=True)
     elif "--cron" in sys.argv:
         run_once(prompt)
+        sys.exit(0)
     elif "--schedule" in sys.argv:
         import schedule
         prompts = [prompt]
