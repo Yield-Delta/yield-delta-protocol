@@ -1,2 +1,2 @@
-web: python bot.py "yield delta defi updates" --server
+web: gunicorn bot:app --timeout 120 --worker-class gthread --workers 1 --bind 0.0.0.0:$PORT
 cron: python bot.py "yield delta defi updates" --cron

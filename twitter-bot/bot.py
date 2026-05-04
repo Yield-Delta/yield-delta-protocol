@@ -103,7 +103,7 @@ if __name__ == "__main__":
     
     prompt = sys.argv[1]
     
-    if "--server" in sys.argv:
+    if "--server" in sys.argv or "--cron" not in sys.argv:
         from flask import Flask, request, jsonify
         app = Flask(__name__)
         
@@ -120,9 +120,12 @@ if __name__ == "__main__":
         def health():
             return jsonify({"status": "ok"}), 200
         
-        port = int(os.environ.get("PORT", 5000))
-        print(f"Starting server on port {port}...")
-        app.run(host="0.0.0.0", port=port, threaded=True)
+        if "--server" in sys.argv:
+            port = int(os.environ.get("PORT", 5000))
+            print(f"Starting server on port {port}...")
+            app.run(host="0.0.0.0", port=port, threaded=True)
+        else:
+            app.run(host="0.0.0.0", port=5000)
     elif "--cron" in sys.argv:
         run_once(prompt)
         sys.exit(0)
