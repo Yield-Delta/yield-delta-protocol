@@ -35,12 +35,11 @@ RUN mkdir -p /app/logs && chown -R 1001:1001 /app
 # Set working directory
 WORKDIR /app
 
-# Copy package files
+# Copy package files (need both for production install)
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm ci --only=production && \
-    npm cache clean --force
+# Install all dependencies (not just production - needed for types)
+RUN npm ci
 
 # Copy built application from builder stage
 COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
