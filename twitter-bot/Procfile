@@ -1,2 +1,1 @@
-web: gunicorn bot:app --timeout 120 --worker-class gthread --workers 1 --bind 0.0.0.0:$PORT
-cron: python bot.py "yield delta defi updates" --cron
+web: python -c "from bot import app; app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))"
