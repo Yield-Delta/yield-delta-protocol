@@ -4,6 +4,7 @@ This is the starter template for ElizaOS projects.
 
 ## Features
 
+- **Automated Vault Integration**: Actively monitors SEI Vault deposits, allocates funds to AI-driven yield strategies, and manages yield harvesting (see [Vault Integration Documentation](./VAULT_INTEGRATION.md)).
 - Pre-configured project structure for ElizaOS development
 - Comprehensive testing setup with component and e2e tests
 - Default character configuration with plugin integration
